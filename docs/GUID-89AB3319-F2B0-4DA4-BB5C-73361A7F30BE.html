@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
+<meta name="DC.rights.owner" content="(C) Copyright 2022" />
+<meta name="DC.type" content="topic" />
+<meta name="DC.title" content="System Environment APIs" />
+<meta name="DC.relation" scheme="URI" content="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-BFE639CE-B485-44E4-A1D0-772BA06DAB4D.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-828C0C23-0CE8-45AD-94E5-B555F2B6DEC3.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-B526D5E9-E654-4425-A646-FB588117161F.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-D764F0E1-501C-41E8-A24D-0A12C563A5C6.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-8D1CF7AB-FBBC-495D-9009-8010993C4D34.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-F91757C8-9F06-4940-8E39-320FF012D5B5.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-10D875C5-4649-47BB-8ACC-FAB84CDCB330.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-018FFFC6-F13C-4B92-809B-80F972026462.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-1BA25486-7B69-4360-A5EE-3D551461722D.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-EADD3346-FC44-4ED3-853B-EE272EF849E9.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-C914B924-A408-4335-8EF5-EBAC60324B5E.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-5D8BF6EE-3E23-420F-A90B-48B71DBA0965.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-1C45A73B-6270-469B-9BAD-18B5FAD9413A.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-92B8C2C4-A7BE-421B-BAC0-74CA21E46703.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-797FDA4F-317D-4F69-A613-0F555135EB8F.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-F89621EC-E7D9-4374-87E9-B769C389E227.html" />
+<meta name="DC.format" content="XHTML" />
+<meta name="DC.identifier" content="GUID-89AB3319-F2B0-4DA4-BB5C-73361A7F30BE" />
+<meta name="DC.language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="stylesheets/atmel.css" />
+<title>System Environment APIs</title>
+<meta name="Microsoft.Help.Id" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-89AB3319-F2B0-4DA4-BB5C-73361A7F30BE" />
+<meta name="Microsoft.Help.TocParent" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC" />
+<meta name="Microsoft.Help.TocOrder" content="4" />
+<meta name="Microsoft.Help.Locale" content="en-US" />
+<meta name="Microsoft.Help.TopicLocale" content="en-US" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<script language="javascript">
+       
+       if (window.parent.location.protocol != 'file:') {
+				document.addEventListener('click', function(e) {
+				    if (e.target) {
+               if (e.target.nodeName == "A" ) {
+                    if (!e.target.target) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                              
+                      var origUrl = window.parent.location.href.substr(0, window.parent.location.href.indexOf("?"));
+                      if (origUrl.length === 0) {
+                          origUrl = window.parent.location.href;
+                      }
+                      var href= e.target.getAttribute("href");
+                      var parts = href.split("#");
+          
+                      var url = "";
+                      if (parts.length == 2 ) {
+                        if (!parts[0].length) {
+                            url = window.parent.location.search.replace('?','')
+                        } else {
+                            url = parts[0].replace('.html','');
+                        }
+                      } else {
+                        url = parts[0].replace('.html','');
+                      }
+
+                      if (parts.length == 2) {
+                          url += "#" + parts[1];
+                      }
+    
+                      window.parent.location.href = origUrl + "?" + url;
+
+                      return false;
+                    }
+               }
+            }
+				});
+			}
+
+		</script><script language="javascript">
+         
+         function copyContent(content, button) {
+         
+            var textArea = document.createElement("textarea");
+            
+            // Place in the top-left corner of screen regardless of scroll position.
+            textArea.style.position = 'fixed';
+            textArea.style.top = 0;
+            textArea.style.left = 0;
+            
+            // Ensure it has a small width and height. Setting to 1px / 1em
+            // doesn't work as this gives a negative w/h on some browsers.
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            
+            // We don't need padding, reducing the size if it does flash render.
+            textArea.style.padding = 0;
+            
+            // Clean up any borders.
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            
+            // Avoid flash of the white box if rendered for any reason.
+            textArea.style.background = 'transparent';
+            
+            textArea.value = content;
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+               var successful = document.execCommand('copy');
+               var msg = successful ? 'successful' : 'unsuccessful';
+               if (!button.classList.contains("copied")){
+                  button.textContent = "Copied";
+                  button.classList.add("copied");
+                  setTimeout(function(){
+                     button.textContent = "Copy";
+                     button.classList.remove("copied");
+                  },1000);
+               }
+            } catch (err) {
+               console.log('Oops, unable to copy');
+            }
+            
+            document.body.removeChild(textArea);
+         }
+         
+         function cpy(id, button) {
+            var element = document.getElementById(id);
+            var content = element.getAttribute("content");
+            
+            copyContent(content, button);
+         }
+         
+         document.addEventListener("DOMContentLoaded", function(event) {
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.style.position = "relative";
+               var copy = document.createElement("button");
+               copy.textContent = "Copy";
+               copy.setAttribute("class", "copy-code");
+               
+               var content = elem.textContent;
+               
+               copy.addEventListener("click", function(){
+                  copyContent(content, copy);
+               });
+               
+               elem.addEventListener("mouseenter", function(evt){
+                  elem.prepend(copy);
+               });
+            });
+            
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.addEventListener("mouseleave", function(evt){
+                  document.querySelector(".copy-code").remove();
+               });
+            });
+         });
+         
+      </script><script language="javascript">
+          
+          // Add the MathML namespace to html
+          var html = document.getElementsByTagName("html")[0],
+          head = document.getElementsByTagName("head")[0];
+          
+          var mathJax = document.createElement("script");
+          mathJax.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML";
+          head.appendChild(mathJax);
+          
+          html.setAttribute("xmlns:m","http://www.w3.org/1998/Math/MathML");
+          
+          function inIframe() { try { return window.self !== window.top; } catch (e) { return true; } }
+          
+          if (!inIframe()) { 
+          
+          var Default = "index.html?GUID-89AB3319-F2B0-4DA4-BB5C-73361A7F30BE"; 
+          
+          var displaylocation = "value" + window.location.href;
+          
+          var GUIDS = displaylocation.split('GUID');          
+          
+          if (displaylocation.indexOf('#GUID') != -1) {            
+          var First = GUIDS[1].split('.html');  
+          if (GUIDS[3]){First = GUIDS[2].split('.html');}
+          if (GUIDS[4]){First = GUIDS[3].split('.html');}
+          if (GUIDS[5]){First = GUIDS[4].split('.html');}
+          
+          var Second = GUIDS[2].split('#');   
+          if (GUIDS[3]){Second = GUIDS[3].split('#');}
+          if (GUIDS[4]){Second = GUIDS[4].split('#');}
+          if (GUIDS[5]){Second = GUIDS[5].split('#');}
+          
+          Default = "index.html?" + "GUID" + First[0] + "GUID" + Second[0];     
+          }                    
+          window.top.location = Default;
+          }       
+          
+        </script><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /><style xml:space="">
+        
+          button.copy-code{
+            display:none;
+            padding:0.7em 1.4em;
+            margin:0 0.3em 0.3em 0;
+            border-radius:0.15em;
+            box-sizing: border-box;
+            text-decoration:none;
+            font-family:'Roboto',sans-serif;
+            text-transform:uppercase;
+            font-weight:400;
+            color:#FFFFFF;
+            background-color:#9c9c9c;
+            box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+            text-align:center;
+            position:relative;
+            border: 0;
+            float: right;
+            border-radius: .5em;
+            cursor: pointer;
+          }
+          button.copy-code:active{
+            top:0.1em;
+          }
+          
+          pre:hover button.copy-code{
+            display: inline-block !important;
+          }
+          button.copy-code.copied {
+            cursor: default !important;
+          }
+          
+          
+          @media all and (max-width:30em){
+            button.copy-code{
+              display:block;
+              margin:0.4em auto;
+            }
+          }
+        
+        
+      </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
+<body id="GUID-89AB3319-F2B0-4DA4-BB5C-73361A7F30BE">
+
+<h1 class="title topictitle1" id="GUID-89AB3319-F2B0-4DA4-BB5C-73361A7F30BE__GUID-AC7E9786-3354-49CC-9032-5D93278A281C">System Environment APIs</h1>
+    <div class="body">
+        <p class="p">API functions of the System Environment component.</p>
+
+        
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" id="GUID-89AB3319-F2B0-4DA4-BB5C-73361A7F30BE__TABLE_BFJ_52T_KTB" class="table" frame="border" border="1" rules="all">
+                <col style="width:19.120458891013385%" />
+                <col style="width:80.87954110898661%" />
+                <tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry cellrowborder" colspan="2" style="vertical-align:middle;"><span><strong class="ph b">Functions</strong></span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>void </span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_SubscribeToEvent (SYS_EventId_t id, SYS_EventReceiver_t
+                                *recv)<p class="p">Subscribe a receiver to an event. The same receiver may be
+                                subscribed to multiple events by calling this function several
+                                times. </p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>void </span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_UnsubscribeFromEvent (SYS_EventId_t id, SYS_EventReceiver_t
+                                *recv)<p class="p">Unsubscribe a receiver from an event. </p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>void </span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_PostEvent (SYS_EventId_t id, SYS_EventData_t data)<p class="p">Post an
+                                event to be delivered to all subscribed receivers. </p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>bool </span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_IsEventDeliverable (SYS_EventId_t id)<p class="p">Check if event have at
+                                least one subscriber. </p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>bool </span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_IsEventSubscriber (SYS_EventId_t id, SYS_EventReceiver_t
+                                *recv)<p class="p">Check if the specified receiver is subscribed to an
+                                event.</p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>void </span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_ClearEvents (void)<p class="p">Clear the events. </p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>bool </span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_MutexLock (SYS_Mutex_t *const mutex, SYS_MutexOwner_t *const
+                                owner)<p class="p">Makes the asynchronous request to lock the mutex.
+                            </p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>bool </span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_MutexUnlock (SYS_Mutex_t *const mutex, SYS_MutexOwner_t *const
+                                owner)<p class="p">Unlocks a mutex using synchronous request. </p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>bool </span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_IsMutexLocked (SYS_Mutex_t *const mutex, SYS_MutexOwner_t *const
+                                owner)<p class="p">Checks whether mutex is locked. </p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>INLINE void </span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_PostTask (SYS_TaskId_t taskId)<p class="p">Posts a task to the task
+                                manager, which is later processed by the task handler of the
+                                corresponding stack layer. </p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>bool </span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_RunTask (void)<p class="p">This function is called by the stack or from the
+                                    <code class="ph codeph">main()</code> function to process tasks. </p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_InitStatus_t </span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_SysInit (void)<p class="p">Initializes the microcontroller and the radio
+                                chip.</p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>static uint16_t </span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_GetRandomNumber (void)<p class="p">Generates a random two-bytes
+                            number.</p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>uint16_t </span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_GetNormalizedRandomNumber (uint16_t upperLimit)<p class="p">Generates a
+                                random two-bytes number normalized by given upper limit.</p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>int </span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_GetRandomSequence (uint8_t *buffer, unsigned long
+                                size)<p class="p">Generates a sequence of random numbers and copies them into
+                                the buffer. </p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>INLINE uint16_t </span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_Crc16Ccitt (uint16_t initValue, uint8_t byte)<p class="p">Calculates CRC
+                                using CRC-16-CCITT algorithm. </p>
+</span></td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+</div>
+
+    </div>
+
+<div class="related-links">
+<ul class="ullinks">
+<li class="link ulchildlink"><strong><a href="GUID-BFE639CE-B485-44E4-A1D0-772BA06DAB4D.html">SYS_Initialize Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-828C0C23-0CE8-45AD-94E5-B555F2B6DEC3.html">SYS_ClearEvents Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-B526D5E9-E654-4425-A646-FB588117161F.html">SYS_Crc16Ccitt Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-D764F0E1-501C-41E8-A24D-0A12C563A5C6.html">SYS_GetNormalizedRandomNumber Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-8D1CF7AB-FBBC-495D-9009-8010993C4D34.html">SYS_GetRandomNumber Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-F91757C8-9F06-4940-8E39-320FF012D5B5.html">SYS_GetRandomSequence Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-10D875C5-4649-47BB-8ACC-FAB84CDCB330.html">SYS_IsEventDeliverable Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-018FFFC6-F13C-4B92-809B-80F972026462.html">SYS_IsEventSubscriber Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-1BA25486-7B69-4360-A5EE-3D551461722D.html">SYS_IsMutexLocked Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-EADD3346-FC44-4ED3-853B-EE272EF849E9.html">SYS_MutexLock Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-C914B924-A408-4335-8EF5-EBAC60324B5E.html">SYS_MutexUnlock Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-5D8BF6EE-3E23-420F-A90B-48B71DBA0965.html">SYS_PostEvent Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-1C45A73B-6270-469B-9BAD-18B5FAD9413A.html">SYS_PostTask Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-92B8C2C4-A7BE-421B-BAC0-74CA21E46703.html">SYS_RunTask Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-797FDA4F-317D-4F69-A613-0F555135EB8F.html">SYS_SubscribeToEvent Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-F89621EC-E7D9-4374-87E9-B769C389E227.html">SYS_UnsubscribeFromEvent Function</a></strong><br />
+</li>
+</ul>
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC.html">Components APIs</a></div>
+</div>
+</div></body>
+</html>

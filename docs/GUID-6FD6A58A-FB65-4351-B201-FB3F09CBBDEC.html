@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
+<meta name="DC.rights.owner" content="(C) Copyright 2022" />
+<meta name="DC.type" content="topic" />
+<meta name="DC.title" content="Components APIs" />
+<meta name="DC.relation" scheme="URI" content="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-30FDFF33-1536-44CF-BC7C-57139F215ED4.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-5578CE1F-C01F-4ECE-AF4E-7B9AED1FCBFA.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-C6DABBBF-E26E-43F6-9815-2E30E9DEC1A0.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-8AA085AA-BA13-4729-80C9-6224832A7555.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-89AB3319-F2B0-4DA4-BB5C-73361A7F30BE.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-BD68D16B-283C-40B6-9CF8-CEC2C27DCD4A.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-CB581974-A48C-4B47-B201-74BCD210E740.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-905C1BF7-AD06-4DB3-B232-5997E91C8397.html" />
+<meta name="DC.format" content="XHTML" />
+<meta name="DC.identifier" content="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC" />
+<meta name="DC.language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="stylesheets/atmel.css" />
+<title>Components APIs</title>
+<meta name="Microsoft.Help.Id" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC" />
+<meta name="Microsoft.Help.TocParent" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108" />
+<meta name="Microsoft.Help.TocOrder" content="0" />
+<meta name="Microsoft.Help.Locale" content="en-US" />
+<meta name="Microsoft.Help.TopicLocale" content="en-US" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<script language="javascript">
+       
+       if (window.parent.location.protocol != 'file:') {
+				document.addEventListener('click', function(e) {
+				    if (e.target) {
+               if (e.target.nodeName == "A" ) {
+                    if (!e.target.target) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                              
+                      var origUrl = window.parent.location.href.substr(0, window.parent.location.href.indexOf("?"));
+                      if (origUrl.length === 0) {
+                          origUrl = window.parent.location.href;
+                      }
+                      var href= e.target.getAttribute("href");
+                      var parts = href.split("#");
+          
+                      var url = "";
+                      if (parts.length == 2 ) {
+                        if (!parts[0].length) {
+                            url = window.parent.location.search.replace('?','')
+                        } else {
+                            url = parts[0].replace('.html','');
+                        }
+                      } else {
+                        url = parts[0].replace('.html','');
+                      }
+
+                      if (parts.length == 2) {
+                          url += "#" + parts[1];
+                      }
+    
+                      window.parent.location.href = origUrl + "?" + url;
+
+                      return false;
+                    }
+               }
+            }
+				});
+			}
+
+		</script><script language="javascript">
+         
+         function copyContent(content, button) {
+         
+            var textArea = document.createElement("textarea");
+            
+            // Place in the top-left corner of screen regardless of scroll position.
+            textArea.style.position = 'fixed';
+            textArea.style.top = 0;
+            textArea.style.left = 0;
+            
+            // Ensure it has a small width and height. Setting to 1px / 1em
+            // doesn't work as this gives a negative w/h on some browsers.
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            
+            // We don't need padding, reducing the size if it does flash render.
+            textArea.style.padding = 0;
+            
+            // Clean up any borders.
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            
+            // Avoid flash of the white box if rendered for any reason.
+            textArea.style.background = 'transparent';
+            
+            textArea.value = content;
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+               var successful = document.execCommand('copy');
+               var msg = successful ? 'successful' : 'unsuccessful';
+               if (!button.classList.contains("copied")){
+                  button.textContent = "Copied";
+                  button.classList.add("copied");
+                  setTimeout(function(){
+                     button.textContent = "Copy";
+                     button.classList.remove("copied");
+                  },1000);
+               }
+            } catch (err) {
+               console.log('Oops, unable to copy');
+            }
+            
+            document.body.removeChild(textArea);
+         }
+         
+         function cpy(id, button) {
+            var element = document.getElementById(id);
+            var content = element.getAttribute("content");
+            
+            copyContent(content, button);
+         }
+         
+         document.addEventListener("DOMContentLoaded", function(event) {
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.style.position = "relative";
+               var copy = document.createElement("button");
+               copy.textContent = "Copy";
+               copy.setAttribute("class", "copy-code");
+               
+               var content = elem.textContent;
+               
+               copy.addEventListener("click", function(){
+                  copyContent(content, copy);
+               });
+               
+               elem.addEventListener("mouseenter", function(evt){
+                  elem.prepend(copy);
+               });
+            });
+            
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.addEventListener("mouseleave", function(evt){
+                  document.querySelector(".copy-code").remove();
+               });
+            });
+         });
+         
+      </script><script language="javascript">
+          
+          // Add the MathML namespace to html
+          var html = document.getElementsByTagName("html")[0],
+          head = document.getElementsByTagName("head")[0];
+          
+          var mathJax = document.createElement("script");
+          mathJax.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML";
+          head.appendChild(mathJax);
+          
+          html.setAttribute("xmlns:m","http://www.w3.org/1998/Math/MathML");
+          
+          function inIframe() { try { return window.self !== window.top; } catch (e) { return true; } }
+          
+          if (!inIframe()) { 
+          
+          var Default = "index.html?GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC"; 
+          
+          var displaylocation = "value" + window.location.href;
+          
+          var GUIDS = displaylocation.split('GUID');          
+          
+          if (displaylocation.indexOf('#GUID') != -1) {            
+          var First = GUIDS[1].split('.html');  
+          if (GUIDS[3]){First = GUIDS[2].split('.html');}
+          if (GUIDS[4]){First = GUIDS[3].split('.html');}
+          if (GUIDS[5]){First = GUIDS[4].split('.html');}
+          
+          var Second = GUIDS[2].split('#');   
+          if (GUIDS[3]){Second = GUIDS[3].split('#');}
+          if (GUIDS[4]){Second = GUIDS[4].split('#');}
+          if (GUIDS[5]){Second = GUIDS[5].split('#');}
+          
+          Default = "index.html?" + "GUID" + First[0] + "GUID" + Second[0];     
+          }                    
+          window.top.location = Default;
+          }       
+          
+        </script><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /><style xml:space="">
+        
+          button.copy-code{
+            display:none;
+            padding:0.7em 1.4em;
+            margin:0 0.3em 0.3em 0;
+            border-radius:0.15em;
+            box-sizing: border-box;
+            text-decoration:none;
+            font-family:'Roboto',sans-serif;
+            text-transform:uppercase;
+            font-weight:400;
+            color:#FFFFFF;
+            background-color:#9c9c9c;
+            box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+            text-align:center;
+            position:relative;
+            border: 0;
+            float: right;
+            border-radius: .5em;
+            cursor: pointer;
+          }
+          button.copy-code:active{
+            top:0.1em;
+          }
+          
+          pre:hover button.copy-code{
+            display: inline-block !important;
+          }
+          button.copy-code.copied {
+            cursor: default !important;
+          }
+          
+          
+          @media all and (max-width:30em){
+            button.copy-code{
+              display:block;
+              margin:0.4em auto;
+            }
+          }
+        
+        
+      </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
+<body id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC">
+
+<h1 class="title topictitle1" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__GUID-BB364440-034C-4BBA-B445-F0D9927016B0">Components APIs</h1>
+    <div class="body">
+        <p class="p">Here is a list of all APIs:</p>
+
+        <ul class="ul" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__UL_W5T_L3G_KTB">
+            <li class="li" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__GUID-71A27290-4B64-4FFF-B240-FD9822BEA367">APS APIs<ul class="ul" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__UL_X5T_L3G_KTB">
+                    <li class="li" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__GUID-B516E139-A74B-41CE-A9D4-F69701C0E933">Data related functions</li>
+
+                    <li class="li" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__GUID-101CCC80-D09D-4E27-BBA8-F5567D54DA69">Security</li>
+
+                </ul>
+</li>
+
+            <li class="li" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__GUID-F5CA5A85-97BD-4DDE-A92D-6BB2FA48FBEE">BDB APIs</li>
+
+            <li class="li" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__GUID-797A8C58-D643-42A8-A7A1-B8410E4758F0">CS APIs</li>
+
+            <li class="li" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__GUID-280E0AAE-1BE7-4BD9-9D24-C4CD31E71BDF">HAL APIs<ul class="ul" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__UL_Y5T_L3G_KTB">
+                    <li class="li" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__GUID-453B81A0-7613-48AD-811C-511F3990D310">HAL App timer </li>
+
+                </ul>
+</li>
+
+            <li class="li" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__GUID-D7F1A6C4-647E-4405-8014-76B3E011F0DD">PDS APIs</li>
+
+            <li class="li" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__GUID-761799D0-39C4-423E-9D8B-B9A15DB51B67">System Environment APIs</li>
+
+            <li class="li" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__GUID-5F229F61-26BD-4CDA-A191-D0B1C1F763D2">ZCL APIs<ul class="ul" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__UL_Z5T_L3G_KTB">
+                    <li class="li" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__GUID-8127C750-B76D-45FF-8C24-0D5CFC1165F7">OTAU</li>
+
+                    <li class="li" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__GUID-51CECD7E-C5E0-411C-B9C8-5345AF7EB58B">Security</li>
+
+                    <li class="li" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__GUID-C542D626-5281-445B-AC2B-DB6972BE0BA3">Common APIs</li>
+
+                </ul>
+</li>
+
+            <li class="li" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__GUID-BF3E7C79-5F8E-4DC8-9194-26AD4A3F5B81">ZDO APIs</li>
+
+            <li class="li" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC__GUID-B60F4D6D-FCB8-426D-81AC-3D8163F976BF">ZGP APIs</li>
+
+        </ul>
+
+    </div>
+
+<div class="related-links">
+<ul class="ullinks">
+<li class="link ulchildlink"><strong><a href="GUID-30FDFF33-1536-44CF-BC7C-57139F215ED4.html">BDB APIs</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-5578CE1F-C01F-4ECE-AF4E-7B9AED1FCBFA.html">ZDO APIs</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-C6DABBBF-E26E-43F6-9815-2E30E9DEC1A0.html">NWK APIs</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-8AA085AA-BA13-4729-80C9-6224832A7555.html">CS APIs</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-89AB3319-F2B0-4DA4-BB5C-73361A7F30BE.html">System Environment APIs</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-BD68D16B-283C-40B6-9CF8-CEC2C27DCD4A.html">HAL APIs</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-CB581974-A48C-4B47-B201-74BCD210E740.html">ZCL APIs</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-905C1BF7-AD06-4DB3-B232-5997E91C8397.html">ZGP APIs</a></strong><br />
+</li>
+</ul>
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108.html">References</a></div>
+</div>
+</div></body>
+</html>

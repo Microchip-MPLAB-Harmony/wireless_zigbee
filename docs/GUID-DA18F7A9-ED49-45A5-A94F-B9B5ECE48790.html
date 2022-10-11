@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
+<meta name="DC.rights.owner" content="(C) Copyright 2022" />
+<meta name="DC.type" content="topic" />
+<meta name="DC.title" content="BDB Generic" />
+<meta name="DC.relation" scheme="URI" content="GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B.html" />
+<meta name="DC.format" content="XHTML" />
+<meta name="DC.identifier" content="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790" />
+<meta name="DC.language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="stylesheets/atmel.css" />
+<title>BDB Generic</title>
+<meta name="Microsoft.Help.Id" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790" />
+<meta name="Microsoft.Help.TocParent" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B" />
+<meta name="Microsoft.Help.TocOrder" content="4" />
+<meta name="Microsoft.Help.Locale" content="en-US" />
+<meta name="Microsoft.Help.TopicLocale" content="en-US" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<script language="javascript">
+       
+       if (window.parent.location.protocol != 'file:') {
+				document.addEventListener('click', function(e) {
+				    if (e.target) {
+               if (e.target.nodeName == "A" ) {
+                    if (!e.target.target) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                              
+                      var origUrl = window.parent.location.href.substr(0, window.parent.location.href.indexOf("?"));
+                      if (origUrl.length === 0) {
+                          origUrl = window.parent.location.href;
+                      }
+                      var href= e.target.getAttribute("href");
+                      var parts = href.split("#");
+          
+                      var url = "";
+                      if (parts.length == 2 ) {
+                        if (!parts[0].length) {
+                            url = window.parent.location.search.replace('?','')
+                        } else {
+                            url = parts[0].replace('.html','');
+                        }
+                      } else {
+                        url = parts[0].replace('.html','');
+                      }
+
+                      if (parts.length == 2) {
+                          url += "#" + parts[1];
+                      }
+    
+                      window.parent.location.href = origUrl + "?" + url;
+
+                      return false;
+                    }
+               }
+            }
+				});
+			}
+
+		</script><script language="javascript">
+         
+         function copyContent(content, button) {
+         
+            var textArea = document.createElement("textarea");
+            
+            // Place in the top-left corner of screen regardless of scroll position.
+            textArea.style.position = 'fixed';
+            textArea.style.top = 0;
+            textArea.style.left = 0;
+            
+            // Ensure it has a small width and height. Setting to 1px / 1em
+            // doesn't work as this gives a negative w/h on some browsers.
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            
+            // We don't need padding, reducing the size if it does flash render.
+            textArea.style.padding = 0;
+            
+            // Clean up any borders.
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            
+            // Avoid flash of the white box if rendered for any reason.
+            textArea.style.background = 'transparent';
+            
+            textArea.value = content;
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+               var successful = document.execCommand('copy');
+               var msg = successful ? 'successful' : 'unsuccessful';
+               if (!button.classList.contains("copied")){
+                  button.textContent = "Copied";
+                  button.classList.add("copied");
+                  setTimeout(function(){
+                     button.textContent = "Copy";
+                     button.classList.remove("copied");
+                  },1000);
+               }
+            } catch (err) {
+               console.log('Oops, unable to copy');
+            }
+            
+            document.body.removeChild(textArea);
+         }
+         
+         function cpy(id, button) {
+            var element = document.getElementById(id);
+            var content = element.getAttribute("content");
+            
+            copyContent(content, button);
+         }
+         
+         document.addEventListener("DOMContentLoaded", function(event) {
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.style.position = "relative";
+               var copy = document.createElement("button");
+               copy.textContent = "Copy";
+               copy.setAttribute("class", "copy-code");
+               
+               var content = elem.textContent;
+               
+               copy.addEventListener("click", function(){
+                  copyContent(content, copy);
+               });
+               
+               elem.addEventListener("mouseenter", function(evt){
+                  elem.prepend(copy);
+               });
+            });
+            
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.addEventListener("mouseleave", function(evt){
+                  document.querySelector(".copy-code").remove();
+               });
+            });
+         });
+         
+      </script><script language="javascript">
+          
+          // Add the MathML namespace to html
+          var html = document.getElementsByTagName("html")[0],
+          head = document.getElementsByTagName("head")[0];
+          
+          var mathJax = document.createElement("script");
+          mathJax.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML";
+          head.appendChild(mathJax);
+          
+          html.setAttribute("xmlns:m","http://www.w3.org/1998/Math/MathML");
+          
+          function inIframe() { try { return window.self !== window.top; } catch (e) { return true; } }
+          
+          if (!inIframe()) { 
+          
+          var Default = "index.html?GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790"; 
+          
+          var displaylocation = "value" + window.location.href;
+          
+          var GUIDS = displaylocation.split('GUID');          
+          
+          if (displaylocation.indexOf('#GUID') != -1) {            
+          var First = GUIDS[1].split('.html');  
+          if (GUIDS[3]){First = GUIDS[2].split('.html');}
+          if (GUIDS[4]){First = GUIDS[3].split('.html');}
+          if (GUIDS[5]){First = GUIDS[4].split('.html');}
+          
+          var Second = GUIDS[2].split('#');   
+          if (GUIDS[3]){Second = GUIDS[3].split('#');}
+          if (GUIDS[4]){Second = GUIDS[4].split('#');}
+          if (GUIDS[5]){Second = GUIDS[5].split('#');}
+          
+          Default = "index.html?" + "GUID" + First[0] + "GUID" + Second[0];     
+          }                    
+          window.top.location = Default;
+          }       
+          
+        </script><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /><style xml:space="">
+        
+          button.copy-code{
+            display:none;
+            padding:0.7em 1.4em;
+            margin:0 0.3em 0.3em 0;
+            border-radius:0.15em;
+            box-sizing: border-box;
+            text-decoration:none;
+            font-family:'Roboto',sans-serif;
+            text-transform:uppercase;
+            font-weight:400;
+            color:#FFFFFF;
+            background-color:#9c9c9c;
+            box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+            text-align:center;
+            position:relative;
+            border: 0;
+            float: right;
+            border-radius: .5em;
+            cursor: pointer;
+          }
+          button.copy-code:active{
+            top:0.1em;
+          }
+          
+          pre:hover button.copy-code{
+            display: inline-block !important;
+          }
+          button.copy-code.copied {
+            cursor: default !important;
+          }
+          
+          
+          @media all and (max-width:30em){
+            button.copy-code{
+              display:block;
+              margin:0.4em auto;
+            }
+          }
+        
+        
+      </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
+<body id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790">
+<h1 class="title topictitle1" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__GUID-707948C7-CCE4-4591-A44D-EE8CCA767003">BDB Generic</h1><div class="body"><p class="p"><strong class="ph b">Generic functions</strong></p>
+<p class="p">This set of functions are generic functions which will set or get the bdb device properties</p>
+<p class="p">1. Setting the channel mask for either <em class="ph i">bdbPrimaryChannelSet</em> or <em class="ph i">bdbSecondaryChannelSet</em> attribute can be done by using the following public API</p>
+<pre class="pre">void <a class="xref" href="GUID-2EA92218-1BD5-4D2B-9F85-53394B6CFE08.html">BDB_SetChannelMask</a>(<a class="xref" href="GUID-BBDEF3FD-DE5E-4FFA-BD8F-74908B6CAD66.html">BDB_ChannelMaskType_t</a> type, uint32_t channelMask);
+</pre>
+<p class="p"><strong class="ph b">Parameters:</strong></p>
+<ul class="ul" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__UL_V3X_ZQV_3TB"><li class="li" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__GUID-B7687296-5B55-4326-9E68-412658690901">type - type of channel mask primary/secondary </li>
+<li class="li" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__GUID-4167D79D-2AAC-4A82-A43F-38ABC1561679">channelMask - value of channel mask </li>
+</ul>
+<p class="p">2. Following public API is used to get the either <em class="ph i">bdbPrimaryChannelSet</em> or <em class="ph i">bdbSecondaryChannelSet</em> attribute.</p>
+<pre class="pre">uint32_t <a class="xref" href="GUID-C42B1A72-B38A-49F8-A157-EAC767290BD8.html">BDB_GetChannelMask</a>(<a class="xref" href="GUID-BBDEF3FD-DE5E-4FFA-BD8F-74908B6CAD66.html">BDB_ChannelMaskType_t</a> type);
+</pre>
+<p class="p"><strong class="ph b">Parameters:</strong></p>
+<ul class="ul" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__UL_W3X_ZQV_3TB"><li class="li" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__GUID-9E4CC728-D109-47EE-A462-B100C4991969">type - type of channel mask primary/secondary</li>
+</ul>
+<p class="p"><strong class="ph b">Returns:</strong></p>
+<ul class="ul" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__UL_W3X_ZQV_3TB"><li class="li" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__GUID-9E4CC728-D109-47EE-A462-B100C4991969"><p class="p">The value of the channel mask based on the type passed</p>
+<p class="p"></p>
+</li>
+</ul>
+<p class="p">3. Setting the TCLK for BDB attribute can be done by using the following public API. This API is applicable for the router and enddevice. The <em class="ph i">bdbTCLinkKeyExchangeMethod</em> attribute specifies the method used to establish a new link key after joining the network and can be set to one of the non-reserved values.</p>
+<pre class="pre">void <a class="xref" href="GUID-000800A5-C333-4D6F-A9FE-4FB0682783A5.html">BDB_SetTCLKExchangeMethod</a>(uint8_t exchangeMethod);
+</pre>
+<p class="p"><strong class="ph b">Parameters:</strong></p>
+<ul class="ul" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__UL_X3X_ZQV_3TB"><li class="li" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__GUID-03968522-7605-48BD-9C9E-3E09E221BA93">exchangeMethod - type of the TCLK exchange method.TC_LINKKEY_EXCHANGE_METHOD_APS_REQ_KEY(0x00) or TC_LINKKEY_EXCHANGE_METHOD_CBKE(0x01-unsupported)</li>
+</ul>
+<p class="p">4. Setting the number of key establishment attempts that can be made to establish a new link key after joining, can be done by using the following public API.</p>
+<pre class="pre">void <a class="xref" href="GUID-245B0A13-3A4E-4819-9B4D-7A57DE276308.html">BDB_SetTCLKRetryMaxAttempts</a>(uint8_t attempts);
+</pre>
+<p class="p"><strong class="ph b">Parameters:</strong></p>
+<ul class="ul" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__UL_Y3X_ZQV_3TB"><li class="li" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__GUID-409F474B-E87D-4206-B833-3D85D94F87DD">Attempts - number of max retry attempts </li>
+</ul>
+<p class="p">5. Following public API is used to get the <em class="ph i">bdbNodeCommissioningCapability</em> attribute, which defines the capabilities supported by the device like network formation, finding and binding, touchlink commission etc.</p>
+<pre class="pre"><a class="xref" href="GUID-9E8E9CEE-B293-4F45-BC1C-6A8A164E58F7.html">BDB_NodeCommissioningCapability_t</a> BDB_GetCommissioningCapability(void);
+</pre>
+<p class="p"><strong class="ph b">Parameters:</strong></p>
+<ul class="ul" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__UL_Z3X_ZQV_3TB"><li class="li" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__GUID-467D4CA5-70E0-4FE9-ACDF-AD7524DDB6F9">None </li>
+</ul>
+<p class="p">6. Following public API is used to set <em class="ph i">bdbJoinUsesInstallCodeKey</em> attribute, to configure whether it has to block/allow the devices which is matching with the default installation code with the trust center.</p>
+<pre class="pre">void <a class="xref" href="GUID-8386AECE-8194-4CCA-8C32-B2ABB060A1E2.html">BDB_SetInstallCodeUsage</a> (bool useInstallCode);
+</pre>
+<p class="p"><strong class="ph b">Parameters:</strong></p>
+<ul class="ul" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__UL_AJX_ZQV_3TB"><li class="li" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__GUID-C681ED35-B0B7-4B92-917F-F61E0466EC0F">useInstallCode - true or false </li>
+</ul>
+<p class="p">7. Following public API is used to set the <em class="ph i">bdbTrustCenterNodeJoinTimeout</em> in seconds for the Trust Center to remove the Trust Center link key of the newly joined node that did not successfully establish a new link key.</p>
+<pre class="pre">void <a class="xref" href="GUID-958A8269-CD06-4872-86FB-0984D53561E2.html">BDB_SetNodeJoinTimeout</a> (uint8_t timeOutInSec);
+</pre>
+<p class="p"><strong class="ph b">Parameters:</strong></p>
+<ul class="ul" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__UL_BJX_ZQV_3TB"><li class="li" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__GUID-63F1B49A-CA89-45EA-A356-D35BCCF20DBD">timeOutInSec - timeout in seconds </li>
+</ul>
+<p class="p">8. Following API is used to set the BDB IB attribute <em class="ph i">bdbTrustCenterRequireKeyExchange</em> which specifies whether the Trust Center requires a joining device to exchange its initial link key with a new link key generated by the Trust Center</p>
+<pre class="pre">void <a class="xref" href="GUID-56EC5D19-A462-4C76-B261-862D68E867B5.html">BDB_SetTCRequireKeyExchange</a> (bool requireKeyExchange);
+</pre>
+<p class="p"><strong class="ph b">Parameters:</strong></p>
+<ul class="ul" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__UL_CJX_ZQV_3TB"><li class="li" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__GUID-39F43039-538E-4A8B-BAE1-825DD0B636FA">requireKeyExchange - true or false </li>
+</ul>
+<p class="p">9. Following API is used to set whether BDB should support touch link role or not </p>
+<pre class="pre">void <a class="xref" href="GUID-B2AA1152-C7C7-437A-988A-D35C3008B61C.html">BDB_SetToulinkRole</a>(bool initiator);
+</pre>
+<p class="p"><strong class="ph b">Parameters:</strong></p>
+<ul class="ul" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__UL_DJX_ZQV_3TB"><li class="li" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__GUID-D5913A5B-95ED-4EFB-A59B-B0C7BDE48174">initiator - true or target - false </li>
+</ul>
+<p class="p">10. Following API is used to get the <em class="ph i">bdbNodeIsOnANetwork</em> attribute, to know whether it is in a network or not. It will return true if it is there in network, false otherwise</p>
+<pre class="pre">bool <a class="xref" href="GUID-342E3571-D9A5-41B0-ADEC-F781ABC209CB.html">BDB_GetBdbNodeIsOnANetwork</a>(void);
+</pre>
+<p class="p"><strong class="ph b">Parameters:</strong></p>
+<ul class="ul" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__UL_EJX_ZQV_3TB"><li class="li" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__GUID-0924396F-09F7-486A-9F6C-319C571FF72B">None </li>
+</ul>
+<p class="p">11. Following API is used to set the <em class="ph i">bdbNodeIsOnANetwork</em> attribute, based on whether it is in a network or not.</p>
+<pre class="pre">void <a class="xref" href="GUID-342E3571-D9A5-41B0-ADEC-F781ABC209CB.html">BDB_SetBdbNodeIsOnANetwork</a>(bool onNetwork);
+</pre>
+<p class="p"><strong class="ph b">Parameters:</strong></p>
+<ul class="ul" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__UL_GJX_ZQV_3TB"><li class="li" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__GUID-9A3CEE02-19D4-452C-AF7F-5C83B79ECC81">onNetwork - true for on network, false otherwise </li>
+</ul>
+<p class="p">12. Following API sets the flag for touch link to do reset to factory new if allow is true.</p>
+<pre class="pre">void <a class="xref" href="GUID-6103B067-13E0-47AF-893C-CB3FDCC9B7F1.html">BDB_SetAllowTLResetToFN</a>(bool allow);
+</pre>
+<p class="p"><strong class="ph b">Parameters:</strong></p>
+<ul class="ul" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__UL_HJX_ZQV_3TB"><li class="li" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__GUID-9B98AD3D-6EC2-4C19-B739-E166240910D3">allow - true or false </li>
+</ul>
+<p class="p">13. Reset of the BDB component Information base/attributes to default values if the device is not in a network, by using the following public API</p>
+<pre class="pre">void <a class="xref" href="">BDB_ResetIB</a>(void);
+</pre>
+<p class="p"><strong class="ph b">Parameters:</strong></p>
+<ul class="ul" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__UL_IJX_ZQV_3TB"><li class="li" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__GUID-ACA1832A-8FB7-4FFE-AE4D-FAC6D1CDBFBE">None </li>
+</ul>
+<p class="p">14. Following API is used to subscribe for the events from BDB module and their callback handlers from the application.</p>
+<pre class="pre">void <a class="xref" href="GUID-9B6019C3-D94D-4362-8D48-E7992DD76590.html">BDB_EventsSubscribe</a>(const <a class="xref" href="GUID-FA8B9F5E-7A2D-48A7-A5C3-548EF23CB1F6.html">BdbEventSubscriber_t</a>  *subscriber);
+</pre>
+<p class="p"><strong class="ph b">Parameters:</strong></p>
+<ul class="ul" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__UL_JJX_ZQV_3TB"><li class="li" id="GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790__GUID-AE9FA1A8-7B69-43BB-BADE-678C04488D81"><a class="xref" href="GUID-FA8B9F5E-7A2D-48A7-A5C3-548EF23CB1F6.html">BdbEventSubscriber_t</a> - It is a structure of function handlers for the events subscribed</li>
+</ul>
+<p class="p">For example, the event subscriber structure shall be filled as below and passed to the <a class="xref" href="GUID-9B6019C3-D94D-4362-8D48-E7992DD76590.html">BDB_EventsSubscribe</a> API</p>
+<div class="p"><pre class="pre">BdbEventSubscriber_t s_BDB_EventsCallback =
+{
+ .connected = Connected,
+ .disconnected = Disconnected,
+ .identifyStartIndication = IdentifyStartIndication,
+ .identifyStopIndication = IdentifyStopIndication,
+ .updateNetworkIndication = UpdateNetworkIndication,
+ .queryingCompleted = QeryingCompleted,
+ .joinNetworkIndication = JoinNetworkIndication,
+ .SteeringNetwork = NULL,
+ .tclkProcedureOngoing = NULL,
+ .tclkProcedureCompleted = NULL,
+ .addingBindingLinks = NULL,
+ .scanIndication = NULL,
+ .touchlinkCompleted = TouchlinkCompleted,
+ .networkFormationCompleted = NetworkFormationCompleted,
+ .SteeringCompleted = NetworkSteeringCompleted,
+ .findingBindingCompleted = FindingBindingCompleted,
+ .ResetToFactoryDefaults = ResetToFactoryDefaults,
+ .querying = Querying, 
+ .scanning = Scanning,
+ .identifying = Identifying,
+ .joining = Joining,
+ .findingBindingInitiatorModeCompleted = FindingBindingInitiatorModeCompleted,
+};
+// Subscribing to different bdb events with specified callbacks
+ BDB_EventsSubscribe(&amp;s_BDB_EventsCallback);</pre>
+</div>
+</div>
+<div class="related-links">
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B.html">BDB Component Usage</a></div>
+</div>
+</div></body>
+</html>

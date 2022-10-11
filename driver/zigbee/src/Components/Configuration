@@ -1,0 +1,710 @@
+#-------------------------------------------------------------------------------
+#  \file Configuration
+#
+#  \brief Declares build options for the stack components.
+#
+#  \author
+#    Atmel Corporation: http://www.atmel.com \n
+#    Support email: avr@atmel.com
+#
+#  Copyright (c) 2008-2015, Atmel Corporation. All rights reserved.
+#  Licensed under Atmel's Limited License Agreement (BitCloudTM).
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Build target selection:
+#-------------------------------------------------------------------------------
+BUILD_TARGET = TARGET_ZIGBEE_BDB_STACK
+#BUILD_TARGET = TARGET_ZIGBEE_STACK
+#BUILD_TARGET = TARGET_NWK
+#BUILD_TARGET = TARGET_MAC
+#BUILD_TARGET = TARGET_HAL_SE
+
+#-------------------------------------------------------------------------------
+# Zigbee Device types (including BDB in the lib) 
+#-------------------------------------------------------------------------------
+ifeq ($(BUILD_TARGET), TARGET_ZIGBEE_BDB_STACK)
+
+  #device to be specific, All type is not allowed
+  ZIGBEE_DEVICE_TYPE  = ZIGBEE_SUPER_SET
+  #ZIGBEE_DEVICE_TYPE = ZIGBEE_COORDINATOR
+  #ZIGBEE_DEVICE_TYPE = ZIGBEE_ROUTER
+  #ZIGBEE_DEVICE_TYPE = ZIGBEE_END_DEVICE
+
+  ifneq ($(ZIGBEE_DEVICE_TYPE), ZIGBEE_COORDINATOR)
+    BDB_TOUCHLINK_SUPPORT = FALSE
+    BDB_TOUCHLINK_SUPPORT = TRUE
+  endif
+
+endif
+
+#-------------------------------------------------------------------------------
+# Device type declaration:
+#-------------------------------------------------------------------------------
+#STACK_TYPE = ZIGBEE_ALL_DEVICES_TYPES
+STACK_TYPE  = ZIGBEE_BDB_DEVICE_TYPES
+#STACK_TYPE = ZGPDEVICE
+#STACK_TYPE = COMMON_MAC_DEVICE
+
+#-------------------------------------------------------------------------------
+#Restriction: TARGET_ZIGBEE_STACK shall be built only on STACK_TYPE = ALL_DEVICES_TYPES,
+# the TARGET_ZIGBEE_STACK configuration is required only for ZCP CERTIFICATION
+#-------------------------------------------------------------------------------
+ifeq ($(BUILD_TARGET), TARGET_ZIGBEE_STACK)
+  STACK_TYPE = ZIGBEE_ALL_DEVICES_TYPES
+endif
+
+#-------------------------------------------------------------------------------
+# Build configuration:
+# For "DEBUG" configuration system asserts, logging and debug info are switched on.
+# For "RELEASE" configuration system asserts, logging and debug info are switched off.
+#-------------------------------------------------------------------------------
+BUILD_CONFIGURATION = RELEASE
+#BUILD_CONFIGURATION = DEBUG
+
+#-------------------------------------------------------------------------------
+# Build configuration:
+# If QUIET is TRUE then short build message format is used, otherwise - normal.
+#-------------------------------------------------------------------------------
+QUIET = TRUE
+#QUIET = FALSE
+
+#-------------------------------------------------------------------------------
+# Compiler type:
+#-------------------------------------------------------------------------------
+COMPILER_TYPE = GCC
+#COMPILER_TYPE = IAR
+
+#-------------------------------------------------------------------------------
+# Build configuration:
+# If MAKERULES_ONLY is TRUE then only makerules header files will be generated.
+#-------------------------------------------------------------------------------
+#MAKERULES_ONLY = TRUE
+MAKERULES_ONLY = FALSE
+
+#-------------------------------------------------------------------------------
+# Platforms selection:
+#-------------------------------------------------------------------------------
+#PLATFORM = PLATFORM_ZIGBIT
+#PLATFORM = PLATFORM_RAVEN
+#PLATFORM = PLATFORM_ATML_USB_DONGLE
+#PLATFORM = PLATFORM_STK600
+#PLATFORM = PLATFORM_ZIGBIT_TURBO
+#PLATFORM = PLATFORM_ZIGBIT_LAN
+#PLATFORM = PLATFORM_STK500_RF2XX
+#PLATFORM = PLATFORM_SAM7X_EK_RF2XX
+#PLATFORM = PLATFORM_SAMD20_XPLAINED_PRO
+# PLATFORM = PLATFORM_SAMR21
+PLATFORM = PLATFORM_PIC32CX
+#PLATFORM = PLATFORM_CUSTOM_1
+#PLATFORM = PLATFORM_CUSTOM_2
+#PLATFORM = PLATFORM_CUSTOM_3
+#PLATFORM = PLATFORM_MEGARF
+#PLATFORM = PLATFORM_AVR32_EVK1105
+#PLATFORM = PLATFORM_SAM3S_EK_RF2XX
+#PLATFORM = PLATFORM_SAM4S_PIRRD
+#PLATFORM = PLATFORM_XPLAIN
+#PLATFORM = PLATFORM_REB_CBB
+#PLATFORM = PLATFORM_SIMULATOR
+#PLATFORM = PLATFORM_PC
+
+#-------------------------------------------------------------------------------
+# ZIGBIT platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_ZIGBIT)
+  # Microcontroller's type declaration. The following variants are possible:
+  HAL = ATMEGA1281
+  #HAL = ATMEGA2561
+
+  # RF chip type declaration.  The following variants are possible:
+  RFCHIP = AT86RF230
+  #RFCHIP = AT86RF230B
+  #RFCHIP = AT86RF231
+  #RFCHIP = AT86RF212
+endif # ZIGBIT
+
+#-------------------------------------------------------------------------------
+# RAVEN platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_RAVEN)
+  # Nothing to be declaired for the platform by user.
+endif # PLATFORM_RAVEN
+
+#-------------------------------------------------------------------------------
+# Atmel usb dongle platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_ATML_USB_DONGLE)
+  # Nothing to be declaired for the platform by user.
+endif # PLATFORM_ATML_USB_DONGLE
+
+#-------------------------------------------------------------------------------
+# STK600 platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_STK600)
+  # Microcontroller's type declaration. The following variants are possible:
+  #HAL = ATXMEGA128A1
+  HAL = ATXMEGA256A3
+  #HAL = ATXMEGA256D3
+  #HAL = ATMEGA128RFA1
+  #HAL = ATMEGA256RFR2
+  #HAL = ATMEGA2564RFR2
+
+  # RF chip type declaration. Parameter is valid only for xMega family. The following variants are possible:
+  #RFCHIP = AT86RF230
+  #RFCHIP = AT86RF230B
+  RFCHIP = AT86RF231
+  #RFCHIP = AT86RF212
+endif # PLATFORM_STK600
+
+#-------------------------------------------------------------------------------
+# STK500 platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_STK500_RF2XX)
+  # Microcontroller's type declaration. The following variants are possible:
+  HAL = ATMEGA1281
+  #HAL = ATMEGA2561
+
+  # RF chip type declaration.  The following variants are possible:
+  RFCHIP = AT86RF230
+  #RFCHIP = AT86RF230B
+  #RFCHIP = AT86RF231
+  #RFCHIP = AT86RF212
+endif # PLATFORM_STK500_RF2XX
+
+#-------------------------------------------------------------------------------
+# MESHBEAN_TURBO platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_ZIGBIT_TURBO)
+  # Nothing to be declaired for the platform by user.
+endif # PLATFORM_ZIGBIT_TURBO
+
+#-------------------------------------------------------------------------------
+# MESHBEAN_LAN platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_ZIGBIT_LAN)
+  # Nothing to be declaired for the platform by user.
+endif # PLATFORM_ZIGBIT_LAN
+
+#-------------------------------------------------------------------------------
+# ATML_SAM7X_EK platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_SAM7X_EK_RF2XX)
+  # RF chip type declaration.  The following variants are possible:
+  #RFCHIP = AT86RF230
+  #RFCHIP = AT86RF230B
+  RFCHIP = AT86RF231
+  #RFCHIP = AT86RF212
+endif # PLATFORM_SAM7X_EK_RF2XX
+
+#-------------------------------------------------------------------------------
+# ATML_SAMD20_XPLAINED_PRO platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_SAMD20_XPLAINED_PRO)
+  # RF chip type declaration.  The following variants are possible:
+  RFCHIP = AT86RF233
+endif # PLATFORM_SAMD20_XPLAINED_PRO
+
+#-------------------------------------------------------------------------------
+# ATML_SAMR21 platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_SAMR21)
+  # Microcontroller's type declaration. The following variants are possible:
+  HAL = ATSAMR21G18A
+  #HAL = ATSAMR21E18A
+  #HAL = ATSAMR21E19A
+
+  # RFCHIP type declaration.  The following variants are possible:
+  RFCHIP = AT86RF233
+endif # PLATFORM_SAMR21
+
+#-------------------------------------------------------------------------------
+# ATML_SAMR21 platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_PIC32CX)
+  # Microcontroller's type declaration. The following variants are possible:
+  HAL = _PIC32CX_
+  # RFCHIP type declaration.  The following variants are possible:
+  RFCHIP = AT86RF233
+endif # PLATFORM_PIC32CX
+
+#-------------------------------------------------------------------------------
+# ATML_SAM3S_EK platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_SAM3S_EK_RF2XX)
+  # RF chip type declaration.  The following variants are possible:
+  #RFCHIP = AT86RF230
+  #RFCHIP = AT86RF230B
+  RFCHIP = AT86RF231
+  #RFCHIP = AT86RF233
+  #RFCHIP = AT86RF212
+endif # PLATFORM_SAM3S_EK_RF2XX
+
+#-------------------------------------------------------------------------------
+# ATML_SAM4S_PIRRD platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_SAM4S_PIRRD)
+  # RF chip type declaration.  The following variants are possible:
+  #RFCHIP = AT86RF230
+  #RFCHIP = AT86RF230B
+  RFCHIP = AT86RF231
+  #RFCHIP = AT86RF233
+  #RFCHIP = AT86RF212
+endif # PLATFORM_SAM4S_PIRRD
+
+#-------------------------------------------------------------------------------
+# PLATFORM_MEGARF platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_MEGARF)
+  # possible HAL types
+  HAL = ATMEGA256RFR2
+  #HAL = ATMEGA2564RFR2
+endif # PLATFORM_MEGARF
+
+#-------------------------------------------------------------------------------
+# PLATFORM_AVR32_EVK1105 platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_AVR32_EVK1105)
+  # RF chip type declaration.  The following variants are possible:
+  #RFCHIP = AT86RF230
+  #RFCHIP = AT86RF230B
+  RFCHIP = AT86RF231
+  #RFCHIP = AT86RF212
+endif # PLATFORM_AVR32_EVK1105
+
+#-------------------------------------------------------------------------------
+# XPLAIN platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_XPLAIN)
+  # Microcontroller's type declaration. The following variants are possible:
+  #HAL = ATXMEGA128A1
+  HAL = ATXMEGA128B1
+
+  # RF chip type declaration.  The following variants are possible:
+  #RFCHIP = AT86RF230B
+  RFCHIP = AT86RF231
+  #RFCHIP = AT86RF233
+  #RFCHIP = AT86RF212
+endif # PLATFORM_XPLAIN
+
+#-------------------------------------------------------------------------------
+# REB CBB platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_REB_CBB)
+  # RF chip type declaration.  The following variants are possible:
+  #RFCHIP = AT86RF230B
+  RFCHIP = AT86RF231
+  #RFCHIP = AT86RF233
+  #RFCHIP = AT86RF212
+endif # PLATFORM_REB_CBB
+
+#-------------------------------------------------------------------------------
+# CUSTOM_1 platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_CUSTOM_1)
+  # Nothing to be declaired for the platform by user.
+endif # PLATFORM_CUSTOM_1
+
+#-------------------------------------------------------------------------------
+# CUSTOM_2 platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_CUSTOM_2)
+  # Nothing to be declaired for the platform by user.
+endif # PLATFORM_CUSTOM_2
+
+#-------------------------------------------------------------------------------
+# CUSTOM_3 platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_CUSTOM_3)
+  # Nothing to be declaired for the platform by user.
+endif # PLATFORM_CUSTOM_3
+
+#-------------------------------------------------------------------------------
+# PLATFORM_SIMULATOR platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_SIMULATOR)
+  # Nothing to be declaired for the platform by user.
+endif # PLATFORM_SIMULATOR
+
+#-------------------------------------------------------------------------------
+# PLATFORM_PC platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_PC)
+  HAL = WIN
+endif # PLATFORM_PC
+
+#-------------------------------------------------------------------------------
+# OS selection. Paramters is only for ARM:
+#-------------------------------------------------------------------------------
+#OS = NONE_OS
+OS = FREE_RTOS
+
+#-------------------------------------------------------------------------------
+# SOFT FP selection.
+#-------------------------------------------------------------------------------
+#SOFT_FP = TRUE
+SOFT_FP = FALSE
+#-------------------------------------------------------------------------------
+# Security section:
+#-------------------------------------------------------------------------------
+# No security at all
+
+# SECURITY_MODE = NO_SECURITY_MODE
+# Network level security
+#SECURITY_MODE = STANDARD_SECURITY_MODE
+# Network security + Link-level (APS) security
+SECURITY_MODE = STDLINK_SECURITY_MODE
+# Network security + Link-level security + Key establishment (SKKE) + APS Entity Authentication
+#SECURITY_MODE = HIGH_SECURITY_MODE
+# zgp security
+#SECURITY_MODE = STDZGP_SECURITY_MODE
+# Network security + Link-level security by custom scheme
+#SECURITY_MODE = CUSTOM_4_SECURITY_MODE
+
+# ZigBee Health Care profile specific security
+#ZHP_SECURITY = TRUE
+ZHP_SECURITY = FALSE
+
+# Trust center presence.
+TRUST_CENTRE = TRUE
+#TRUST_CENTRE = FALSE
+
+# Routers can each act like a trust center so that there is no need for a single centralized device.
+DISTRIBUTED_TRUST_CENTER = TRUE
+#DISTRIBUTED_TRUST_CENTER = FALSE
+
+# The ability to control some stack operations.
+#PERMISSIONS = TRUE
+PERMISSIONS = FALSE
+
+#-------------------------------------------------------------------------------
+# Options used to test various stack features, not used in normal work.
+#-------------------------------------------------------------------------------
+#Enables RF Battery Monitor.
+ifneq (, $(findstring $(PLATFORM), PLATFORM_SAMR21, PLATFORM_PIC32CX))
+  RF_BATTERY_MONITOR = FALSE
+else
+  RF_BATTERY_MONITOR = TRUE
+  #RF_BATTERY_MONITOR = FALSE
+endif
+
+#Enables software address filtration at MAC level. Use MAC Ban API to tune MAC Ban Table.
+# MAC_BAN_NODE = FALSE
+MAC_BAN_NODE = TRUE
+
+# Enables purging of MAC HWI transaction on Rejoin Indication from a node, to enable fast rejoining
+CUSTOM_MAC_HWI_PURGE_TRANSACTION_REJOIN = FALSE
+# CUSTOM_MAC_HWI_PURGE_TRANSACTION_REJOIN = TRUE
+
+#Enabels behaviour in accordance with the spec. Needed for MAC certification.
+#Valid for build target TARGET_MAC only.
+MAC_POLL_CONF_BEFORE_DATA_IND = FALSE
+#MAC_POLL_CONF_BEFORE_DATA_IND = TRUE
+
+## This flag is enabled , MAC Commm Sttaus ind shall be sent to the higher layer 
+##asynchrounaously on error condition occured - Required for MAC Certification
+MAC_ASYNC_COMM_STATUS_IND = FALSE
+#MAC_ASYNC_COMM_STATUS_IND = TRUE
+
+#NWK_CHECK_OUT_BROADCAST = FALSE
+NWK_CHECK_OUT_BROADCAST = TRUE
+
+# Extract the routing information from the neighbor table
+#NWK_ROUTING_OPTIMIZATION = LOW
+# Route to coordinator through parent, use link status command
+NWK_ROUTING_OPTIMIZATION = MEDIUM
+# Extract the routing information from an incoming packets
+#NWK_ROUTING_OPTIMIZATION = HIGH
+
+# If this is set to FALSE, the NWK layer shall calculate link cost from
+# all neighbor nodes using the LQI values reported by the MAC layer; otherwise,
+# it shall report a constant value (by default 7).
+NWK_REPORT_CONSTANT_COST = FALSE
+#NWK_REPORT_CONSTANT_COST = TRUE
+
+# Turn on/off nonstandard beacon filtering.
+NWK_NONSTANDARD_BEACON_FILTER = TRUE
+#NWK_NONSTANDARD_BEACON_FILTER = FALSE
+
+NWK_FAST_ROUTE_DISCOVERY = TRUE
+#NWK_FAST_ROUTE_DISCOVERY = FALSE
+
+APS_CHECK_OUT_DUPLICATE_REJECTION_TABLE = FALSE
+#APS_CHECK_OUT_DUPLICATE_REJECTION_TABLE = TRUE
+
+# Network address is assignment from IEEE address
+NWK_UID_ADDRESS_ASSIGNMENT = TRUE
+#NWK_UID_ADDRESS_ASSIGNMENT = FALSE
+
+# Turn on/off dynamic profiler
+PROFILER = FALSE
+#PROFILER = TRUE
+
+# Additional features are required for certification tests
+CERTIFICATION = TRUE
+#CERTIFICATION = FALSE
+
+# Additional features are required for SE certification tests
+#SE_CERTIFICATION = TRUE
+SE_CERTIFICATION = FALSE
+
+# Additional feature to Enable stack stats info 
+ENABLE_STATS = FALSE
+#ENABLE_STATS = TRUE
+
+# The feature tests that mechanism to prevent MAC's memory double usage works correctly
+MAC_TEST_EMPTY_DATA = FALSE
+#MAC_TEST_EMPTY_DATA = TRUE
+
+# Silent leave procedure is performed without resetting of the extended PAN Id
+#SILENT_LEAVE_WITHOUT_NETWORK_LEFT = FALSE
+SILENT_LEAVE_WITHOUT_NETWORK_LEFT = TRUE
+
+#-------------------------------------------------------------------------------
+# Stack features:
+#-------------------------------------------------------------------------------
+APS_FRAGMENTATION = TRUE
+#APS_FRAGMENTATION = FALSE
+
+#NWK_GROUP         = TRUE
+NWK_GROUP         = FALSE
+
+#PLATFORM_SUPPORT = FPGA
+PLATFORM_SUPPORT  = SOC
+
+USE_RTOS = TRUE
+#USE_RTOS_ = FALSE
+
+ZCL_SUPPORT       = TRUE
+# ZCL_SUPPORT        = FALSE
+
+ZCL_REPORTING_SUPPORT   = TRUE
+#ZCL_REPORTING_SUPPORT   = FALSE
+
+ZCL_ATTRIBUTE_EXTENSION   = TRUE
+#ZCL_ATTRIBUTE_EXTENSION   = FALSE
+
+# This is to enable (MSP)manufacturer specific profile support.
+# MSP enables the co-existence of manufacturer specific cluster and
+# standard cluster using the cluster id. Both would have its own set
+# of commands and attributes. Manufacturer specific option in 
+# ZCL header would differentiate this.
+#CUSTOM_ZCL_MSP_SUPPORT   = TRUE
+CUSTOM_ZCL_MSP_SUPPORT   = FALSE
+
+APS_MULTICAST     = TRUE
+#APS_MULTICAST     = FALSE
+
+ifneq (, $(findstring $(PLATFORM), PLATFORM_ZIGBIT, PLATFORM_RAVEN, PLATFORM_ATML_USB_DONGLE, PLATFORM_STK600, PLATFORM_MEGARF, PLATFORM_SAMD20_XPLAINED_PRO, PLATFORM_XPLAIN, PLATFORM_STK500_RF2XX, PLATFORM_REB_CBB, PLATFORM_SAMR21, PLATFORM_PIC32CX))
+  ENABLE_PERSISTENT_SERVER     = TRUE
+  #ENABLE_PERSISTENT_SERVER     = FALSE
+else
+  # ENABLE_PERSISTENT_SERVER     = TRUE
+  ENABLE_PERSISTENT_SERVER     = FALSE
+endif
+
+COMMISSIONING     = TRUE
+#COMMISSIONING     = FALSE
+
+BINDING           = TRUE
+#BINDING           = FALSE
+
+#END_DEVICE_BINDING = TRUE
+END_DEVICE_BINDING = FALSE
+
+ifeq ($(BUILD_TARGET), TARGET_MAC)
+  MAC_DISASSOCIATE = TRUE
+else
+  #MAC_DISASSOCIATE  = TRUE
+  MAC_DISASSOCIATE = FALSE
+endif
+
+MAC_RADIO_REGISTERS_ACCESS  = TRUE
+#MAC_RADIO_REGISTERS_ACCESS = FALSE
+
+MAC_CONTROL_FRAME_PENDING_BIT = TRUE
+#MAC_CONTROL_FRAME_PENDING_BIT = FALSE
+
+FREQUENCY_AGILITY = TRUE
+#FREQUENCY_AGILITY = FALSE
+
+RESOLVE_PANID_CONFLICT = TRUE
+#RESOLVE_PANID_CONFLICT = FALSE
+
+NETWORK_MANAGER = TRUE
+#NETWORK_MANAGER = FALSE
+
+# Should be used only with CBKE
+#TC_PROMISCUOUS_MODE = TRUE
+TC_PROMISCUOUS_MODE = FALSE
+
+# Addressing scheme that is designed to provide every potential parent
+# with a finite sub-block of network addresses.
+#NWK_DISTRIBUTED_ADDRESS_ASSIGNMENT = TRUE
+NWK_DISTRIBUTED_ADDRESS_ASSIGNMENT = FALSE
+
+# Addresses shall be chosen at random
+NWK_STOCHASTIC_ADDRESS_ASSIGNMENT = TRUE
+#NWK_STOCHASTIC_ADDRESS_ASSIGNMENT = FALSE
+
+NWK_MESH_ROUTING = TRUE
+#NWK_MESH_ROUTING = FALSE
+
+#NWK_THRESHOLD_ROUTING = TRUE
+NWK_THRESHOLD_ROUTING = FALSE
+
+#NWK_TREE_ROUTING = TRUE
+NWK_TREE_ROUTING = FALSE
+
+NWK_MANY_TO_ONE_ROUTING = TRUE
+#NWK_MANY_TO_ONE_ROUTING = FALSE
+
+NWK_CONCENTRATOR = TRUE
+#NWK_CONCENTRATOR = FALSE
+
+#INTERPAN = FALSE
+INTERPAN = TRUE
+
+NWK_DIRECT_JOIN = TRUE
+#NWK_DIRECT_JOIN = FALSE
+
+NWK_ORPHAN_JOIN = TRUE
+#NWK_ORPHAN_JOIN = FALSE
+
+LIGHT_LINK_PROFILE = FALSE
+#LIGHT_LINK_PROFILE = TRUE
+
+NWK_PASSIVE_ACK = TRUE
+#NWK_PASSIVE_ACK = FALSE
+
+#ZAPPSI_SUPPORT = TRUE
+ZAPPSI_SUPPORT = FALSE
+
+NWK_IN_FRAME_COUNTERS = TRUE
+#NWK_IN_FRAME_COUNTERS = FALSE
+
+ifeq ($(NWK_PASSIVE_ACK), TRUE)
+  NWK_CUSTOM_PASSIVE_ACK_THRESHOLD = TRUE
+  #NWK_CUSTOM_PASSIVE_ACK_THRESHOLD = FALSE
+endif
+
+NWK_NEIGHBOR_ENTRY_ADDITION_UPON_RX_FRAME = TRUE
+#NWK_NEIGHBOR_ENTRY_ADDITION_UPON_RX_FRAME = FALSE
+
+DUPLICATE_REJECTION_TABLE_BIT_MASK_ENABLE = FALSE
+#DUPLICATE_REJECTION_TABLE_BIT_MASK_ENABLE = TRUE
+
+NWK_ROUTE_REQUEST_RETRIES_BASED_ON_MAC_CONF = TRUE
+#NWK_ROUTE_REQUEST_RETRIES_BASED_ON_MAC_CONF = FALSE
+
+#NWK_KEEP_STALE_NEIGHBOR_ENTRY = TRUE
+NWK_KEEP_STALE_NEIGHBOR_ENTRY = FALSE
+
+LEAVE_NETWORK_IMMEDIATE_WITH_NO_TANSACTIONS_LEFT = TRUE
+#LEAVE_NETWORK_IMMEDIATE_WITH_NO_TANSACTIONS_LEFT = FALSE
+
+# If this is enabled, an end device automatically tries to go to sleep mode
+# when there are no pending tasks. The sleep period is equal to the minimum value
+# between the rest of CS_SLEEP_PERIOD (CS_SLEEP_PERIOD minus time from the last poll)
+# and the shortest time to fire of all application timers.
+# If an end device wakes up on expiration of CS_SLEEP_PERIOD it polls
+# its parent, otherwise it doesn't.
+SLEEP_WHEN_IDLE = TRUE
+#SLEEP_WHEN_IDLE = FALSE
+
+ASSERT_ON_UNKNOWN_COMMANDS_RECEPTION = FALSE
+#ASSERT_ON_UNKNOWN_COMMANDS_RECEPTION = TRUE
+
+#This is to allow TC rejoin for the devices who joined before with global link key
+TC_ALLOW_REJOIN_WITH_GLOBAL_LINK_KEY = TRUE
+#TC_ALLOW_REJOIN_WITH_GLOBAL_LINK_KEY = FALSE
+
+CUSTOMER_SPECIFIC_APS_DUPLICATE_LIFE_TIME = FALSE
+#CUSTOMER_SPECIFIC_APS_DUPLICATE_LIFE_TIME = TRUE
+
+#CUSTOMER_SPECIFIC_CCB_2033 = TRUE
+CUSTOMER_SPECIFIC_CCB_2033 = FALSE
+
+#CUSTOMER_SPECIFIC_CCB_2462 = TRUE
+CUSTOMER_SPECIFIC_CCB_2462 = FALSE
+
+# This has to be enabled only if CUSTOMER_SPECIFIC_CCB_2033 is enabled
+# This is required to have additional delay on top of broadcastDeliveryTime
+# to avoid false address conflict detection occuring on reception of its 
+# own broadcast after device' reset
+#CUSTOM_NWK_ADDRESS_CONFLICT_WAIT_TIME_AFTER_RESET = TRUE
+CUSTOM_NWK_ADDRESS_CONFLICT_WAIT_TIME_AFTER_RESET = FALSE
+
+#GREENPOWER_SUPPORT = FALSE
+GREENPOWER_SUPPORT = TRUE
+
+#CUSTOMER_SPECIFIC_MGMTLQI_RQST_BRST_EDP = TRUE
+CUSTOMER_SPECIFIC_MGMTLQI_RQST_BRST_EDP = FALSE
+
+
+ifneq (, $(findstring $(BUILD_TARGET), TARGET_ZIGBEE_STACK TARGET_ZIGBEE_BDB_STACK))
+  CHILD_MANAGEMENT = TRUE
+  PARENT_ANNOUNCE = TRUE
+  ZIGBEE_R21_SUPPORT = TRUE
+#CHILD_MANAGEMENT = FALSE
+endif #BUILD_TARGET 
+
+DISTRIBUTED_SECURITY = TRUE
+#DISTRIBUTED_SECURITY = FALSE
+
+#GREENPOWER_INFRA_DEVICE_SUPPORT = FALSE
+GREENPOWER_INFRA_DEVICE_SUPPORT = TRUE
+
+#CUSTOMER_SPECIFIC_CW_MODE_Fc_OFFSET_CORRECTION = TRUE
+CUSTOMER_SPECIFIC_CW_MODE_Fc_OFFSET_CORRECTION = FALSE
+
+CUSTOM_SUPPRESS_RETRANSMISSION = FALSE
+#CUSTOM_SUPPRESS_RETRANSMISSION = TRUE
+
+# If this is enabled, when NFN device calls N_Connection_AssociateJoin function, an assert will be done
+# If not, then application will be notified with N_Connection_Illegal_Request, and it should be handled by the application.
+ASSERT_ON_NFN_CALLING_ASSOCIATION = FALSE
+#ASSERT_ON_NFN_CALLING_ASSOCIATION = TRUE
+
+# If this is enabled, Device will poll for rejoin response periodically(100ms) before aResponseWaitTime(~500ms) elapses 
+# If not, Device will poll for rejoin Response after aResponseWaitTime elapses(~500ms).Refer section 3.6.1.4.2.1 Child Procedure
+CUSTOM_FAST_REJOIN_RESP = FALSE
+#CUSTOM_FAST_REJOIN_RESP = TRUE
+
+R20_LEGACY = FALSE
+#R20_LEGACY = TRUE
+
+# If this is enabled, APS Ack request bit is ignored in APS broadcast and Groupcast frames
+#CUSTOM_APS_ACK_PKT_PROCESS = TRUE
+CUSTOM_APS_ACK_PKT_PROCESS = FALSE
+
+# if this is enabled, the device which receives the MTO route request will ignore if it is received from a neighbour having
+# outgoingcost value of 7 in it neighbour table.
+#CUSTOM_MTO_IGNORE_NEIGHBOR_WITH_LINK_COST_7 = TRUE
+CUSTOM_MTO_IGNORE_NEIGHBOR_WITH_LINK_COST_7 = FALSE
+
+# If this enabled, Always take max of incoming and outgoing cost, irrespective of symLink NIB
+#CUSTOM_ROUTING_IMPROVEMENTS = TRUE
+CUSTOM_ROUTING_IMPROVEMENTS = FALSE
+
+# if this is enabled, NWK header has IEEE address fields
+#CUSTOM_NWK_HEADER = TRUE
+CUSTOM_NWK_HEADER = FALSE
+
+# if this is enabled, the device retries (CS_ZDO_PARENT_LINK_RETRY_THRESHOLD -1) times before attemption rejoin
+#CUSTOM_PARENT_LINK_RETRY = TRUE
+CUSTOM_PARENT_LINK_RETRY = FALSE
+
+# If this is enabled, then application can have the control to override the stack response and sends its own for testing purpose
+#STACK_INTERNAL_TEST_FRAMEWORK = TRUE
+STACK_INTERNAL_TEST_FRAMEWORK = FALSE
+
+# eof Configuration
+#MAC ZPD Common Lib Configurations
+#BUILD_TARGET = TARGET_MAC
+#STACK_TYPE = COMMON_MAC_DEVICE
+#SECURITY_MODE = STDZGP_SECURITY_MODE
+#MAC_BAN_NODE = FALSE
+#MAC_POLL_CONF_BEFORE_DATA_IND = TRUE
+#ZAPPSI_SUPPORT = TRUE
+#MAC_ASYNC_COMM_STATUS_IND = TRUE

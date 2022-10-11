@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
+<meta name="DC.rights.owner" content="(C) Copyright 2022" />
+<meta name="DC.type" content="topic" />
+<meta name="DC.title" content="Handling Network notifications" />
+<meta name="DC.relation" scheme="URI" content="GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3.html" />
+<meta name="DC.format" content="XHTML" />
+<meta name="DC.identifier" content="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0" />
+<meta name="DC.language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="stylesheets/atmel.css" />
+<title>Handling Network notifications</title>
+<meta name="Microsoft.Help.Id" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0" />
+<meta name="Microsoft.Help.TocParent" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3" />
+<meta name="Microsoft.Help.TocOrder" content="1" />
+<meta name="Microsoft.Help.Locale" content="en-US" />
+<meta name="Microsoft.Help.TopicLocale" content="en-US" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<script language="javascript">
+       
+       if (window.parent.location.protocol != 'file:') {
+				document.addEventListener('click', function(e) {
+				    if (e.target) {
+               if (e.target.nodeName == "A" ) {
+                    if (!e.target.target) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                              
+                      var origUrl = window.parent.location.href.substr(0, window.parent.location.href.indexOf("?"));
+                      if (origUrl.length === 0) {
+                          origUrl = window.parent.location.href;
+                      }
+                      var href= e.target.getAttribute("href");
+                      var parts = href.split("#");
+          
+                      var url = "";
+                      if (parts.length == 2 ) {
+                        if (!parts[0].length) {
+                            url = window.parent.location.search.replace('?','')
+                        } else {
+                            url = parts[0].replace('.html','');
+                        }
+                      } else {
+                        url = parts[0].replace('.html','');
+                      }
+
+                      if (parts.length == 2) {
+                          url += "#" + parts[1];
+                      }
+    
+                      window.parent.location.href = origUrl + "?" + url;
+
+                      return false;
+                    }
+               }
+            }
+				});
+			}
+
+		</script><script language="javascript">
+         
+         function copyContent(content, button) {
+         
+            var textArea = document.createElement("textarea");
+            
+            // Place in the top-left corner of screen regardless of scroll position.
+            textArea.style.position = 'fixed';
+            textArea.style.top = 0;
+            textArea.style.left = 0;
+            
+            // Ensure it has a small width and height. Setting to 1px / 1em
+            // doesn't work as this gives a negative w/h on some browsers.
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            
+            // We don't need padding, reducing the size if it does flash render.
+            textArea.style.padding = 0;
+            
+            // Clean up any borders.
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            
+            // Avoid flash of the white box if rendered for any reason.
+            textArea.style.background = 'transparent';
+            
+            textArea.value = content;
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+               var successful = document.execCommand('copy');
+               var msg = successful ? 'successful' : 'unsuccessful';
+               if (!button.classList.contains("copied")){
+                  button.textContent = "Copied";
+                  button.classList.add("copied");
+                  setTimeout(function(){
+                     button.textContent = "Copy";
+                     button.classList.remove("copied");
+                  },1000);
+               }
+            } catch (err) {
+               console.log('Oops, unable to copy');
+            }
+            
+            document.body.removeChild(textArea);
+         }
+         
+         function cpy(id, button) {
+            var element = document.getElementById(id);
+            var content = element.getAttribute("content");
+            
+            copyContent(content, button);
+         }
+         
+         document.addEventListener("DOMContentLoaded", function(event) {
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.style.position = "relative";
+               var copy = document.createElement("button");
+               copy.textContent = "Copy";
+               copy.setAttribute("class", "copy-code");
+               
+               var content = elem.textContent;
+               
+               copy.addEventListener("click", function(){
+                  copyContent(content, copy);
+               });
+               
+               elem.addEventListener("mouseenter", function(evt){
+                  elem.prepend(copy);
+               });
+            });
+            
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.addEventListener("mouseleave", function(evt){
+                  document.querySelector(".copy-code").remove();
+               });
+            });
+         });
+         
+      </script><script language="javascript">
+          
+          // Add the MathML namespace to html
+          var html = document.getElementsByTagName("html")[0],
+          head = document.getElementsByTagName("head")[0];
+          
+          var mathJax = document.createElement("script");
+          mathJax.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML";
+          head.appendChild(mathJax);
+          
+          html.setAttribute("xmlns:m","http://www.w3.org/1998/Math/MathML");
+          
+          function inIframe() { try { return window.self !== window.top; } catch (e) { return true; } }
+          
+          if (!inIframe()) { 
+          
+          var Default = "index.html?GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0"; 
+          
+          var displaylocation = "value" + window.location.href;
+          
+          var GUIDS = displaylocation.split('GUID');          
+          
+          if (displaylocation.indexOf('#GUID') != -1) {            
+          var First = GUIDS[1].split('.html');  
+          if (GUIDS[3]){First = GUIDS[2].split('.html');}
+          if (GUIDS[4]){First = GUIDS[3].split('.html');}
+          if (GUIDS[5]){First = GUIDS[4].split('.html');}
+          
+          var Second = GUIDS[2].split('#');   
+          if (GUIDS[3]){Second = GUIDS[3].split('#');}
+          if (GUIDS[4]){Second = GUIDS[4].split('#');}
+          if (GUIDS[5]){Second = GUIDS[5].split('#');}
+          
+          Default = "index.html?" + "GUID" + First[0] + "GUID" + Second[0];     
+          }                    
+          window.top.location = Default;
+          }       
+          
+        </script><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /><style xml:space="">
+        
+          button.copy-code{
+            display:none;
+            padding:0.7em 1.4em;
+            margin:0 0.3em 0.3em 0;
+            border-radius:0.15em;
+            box-sizing: border-box;
+            text-decoration:none;
+            font-family:'Roboto',sans-serif;
+            text-transform:uppercase;
+            font-weight:400;
+            color:#FFFFFF;
+            background-color:#9c9c9c;
+            box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+            text-align:center;
+            position:relative;
+            border: 0;
+            float: right;
+            border-radius: .5em;
+            cursor: pointer;
+          }
+          button.copy-code:active{
+            top:0.1em;
+          }
+          
+          pre:hover button.copy-code{
+            display: inline-block !important;
+          }
+          button.copy-code.copied {
+            cursor: default !important;
+          }
+          
+          
+          @media all and (max-width:30em){
+            button.copy-code{
+              display:block;
+              margin:0.4em auto;
+            }
+          }
+        
+        
+      </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
+<body id="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0">
+
+<h1 class="title topictitle1" id="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0__GUID-4CA89C96-F279-4AC8-8C80-66CD5445F8D3">Handling Network notifications</h1>
+<div class="body">
+        <p class="p">Each application must implement the <a class="xref" href="GUID-D4DB9C17-ACD6-4781-9BE4-72D34E2B03C1.html">ZDO_MgmtNwkUpdateNotf</a> (<a class="xref" href="GUID-64D5B11D-63AC-459A-93DC-D3F226F525FA.html">ZDO_MgmtNwkUpdateNotf_t</a>* nwkParams) function. The function is called by the
+            stack when certain network events occur. The type of the event is observed with the
+                <code class="ph codeph">nwkParams-&gt;status</code> field. The application can choose to ignore or
+            to process any of the events. Possible event types are given in the following list:</p>
+
+        <ul class="ul" id="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0__UL_QX4_YP2_KTB">
+            <li class="li" id="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0__GUID-6A4283FE-68D8-4310-A00F-8D0282DE6629"><strong class="ph b">ZDO_NETWORK_STARTED_STATUS</strong><p class="p">Received when the stack performs network start
+                    by itself, not initiated on the application level, e.g. when the node
+                    automatically rejoined to the network after it had lost connection to the
+                    parent. </p>
+</li>
+
+        </ul>
+
+        <ul class="ul" id="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0__UL_RX4_YP2_KTB">
+            <li class="li" id="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0__GUID-630BD8EF-B0BE-4AE2-97DF-5064F7D6A017"><strong class="ph b">ZDO_NETWORK_LOST_STATUS</strong><p class="p">Indicates parent loss. After issuing this
+                    notification, the stack automatically attempts to rejoin the network. This
+                    status can be received only on end devices. </p>
+</li>
+
+        </ul>
+
+        <ul class="ul" id="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0__UL_SX4_YP2_KTB">
+            <li class="li" id="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0__GUID-511145C1-C136-444F-88FD-5C3CE0F94ABA"><strong class="ph b">ZDO_NETWORK_LEFT_STATUS</strong><p class="p">Is received either when the node loses its parent
+                    and fails to rejoin the network or when the node leaves the network by itself in
+                    response to a ZDP command. </p>
+</li>
+
+        </ul>
+
+        <ul class="ul" id="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0__UL_TX4_YP2_KTB">
+            <li class="li" id="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0__GUID-CA1CE92C-A1B2-4F8F-9225-2D247BB41812"><strong class="ph b">ZDO_NWK_UPDATE_STATUS</strong><p class="p">Indicates that one or more of network parameters have
+                    been changed. Parameters include PANID, channel mask, and node`s short address.
+                </p>
+</li>
+
+        </ul>
+
+        <ul class="ul" id="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0__UL_UX4_YP2_KTB">
+            <li class="li" id="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0__GUID-C51E3512-3A2E-4B17-9485-1E2B6EF2D08C"><strong class="ph b">ZDO_CHILD_JOINED_STATUS</strong><p class="p">Indicates that a new child has successfully joined
+                    to the current node. This status is not valid for end devices. The notification
+                    is raised when the current node, from its side, finishes all procedures as the
+                    parent of the new node: for example, if security is applied in the network, when
+                    the node sends a transport key command. This does not necessarily mean that the
+                    child device will successfully decrypt the transport key command and complete
+                    network join. This is only verified by the device announcement frame. The parent
+                    node can track its reception by subscribing to the BC_EVENT_DEVICE_ANNCE event.
+                </p>
+</li>
+
+        </ul>
+
+        <ul class="ul" id="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0__UL_VX4_YP2_KTB">
+            <li class="li" id="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0__GUID-4AEF4B6C-5DD6-4AB1-8AD6-88D4B1EFE33A"><strong class="ph b">ZDO_CHILD_REMOVED_STATUS</strong><p class="p">Indicates that a child has left the network.
+                </p>
+</li>
+
+        </ul>
+
+        <ul class="ul" id="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0__UL_WX4_YP2_KTB">
+            <li class="li" id="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0__GUID-1BDC031D-945C-4C4B-88EF-C9EE12A0033C"><strong class="ph b">ZDO_STATIC_ADDRESS_CONFLICT_STATUS</strong><p class="p">Indicates that a short address set
+                    statically has leaded to the address conflict. The event is raised on the node
+                    that discovered the conflict. The application is responsible for resolving the
+                    conflict, typically by choosing a different short address and updating its value
+                    on the node via a ZDP request. </p>
+</li>
+
+        </ul>
+
+        <ul class="ul" id="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0__UL_XX4_YP2_KTB">
+            <li class="li" id="GUID-D1C161BD-B851-41F5-9523-4A4BCB3E09B0__GUID-7F52CBCC-ED5D-4232-94F0-F1F3E6C4D600"><strong class="ph b">ZDO_NO_KEY_PAIR_DESCRIPTOR_STATUS</strong><p class="p">The status is valid only if a security
+                    mode with link keys is used. The event is raised on the trust center node and
+                    indicates that the link key for the device that attempts to join the network has
+                    not been found. The application can save the extended address of the potential
+                    child to extract the link key for it from an external source of information, so
+                    that the child can be authenticated when it makes the next attempt to join the
+                    network. </p>
+</li>
+
+        </ul>
+
+        <p class="p">The definition of the ZDO_MgmtNwkUpdateNotf() function in the application code might look
+            like the following:</p>
+
+        <pre class="pre">void <a class="xref" href="GUID-D4DB9C17-ACD6-4781-9BE4-72D34E2B03C1.html">ZDO_MgmtNwkUpdateNotf</a>(<a class="xref" href="GUID-64D5B11D-63AC-459A-93DC-D3F226F525FA.html">ZDO_MgmtNwkUpdateNotf_t</a> *nwkParams)
+{
+  switch (nwkParams-&gt;status)
+  {
+    case ZDO_NETWORK_STARTED_STATUS:
+      //More code goes here, e.g. the application may save new
+      //network parameters
+      ...
+      break;
+    case ZDO_NO_KEY_PAIR_DESCRIPTOR_STATUS:
+#ifdef _LINK_SECURITY_
+      //The event can occur in high security mode on the trust center only
+      //Extract the extended address of the device attempting to join the network
+        extAddr_t addr = nwkParams-&gt;childInfo.extAddr;
+      uint8_t   linkKey[16] = ...; //Find out the link key value and store in this variable    
+      APS_SetLinkKey(&amp;addr, linkKey); //Set the link key for the given extended address
+#endif
+      break;
+    default:
+      break;
+  }
+}
+</pre>
+
+        <p class="p">Note the use of the <code class="ph codeph">_LINK_SECURITY_</code> define. It marks code parts that
+            will be included if the application is compiled with standard link security mode. If the
+            code in the callback may consume more than 10ms, its execution should be deferred.</p>
+
+</div>
+
+<div class="related-links">
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3.html">ZDO Component Usage</a></div>
+</div>
+</div></body>
+</html>

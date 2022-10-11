@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
+<meta name="DC.rights.owner" content="(C) Copyright 2022" />
+<meta name="DC.type" content="topic" />
+<meta name="DC.title" content="ZGP_Status_t enum" />
+<meta name="DC.relation" scheme="URI" content="GUID-C6389489-E662-4BF0-B217-88199976A2D0.html" />
+<meta name="DC.format" content="XHTML" />
+<meta name="DC.identifier" content="zgp-status-t-enum" />
+<link rel="stylesheet" type="text/css" href="stylesheets/atmel.css" />
+<title>ZGP_Status_t enum</title>
+<meta name="Microsoft.Help.Id" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-zgp-status-t-enum" />
+<meta name="Microsoft.Help.TocParent" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-C6389489-E662-4BF0-B217-88199976A2D0" />
+<meta name="Microsoft.Help.TocOrder" content="0" />
+<meta name="Microsoft.Help.Locale" content="en-US" />
+<meta name="Microsoft.Help.TopicLocale" content="en-US" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<script language="javascript">
+       
+       if (window.parent.location.protocol != 'file:') {
+				document.addEventListener('click', function(e) {
+				    if (e.target) {
+               if (e.target.nodeName == "A" ) {
+                    if (!e.target.target) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                              
+                      var origUrl = window.parent.location.href.substr(0, window.parent.location.href.indexOf("?"));
+                      if (origUrl.length === 0) {
+                          origUrl = window.parent.location.href;
+                      }
+                      var href= e.target.getAttribute("href");
+                      var parts = href.split("#");
+          
+                      var url = "";
+                      if (parts.length == 2 ) {
+                        if (!parts[0].length) {
+                            url = window.parent.location.search.replace('?','')
+                        } else {
+                            url = parts[0].replace('.html','');
+                        }
+                      } else {
+                        url = parts[0].replace('.html','');
+                      }
+
+                      if (parts.length == 2) {
+                          url += "#" + parts[1];
+                      }
+    
+                      window.parent.location.href = origUrl + "?" + url;
+
+                      return false;
+                    }
+               }
+            }
+				});
+			}
+
+		</script><script language="javascript">
+         
+         function copyContent(content, button) {
+         
+            var textArea = document.createElement("textarea");
+            
+            // Place in the top-left corner of screen regardless of scroll position.
+            textArea.style.position = 'fixed';
+            textArea.style.top = 0;
+            textArea.style.left = 0;
+            
+            // Ensure it has a small width and height. Setting to 1px / 1em
+            // doesn't work as this gives a negative w/h on some browsers.
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            
+            // We don't need padding, reducing the size if it does flash render.
+            textArea.style.padding = 0;
+            
+            // Clean up any borders.
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            
+            // Avoid flash of the white box if rendered for any reason.
+            textArea.style.background = 'transparent';
+            
+            textArea.value = content;
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+               var successful = document.execCommand('copy');
+               var msg = successful ? 'successful' : 'unsuccessful';
+               if (!button.classList.contains("copied")){
+                  button.textContent = "Copied";
+                  button.classList.add("copied");
+                  setTimeout(function(){
+                     button.textContent = "Copy";
+                     button.classList.remove("copied");
+                  },1000);
+               }
+            } catch (err) {
+               console.log('Oops, unable to copy');
+            }
+            
+            document.body.removeChild(textArea);
+         }
+         
+         function cpy(id, button) {
+            var element = document.getElementById(id);
+            var content = element.getAttribute("content");
+            
+            copyContent(content, button);
+         }
+         
+         document.addEventListener("DOMContentLoaded", function(event) {
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.style.position = "relative";
+               var copy = document.createElement("button");
+               copy.textContent = "Copy";
+               copy.setAttribute("class", "copy-code");
+               
+               var content = elem.textContent;
+               
+               copy.addEventListener("click", function(){
+                  copyContent(content, copy);
+               });
+               
+               elem.addEventListener("mouseenter", function(evt){
+                  elem.prepend(copy);
+               });
+            });
+            
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.addEventListener("mouseleave", function(evt){
+                  document.querySelector(".copy-code").remove();
+               });
+            });
+         });
+         
+      </script><script language="javascript">
+          
+          // Add the MathML namespace to html
+          var html = document.getElementsByTagName("html")[0],
+          head = document.getElementsByTagName("head")[0];
+          
+          var mathJax = document.createElement("script");
+          mathJax.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML";
+          head.appendChild(mathJax);
+          
+          html.setAttribute("xmlns:m","http://www.w3.org/1998/Math/MathML");
+          
+          function inIframe() { try { return window.self !== window.top; } catch (e) { return true; } }
+          
+          if (!inIframe()) { 
+          
+          var Default = "index.html?GUID-73C18F98-84AF-45A6-9D26-AC67D4B3A76B"; 
+          
+          var displaylocation = "value" + window.location.href;
+          
+          var GUIDS = displaylocation.split('GUID');          
+          
+          if (displaylocation.indexOf('#GUID') != -1) {            
+          var First = GUIDS[1].split('.html');  
+          if (GUIDS[3]){First = GUIDS[2].split('.html');}
+          if (GUIDS[4]){First = GUIDS[3].split('.html');}
+          if (GUIDS[5]){First = GUIDS[4].split('.html');}
+          
+          var Second = GUIDS[2].split('#');   
+          if (GUIDS[3]){Second = GUIDS[3].split('#');}
+          if (GUIDS[4]){Second = GUIDS[4].split('#');}
+          if (GUIDS[5]){Second = GUIDS[5].split('#');}
+          
+          Default = "index.html?" + "GUID" + First[0] + "GUID" + Second[0];     
+          }                    
+          window.top.location = Default;
+          }       
+          
+        </script><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /><style xml:space="">
+        
+          button.copy-code{
+            display:none;
+            padding:0.7em 1.4em;
+            margin:0 0.3em 0.3em 0;
+            border-radius:0.15em;
+            box-sizing: border-box;
+            text-decoration:none;
+            font-family:'Roboto',sans-serif;
+            text-transform:uppercase;
+            font-weight:400;
+            color:#FFFFFF;
+            background-color:#9c9c9c;
+            box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+            text-align:center;
+            position:relative;
+            border: 0;
+            float: right;
+            border-radius: .5em;
+            cursor: pointer;
+          }
+          button.copy-code:active{
+            top:0.1em;
+          }
+          
+          pre:hover button.copy-code{
+            display: inline-block !important;
+          }
+          button.copy-code.copied {
+            cursor: default !important;
+          }
+          
+          
+          @media all and (max-width:30em){
+            button.copy-code{
+              display:block;
+              margin:0.4em auto;
+            }
+          }
+        
+        
+      </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
+<body id="zgp-status-t-enum">
+<h1 class="title topictitle1" id="ariaid-title1">ZGP_Status_t enum</h1><div class="body"></div>
+<div class="related-links">
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-C6389489-E662-4BF0-B217-88199976A2D0.html">ZGP DataStructures</a></div>
+</div>
+</div><div class="topic nested1" aria-labelledby="ariaid-title2" id="c"><h2 class="title topictitle2" id="ariaid-title2">C</h2><div class="body"><pre class="pre codeblock c"><strong class="hl-keyword">typedef</strong> <strong class="hl-keyword">enum</strong>
+{
+  ZGP_SUCCESS_STATUS                    = <span class="hl-number">0x00</span>,
+  <span class="hl-tag-doctype-comment">/** ZGP Data request queue is full */</span>
+  ZGP_TX_QUEUE_FULL                     = <span class="hl-number">0x70</span>,
+  <em class="hl-comment">/*  previous GPDF is overwritten */</em>
+  ZGP_ENTRY_REPLACED                    = <span class="hl-number">0x71</span>,
+  <em class="hl-comment">/*  GPDF is added to the zgp TxQueue */</em>
+  ZGP_ENTRY_ADDED                       = <span class="hl-number">0x72</span>,
+  <em class="hl-comment">/* zgpTxQueueEntryLifetime timeout */</em>
+  ZGP_ENTRY_EXPIRED                     = <span class="hl-number">0x73</span>,
+  ZGP_ENTRY_REMOVED                     = <span class="hl-number">0x74</span>,
+  ZGP_GPDF_SENDING_FINALIZED            = <span class="hl-number">0x75</span>,
+  <em class="hl-comment">/* No reply received for commissioning request */</em>
+  ZGP_NO_COMMISSIONING_REPLY            = <span class="hl-number">0x76</span>,
+  <em class="hl-comment">/* No confirmation for commissioning request */</em>
+  ZGP_COMMISSIONING_TIMEOUT             = <span class="hl-number">0x77</span>,
+  <em class="hl-comment">/* Commissioning reply has invalid parameter */</em>
+  ZGP_COMMISSIONING_REPLY_FAILURE       = <span class="hl-number">0x78</span>,
+  <em class="hl-comment">/* Commissioning/Decommissioning invalid request */</em>
+  ZGP_COMMISSIONING_REQ_INVALID         = <span class="hl-number">0x79</span>,
+  <em class="hl-comment">/* ZGP key unavailable*/</em>
+  ZGP_UNAVAILABLE_KEY_STATUS            = <span class="hl-number">0x7A</span>,
+  <em class="hl-comment">/* ZGP bad state */</em>
+  ZGP_BAD_STATE                         = <span class="hl-number">0x7B</span>,
+  <em class="hl-comment">/* Invalid parameter */</em>
+  ZGP_INVALID_PARAMETER                 = <span class="hl-number">0x7C</span>,
+  <em class="hl-comment">/* Invalid parameter */</em>
+  ZGP_NO_CHANNEL_MASK                   = <span class="hl-number">0x7D</span>,
+  <em class="hl-comment">/* ZGP_SECURITY_LEVEL_NOT_MATCHED */</em>
+  ZGP_SECURITY_LEVEL_NOT_MATCHED        = <span class="hl-number">0x7E</span>,
+  <em class="hl-comment">/* No reply received for channel request*/</em>
+  ZGP_NO_CHANNEL_CONFIG_REPLY           = <span class="hl-number">0x7F</span>,
+  <span class="hl-tag-doctype-comment">/** IEEE 802.15.4-2006, Table 78 MAC enumerations description. */</span>
+  <span class="hl-tag-doctype-comment">/** The frame counter purportedly applied by the originator of the
+   * received frame is invalid. */</span>
+  ZGP_MAC_COUNTER_ERROR_STATUS       = <span class="hl-number">0xDB</span>,
+  <span class="hl-tag-doctype-comment">/** The key purportedly applied by the originator of the received frame is
+   * not allowed to be used with that frame type according to the key usage
+   * policy of the recipient. */</span>
+  ZGP_MAC_IMPROPER_KEY_TYPE_STATUS   = <span class="hl-number">0xDC</span>,
+  <span class="hl-tag-doctype-comment">/** The security level purportedly applied by the originator of the received
+   * frame does not meet the minimum security level required/expected by
+   * the recipient for that frame type. */</span>
+  ZGP_MAC_IMPROPER_SECURITY_LEVEL_STATUS = <span class="hl-number">0xDD</span>,
+  <span class="hl-tag-doctype-comment">/** The received frame was purportedly secured using security based on
+   * IEEE Std 802.15.4-2003, and such security is not supported by this standard.
+   **/</span>
+  ZGP_MAC_UNSUPPORTED_LEGACY_STATUS   = <span class="hl-number">0xDE</span>,
+  <span class="hl-tag-doctype-comment">/** The security purportedly applied by the originator of the received frame
+   * is not supported. */</span>
+  ZGP_MAC_UNSUPPORTED_SECURITY_STATUS = <span class="hl-number">0xDF</span>,
+  <span class="hl-tag-doctype-comment">/** The beacon was lost following a synchronization request. */</span>
+  ZGP_MAC_BEACON_LOSS_STATUS          = <span class="hl-number">0xE0</span>,
+  <span class="hl-tag-doctype-comment">/** A transmission could not take place due to activity on the channel,
+   * i.e., the CSMA-CA mechanism has failed. */</span>
+  ZGP_MAC_CHANNEL_ACCESS_FAILURE_STATUS = <span class="hl-number">0xE1</span>,
+  <span class="hl-tag-doctype-comment">/** The GTS request has been denied by the PAN coordinator. */</span>
+  ZGP_MAC_DENIED_STATUS               = <span class="hl-number">0xE2</span>,
+  <span class="hl-tag-doctype-comment">/** The attempt to disable the transceiver has failed. */</span>
+  ZGP_MAC_DISABLE_TRX_FAILURE_STATUS  = <span class="hl-number">0xE3</span>,
+  <span class="hl-tag-doctype-comment">/** Either a frame resulting from processing has a length that is
+   * greater than aMaxPHYPacketSize or a requested transaction is
+   * too large to fit in the CAP or GTS. */</span>
+  ZGP_MAC_FRAME_TOO_LONG_STATUS       = <span class="hl-number">0xE5</span>,
+  <span class="hl-tag-doctype-comment">/** The requested GTS transmission failed because the specified
+   * GTS either did not have a transmit GTS direction or was not defined. */</span>
+  ZGP_MAC_INVALID_GTS_STATUS          = <span class="hl-number">0xE6</span>,
+  <span class="hl-tag-doctype-comment">/** A request to purge an MSDU from the transaction queue was made using
+   * an MSDU handle that was not found in the transaction table. */</span>
+  ZGP_MAC_INVALID_HANDLE_STATUS       = <span class="hl-number">0xE7</span>,
+  <span class="hl-tag-doctype-comment">/** A parameter in the primitive is either not supported or is out of
+   * the valid range. */</span>
+  ZGP_MAC_INVALID_PARAMETER_STATUS    = <span class="hl-number">0xE8</span>,
+  <span class="hl-tag-doctype-comment">/** No acknowledgment was received after macMaxFrameRetries. */</span>
+  ZGP_MAC_NO_ACK_STATUS               = <span class="hl-number">0xE9</span>,
+  <span class="hl-tag-doctype-comment">/** A scan operation failed to find any network beacons. */</span>
+  ZGP_MAC_NO_BEACON_STATUS            = <span class="hl-number">0xEA</span>,
+  <span class="hl-tag-doctype-comment">/** No response data were available following a request. */</span>
+  ZGP_MAC_NO_DATA_STATUS              = <span class="hl-number">0xEB</span>,
+  <span class="hl-tag-doctype-comment">/** The operation failed because a 16-bit short address was not allocated. */</span>
+  ZGP_MAC_NO_SHORT_ADDRESS_STATUS     = <span class="hl-number">0xEC</span>,
+  <span class="hl-tag-doctype-comment">/** A receiver enable request was unsuccessful because it could not be
+   * completed within the CAP. */</span>
+  ZGP_MAC_OUT_OF_CAP_STATUS           = <span class="hl-number">0xED</span>,
+  <span class="hl-tag-doctype-comment">/** A PAN identifier conflict has been detected and communicated
+   * to the PAN coordinator. */</span>
+  ZGP_MAC_PAN_ID_CONFLICT_STATUS      = <span class="hl-number">0xEE</span>,
+  <span class="hl-tag-doctype-comment">/** A coordinator realignment command has been received. */</span>
+  ZGP_MAC_REALIGNMENT_STATUS          = <span class="hl-number">0xEF</span>,
+  <span class="hl-tag-doctype-comment">/** The transaction has expired and its information was discarded. */</span>
+  ZGP_MAC_TRANSACTION_EXPIRED_STATUS  = <span class="hl-number">0xF0</span>,
+  <span class="hl-tag-doctype-comment">/** There is no capacity to store the transaction. */</span>
+  ZGP_MAC_TRANSACTION_OVERFLOW_STATUS = <span class="hl-number">0xF1</span>,
+  <span class="hl-tag-doctype-comment">/** The transceiver was in the transmitter enabled state when the receiver
+   * was requested to be enabled. */</span>
+  ZGP_MAC_TX_ACTIVE_STATUS            = <span class="hl-number">0xF2</span>,
+  <span class="hl-tag-doctype-comment">/** The key purportedly used by the originator of the received frame is
+   * not available or, if available, the originating device is not known
+   * or is blacklisted with that particular key. */</span>
+  ZGP_MAC_UNAVAILABLE_KEY_STATUS      = <span class="hl-number">0xF3</span>,
+  <span class="hl-tag-doctype-comment">/** A SET/GET request was issued with the identifier of a PIB
+   * attribute that is not supported. */</span>
+  ZGP_MAC_UNSUPPORTED_ATTRIBUTE_STATUS = <span class="hl-number">0xF4</span>,
+  <span class="hl-tag-doctype-comment">/** A request to send data was unsuccessful because neither the source address
+   * parameters nor the destination address parameters were present. */</span>
+  ZGP_MAC_INVALID_ADDRESS_STATUS      = <span class="hl-number">0xF5</span>,
+  <span class="hl-tag-doctype-comment">/** A receiver enable request was unsuccessful because it specified a number
+   * of symbols that was longer than the beacon interval. */</span>
+  ZGP_MAC_ON_TIME_TOO_LONG_STATUS     = <span class="hl-number">0xF6</span>,
+  <span class="hl-tag-doctype-comment">/** A receiver enable request was unsuccessful because it could not be
+   * completed within the current superframe and was not permitted to be
+   * deferred until the next superframe. */</span>
+  ZGP_MAC_PAST_TIME_STATUS            = <span class="hl-number">0xF7</span>,
+  <span class="hl-tag-doctype-comment">/** The device was instructed to start sending beacons based on the
+   * timing of the beacon transmissions of its coordinator, but the device
+   * is not currently tracking the beacon of its coordinator. */</span>
+  ZGP_MAC_TRACKING_OFF_STATUS         = <span class="hl-number">0xF8</span>,
+  <span class="hl-tag-doctype-comment">/** An attempt to write to a MAC PIB attribute that is in a table failed
+   * because the specified table index was out of range. */</span>
+  ZGP_MAC_INVALID_INDEX_STATUS        = <span class="hl-number">0xF9</span>,
+  <span class="hl-tag-doctype-comment">/** There are some unscanned channels yet, but there is no memory */</span>
+  ZGP_MAC_LIMIT_REACHED_STATUS        = <span class="hl-number">0xFA</span>,
+  <span class="hl-tag-doctype-comment">/** A SET/GET request was issued with the identifier of an attribute
+   * that is read only. */</span>
+  ZGP_MAC_READ_ONLY_STATUS            = <span class="hl-number">0xFB</span>,
+  <span class="hl-tag-doctype-comment">/** A request to perform a scan operation failed because the MLME was
+   * in the process of performing a previously initiated scan operation. */</span>
+  ZGP_MAC_SCAN_IN_PROGRESS_STATUS     = <span class="hl-number">0xFC</span>,
+  <span class="hl-tag-doctype-comment">/** The device was instructed to start sending beacons based on the timing of
+   * the beacon transmissions of its coordinator, but the instructed start time
+   * overlapped the transmission time of the beacon of its coordinator. */</span>
+  ZGP_MAC_SUPERFRAME_OVERLAP_STATUS   = <span class="hl-number">0xFD</span>
+}ZGP_Status_t;
+; 
+</pre></div>
+</div>
+<div class="topic nested1" aria-labelledby="ariaid-title3" id="description"><h2 class="title topictitle2" id="ariaid-title3">Description</h2><div class="body"><p class="p">ZGP primitive return code</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1502 @@
+include $(COMPONENTS_PATH)/Configuration
+
+#-------------------------------------------------------------------------------
+# Platform specific compiler flags definition and settins checking:
+#-------------------------------------------------------------------------------
+STACK_LIB_PATH = $(COMPONENTS_PATH)/../lib
+LIST_PATH = ./list
+
+ifeq ($(PLATFORM), PLATFORM_ZIGBIT)
+  BOARD = BOARD_MESHBEAN
+else ifeq ($(PLATFORM), PLATFORM_RAVEN)
+  BOARD = BOARD_RAVEN
+else ifeq ($(PLATFORM), PLATFORM_ATML_USB_DONGLE)
+  BOARD = BOARD_USB_DONGLE
+else ifeq ($(PLATFORM), PLATFORM_STK600)
+  BOARD = BOARD_STK600
+else ifeq ($(PLATFORM), PLATFORM_ZIGBIT_TURBO)
+  BOARD = BOARD_MESHBEAN_TURBO
+else ifeq ($(PLATFORM), PLATFORM_ZIGBIT_LAN)
+  BOARD = BOARD_MESHBEAN_LAN
+else ifeq ($(PLATFORM), PLATFORM_STK500_RF2XX)
+  BOARD = BOARD_STK500
+else ifeq ($(PLATFORM), PLATFORM_SAM7X_EK_RF2XX)
+  BOARD = BOARD_SAM7X_EK
+else ifeq ($(PLATFORM), PLATFORM_SAMD20_XPLAINED_PRO)
+  BOARD = BOARD_SAMD20_XPLAINED_PRO
+else ifeq ($(PLATFORM), PLATFORM_SAMR21)
+  BOARD = BOARD_SAMR21
+else ifeq ($(PLATFORM), PLATFORM_PIC32CX)
+  BOARD = BOARD_PIC32CX
+else ifeq ($(PLATFORM), PLATFORM_SAM3S_EK_RF2XX)
+  BOARD = BOARD_SAM3S_EK
+else ifeq ($(PLATFORM), PLATFORM_SAM4S_PIRRD)
+  BOARD = BOARD_SAM4S_PIRRD
+else ifeq ($(PLATFORM), PLATFORM_CUSTOM_1)
+  BOARD = BOARD_CUSTOM_1
+else ifeq ($(PLATFORM), PLATFORM_CUSTOM_2)
+  BOARD = BOARD_CUSTOM_2
+else ifeq ($(PLATFORM), PLATFORM_CUSTOM_3)
+  BOARD = BOARD_CUSTOM_3
+else ifeq ($(PLATFORM), PLATFORM_MEGARF)
+  BOARD = BOARD_MEGARF
+else ifeq ($(PLATFORM), PLATFORM_AVR32_EVK1105)
+  BOARD = BOARD_AVR32_EVK1105
+else ifeq ($(PLATFORM), PLATFORM_XPLAIN)
+  BOARD = BOARD_XPLAIN
+else ifeq ($(PLATFORM), PLATFORM_REB_CBB)
+  BOARD = BOARD_REB_CBB
+else ifeq ($(PLATFORM), PLATFORM_SIMULATOR)
+  BOARD = BOARD_SIMULATOR
+else ifeq ($(PLATFORM), PLATFORM_PC)
+  BOARD = BOARD_PC
+else
+  $(error unknown PLATFORM)
+endif
+
+BOARD_REV = $(PLATFORM_REV)
+HAL_FREQUENCY = HAL_8MHz
+
+ifneq (, $(findstring $(BUILD_TARGET), TARGET_ZIGBEE_STACK TARGET_ZIGBEE_BDB_STACK))
+  LIB_TYPE = Zigbee
+else ifeq ($(BUILD_TARGET), TARGET_NWK)
+  LIB_TYPE = Nwk
+else ifeq ($(BUILD_TARGET), TARGET_MAC)
+  LIB_TYPE = Mac2
+else ifeq ($(BUILD_TARGET), TARGET_HAL_SE)
+  LIB_TYPE = HalSe
+else
+  $(error unknown BUILD_TARGET)
+endif
+
+include $(STACK_LIB_PATH)/MakerulesSelector
+
+# AES_TYPE is determined automatically based on chip type
+ifeq ($(RFCHIP), AT86RF230)
+  AES_TYPE = SW_AES_TYPE
+else ifeq ($(RFCHIP), AT86RF230B)
+  AES_TYPE = SW_AES_TYPE
+# HW_AES security bug workaround
+else ifeq ($(RFCHIP), AT86RF231)
+  ifneq (, $(findstring $(PLATFORM), PLATFORM_SAM3S_EK_RF2XX PLATFORM_SAM4S_PIRRD))
+    AES_TYPE = SW_AES_TYPE
+  else
+    AES_TYPE = HW_AES_TYPE
+  endif
+else ifeq ($(RFCHIP), AT86RF233)
+  ifeq ($(PLATFORM), PLATFORM_PIC32CX)
+    AES_TYPE = BUILTIN_AES_TYPE
+  else
+    AES_TYPE = HW_AES_TYPE
+  endif
+else ifeq ($(RFCHIP), AT86RF212)
+  ifneq (, $(findstring $(SECURITY_MODE), STDLINK_SECURITY_MODE HIGH_SECURITY_MODE CERTICOM_SECURITY_MODE CUSTOM_4_SECURITY_MODE))
+    AES_TYPE = SW_AES_TYPE
+  else
+    AES_TYPE = HW_AES_TYPE
+  endif
+else ifeq ($(RFCHIP), ATMEGA128RFA1)
+  AES_TYPE = BUILTIN_AES_TYPE
+else ifeq ($(RFCHIP), ATMEGA256RFR2)
+  AES_TYPE = BUILTIN_AES_TYPE
+else ifeq ($(RFCHIP), ATMEGA2564RFR2)
+  AES_TYPE = BUILTIN_AES_TYPE
+else ifeq ($(RFCHIP), CUSTOMRF3)
+  AES_TYPE = SW_AES_TYPE
+else ifeq ($(RFCHIP), NONE)
+  AES_TYPE = SW_AES_TYPE
+else
+  $(error unknown RFCHIP)
+endif
+
+#-------------------------------------------------------------------------------
+# Compiler paths:
+#-------------------------------------------------------------------------------
+ifneq (, $(findstring $(HAL), AT91SAM7X256 AT91SAM3S4C AT91SAM4S16C ATSAMD20J18 ATSAMR21G18A ATSAMR21E18A ATSAMR21E19A _PIC32CX_))
+  IAR_PATH = "$(IAR_ARM_HOME)/arm"
+else ifeq ($(HAL), AT32UC3A0512)
+  IAR_PATH = "$(IAR_AVR32_HOME)/avr32"
+else # ATMEGA1281 or ATMEGA2561
+  IAR_PATH = "$(IAR_AVR_HOME)/avr"
+endif
+
+#-------------------------------------------------------------------------------
+# CPU selection:
+#-------------------------------------------------------------------------------
+ifeq ($(HAL), ATMEGA1281)
+  ifeq ($(COMPILER_TYPE), GCC)
+    CPU = atmega1281
+  endif
+  ifeq ($(COMPILER_TYPE), IAR)
+    CPU = m1281
+  endif
+else ifeq ($(HAL), ATMEGA2561)
+  ifeq ($(COMPILER_TYPE), GCC)
+    CPU = atmega2561
+  endif
+  ifeq ($(COMPILER_TYPE), IAR)
+    CPU = m2561
+  endif
+else ifeq ($(HAL), ATMEGA1284)
+  ifeq ($(COMPILER_TYPE), GCC)
+    CPU = atmega1284p
+  endif
+  ifeq ($(COMPILER_TYPE), IAR)
+    CPU = m1284p
+  endif
+else ifeq ($(HAL), AT90USB1287)
+  ifeq ($(COMPILER_TYPE), GCC)
+    CPU = at90usb1287
+  endif
+  ifeq ($(COMPILER_TYPE), IAR)
+    CPU = usb1287
+  endif
+else ifeq ($(HAL), ATXMEGA128A1)
+  ifeq ($(COMPILER_TYPE), GCC)
+    CPU = atxmega128a1
+  endif
+  ifeq ($(COMPILER_TYPE), IAR)
+    CPU = xm128a1
+  endif
+else ifeq ($(HAL), ATXMEGA128B1)
+  ifeq ($(COMPILER_TYPE), GCC)
+    CPU = atxmega128b1
+  endif
+  ifeq ($(COMPILER_TYPE), IAR)
+    CPU = xm128b1
+  endif
+
+else ifeq ($(HAL), ATXMEGA256A3)
+  ifeq ($(COMPILER_TYPE), GCC)
+    CPU = atxmega256a3
+  endif
+  ifeq ($(COMPILER_TYPE), IAR)
+    CPU = xm256a3
+  endif
+else ifeq ($(HAL), ATXMEGA256D3)
+  ifeq ($(COMPILER_TYPE), GCC)
+    CPU = atxmega256d3
+  endif
+  ifeq ($(COMPILER_TYPE), IAR)
+    CPU = xm256d3
+  endif
+else ifeq ($(HAL), AT91SAM7X256)
+  CPU = arm7tdmi
+else ifeq ($(HAL), ATSAMD20J18)
+  CPU = cortex-m0+
+else ifneq (, $(findstring $(HAL), ATSAMD20J18 ATSAMR21G18A ATSAMR21E18A ATSAMR21E19A))
+  ifeq ($(COMPILER_TYPE), GCC)
+    CPU = cortex-m0plus
+  else
+    CPU = cortex-m0+
+  endif
+else ifeq ($(HAL), AT91SAM3S4C)
+  CPU = cortex-m3
+else ifeq ($(HAL), AT91SAM4S16C)
+  CPU = Cortex-M4
+else ifeq ($(HAL), _PIC32CX_)
+  CPU = Cortex-M4
+else ifeq ($(HAL), ATMEGA128RFA1)
+  ifeq ($(COMPILER_TYPE), GCC)
+    CPU = atmega128rfa1
+  else ifeq ($(COMPILER_TYPE), IAR)
+    CPU = m128rfa1
+  endif
+else ifeq ($(HAL), ATMEGA256RFR2)
+  ifeq ($(COMPILER_TYPE), GCC)
+    CPU = atmega256rfr2
+  else ifeq ($(COMPILER_TYPE), IAR)
+    CPU = m256rfr2
+  endif
+else ifeq ($(HAL), ATMEGA2564RFR2)
+  ifeq ($(COMPILER_TYPE), GCC)
+    CPU = atmega2564rfr2
+  else ifeq ($(COMPILER_TYPE), IAR)
+    CPU = m2564rfr2
+  endif
+else ifeq ($(HAL), AT32UC3A0512)
+  ifeq ($(COMPILER_TYPE), GCC)
+    $(error unsupported compiler)
+  else ifeq ($(COMPILER_TYPE), IAR)
+    CPU = at32uc3a0512
+  endif
+else ifeq ($(HAL), SIMULATOR)
+  CPU = simulator
+else ifeq ($(HAL), WIN)
+  CPU = win
+else
+  $(error ERROR in file  Makerules: $(CPU) Unknown type of HAL)
+endif
+
+
+#-------------------------------------------------------------------------------
+# Cross-platform compiler type declaration:
+#-------------------------------------------------------------------------------
+ifndef COMPILER_TYPE
+  $(error ERROR in file  Makerules: $(COMPILER_TYPE) - unknow type of compiler)
+endif
+ifneq (, $(findstring $(HAL), AT91SAM7X256 AT91SAM3S4C AT91SAM4S16C ATSAMR21G18A ATSAMR21E18A ATSAMR21E19A _PIC32CX_))
+  ifeq ($(COMPILER_TYPE), IAR)
+    CROSS_COMPILER = arm
+  endif
+  ifeq ($(COMPILER_TYPE), GCC)
+    CROSS_COMPILER = xc32-
+  endif
+else ifeq ($(HAL), AT32UC3A0512)
+  CROSS_COMPILER = avr32
+else ifneq (, $(findstring $(HAL), ATMEGA1281 ATMEGA2561 ATMEGA1284 AT90USB1287 ATXMEGA128A1 ATXMEGA128B1 ATXMEGA256A3 ATXMEGA256D3 ATMEGA128RFA1 ATMEGA256RFR2 ATMEGA2564RFR2))
+  CROSS_COMPILER = avr-
+else ifeq ($(HAL), SIMULATOR)
+  CROSS_COMPILER =
+else
+  #$(error ERROR in file  Makerules: Cross-platform compiler type is not detected)
+endif
+
+
+#-------------------------------------------------------------------------------
+# Tools definitions:
+#-------------------------------------------------------------------------------
+ifeq ($(COMPILER_TYPE), GCC)
+  AS      = $(CROSS_COMPILER)as
+  LD      = $(CROSS_COMPILER)ld
+  CC      = $(CROSS_COMPILER)gcc
+  CPP     = $(CROSS_COMPILER)g++
+  AR      = $(CROSS_COMPILER)ar
+  NM      = $(CROSS_COMPILER)nm
+  STRIP   = $(CROSS_COMPILER)strip
+  OBJCOPY = $(CROSS_COMPILER)objcopy
+  OBJDUMP = $(CROSS_COMPILER)objdump
+  SIZE    = $(CROSS_COMPILER)size
+
+  AR_KEYS = cr
+  AR_EXTRACT_KEYS = x
+  ifneq (, $(findstring $(HAL), AT91SAM7X256 AT91SAM3S4C AT91SAM4S16C ATSAMD20J18 ATSAMR21G18A ATSAMR21E18A ATSAMR21E19A _PIC32CX_))
+    COMPILER_AND_MICRO_TYPE = GCC_ARM
+  else ifneq (, $(findstring $(HAL), ATMEGA1281 ATMEGA2561 ATMEGA1284 AT90USB1287 ATXMEGA128A1 ATXMEGA128B1 ATXMEGA256A3 ATXMEGA256D3 ATMEGA128RFA1 ATMEGA256RFR2 ATMEGA2564RFR2))
+    COMPILER_AND_MICRO_TYPE = GCC_AVR
+  else
+    COMPILER_AND_MICRO_TYPE = GCC_X86
+  endif
+endif
+
+ifeq ($(COMPILER_TYPE), IAR)
+  ifneq (, $(findstring $(HAL), AT91SAM7X256 AT91SAM3S4C AT91SAM4S16C ATSAMD20J18 ATSAMR21G18A ATSAMR21E18A ATSAMR21E19A _PIC32CX_))
+    CC      = $(IAR_PATH)/bin/iccarm
+    CPP     = $(IAR_PATH)/bin/iccarm
+    AS      = $(IAR_PATH)/bin/iasmarm
+    LD      = $(IAR_PATH)/bin/ilinkarm
+    AR      = $(IAR_PATH)/bin/iarchive
+    AR_KEYS = --create -o
+    AR_EXTRACT_KEYS = --extract
+    OBJCOPY = arm-none-eabi-objcopy
+    IELFTOOL = $(IAR_PATH)/bin/ielftool
+    COMPILER_AND_MICRO_TYPE = IAR_ARM
+
+  else ifeq ($(HAL), AT32UC3A0512)
+    CC      = $(IAR_PATH)/bin/iccavr32
+    CPP     = $(IAR_PATH)/bin/iccavr32
+    AS      = $(IAR_PATH)/bin/aavr32
+    LD      = $(IAR_PATH)/bin/xlink
+    AR      = $(IAR_PATH)/bin/xar
+    AR_EXTRACT_KEYS = x
+    OBJCOPY = @echo "----OBJCOPY: There is no such utility among IAR tools."
+    COMPILER_AND_MICRO_TYPE = IAR_AVR32
+
+  else  # AVR
+    CC      = $(IAR_PATH)/bin/iccavr
+    CPP     = $(IAR_PATH)/bin/iccavr
+    AS      = $(IAR_PATH)/bin/aavr
+    LD      = $(IAR_PATH)/bin/xlink
+    AR      = $(IAR_PATH)/bin/xar
+    AR_EXTRACT_KEYS = x
+    OBJCOPY = @echo "----OBJCOPY: There is no such utility among IAR tools."
+    COMPILER_AND_MICRO_TYPE = IAR_AVR
+  endif
+
+  # Common
+  NM      = @echo "----NM: There is no such utility among IAR tools."
+  STRIP   = @echo "----STRIP: There is no such utility among IAR tools."
+  OBJDUMP = @echo "----OBJDUMP: There is no such utility among IAR tools."
+  SIZE    = @echo "----SIZE: There is no such utility among IAR tools."
+endif
+
+#-------------------------------------------------------------------------------
+# Check compiler version:
+#-------------------------------------------------------------------------------
+ifeq ($(COMPILER_AND_MICRO_TYPE), GCC_AVR)
+  EXP_VERSION = gcc version 4.8.1 (AVR_8_bit_GNU_Toolchain_3.4.5_1522)
+else ifeq ($(COMPILER_AND_MICRO_TYPE), IAR_AVR)
+  EXP_VERSION = IAR C/C++ Compiler V6.70.5.1028 for Atmel AVR
+else ifeq ($(COMPILER_AND_MICRO_TYPE), GCC_ARM)
+  EXP_VERSION = gcc version 8.3.1 20190819 [ARM/embedded-6-branch revision 243739] (Microchip xc32 v3.01)
+else ifeq ($(COMPILER_AND_MICRO_TYPE), IAR_ARM)
+  EXP_VERSION = IAR ANSI C/C++ Compiler V8.30.2.160/W32 for ARM
+else ifeq ($(COMPILER_AND_MICRO_TYPE), IAR_AVR32)
+  EXP_VERSION = IAR C/C++ Compiler V3.30.1.40051/W32 for Atmel AVR32
+else ifeq ($(COMPILER_AND_MICRO_TYPE), GCC_X86)
+  UNAME := $(shell uname)
+  ifeq ($(UNAME), Linux)
+    EXP_VERSION = gcc version 4.6.1 (Ubuntu/Linaro 4.6.1-9ubuntu3)
+  else
+    EXP_VERSION = gcc version 4.7.2 (GCC)
+  endif
+else
+  $(error unsupported COMPILER_AND_MICRO_TYPE)
+endif
+
+#-------------------------------------------------------------------------------
+# Output options definitions:
+#-------------------------------------------------------------------------------
+ifeq ($(QUIET), TRUE)
+  Q = @
+  SILENT = -s
+
+  AS_MSG      = @echo "$(AS)" $?
+  LD_MSG      = @echo "$(LD)" $@
+  CC_MSG      = @echo "$(CC)" $?
+  CPP_MSG     = @echo "$(CPP)" $?
+  AR_MSG      = @echo "$(AR)" $@
+  NM_MSG      = @echo "$(NM)" $@
+  STRIP_MSG   = @echo "$(STRIP)" $@
+  OBJCOPY_MSG = @echo "$(OBJCOPY)" $@
+  OBJDUMP_MSG = @echo "$(OBJDUMP)" $@
+  SHOW_SIZE   = @echo size
+else
+  SHOW_SIZE   = $(SIZE)
+endif
+
+
+#-------------------------------------------------------------------------------
+# Components paths. In each component COMPONENTS_PATH should be defined:
+#-------------------------------------------------------------------------------
+BASE_PATH    = $(COMPONENTS_PATH)
+HAL_PATH     = $(COMPONENTS_PATH)/hal
+MAC_PHY_PATH = $(COMPONENTS_PATH)/mac_phy
+MAC_ENV_PATH = $(COMPONENTS_PATH)/mac_phy/MAC_ENV
+MAC_HWI_PATH = $(COMPONENTS_PATH)/mac_phy/MAC_HWI
+MAC_HWD_PATH = $(COMPONENTS_PATH)/mac_phy/MAC_HWD_PHY
+NWK_PATH     = $(COMPONENTS_PATH)/nwk
+APS_PATH     = $(COMPONENTS_PATH)/aps
+ZCL_PATH     = $(COMPONENTS_PATH)/zcl
+ZCL_CLUSTER_PATH = $(COMPONENTS_PATH)/zcl/clusters
+ZLL_PLATFORM_PATH = $(COMPONENTS_PATH)/zllplatform
+ZLL_PATH     = $(COMPONENTS_PATH)/zllplatform/ZLL
+ZLL_INFRA_PATH = $(COMPONENTS_PATH)/zllplatform/infrastructure
+ZDO_PATH     = $(COMPONENTS_PATH)/zdo
+SSP_PATH     = $(COMPONENTS_PATH)/security/ServiceProvider
+TC_PATH      = $(COMPONENTS_PATH)/security/TrustCentre
+CS_PATH      = $(COMPONENTS_PATH)/configserver
+SE_PATH      = $(COMPONENTS_PATH)/systemenvironment
+BSP_PATH     = $(COMPONENTS_PATH)/bsp
+DRIVERS_PATH = $(COMPONENTS_PATH)/hal/drivers
+ZAPPSI_PATH  = $(COMPONENTS_PATH)/zappsi
+ZGP_PATH     = $(COMPONENTS_PATH)/zgp
+OSAL_PATH    = $(COMPONENTS_PATH)/../../framework
+FREE_RTOS_PATH =  $(COMPONENTS_PATH)/../../thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source
+RTOS_CONFIG_PATH = $(COMPONENTS_PATH)/../../config
+PARTPACK_PATCH = $(COMPONENTS_PATH)/../../partpacks
+CMIS_PATH      = $(COMPONENTS_PATH)/../../cmsis
+UTILS_PATH     =  $(COMPONENTS_PATH)/../../utils
+BDB_PATH       = $(COMPONENTS_PATH)/bdb
+PDS_PATH       = $(COMPONENTS_PATH)/../../drivers/PersistDataServer
+CRYPTO_PATH    = $(COMPONENTS_PATH)/../../drivers/crypto
+
+ifeq ($(PLATFORM), PLATFORM_ZIGBIT_TURBO)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/arm7tdmi/at91sam7x256/common
+  HAL_MAC_API_PATH    = $(HAL_PATH)/arm7tdmi/at91sam7x256/zigBitArm
+endif
+ifeq ($(PLATFORM), PLATFORM_ZIGBIT_LAN)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/arm7tdmi/at91sam7x256/common
+  HAL_MAC_API_PATH    = $(HAL_PATH)/arm7tdmi/at91sam7x256/zigBitArm
+endif
+ifeq ($(PLATFORM), PLATFORM_SAM7X_EK_RF2XX)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/arm7tdmi/at91sam7x256/common
+  HAL_MAC_API_PATH    = $(HAL_PATH)/arm7tdmi/at91sam7x256/atmlEvalKit
+endif
+ifeq ($(PLATFORM), PLATFORM_SAMD20_XPLAINED_PRO)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/cortexm0+/atsamd20j18/common
+  HAL_MAC_API_PATH    = $(HAL_PATH)/cortexm0+/atsamd20j18/samd20XplainedPro
+endif
+ifeq ($(PLATFORM), PLATFORM_SAMR21)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/cortexm0+/atsamr21/common
+  HAL_MAC_API_PATH    = $(HAL_PATH)/cortexm0+/atsamr21/common
+endif
+ifeq ($(PLATFORM), PLATFORM_PIC32CX)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/cortexm4/pic32cx
+  HAL_MAC_API_PATH    = $(HAL_PATH)/cortexm4/pic32cx
+endif
+ifeq ($(PLATFORM), PLATFORM_CUSTOM_1)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/arm7tdmi/at91sam7x256/common
+  HAL_MAC_API_PATH    = $(HAL_PATH)/arm7tdmi/at91sam7x256/custom1
+endif
+ifeq ($(PLATFORM), PLATFORM_CUSTOM_2)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/arm7tdmi/at91sam7x256/common
+  HAL_MAC_API_PATH    = $(HAL_PATH)/arm7tdmi/at91sam7x256/custom2
+endif
+ifeq ($(PLATFORM), PLATFORM_SAM3S_EK_RF2XX)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/cortexm3/at91sam3s4c/common
+  HAL_MAC_API_PATH    = $(HAL_PATH)/cortexm3/at91sam3s4c/sam3sEK
+endif
+ifeq ($(PLATFORM), PLATFORM_SAM4S_PIRRD)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/cortexm3/at91sam4s16c/common
+  HAL_MAC_API_PATH    = $(HAL_PATH)/cortexm3/at91sam4s16c/sam4sPIRRD
+endif
+ifeq ($(PLATFORM), PLATFORM_CUSTOM_3)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/cortexm3/at91sam3s4c/common
+  HAL_MAC_API_PATH    = $(HAL_PATH)/cortexm3/at91sam3s4c/custom3
+endif
+ifeq ($(PLATFORM), PLATFORM_ZIGBIT)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/avr/atmega1281/common
+  HAL_MAC_API_PATH    = $(HAL_PATH)/avr/atmega1281/zigBit
+endif
+ifeq ($(PLATFORM), PLATFORM_RAVEN)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/avr/atmega1284/common
+  HAL_MAC_API_PATH    = $(HAL_PATH)/avr/atmega1284/raven
+endif
+ifeq ($(PLATFORM), PLATFORM_STK600)
+  ifeq ($(HAL), ATXMEGA128A1)
+    HAL_HWD_COMMON_PATH = $(HAL_PATH)/xmega/atxmega128a1/common
+    HAL_MAC_API_PATH    = $(HAL_PATH)/xmega/atxmega128a1/stk600
+  endif # ATXMEGA128A1
+  ifeq ($(HAL), ATXMEGA256A3)
+    HAL_HWD_COMMON_PATH = $(HAL_PATH)/xmega/atxmega256a3/common
+    HAL_MAC_API_PATH    = $(HAL_PATH)/xmega/atxmega256a3/stk600
+  endif # ATXMEGA256A3
+  ifeq ($(HAL), ATXMEGA256D3)
+    HAL_HWD_COMMON_PATH = $(HAL_PATH)/xmega/atxmega256d3/common
+    HAL_MAC_API_PATH    = $(HAL_PATH)/xmega/atxmega256d3/stk600
+  endif # ATXMEGA256D3
+  ifeq ($(HAL), ATMEGA128RFA1)
+    HAL_HWD_COMMON_PATH = $(HAL_PATH)/avr/atmega128rfa1/common
+    HAL_MAC_API_PATH    = $(HAL_PATH)/avr/atmega128rfa1/common
+  endif # ATMEGA128RFA1
+  ifeq ($(HAL), ATMEGA256RFR2)
+    HAL_HWD_COMMON_PATH = $(HAL_PATH)/avr/atmega128rfa1/common
+    HAL_MAC_API_PATH    = $(HAL_PATH)/avr/atmega128rfa1/common
+  endif # ATMEGA256RFR2
+  ifeq ($(HAL), ATMEGA2564RFR2)
+    HAL_HWD_COMMON_PATH = $(HAL_PATH)/avr/atmega128rfa1/common
+    HAL_MAC_API_PATH    = $(HAL_PATH)/avr/atmega128rfa1/common
+  endif # ATMEGA2564RFR2
+endif # PLATFORM_STK600
+ifeq ($(PLATFORM), PLATFORM_ATML_USB_DONGLE)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/avr/at90usb1287/common
+  HAL_MAC_API_PATH    = $(HAL_PATH)/avr/at90usb1287/usbDongle
+endif
+ifeq ($(PLATFORM), PLATFORM_STK500_RF2XX)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/avr/atmega1281/common
+  ifneq (, $(findstring $(RFCHIP), AT86RF230 AT86RF230B))
+    HAL_MAC_API_PATH    = $(HAL_PATH)/avr/atmega1281/rcb230
+  endif
+  ifneq (, $(findstring $(RFCHIP), AT86RF231 AT86RF212))
+    HAL_MAC_API_PATH    = $(HAL_PATH)/avr/atmega1281/rcb231_212
+  endif
+endif # PLATFORM_STK500_RF2XX
+ifeq ($(PLATFORM), PLATFORM_MEGARF)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/avr/atmega128rfa1/common
+  HAL_MAC_API_PATH    = $(HAL_PATH)/avr/atmega128rfa1/common
+endif
+ifeq ($(PLATFORM), PLATFORM_AVR32_EVK1105)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/avr32/uc32a0512/common
+  HAL_MAC_API_PATH    = $(HAL_PATH)/avr32/uc32a0512/evk1105
+endif
+ifeq ($(PLATFORM), PLATFORM_XPLAIN)
+  ifeq ($(HAL), ATXMEGA128A1)
+    HAL_HWD_COMMON_PATH = $(HAL_PATH)/xmega/atxmega128a1/common
+    HAL_MAC_API_PATH    = $(HAL_PATH)/xmega/atxmega128a1/xplain
+  endif # ATXMEGA128A1
+  ifeq ($(HAL), ATXMEGA128B1)
+    HAL_HWD_COMMON_PATH = $(HAL_PATH)/xmega/atxmega128b1/common
+    HAL_MAC_API_PATH    = $(HAL_PATH)/xmega/atxmega128b1/xplain
+  endif # ATXMEGA128B1
+endif # PLATFORM_XPLAIN
+
+ifeq ($(PLATFORM), PLATFORM_REB_CBB)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/xmega/atxmega256a3/common
+  HAL_MAC_API_PATH    = $(HAL_PATH)/xmega/atxmega256a3/stk600
+endif # PLATFORM_REB_CBB
+ifeq ($(PLATFORM), PLATFORM_SIMULATOR)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/simulator
+  HAL_MAC_API_PATH    = $(HAL_PATH)/simulator
+endif # PLATFORM_SIMULATOR
+ifeq ($(PLATFORM), PLATFORM_PC)
+  ifeq ($(HAL), WIN)
+    HAL_HWD_COMMON_PATH = $(HAL_PATH)/pc/windows
+  endif
+  HAL_MAC_API_PATH = $(HAL_PATH)/pc
+endif #PLATFORM_PC
+
+ifndef HAL_HWD_COMMON_PATH
+  $(error ERROR in file  Makerules: unknown or unsupported platform)
+endif
+ifndef HAL_MAC_API_PATH
+  $(error ERROR in file  Makerules: unknown or unsupported platform)
+endif
+
+
+#-------------------------------------------------------------------------------
+# Compiler flags:
+#-------------------------------------------------------------------------------
+ifeq ($(COMPILER_TYPE), GCC) # GCC flags -------------------------------
+
+  ifeq ($(CROSS_COMPILER), avr-)
+    HAL_CFLAGS  = -Os
+  endif
+  ifeq ($(CROSS_COMPILER), arm-none-eabi-)
+    HAL_CFLAGS  = -O2 # Optimization level has been reduced to avoid -Os bug
+  endif
+
+  # Core independent compiler flags ----------------------------
+  #HAL_CFLAGS += -std=gnu99  -pipe
+  HAL_CFLAGS += -x
+  HAL_CFLAGS += c
+  HAL_CFLAGS += -c
+  ifeq ($(BUILD_CONFIGURATION), DEBUG)
+    HAL_CFLAGS += -g3
+  endif # DEBUG
+  #HAL_CFLAGS += -W -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast
+  #HAL_CFLAGS += -ffunction-sections
+
+  ifeq ($(CROSS_COMPILER), avr-)
+    HAL_CFLAGS += -mmcu=$(CPU)
+    HAL_CFLAGS += -mcall-prologues -fshort-enums -mrelax
+  endif
+
+  HAL_CFLAGS_PATH =
+
+  # ARM core specific compiler flags ---------------------------
+  ifeq ($(CROSS_COMPILER), xc32-)
+    #HAL_CFLAGS += -mcpu=$(CPU)
+    HAL_CFLAGS  += -Os
+    HAL_CFLAGS += -mprocessor=32CX1012BZ25048E
+    HAL_CFLAGS += -mdfp="C:/Users/i41610/.mchp_packs/Microchip/PIC32CX-BZ-ENG_DFP/1.0.55/BZ25"
+    ifeq ($(SOFT_FP), TRUE)
+      HAL_CFLAGS += -mfloat-abi=softfp
+    endif
+    #HAL_CFLAGS += -fno-builtin-memcpy
+    #HAL_CFLAGS += -fomit-frame-pointer
+    ifeq ($(HAL), AT91SAM7X256)
+      HAL_CFLAGS += -mthumb-interwork
+      ARM_MODE_ARM_CFLAGS = -marm
+      ARM_MODE_THUMBS_CFLAGS = -mthumb
+      HAL_CFLAGS += $(ARM_MODE_THUMBS_CFLAGS) # By default for all except HAL_HWD.
+    endif # AT91SAM7X256 flags
+    ifneq (, $(findstring $(HAL), AT91SAM3S4C AT91SAM4S16C))
+      HAL_CFLAGS += -mthumb -mfix-cortex-m3-ldrd -mno-thumb-interwork -mapcs-frame
+    endif  
+    ifneq (, $(findstring $(HAL), ATSAMD20J18))
+      HAL_CFLAGS += -mthumb -mfix-cortex-m0+-ldrd -mno-thumb-interwork -mapcs-frame
+    endif
+    ifneq (, $(findstring $(HAL), ATSAMR21G18A ATSAMR21E18A ATSAMR21E19A))
+      HAL_CFLAGS += -mthumb
+    endif
+  endif
+else ifeq ($(COMPILER_TYPE), IAR) # IAR flags -------------------------------
+
+  # ARM core specific compiler flags ---------------------------
+  ifeq ($(CROSS_COMPILER), arm)
+    HAL_CFLAGS += --endian little
+    HAL_CFLAGS += --fpu None
+    HAL_CFLAGS_PATH += --dlib_config $(IAR_PATH)/inc/c/DLib_Config_Full.h
+    ifeq ($(HAL), AT91SAM7X256)
+      HAL_CFLAGS += --interwork
+    endif
+    ARM_MODE_ARM_CFLAGS = --arm
+    ARM_MODE_THUMBS_CFLAGS = --thumb
+    HAL_CFLAGS += $(ARM_MODE_THUMBS_CFLAGS) # By default for all except HAL_HWD.
+    ifneq (, $(findstring $(HAL), AT91SAM3S4C AT91SAM4S16C))
+      HAL_CFLAGS += -Ohz #-Om was since Medium optimization - temporary fix to overcome IAR (v5.41) codegeneration bug
+    else
+      HAL_CFLAGS += -Ohz  # Optimization High, size.
+    endif
+  endif
+
+  # AVR core specific compiler flags  --------------------------
+  ifeq ($(CROSS_COMPILER), avr-)
+    HAL_CFLAGS += -ms  # Memory model (small).
+    ifneq (, $(findstring $(HAL), ATMEGA1281 ATMEGA2561 ATMEGA1284 AT90USB1287 ATXMEGA256A3 ATXMEGA256D3 ATMEGA128RFA1))
+      HAL_CFLAGS += --eeprom_size 4096  # The size of the inbuilt eeprom area.
+    endif
+    ifneq (, $(findstring $(HAL), ATXMEGA128A1 ATXMEGA128B1))
+      HAL_CFLAGS += --eeprom_size 2048  # The size of the inbuilt eeprom area.
+    endif
+    ifneq (, $(findstring $(HAL), ATMEGA1281 ATMEGA1284 AT90USB1287 ATXMEGA128A1 ATXMEGA128B1 ATMEGA128RFA1))
+      HAL_CFLAGS_PATH += --dlib_config $(IAR_PATH)/LIB/DLIB/dlAVR-3s-ec_mul-n.h  # Specify DLib library configuration file.
+    endif
+    ifneq (, $(findstring $(HAL), ATMEGA2561 ATXMEGA256A3 ATXMEGA256D3 ATMEGA256RFR2 ATMEGA2564RFR2))
+      HAL_CFLAGS_PATH += --dlib_config $(IAR_PATH)/LIB/DLIB/dlAVR-5s-ec_mul-n.h  # Specify DLib library configuration file.
+    endif
+    HAL_CFLAGS += --library_module  # Make a library module.
+    #HAL_CFLAGS_PATH += --preprocess $(LIST_PATH)
+    #HAL_CFLAGS_PATH += -lC $(LIST_PATH)   # Output list file with assembly code.
+    #HAL_CFLAGS_PATH += -lA $(LIST_PATH)   # Output list file with C source.
+    HAL_CFLAGS += -y  # The CONST segment is copied from flash to ram.
+    HAL_CFLAGS += --initializers_in_flash  # Aggregate initializers are placed in flash memory.
+    HAL_CFLAGS += --no_tbaa  # Disable type based alias analysis.
+    HAL_CFLAGS += -DENABLE_BIT_DEFINITIONS  # Switches on bit definitiones in iomxxxx.h header files.
+    HAL_CFLAGS += -Ohz  # Optimization High, size.
+  endif
+
+  # AVR32 core specific compiler flags  --------------------------
+  ifeq ($(CROSS_COMPILER), avr32)
+    HAL_CFLAGS_PATH += -I$(IAR_PATH)/inc/dlib  # Include paths to search.
+    HAL_CFLAGS += --code_model=large --data_model=large
+    HAL_CFLAGS_PATH += --dlib_config $(IAR_PATH)/lib/dlavr32allasn.h
+    HAL_CFLAGS += --fp_implementation=default
+    #-Ohz have a bugs, at least in version 3.20B/W32 (3.20.2.3)
+    HAL_CFLAGS += -Om  # Optimization medium.
+  endif
+
+  # Core independent compiler flags ----------------------------
+  HAL_CFLAGS_PATH += -I$(IAR_PATH)/inc  # Include paths to search.
+  HAL_CFLAGS += --diag_suppress Pa050,Pe188,Pa082  # Suppress the list of tags as diagnostics.
+  HAL_CFLAGS += -e # Enable IAR C/C++ language extensions
+  HAL_CFLAGS += --cpu=$(CPU)  # CPU type.
+  ifeq ($(HAL), AT91SAM4S16C)
+    HAL_CFLAGS += -D__SAM4S16C__
+  endif
+  ifeq ($(PLATFORM), PLATFORM_SAMR21) 
+    HAL_CFLAGS += -D__BOARD_SAMR21__
+  endif
+  ifeq ($(PLATFORM), PLATFORM_PIC32CX) 
+    HAL_CFLAGS += -DBOARD_FPGA_PIC32CX
+  endif
+  HAL_CFLAGS += --silent
+  ifeq ($(BUILD_CONFIGURATION), DEBUG)
+    HAL_CFLAGS += --debug
+  endif # DEBUG
+else
+  $(error unknown COMPILER_TYPE)
+endif
+
+STACK_CFLAGS += -D$(OS)
+
+ifeq ($(BUILD_CONFIGURATION), RELEASE)
+    STACK_CFLAGS += -DRELEASE
+    HAL_CFLAGS   += -DRELEASE
+endif 
+
+ifneq (, $(findstring $(BUILD_TARGET), TARGET_ZIGBEE_STACK TARGET_ZIGBEE_BDB_STACK))
+    ifneq ($(LIGHT_LINK_PROFILE), TRUE)
+       STACK_CFLAGS += -D_IEEE_ZIGBEE_COMPLIANCE_
+    endif
+else ifeq ($(BUILD_TARGET), TARGET_MAC)
+    ifeq ($(USE_RTOS), TRUE)
+       STACK_CFLAGS += -D_USE_RTOS_
+    endif
+    ifneq ($(STACK_TYPE), ZGPDEVICE)
+       STACK_CFLAGS += -D_IEEE_ZIGBEE_COMPLIANCE_
+    endif
+endif
+
+
+#-------------------------------------------------------------------------------
+# CPU specific compiler independent flags:
+#-------------------------------------------------------------------------------
+ifneq (, $(findstring $(HAL), AT32UC3A0512))
+  HAL_CFLAGS += -D_BIG_ENDIAN_
+endif
+
+#-------------------------------------------------------------------------------
+# Path to OS include:
+#-------------------------------------------------------------------------------
+ifeq ($(OS), FREE_RTOS)
+  FREE_RTOS_PATH = $(COMPONENTS_PATH)/../../thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source
+  RTOS_CONFIG_PATH = $(COMPONENTS_PATH)/../../config
+  AF_PATH = $(COMPONENTS_PATH)/../../framework
+  ifeq ($(COMPILER_TYPE), GCC)
+    HAL_CFLAGS += -DARM_CM4F_GCC
+  else ifeq ($(COMPILER_TYPE), IAR)
+    HAL_CFLAGS += -DARM_CM4F_IAR
+  endif	
+endif
+
+#-------------------------------------------------------------------------------
+# Task handlers' flags:
+#-------------------------------------------------------------------------------
+ifneq (, $(findstring $(BUILD_TARGET), TARGET_ZIGBEE_STACK TARGET_ZIGBEE_BDB_STACK))
+  STACK_CFLAGS += -D_SYS_MAC_PHY_HWD_TASK_
+  STACK_CFLAGS += -D_SYS_HAL_TASK_
+  STACK_CFLAGS += -D_SYS_MAC_HWI_TASK_
+  STACK_CFLAGS += -D_SYS_BSP_TASK_
+ # STACK_CFLAGS += -D_SYS_APL_TASK_
+  STACK_CFLAGS += -D_SYS_NWK_TASK_
+  STACK_CFLAGS += -D_SYS_APS_TASK_
+ifeq ($(ZCL_SUPPORT), TRUE)
+  STACK_CFLAGS += -D_SYS_ZCL_TASK_
+endif
+ifeq ($(PLATFORM_SUPPORT), FPGA)
+  STACK_CFLAGS += -D__FPGA__
+endif
+ifeq ($(USE_RTOS), TRUE)
+  STACK_CFLAGS += -D_USE_RTOS_
+endif
+
+ifeq ($(BUILD_TARGET), TARGET_ZIGBEE_BDB_STACK)
+  STACK_CFLAGS += -D_SYS_ZLL_TASK_
+endif
+  ifneq ($(SECURITY_MODE), NO_SECURITY_MODE)
+    STACK_CFLAGS += -D_SYS_SSP_TASK_
+    ifdef TRUST_CENTRE
+      STACK_CFLAGS += -D_SYS_TC_TASK_
+    endif
+  endif
+  STACK_CFLAGS += -D_SYS_ZDO_TASK_
+else ifeq ($(BUILD_TARGET), TARGET_NWK)
+  STACK_CFLAGS += -D_SYS_MAC_PHY_HWD_TASK_
+  STACK_CFLAGS += -D_SYS_HAL_TASK_
+  STACK_CFLAGS += -D_SYS_MAC_HWI_TASK_
+  STACK_CFLAGS += -D_SYS_BSP_TASK_
+  STACK_CFLAGS += -D_SYS_APL_TASK_
+  STACK_CFLAGS += -D_SYS_NWK_TASK_
+  ifneq ($(SECURITY_MODE), NO_SECURITY_MODE)
+    STACK_CFLAGS += -D_SYS_SSP_TASK_
+    ifdef TRUST_CENTRE
+      STACK_CFLAGS += -D_SYS_TC_TASK_
+    endif
+  endif
+else ifeq ($(BUILD_TARGET), TARGET_MAC)
+  STACK_CFLAGS += -D_SYS_MAC_PHY_HWD_TASK_
+  STACK_CFLAGS += -D_SYS_HAL_TASK_
+  STACK_CFLAGS += -D_SYS_MAC_HWI_TASK_
+  STACK_CFLAGS += -D_SYS_BSP_TASK_
+  STACK_CFLAGS += -D_SYS_APL_TASK_
+  ifeq ($(STACK_TYPE),ZGPDEVICE)
+    STACK_CFLAGS += -D_SYS_ZGP_TASK_
+  endif
+  ifeq ($(STACK_TYPE),COMMON_MAC_DEVICE)
+    STACK_CFLAGS += -D_SYS_ZGP_TASK_
+  endif
+  ifneq ($(SECURITY_MODE), NO_SECURITY_MODE)
+    STACK_CFLAGS += -D_SYS_SSP_TASK_
+  endif
+  STACK_CFLAGS += -D_SYS_CALL_APL_TASK_
+else ifeq ($(BUILD_TARGET), TARGET_HAL_SE)
+  STACK_CFLAGS += -D_SYS_HAL_TASK_
+  STACK_CFLAGS += -D_SYS_BSP_TASK_
+  STACK_CFLAGS += -D_SYS_APL_TASK_
+  STACK_CFLAGS += -D_SYS_CALL_APL_TASK_
+else
+  $(error unknown BUILD_TARGET)
+endif
+
+#-------------------------------------------------------------------------------
+# Security related compiler flags:
+#-------------------------------------------------------------------------------
+ifeq (, $(findstring $(BUILD_TARGET), TARGET_MAC TARGET_HAL_SE))
+  ifneq ($(SECURITY_MODE), NO_SECURITY_MODE)
+    STACK_CFLAGS += -D_SECURITY_        ## ZigBee security is enabled.
+    STACK_CFLAGS += -D_NWK_ALLOCATOR_
+
+    ifeq ($(AES_TYPE), HW_AES_TYPE)
+      STACK_CFLAGS += -D_MAC_HW_AES_      ## MAC provides hardware AES.
+    else ifeq ($(AES_TYPE), BUILTIN_AES_TYPE)
+      STACK_CFLAGS += -D_HAL_HW_AES_      ## HAL provides hardware AES.
+    else ifeq ($(AES_TYPE), SW_AES_TYPE)
+      STACK_CFLAGS += -D_SSP_SW_AES_      ## Software AES will be used.
+    else
+      $(error unknown AES_TYPE)
+    endif
+
+    ifeq ($(TRUST_CENTRE), TRUE)
+        STACK_CFLAGS += -D_TRUST_CENTRE_
+    endif
+
+    ifeq ($(DISTRIBUTED_TRUST_CENTER), TRUE)
+      STACK_CFLAGS += -D_DISTRIBUTED_TRUST_CENTER_
+    endif
+
+    ifeq ($(PERMISSIONS), TRUE)
+      STACK_CFLAGS += -D_PERMISSIONS_
+    endif
+
+    ifneq ($(SECURITY_MODE), STANDARD_SECURITY_MODE)
+      STACK_CFLAGS += -D_LINK_SECURITY_
+
+      ifeq ($(ZHP_SECURITY), TRUE)
+        STACK_CFLAGS += -D_ZHP_SECURITY_
+      endif
+    endif
+
+    ifeq ($(SECURITY_MODE), HIGH_SECURITY_MODE)
+      STACK_CFLAGS += -D_HIGH_SECURITY_
+    endif
+
+    ifeq ($(SECURITY_MODE), CUSTOM_4_SECURITY_MODE)
+      STACK_CFLAGS += -D_CUSTOM_4_SECURITY_MODE_
+    endif
+
+  endif # !NO_SECURITY_MODE
+endif
+
+ifeq ($(SECURITY_MODE), STDZGP_SECURITY_MODE)
+    STACK_CFLAGS += -DZGP_SECURITY_ENABLE
+endif
+
+ifeq ($(AES_TYPE), BUILTIN_AES_TYPE)
+    STACK_CFLAGS += -D_HAL_HW_AES_      ## HAL provides hardware AES.
+else ifeq ($(AES_TYPE), HW_AES_TYPE)
+    STACK_CFLAGS += -D_MAC_HW_AES_      ## MAC provides hardware AES.
+endif
+#-------------------------------------------------------------------------------
+# Device type related compiler flags:
+#-------------------------------------------------------------------------------
+ifneq ($(BUILD_TARGET), TARGET_HAL_SE)
+  ifeq ($(STACK_TYPE), ZIGBEE_ALL_DEVICES_TYPES)
+    STACK_CFLAGS += -D_COORDINATOR_
+    STACK_CFLAGS += -D_ROUTER_
+    STACK_CFLAGS += -D_ENDDEVICE_
+    STACK_CFLAGS += -D_FFD_
+  else ifeq ($(STACK_TYPE), ZIGBEE_BDB_DEVICE_TYPES)
+    ifeq ($(BUILD_TARGET), TARGET_ZIGBEE_BDB_STACK)
+       ifeq ($(ZIGBEE_DEVICE_TYPE), ZIGBEE_SUPER_SET)
+         STACK_CFLAGS += -D_COORDINATOR_
+         STACK_CFLAGS += -D_ROUTER_
+         STACK_CFLAGS += -D_ENDDEVICE_
+         STACK_CFLAGS += -D_FFD_
+       else ifeq ($(ZIGBEE_DEVICE_TYPE), ZIGBEE_COORDINATOR)
+         STACK_CFLAGS += -D_COORDINATOR_
+         STACK_CFLAGS += -D_FFD_
+       else ifeq ($(ZIGBEE_DEVICE_TYPE), ZIGBEE_ROUTER)
+         STACK_CFLAGS += -D_ROUTER_
+         STACK_CFLAGS += -D_FFD_
+       else ifeq ($(ZIGBEE_DEVICE_TYPE), ZIGBEE_END_DEVICE)
+         STACK_CFLAGS += -D_ENDDEVICE_
+     endif
+    endif
+  else ifeq ($(STACK_TYPE), ZGPDEVICE)
+    STACK_CFLAGS += -D_ZGPD_SPECIFIC_
+  else ifeq ($(STACK_TYPE), COMMON_MAC_DEVICE)
+    STACK_CFLAGS += -D_ZGPD_SPECIFIC_
+    STACK_CFLAGS += -D_COORDINATOR_
+    STACK_CFLAGS += -D_ROUTER_
+    STACK_CFLAGS += -D_FFD_
+    STACK_CFLAGS += -D_ENDDEVICE_
+  else ifeq ($(STACK_TYPE), FFD_DEVICES_TYPES)
+    STACK_CFLAGS += -D_COORDINATOR_
+    STACK_CFLAGS += -D_ROUTER_
+    STACK_CFLAGS += -D_FFD_
+  else
+    $(error unknown STACK_TYPE)
+  endif
+
+  ifneq ($(BUILD_TARGET), TARGET_MAC)
+    ifeq ($(GREENPOWER_SUPPORT), TRUE)
+      STACK_CFLAGS += -D_GREENPOWER_SUPPORT_
+     endif
+    ifeq ($(GREENPOWER_INFRA_DEVICE_SUPPORT), TRUE)
+      STACK_CFLAGS += -DZGP_SECURITY_ENABLE
+    endif
+  endif
+
+  ifeq ($(CUSTOM_APS_ACK_PKT_PROCESS), TRUE)
+    STACK_CFLAGS += -D_CUSTOM_APS_ACK_PKT_PROCESS_
+  endif
+
+  ifeq ($(CUSTOM_MTO_IGNORE_NEIGHBOR_WITH_LINK_COST_7), TRUE)
+    STACK_CFLAGS += -D_CUSTOM_MTO_IGNORE_NEIGHBOR_WITH_LINK_COST_7_
+  endif
+
+  ifeq ($(CUSTOM_ROUTING_IMPROVEMENTS), TRUE)
+    STACK_CFLAGS += -D_CUSTOM_ROUTING_IMPROVEMENTS_
+  endif
+
+  ifeq ($(BUILD_TARGET), TARGET_ZIGBEE_BDB_STACK)
+    STACK_CFLAGS += -DBDB_SUPPORT=1
+    STACK_CFLAGS += -DMICROCHIP_APPLICATION_SUPPORT=1
+    STACK_CFLAGS += -DBDB_FINDINGANDBINDING_SUPPORT=1
+    STACK_CFLAGS += -D__MICROCHIP_BITCLOUD__
+    ifeq ($(ZIGBEE_DEVICE_TYPE), ZIGBEE_SUPER_SET)
+        STACK_CFLAGS += -DZIGBEE_END_DEVICE
+        STACK_CFLAGS += -DZIGBEE_COORDINATOR
+        STACK_CFLAGS += -DZIGBEE_ROUTER
+        STACK_CFLAGS += -DBDB_NWKFORMATION_SUPPORT=1
+    endif
+    ifeq ($(ZIGBEE_DEVICE_TYPE), ZIGBEE_COORDINATOR)
+      STACK_CFLAGS += -DZIGBEE_COORDINATOR
+      STACK_CFLAGS += -DBDB_NWKFORMATION_SUPPORT=1
+    endif
+    ifeq ($(ZIGBEE_DEVICE_TYPE), ZIGBEE_ROUTER)
+      STACK_CFLAGS += -DZIGBEE_ROUTER
+      STACK_CFLAGS += -DBDB_NWKFORMATION_SUPPORT=1
+    endif
+    ifeq ($(ZIGBEE_DEVICE_TYPE), ZIGBEE_END_DEVICE)
+      STACK_CFLAGS += -DZIGBEE_END_DEVICE
+      STACK_CFLAGS += -DBDB_NWKFORMATION_SUPPORT=0
+    endif
+    ifneq ($(ZIGBEE_DEVICE_TYPE), ZIGBEE_COORDINATOR)
+	  ifeq ($(BDB_TOUCHLINK_SUPPORT),TRUE)
+	    STACK_CFLAGS += -DBDB_TOUCHLINK_SUPPORT=1
+		STACK_CFLAGS += -DBDB_TOUCHLINK_INITIATOR_SUPPORT=1
+	  endif
+	else
+	  STACK_CFLAGS += -DBDB_TOUCHLINK_SUPPORT=0
+    endif
+  endif
+endif # BUILD_TARGET != TARGET_HAL_SE
+
+#-------------------------------------------------------------------------------
+# Build target related compiler flags:
+#-------------------------------------------------------------------------------
+ifeq ($(BUILD_TARGET), TARGET_MAC)
+  STACK_CFLAGS += -D_MAC2_
+  ifeq ($(MAC_POLL_CONF_BEFORE_DATA_IND), TRUE)
+    STACK_CFLAGS += -D_POLL_CONF_BEFORE_DATA_IND
+  endif	
+  ifeq ($(MAC_ASYNC_COMM_STATUS_IND), TRUE)
+    STACK_CFLAGS += -D_ASYNC_COMM_STATUS_
+  endif
+endif
+
+#-------------------------------------------------------------------------------
+# Features flag compiler flag:
+#-------------------------------------------------------------------------------
+ifneq ($(BUILD_TARGET), TARGET_HAL_SE)
+  ifeq ($(RF_BATTERY_MONITOR), TRUE)
+    HAL_CFLAGS += -D_RF_BAT_MON_
+  endif
+  ifeq ($(MAC_DISASSOCIATE), TRUE)
+    STACK_CFLAGS += -D_MAC_DISASSOCIATE_
+  endif
+  ifeq ($(MAC_BAN_NODE), TRUE)
+    STACK_CFLAGS += -D_MAC_BAN_NODE_
+  endif
+  ifeq ($(CUSTOM_MAC_HWI_PURGE_TRANSACTION_REJOIN), TRUE)
+    STACK_CFLAGS += -D_CUSTOM_MAC_HWI_PURGE_TRANSACTION_REJOIN_
+  endif
+  ifeq ($(MAC_RADIO_REGISTERS_ACCESS), TRUE)
+    STACK_CFLAGS += -D_RF_REG_ACCESS_
+  endif
+  ifeq ($(MAC_CONTROL_FRAME_PENDING_BIT), TRUE)
+    STACK_CFLAGS += -D_CONTROL_FRAME_PENDING_BIT_
+    STACK_CFLAGS += -D_PENDING_EMPTY_DATA_FRAME_
+  endif
+
+  ifeq ($(NWK_FAST_ROUTE_DISCOVERY), TRUE)
+    STACK_CFLAGS += -D_NWK_FAST_ROUTE_DISCOVERY_
+  endif
+
+  ifneq ($(BUILD_TARGET), TARGET_MAC)
+    ifeq ($(NWK_MANY_TO_ONE_ROUTING), TRUE)
+      STACK_CFLAGS += -D_NWK_MANY_TO_ONE_ROUTING_
+      STACK_CFLAGS += -D_NWK_ROUTE_RECORD_
+      STACK_CFLAGS += -D_NWK_SOURCE_ROUTING_
+      ifeq ($(NWK_CONCENTRATOR), TRUE)
+        STACK_CFLAGS += -D_NWK_CONCENTRATOR_
+        STACK_CFLAGS += -D_NWK_ROUTE_CACHE_
+      endif
+    endif
+    ifeq ($(NWK_NONSTANDARD_BEACON_FILTER), TRUE)
+      STACK_CFLAGS += -D_NWK_NONSTANDARD_BEACON_FILTER_
+    endif
+    ifeq ($(NWK_GROUP), TRUE)
+      STACK_CFLAGS += -D_NWK_GROUP_
+      STACK_CFLAGS += -D_GROUP_TABLE_
+    endif
+    ifeq ($(NWK_CHECK_OUT_BROADCAST), TRUE)
+      STACK_CFLAGS += -D_NWK_CHECK_OUT_BROADCAST_
+    endif
+    ifeq ($(NWK_ROUTING_OPTIMIZATION), HIGH)
+      STACK_CFLAGS += -D_NWK_ROUTING_OPTIMIZATION_=3
+    endif
+    ifeq ($(NWK_ROUTING_OPTIMIZATION), MEDIUM)
+      STACK_CFLAGS += -D_NWK_ROUTING_OPTIMIZATION_=2
+    endif
+    ifeq ($(NWK_ROUTING_OPTIMIZATION), LOW)
+      STACK_CFLAGS += -D_NWK_ROUTING_OPTIMIZATION_=1
+    endif
+    ifeq ($(NWK_REPORT_CONSTANT_COST), TRUE)
+      STACK_CFLAGS += -D_NWK_REPORT_CONSTANT_COST_
+    endif
+    ifeq ($(NWK_DISTRIBUTED_ADDRESS_ASSIGNMENT), TRUE)
+      STACK_CFLAGS += -D_NWK_DISTRIBUTED_ADDRESSING_
+      ifeq ($(NWK_TREE_ROUTING), TRUE)
+        STACK_CFLAGS += -D_NWK_TREE_ROUTING_
+      endif
+    endif
+    ifeq ($(NWK_STOCHASTIC_ADDRESS_ASSIGNMENT), TRUE)
+      STACK_CFLAGS += -D_NWK_STOCHASTIC_ADDRESSING_
+      STACK_CFLAGS += -D_RESOLVE_ADDR_CONFLICT_
+    endif
+    ifeq ($(NWK_UID_ADDRESS_ASSIGNMENT), TRUE)
+      STACK_CFLAGS += -D_NWK_UID_ADDRESSING_
+    endif
+    ifeq ($(NWK_MESH_ROUTING), TRUE)
+      STACK_CFLAGS += -D_NWK_MESH_ROUTING_
+      ifeq ($(NWK_THRESHOLD_ROUTING), TRUE)
+        STACK_CFLAGS += -D_NWK_THRESHOLD_ROUTING_
+      endif
+    endif
+
+    ifeq ($(APS_FRAGMENTATION), TRUE)
+      STACK_CFLAGS += -D_APS_FRAGMENTATION_
+    endif
+
+    ifeq ($(ZCL_SUPPORT), TRUE)
+      STACK_CFLAGS += -D_ZCL_SUPPORT_
+      ifeq ($(ZCL_REPORTING_SUPPORT), TRUE)
+        STACK_CFLAGS += -D_ZCL_REPORTING_SUPPORT_
+      endif
+	  ifeq ($(ZCL_ATTRIBUTE_EXTENSION), TRUE)
+        STACK_CFLAGS += -D_ZCL_ATTRIBUTE_EXTENSION_
+      endif
+      ifeq ($(ZCL_MSP_SUPPORT), TRUE)
+        STACK_CFLAGS += -D_CUSTOM_ZCL_MSP_SUPPORT_
+      endif
+    endif
+
+    ifeq ($(APS_MULTICAST), TRUE)
+      STACK_CFLAGS += -D_APS_MULTICAST_
+      STACK_CFLAGS += -D_GROUP_TABLE_
+    endif
+    ifeq ($(BINDING), TRUE)
+      STACK_CFLAGS += -D_BINDING_
+      ifeq ($(END_DEVICE_BINDING), TRUE)
+        STACK_CFLAGS += -D_END_DEVICE_BINDING_
+      endif
+    endif
+    ifeq ($(APS_CHECK_OUT_DUPLICATE_REJECTION_TABLE), TRUE)
+      STACK_CFLAGS += -D_APS_CHECK_OUT_DUPLICATE_REJECTION_TABLE_
+    endif
+    
+    ifeq ($(CUSTOMER_SPECIFIC_APS_DUPLICATE_LIFE_TIME), TRUE)
+      STACK_CFLAGS += -D_CUSTOMER_SPECIFIC_APS_DUPLICATE_LIFE_TIME_
+    endif
+
+    ifeq ($(CUSTOMER_SPECIFIC_CCB_2033), TRUE)
+      STACK_CFLAGS += -D_CUSTOMER_SPECIFIC_CCB_2033_
+      ifeq ($(CUSTOM_NWK_ADDRESS_CONFLICT_WAIT_TIME_AFTER_RESET), TRUE)
+        STACK_CFLAGS += -D_CUSTOM_NWK_ADDRESS_CONFLICT_WAIT_TIME_AFTER_RESET_
+      endif
+    endif
+
+    ifeq ($(DISTRIBUTED_SECURITY), TRUE)
+      STACK_CFLAGS += -D_DISTRIBUTED_SECURITY_
+    endif
+  
+    ifeq ($(CUSTOMER_SPECIFIC_CCB_2462), TRUE)
+      STACK_CFLAGS += -D_CUSTOMER_SPECIFIC_CCB_2462_
+    endif
+
+    ifeq ($(CUSTOMER_SPECIFIC_CW_MODE_Fc_OFFSET_CORRECTION), TRUE)
+      STACK_CFLAGS += -D_CUSTOMER_SPECIFIC_CW_MODE_Fc_OFFSET_CORRECTION_
+    endif
+
+    ifeq ($(COMMISSIONING), TRUE)
+      STACK_CFLAGS += -D_COMMISSIONING_
+    endif
+
+    ifeq ($(ENABLE_PERSISTENT_SERVER), TRUE)
+      STACK_CFLAGS += -D_ENABLE_PERSISTENT_SERVER_
+      STACK_CFLAGS += -D_SYS_PDS_TASK_
+    endif
+    ifeq ($(TC_PROMISCUOUS_MODE), TRUE)
+      STACK_CFLAGS += -D_TC_PROMISCUOUS_MODE_
+    endif
+    ifeq ($(LIGHT_LINK_PROFILE), TRUE)
+      STACK_CFLAGS += -D_LIGHT_LINK_PROFILE_
+    endif
+
+    ifeq ($(RESOLVE_PANID_CONFLICT), TRUE)
+      STACK_CFLAGS += -D_RESOLVE_PANID_CONFLICT_
+      ifeq ($(NETWORK_MANAGER), TRUE)
+        STACK_CFLAGS += -D_NETWORK_MANAGER_
+      endif
+    endif
+
+    ifeq ($(NWK_DIRECT_JOIN), TRUE)
+      STACK_CFLAGS += -D_NWK_DIRECT_JOIN_
+    endif
+
+    ifeq ($(FREQUENCY_AGILITY), TRUE)
+      STACK_CFLAGS += -D_FREQUENCY_AGILITY_
+    endif
+
+    ifeq ($(CERTIFICATION), TRUE)
+      STACK_CFLAGS += -D_CERTIFICATION_
+    endif
+
+  endif # BUILD_TARGET != TARGET_MAC
+
+
+  ifeq ($(INTERPAN), TRUE)
+    STACK_CFLAGS += -D_INTERPAN_
+  endif
+
+  ifeq ($(NWK_ORPHAN_JOIN), TRUE)
+    STACK_CFLAGS += -D_NWK_ORPHAN_JOIN_
+  endif
+
+  ifeq ($(PROFILER), TRUE)
+    STACK_CFLAGS += -D_PROFILER_
+  endif
+
+  ifeq ($(SE_CERTIFICATION), TRUE)
+    STACK_CFLAGS += -D_ZSE_CERTIFICATION_
+  endif
+
+  ifeq ($(ENABLE_STATS), TRUE)
+    STACK_CFLAGS += -D_STATS_ENABLED_
+    HAL_CFLAGS += -D_STATS_ENABLED_
+  endif
+
+  ifeq ($(NWK_PASSIVE_ACK), TRUE)
+    STACK_CFLAGS += -D_NWK_PASSIVE_ACK_
+
+    ifeq ($(NWK_CUSTOM_PASSIVE_ACK_THRESHOLD), TRUE)
+      STACK_CFLAGS += -D_CUSTOM_PASSIVE_ACK_THRESHOLD_
+    endif
+  endif
+
+  ifeq ($(CUSTOM_SUPPRESS_RETRANSMISSION), TRUE)
+    STACK_CFLAGS += -D_CUSTOM_SUPPRESS_RETRANSMISSION_
+  endif
+
+  ifeq ($(ZAPPSI_SUPPORT), TRUE)
+    STACK_CFLAGS += -D_ZAPPSI_
+  endif
+
+  ifeq ($(MAC_TEST_EMPTY_DATA), TRUE)
+    STACK_CFLAGS += -D_TEST_EMPTY_DATA_FEATURE_
+  endif
+
+  ifeq ($(SILENT_LEAVE_WITHOUT_NETWORK_LEFT), TRUE)
+    STACK_CFLAGS += -D_SILENT_LEAVE_WITHOUT_NETWORK_LEFT_
+  endif
+
+  ifeq ($(NWK_NEIGHBOR_ENTRY_ADDITION_UPON_RX_FRAME), TRUE)
+    STACK_CFLAGS += -D_NWK_NEIGHBOR_ENTRY_ADDITION_UPON_RX_FRAME_
+  endif
+
+  ifeq ($(ZIGBEE_R21_SUPPORT), TRUE)
+    STACK_CFLAGS += -D_ZIGBEE_REV_21_SUPPORT_
+  endif
+
+  ifeq ($(CHILD_MANAGEMENT), TRUE)
+    STACK_CFLAGS += -D_CHILD_MANAGEMENT_
+    #STACK_CFLAGS += -D_SSP_USE_FLASH_FOR_CONST_DATA
+  endif
+  ifeq ($(PARENT_ANNOUNCE), TRUE)
+    STACK_CFLAGS += -D_PARENT_ANNCE_
+    STACK_CFLAGS += -D_TEMP_CHANGES_FOR_ZIG_TEST_
+  endif
+  ifeq ($(NWK_ROUTE_REQUEST_RETRIES_BASED_ON_MAC_CONF), TRUE)
+    STACK_CFLAGS += -D_NWK_ROUTE_REQUEST_RETRIES_BASED_ON_MAC_CONF_
+  endif
+
+  ifeq ($(NWK_KEEP_STALE_NEIGHBOR_ENTRY), TRUE)
+    STACK_CFLAGS += -D_NWK_KEEP_STALE_NEIGHBOR_ENTRY_
+  endif
+
+  ifeq ($(LEAVE_NETWORK_IMMEDIATE_WITH_NO_TANSACTIONS_LEFT), TRUE)
+    STACK_CFLAGS += -D_LEAVE_NETWORK_IMMEDIATE_WITH_NO_TANSACTIONS_LEFT_
+  endif
+
+  ifeq ($(SLEEP_WHEN_IDLE), TRUE)
+    STACK_CFLAGS += -D_SLEEP_WHEN_IDLE_
+    HAL_CFLAGS += -D_SLEEP_WHEN_IDLE_
+  endif
+
+  ifeq ($(NWK_IN_FRAME_COUNTERS), TRUE)
+    STACK_CFLAGS += -D_NWK_IN_FRAME_COUNTERS_
+  endif
+
+  ifeq ($(DUPLICATE_REJECTION_TABLE_BIT_MASK_ENABLE), TRUE)
+    STACK_CFLAGS += -D_DUPLICATE_REJECTION_TABLE_BIT_MASK_ENABLE_
+  endif
+
+  ifeq ($(ASSERT_ON_UNKNOWN_COMMANDS_RECEPTION), TRUE)
+    STACK_CFLAGS += -D_ASSERT_ON_UNKNOWN_COMMANDS_RECEPTION_
+  endif
+
+  ifeq ($(ASSERT_ON_NFN_CALLING_ASSOCIATION), TRUE)
+    STACK_CFLAGS += -D_ASSERT_ON_NFN_CALLING_ASSOCIATION_
+  endif
+
+  ifeq ($(CUSTOMER_SPECIFIC_MGMTLQI_RQST_BRST_EDP), TRUE)
+    STACK_CFLAGS += -D_CUSTOMER_SPECIFIC_MGMTLQI_RQST_BRST_EDP_
+  endif
+
+  ifeq ($(CUSTOM_FAST_REJOIN_RESP), TRUE)
+    STACK_CFLAGS += -D_CUSTOM_FAST_REJOIN_RESP_
+  endif
+
+  ifeq ($(R20_LEGACY), TRUE)
+    STACK_CFLAGS += -D_R20_LEGACY_
+  endif
+
+  ifeq ($(TC_ALLOW_REJOIN_WITH_GLOBAL_LINK_KEY), TRUE)
+    STACK_CFLAGS += -D_TC_ALLOW_REJOIN_WITH_GLOBAL_LINK_KEY_
+  endif
+
+endif # BUILD_TARGET != TARGET_HAL_SE
+
+#-------------------------------------------------------------------------------
+# Debug related compiler flags:
+#-------------------------------------------------------------------------------
+ifeq ($(BUILD_CONFIGURATION), DEBUG)
+  #SYS_LOG = ON
+  SYS_LOG = OFF
+
+  #MEASURE_DIAGNOSTIC = ON
+  MEASURE_DIAGNOSTIC = OFF
+
+# When you turn on system log or measure system, you must set up correct mcu frequnce here.
+#HAL_CFLAGS += -DHAL_3d6864MHz  # avr(future)
+#HAL_CFLAGS += -DHAL_4MHz       # avr, xmega
+#HAL_CFLAGS += -DHAL_7d3728MHz  # avr(future)
+#HAL_CFLAGS += -DHAL_8MHz       # avr, xmega, arm
+#HAL_CFLAGS += -DHAL_12MHz      # xmega
+#HAL_CFLAGS += -DHAL_16MHz      # xmega
+#HAL_CFLAGS += -DHAL_32MHz      # xmega
+#HAL_CFLAGS += -DHAL_18d432MHz  # arm
+#HAL_CFLAGS += -DRF             # arm
+
+  ifeq ($(MEASURE_DIAGNOSTIC), ON)
+    HAL_CFLAGS += -DMEASURE
+  endif # MEASURE_DIAGNOSTIC
+
+  ifeq ($(SYS_LOG), ON)
+    HAL_CFLAGS += -D_SYS_LOG_ON_
+    HAL_CFLAGS += -D_HAL_LOG_ON_
+    HAL_CFLAGS += -D_MAC_LOG_ON_
+    HAL_CFLAGS += -D_NWK_LOG_ON_
+    HAL_CFLAGS += -D_APS_LOG_ON_
+    HAL_CFLAGS += -D_ZDO_LOG_ON_
+    HAL_CFLAGS += -D_SSP_TC_LOG_ON_
+    HAL_CFLAGS += -D_ZCL_LOG_ON_
+    HAL_CFLAGS += -D_APL_LOG_ON_
+    ifeq ($(HAL), ATMEGA1281)
+      HAL_CFLAGS += -D_HAL_LOG_INTERFACE_UART1_
+    endif
+    ifeq ($(HAL), ATMEGA2561)
+      HAL_CFLAGS += -D_HAL_LOG_INTERFACE_UART1_
+    endif
+    ifeq ($(HAL), ATMEGA1284)
+      HAL_CFLAGS += -D_HAL_LOG_INTERFACE_UART1_
+    endif
+    ifeq ($(HAL), AT90USB1287)
+      HAL_CFLAGS += -D_HAL_LOG_INTERFACE_UART1_
+    endif
+    ifeq ($(HAL), AT91SAM7X256)
+      HAL_CFLAGS += -D_HAL_LOG_INTERFACE_UART0_
+    endif
+    ifeq ($(HAL), ATMEGA128RFA1)
+      HAL_CFLAGS += -D_HAL_LOG_INTERFACE_UART1_
+    endif
+    ifeq ($(HAL), ATMEGA256RFR2)
+      HAL_CFLAGS += -D_HAL_LOG_INTERFACE_UART1_
+    endif
+    ifeq ($(HAL), ATMEGA2564RFR2)
+      HAL_CFLAGS += -D_HAL_LOG_INTERFACE_UART1_
+    endif
+  endif # SYS_LOG
+
+  ASSERT = ON
+  ifeq ($(ASSERT), ON)
+    HAL_CFLAGS += -D_SYS_ASSERT_ON_
+    ifeq ($(HAL), ATMEGA1281)
+      HAL_CFLAGS += -D_HAL_ASSERT_INTERFACE_UART1_
+    endif
+    ifeq ($(HAL), ATMEGA2561)
+      HAL_CFLAGS += -D_HAL_ASSERT_INTERFACE_UART1_
+    endif
+    ifeq ($(HAL), ATMEGA1284)
+      HAL_CFLAGS += -D_HAL_ASSERT_INTERFACE_UART1_
+    endif
+    ifeq ($(HAL), AT90USB1287)
+      HAL_CFLAGS += -D_HAL_ASSERT_INTERFACE_UART1_
+    endif
+    ifeq ($(HAL), ATMEGA128RFA1)
+      HAL_CFLAGS += -D_HAL_ASSERT_INTERFACE_UART1_
+    endif
+    ifeq ($(HAL), ATMEGA256RFR2)
+      HAL_CFLAGS += -D_HAL_ASSERT_INTERFACE_UART1_
+    endif
+    ifeq ($(HAL), ATMEGA2564RFR2)
+      HAL_CFLAGS += -D_HAL_ASSERT_INTERFACE_UART1_
+    endif
+    ifeq ($(HAL), AT91SAM7X256)
+      HAL_CFLAGS += -D_HAL_ASSERT_INTERFACE_DBG_PORT_
+    endif
+    ifeq ($(HAL), AT32UC3A0512)
+      HAL_CFLAGS += -D_HAL_ASSERT_INTERFACE_UART0_
+    endif
+    ifeq ($(HAL), AT91SAM3S4C)
+      HAL_CFLAGS += -D_HAL_ASSERT_INTERFACE_UART0_
+    endif
+    ifeq ($(HAL), AT91SAM4S16C)
+      HAL_CFLAGS += -D_HAL_ASSERT_INTERFACE_UART0_
+    endif
+  endif
+else ifeq ($(BUILD_CONFIGURATION), RELEASE)
+  #do nothing
+else
+  $(error ERROR in file  Makerules: $(BUILD_CONFIGURATION) Unknown type of build comfiguration)
+endif
+
+
+#-------------------------------------------------------------------------------
+# Libraries' names. Should be without prefix "lib" and file extentions:
+#-------------------------------------------------------------------------------
+ifeq ($(COMPILER_TYPE), IAR)
+  COMPILER_TYPE_LOWER_CASE = _Iar
+else
+  COMPILER_TYPE_LOWER_CASE = _Gcc
+endif # COMPILER_TYPE
+
+ifeq ($(HAL), ATMEGA1281)
+  WDT_INIT_OBJ=WdtInitatmega1281$(COMPILER_TYPE_LOWER_CASE).o
+else ifeq ($(HAL), ATMEGA2561)
+  WDT_INIT_OBJ=WdtInitatmega2561$(COMPILER_TYPE_LOWER_CASE).o
+else ifeq ($(HAL), ATMEGA1284)
+  WDT_INIT_OBJ=WdtInitatmega1284$(COMPILER_TYPE_LOWER_CASE).o
+else ifeq ($(HAL), AT90USB1287)
+  WDT_INIT_OBJ=WdtInitat90usb1287$(COMPILER_TYPE_LOWER_CASE).o
+else ifeq ($(HAL), ATMEGA128RFA1)
+  WDT_INIT_OBJ=WdtInitatmega128rfa1$(COMPILER_TYPE_LOWER_CASE).o
+else ifeq ($(HAL), ATMEGA256RFR2)
+  WDT_INIT_OBJ=WdtInitatmega256rfr2$(COMPILER_TYPE_LOWER_CASE).o
+else ifeq ($(HAL), ATMEGA2564RFR2)
+  WDT_INIT_OBJ=WdtInitatmega2564rfr2$(COMPILER_TYPE_LOWER_CASE).o
+else ifeq ($(HAL), AT91SAM7X256)
+  ifeq ($(OS), FREE_RTOS)
+    FREE_RTOS_LIB=FreeRTOSat91sam7x256
+  else ifeq ($(COMPILER_TYPE), GCC)
+    ifeq ($(OS), FREE_RTOS)
+      BOOT_OBJ = $(LIBDIR)/FreertosBoot$(COMPILER_TYPE_LOWER_CASE).o
+    else ifeq ($(OS), NONE_OS)
+      BOOT_OBJ = $(LIBDIR)/FirmwareBoot$(COMPILER_TYPE_LOWER_CASE).o
+    else
+      $(error unknown OS)
+    endif
+  else ifeq ($(COMPILER_TYPE), IAR)
+    ifeq ($(OS), FREE_RTOS)
+    else ifeq ($(OS), NONE_OS)
+      BOOT_OBJ = $(LIBDIR)/FirmwareBoot$(COMPILER_TYPE_LOWER_CASE).o
+    else
+      $(error unknown OS)
+    endif
+  endif
+else ifeq ($(HAL), ATXMEGA128A1)
+else ifeq ($(HAL), ATXMEGA128B1)
+else ifeq ($(HAL), ATXMEGA256A3)
+else ifeq ($(HAL), ATXMEGA256D3)
+else ifeq ($(HAL), AT32UC3A0512)
+else ifeq ($(HAL), AT91SAM3S4C)
+else ifeq ($(HAL), AT91SAM4S16C)
+else ifeq ($(HAL), ATSAMD20J18)
+else ifeq ($(HAL), ATSAMR21G18A)
+else ifeq ($(HAL), ATSAMR21E18A)
+else ifeq ($(HAL), ATSAMR21E19A)
+else ifeq ($(HAL), _PIC32CX_)
+else ifeq ($(HAL), SIMULATOR)
+else ifeq ($(HAL), WIN)
+else
+  $(error unknown HAL)
+endif
+
+#-------------------------------------------------------------------------------
+# Overrides for KF MAC.
+#-------------------------------------------------------------------------------
+ifeq ($(USE_KF_MAC), TRUE)
+  ifeq ($(PLATFORM), PLATFORM_RCB)
+    ifneq (, $(findstring $(PLATFORM_REV), RCB_ATMEGA128RFA1))
+      _TAL_TYPE = KF_TAL_ATMEGARF_TAL_1
+      _SAL_TYPE = ATMEGARF_SAL
+      _PAL_TYPE = KF_PAL_ATMEGA128RFA1
+      _MCU_TYPE = MEGA_RF
+      _BOARD_TYPE = RCB_6_3_BREAKOUT_BOARD
+      _HIGHEST_STACK_LAYER = MAC
+      _TIMER_CLCK_SRC = INTERNAL_RC
+      _REF_FREQUENCY = 8MHZ
+    endif
+    ifneq (, $(findstring $(PLATFORM_REV), RCB231_V402 RCB231_V411))
+      _TAL_TYPE = KF_TAL_AT86RF231
+      _SAL_TYPE = AT86RF2xx
+      _PAL_TYPE = KF_PAL_ATMEGA1281
+      _MCU_TYPE = AVR
+      _BOARD_TYPE = RCB_4_1_BREAKOUT_BOARD
+      _HIGHEST_STACK_LAYER = MAC
+      _TIMER_CLCK_SRC = INTERNAL_RC
+      _REF_FREQUENCY = 8MHZ
+    endif
+    ifneq (, $(findstring $(PLATFORM_REV), RCB230_V31 RCB230_V32 RCB230_V331 RCB212_V532 RCB_ATMEGA256RFR2 RCB_ATMEGA2564RFR2))
+      $(error unsupported revision PLATFORM_REV)
+    endif
+  else
+    $(error unsupported platform PLATFORM)
+  endif
+
+  KF_ROOT = $(COMPONENTS_PATH)/MAC_PHY/KF_MAC
+
+  KF_INCS = $(KF_ROOT)/Glue/Inc
+  KF_INCS += $(KF_ROOT)/Snapshot/Include
+  KF_INCS += $(KF_ROOT)/Snapshot/Resources/Buffer_Management/Inc
+  KF_INCS += $(KF_ROOT)/Snapshot/Resources/Queue_Management/Inc
+  KF_INCS += $(KF_ROOT)/Snapshot/Mac/Inc
+  KF_INCS += $(KF_ROOT)/Snapshot/Tal/Inc
+  KF_INCS += $(KF_ROOT)/Snapshot/Tal/$(_TAL_TYPE)/Inc
+  KF_INCS += $(KF_ROOT)/Snapshot/SAL/Inc/
+  KF_INCS += $(KF_ROOT)/Snapshot/PAL/Inc
+  KF_INCS += $(KF_ROOT)/Snapshot/PAL/$(_MCU_TYPE)/Generic/Inc
+  KF_INCS += $(KF_ROOT)/Snapshot/PAL/$(_MCU_TYPE)/$(_PAL_TYPE)/Inc
+  KF_INCS += $(KF_ROOT)/Snapshot/PAL/$(_MCU_TYPE)/$(_PAL_TYPE)/Boards
+  KF_INCS += $(KF_ROOT)/Snapshot/PAL/$(_MCU_TYPE)/$(_PAL_TYPE)/Boards/$(_BOARD_TYPE)
+  KF_INCS += $(COMPONENTS_PATH)/SystemEnvironment/include
+
+  HAL_PATH     = $(KF_ROOT)
+  MAC_PHY_PATH = $(KF_ROOT)
+  MAC_ENV_PATH = $(KF_ROOT)
+  MAC_HWI_PATH = $(KF_ROOT)
+  MAC_HWD_PATH = $(KF_ROOT)
+
+  STACK_CFLAGS += -DFFD
+  STACK_CFLAGS += -DHIGHEST_STACK_LAYER=$(_HIGHEST_STACK_LAYER)
+  STACK_CFLAGS += -DBC_DATA_REQUEST_NOTIFICATION
+  STACK_CFLAGS += -DBC_BEACON_PAYLOAD_ACCESS_THROUGH_POINTER
+  STACK_CFLAGS += -DBC_COLLECTING_SCAN_RESULT_THROUGH_POINTER
+  STACK_CFLAGS += -DBC_USE_NON_STANDARD_PARAMETRES
+  STACK_CFLAGS += -DBC_GETTING_BUFFER_FROM_HIGH_LAYER
+  STACK_CFLAGS += -DBC_GENERATE_RANDOM_SEQUENCE
+  STACK_CFLAGS += -DBC_NUMBER_OF_STACK_BUFS
+  STACK_CFLAGS += -DENABLE_MILLI_SEC_TMR
+  STACK_CFLAGS += -D_RF_RND_
+  STACK_CFLAGS += -D_RF_AES_
+
+  HAL_CFLAGS += -D_USE_KF_MAC_
+  HAL_CFLAGS += -DDEBUG=0
+  HAL_CFLAGS += -DREDUCED_PARAM_CHECK
+  HAL_CFLAGS += -DPAL_GENERIC_TYPE=$(_MCU_TYPE)
+  HAL_CFLAGS += -DSAL_TYPE=$(_SAL_TYPE)
+  HAL_CFLAGS += -DTAL_TYPE=$(_TAL_TYPE)
+  HAL_CFLAGS += -DPAL_TYPE=$(_PAL_TYPE)
+  HAL_CFLAGS += -DBOARD_TYPE=$(_BOARD_TYPE)
+  HAL_CFLAGS += -DTIMER_CLCK_SRC_$(_TIMER_CLCK_SRC)
+  HAL_CFLAGS += -DREF_FREQ_$(_REF_FREQUENCY)
+  HAL_CFLAGS += -DENABLE_TRX_SRAM
+  HAL_CFLAGS += -DUSE_USART1
+  HAL_CFLAGS += -DHW_CONTROL_PINS_PORT_ASSIGNMENT=USART1
+  HAL_CFLAGS += -DUSE_BUTTONS_SERVICE
+endif
+
+#-------------------------------------------------------------------------------
+# Flags and libraries names to be passed to actual build
+#-------------------------------------------------------------------------------
+CFLAGS_NO_PATHS = $(HAL_CFLAGS) -D$(HAL) -D$(RFCHIP) $(STACK_CFLAGS)
+CFLAGS = $(HAL_CFLAGS_PATH) $(CFLAGS_NO_PATHS)
+
+MAC_PHY_LIB = mac
+NWK_LIB = nwk
+APS_LIB = aps
+ZDO_LIB = zdo
+ZCL_LIB = zcl
+SSP_LIB = SSP
+TC_LIB = TC
+SE_LIB = systemenvironment
+CS_LIB = configServer
+PDS_LIB = PersistDataServer
+VCP_LIB = VCP
+OFD_LIB = OFD
+ZAPPSI_LIB = zappsi
+BDB_LIB = bdb

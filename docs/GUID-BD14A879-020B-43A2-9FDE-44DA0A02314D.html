@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
+<meta name="DC.rights.owner" content="(C) Copyright 2022" />
+<meta name="DC.type" content="topic" />
+<meta name="DC.title" content="Read or write a Remote Attribute" />
+<meta name="DC.relation" scheme="URI" content="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF.html" />
+<meta name="DC.format" content="XHTML" />
+<meta name="DC.identifier" content="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D" />
+<meta name="DC.language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="stylesheets/atmel.css" />
+<title>Read or write a Remote Attribute</title>
+<meta name="Microsoft.Help.Id" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D" />
+<meta name="Microsoft.Help.TocParent" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF" />
+<meta name="Microsoft.Help.TocOrder" content="1" />
+<meta name="Microsoft.Help.Locale" content="en-US" />
+<meta name="Microsoft.Help.TopicLocale" content="en-US" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<script language="javascript">
+       
+       if (window.parent.location.protocol != 'file:') {
+				document.addEventListener('click', function(e) {
+				    if (e.target) {
+               if (e.target.nodeName == "A" ) {
+                    if (!e.target.target) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                              
+                      var origUrl = window.parent.location.href.substr(0, window.parent.location.href.indexOf("?"));
+                      if (origUrl.length === 0) {
+                          origUrl = window.parent.location.href;
+                      }
+                      var href= e.target.getAttribute("href");
+                      var parts = href.split("#");
+          
+                      var url = "";
+                      if (parts.length == 2 ) {
+                        if (!parts[0].length) {
+                            url = window.parent.location.search.replace('?','')
+                        } else {
+                            url = parts[0].replace('.html','');
+                        }
+                      } else {
+                        url = parts[0].replace('.html','');
+                      }
+
+                      if (parts.length == 2) {
+                          url += "#" + parts[1];
+                      }
+    
+                      window.parent.location.href = origUrl + "?" + url;
+
+                      return false;
+                    }
+               }
+            }
+				});
+			}
+
+		</script><script language="javascript">
+         
+         function copyContent(content, button) {
+         
+            var textArea = document.createElement("textarea");
+            
+            // Place in the top-left corner of screen regardless of scroll position.
+            textArea.style.position = 'fixed';
+            textArea.style.top = 0;
+            textArea.style.left = 0;
+            
+            // Ensure it has a small width and height. Setting to 1px / 1em
+            // doesn't work as this gives a negative w/h on some browsers.
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            
+            // We don't need padding, reducing the size if it does flash render.
+            textArea.style.padding = 0;
+            
+            // Clean up any borders.
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            
+            // Avoid flash of the white box if rendered for any reason.
+            textArea.style.background = 'transparent';
+            
+            textArea.value = content;
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+               var successful = document.execCommand('copy');
+               var msg = successful ? 'successful' : 'unsuccessful';
+               if (!button.classList.contains("copied")){
+                  button.textContent = "Copied";
+                  button.classList.add("copied");
+                  setTimeout(function(){
+                     button.textContent = "Copy";
+                     button.classList.remove("copied");
+                  },1000);
+               }
+            } catch (err) {
+               console.log('Oops, unable to copy');
+            }
+            
+            document.body.removeChild(textArea);
+         }
+         
+         function cpy(id, button) {
+            var element = document.getElementById(id);
+            var content = element.getAttribute("content");
+            
+            copyContent(content, button);
+         }
+         
+         document.addEventListener("DOMContentLoaded", function(event) {
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.style.position = "relative";
+               var copy = document.createElement("button");
+               copy.textContent = "Copy";
+               copy.setAttribute("class", "copy-code");
+               
+               var content = elem.textContent;
+               
+               copy.addEventListener("click", function(){
+                  copyContent(content, copy);
+               });
+               
+               elem.addEventListener("mouseenter", function(evt){
+                  elem.prepend(copy);
+               });
+            });
+            
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.addEventListener("mouseleave", function(evt){
+                  document.querySelector(".copy-code").remove();
+               });
+            });
+         });
+         
+      </script><script language="javascript">
+          
+          // Add the MathML namespace to html
+          var html = document.getElementsByTagName("html")[0],
+          head = document.getElementsByTagName("head")[0];
+          
+          var mathJax = document.createElement("script");
+          mathJax.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML";
+          head.appendChild(mathJax);
+          
+          html.setAttribute("xmlns:m","http://www.w3.org/1998/Math/MathML");
+          
+          function inIframe() { try { return window.self !== window.top; } catch (e) { return true; } }
+          
+          if (!inIframe()) { 
+          
+          var Default = "index.html?GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D"; 
+          
+          var displaylocation = "value" + window.location.href;
+          
+          var GUIDS = displaylocation.split('GUID');          
+          
+          if (displaylocation.indexOf('#GUID') != -1) {            
+          var First = GUIDS[1].split('.html');  
+          if (GUIDS[3]){First = GUIDS[2].split('.html');}
+          if (GUIDS[4]){First = GUIDS[3].split('.html');}
+          if (GUIDS[5]){First = GUIDS[4].split('.html');}
+          
+          var Second = GUIDS[2].split('#');   
+          if (GUIDS[3]){Second = GUIDS[3].split('#');}
+          if (GUIDS[4]){Second = GUIDS[4].split('#');}
+          if (GUIDS[5]){Second = GUIDS[5].split('#');}
+          
+          Default = "index.html?" + "GUID" + First[0] + "GUID" + Second[0];     
+          }                    
+          window.top.location = Default;
+          }       
+          
+        </script><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /><style xml:space="">
+        
+          button.copy-code{
+            display:none;
+            padding:0.7em 1.4em;
+            margin:0 0.3em 0.3em 0;
+            border-radius:0.15em;
+            box-sizing: border-box;
+            text-decoration:none;
+            font-family:'Roboto',sans-serif;
+            text-transform:uppercase;
+            font-weight:400;
+            color:#FFFFFF;
+            background-color:#9c9c9c;
+            box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+            text-align:center;
+            position:relative;
+            border: 0;
+            float: right;
+            border-radius: .5em;
+            cursor: pointer;
+          }
+          button.copy-code:active{
+            top:0.1em;
+          }
+          
+          pre:hover button.copy-code{
+            display: inline-block !important;
+          }
+          button.copy-code.copied {
+            cursor: default !important;
+          }
+          
+          
+          @media all and (max-width:30em){
+            button.copy-code{
+              display:block;
+              margin:0.4em auto;
+            }
+          }
+        
+        
+      </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
+<body id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D">
+
+<h1 class="title topictitle1" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-7A823D66-CDFC-4606-BC0E-30C6C07EF489">Read or write a Remote Attribute</h1>
+<div class="body">
+        <p class="p">To read or write an attribute on a remote device, the <a class="xref" href="GUID-1C5C7916-AD83-4D15-8407-ACCA7CC86CD0.html">ZCL_AttribureReq()</a> function is used. A single request can access values of
+            several attributes from the same cluster.</p>
+
+        <p class="p">The argument is of <a class="xref" href="GUID-D668683F-F251-4340-973F-733DE28B6748.html">ZCL_Request_t</a>* type. The id field of the argument shall be set to
+            ZCL_READ_ATTRIBUTES_COMMAND_ID to read attributes’ values and to
+            ZCL_WRITE_ATTRIBUTES_COMMAND_ID to write attributes’ values. The requestPayload and
+            requestLength fields of the <a class="xref" href="GUID-D668683F-F251-4340-973F-733DE28B6748.html">ZCL_Request_t</a> instance shall be filled as described in following
+            sections.</p>
+
+        <div class="section" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__SECTION_V5F_H12_4TB"><h2 class="title sectiontitle">Payload for Read Attributes Command</h2>
+            
+            <p class="p">To form the payload for the read attributes command use the <a class="xref" href="GUID-97B49612-DAB8-4D81-8BDC-D38AD7628EC6.html">ZCL_PutNextElement()</a> function. With the help of this function attribute
+                IDs are written one by one to the buffer in a correct way and the overall payload
+                length is calculated. The buffer is then used as the payload for the read attribute
+                command. See instructions below:</p>
+
+            <ol class="ol" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__OL_W5F_H12_4TB">
+                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-8DE68C44-4C8E-4828-B196-1C9E1952EBA8"><span class="indent-level-default">1.</span>Define variables of <a class="xref" href="GUID-7DE8E39E-096F-4DB4-9094-BBC893F7EBEF.html">ZCL_NextElement_t</a> and <a class="xref" href="GUID-E0FBFA0B-5033-482D-872A-1E1F220B47FC.html">ZCL_ReadAttributeReq_t</a> types. For
+                    example:<pre class="pre"><a class="xref" href="GUID-7DE8E39E-096F-4DB4-9094-BBC893F7EBEF.html">ZCL_NextElement_t</a> element;
+<a class="xref" href="GUID-E0FBFA0B-5033-482D-872A-1E1F220B47FC.html">ZCL_ReadAttributeReq_t</a> readAttrReqElement;</pre>
+</li>
+
+                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-D8A13F7B-E87B-42B2-970D-8A164EC280EA"><span class="indent-level-default">2.</span>Define a sufficiently large buffer (but note that it should include only
+                    attribute IDs). The buffer must be defined globally and may be a variable of the
+                    uint8_t* type.</li>
+
+                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-CDC14307-2B7C-49F6-8284-C899ED922F83"><span class="indent-level-default">3.</span>Configure element in the following
+                    way:<pre class="pre">element.payloadLength = 0;
+element.payload = buffer;
+element.id = ZCL_READ_ATTRIBUTES_COMMAND_ID;
+element.content = &amp;readAttrReqElement;</pre>
+The
+                    buffer variable is assumed to be defined somewhere in the application to be used
+                    as the buffer.</li>
+
+                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-C7453477-A022-4390-AE71-E256DF68E0AF"><span class="indent-level-default">4.</span>For each requested attribute repeat the following steps:<ol class="ol" type="a" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__OL_Z5F_H12_4TB">
+                        <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-BB1317F9-9B72-40B2-8E57-5CFFFB3BEB81"><span class="indent-level-default">a.</span>Set readAttrReqElement.id to the target attributes identifier.</li>
+
+                        <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-8BD49670-CCDA-4890-93F2-E7DF0FD482AE"><span class="indent-level-default">b.</span>Call <a class="xref" href="GUID-97B49612-DAB8-4D81-8BDC-D38AD7628EC6.html">ZCL_PutNextElement()</a>(&amp;element).</li>
+
+                    </ol>
+</li>
+
+                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-14C7D6BF-609B-4D55-A066-0151155D139E"><span class="indent-level-default">5.</span>Set the requestLength field of
+                    the <a class="xref" href="GUID-D668683F-F251-4340-973F-733DE28B6748.html">ZCL_Request_t</a> instance to element.payloadLength.</li>
+
+                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-C5A91495-D5E5-4A54-995F-E24D50252C0B"><span class="indent-level-default">6.</span>Set the requestPayload field of
+                    the <a class="xref" href="GUID-D668683F-F251-4340-973F-733DE28B6748.html">ZCL_Request_t</a> instance in the request to buffer.</li>
+
+            </ol>
+
+        </div>
+
+        <div class="section" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__SECTION_EPL_J12_4TB"><h2 class="title sectiontitle">Payload for Write Attributes Command</h2>
+            
+            <p class="p">Forming the payload for a write attributes command involves almost the same steps as
+                for the read attributes command:</p>
+
+            <ol class="ol" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__OL_FPL_J12_4TB">
+                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-CE4379D4-EFB5-434E-A8EF-031DFAC51546"><span class="indent-level-default">1.</span>Define a variable of
+                    ZCL_NextElement_t type and a request element. The latter may have the <a class="xref" href="GUID-A4CFA5D4-5AE3-4FDA-87FD-078D0322DA5A.html">ZCL_WriteAttributeReq_t</a> type. For
+                    example:<pre class="pre"><a class="xref" href="GUID-7DE8E39E-096F-4DB4-9094-BBC893F7EBEF.html">ZCL_NextElement_t</a> element;
+<a class="xref" href="GUID-A4CFA5D4-5AE3-4FDA-87FD-078D0322DA5A.html">ZCL_WriteAttributeReq_t</a> writeAttrReqElement;</pre>
+In
+                    this case the type field of the <a class="xref" href="GUID-A4CFA5D4-5AE3-4FDA-87FD-078D0322DA5A.html">ZCL_WriteAttributeReq_t</a> instance should be set to the constant
+                    specifying the attribute’s data type; for example, ZCL_U64BIT_DATA_TYPE_ID. The
+                    data type for a given attribute is defined by the ZCL specification and should
+                    coincide with the data type assigned to the attribute on the destination
+                    devices. The attribute’s value should be written to the value field. However,
+                    this field in fact has the unit8_t[1] type. A one-byte value may be assigned to
+                    value[0]. But values occupying more than one byte in memory cannot be written
+                    directly. A possible workaround is to allocate sufficiently long buffer and cast
+                    it to the <a class="xref" href="GUID-A4CFA5D4-5AE3-4FDA-87FD-078D0322DA5A.html">ZCL_WriteAttributeReq_t</a>* type. Another solution is to define a
+                    custom structure containing subsequent ID, type, and value fields, with the
+                    value field of the actual attribute’s size. For example, for 64-bit unsigned
+                    type the structure may be defined in the following
+                    way:<pre class="pre">typedef struct PACK
+{
+ <a class="xref" href="GUID-0F877622-9EBB-46FE-8953-7A1C8DB6DEE2.html">ZCL_AttributeId_t</a> id;
+ uint8_t type;
+ uint64_t value;
+} APP_Write64BitAttributeReq_t;</pre>
+And
+                    the request element will be defined in this
+                    way:<pre class="pre">APP_Write64BitAttributeReq_t writeAttrReqElement;</pre>
+</li>
+
+                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-B5D9660F-2CC2-4433-A2A1-F42C1DF82B9C"><span class="indent-level-default">2.</span> Configure element in the following
+                    way:<pre class="pre">element.payloadLength = 0;
+element.payload = buffer;
+element.id = ZCL_WRITE_ATTRIBUTES_COMMAND_ID;
+element.content = &amp;writeAttrReqElement;
+</pre>
+The
+                    buffer variable is assumed to be defined somewhere in the application to be used
+                    as the buffer.</li>
+
+                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-2AE60028-35F9-418E-98BA-6A7857D68C78"><span class="indent-level-default">3.</span>For each requested attribute repeat the following steps:<ol class="ol" type="a" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__OL_X4N_GC2_4TB">
+                        <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-DCB93A2E-C804-4D4A-8F70-20A1AAB1A693"><span class="indent-level-default">a.</span>Set writeAttrReqElement.id to the target attribute’s ID.</li>
+
+                        <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-7468C1C6-3BF6-4E6A-9F52-36844C4C3FD7"><span class="indent-level-default">b.</span>Write the attribute’s
+                            value to the writeAttrReqElement.value field. For a <a class="xref" href="GUID-A4CFA5D4-5AE3-4FDA-87FD-078D0322DA5A.html">ZCL_WriteAttributeReq_t</a> instance, cast this field to a
+                            pointer to the attribute’s data type and dereference it, for
+                            example:<pre class="pre">*(uint64_t*)writeAttrReqElement-&gt;value = VALUE;</pre>
+</li>
+
+                        <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-14D30E38-1B0F-45A2-845B-14C38C9B968B"><span class="indent-level-default">c.</span>Call <a class="xref" href="GUID-97B49612-DAB8-4D81-8BDC-D38AD7628EC6.html">ZCL_PutNextElement()</a>(&amp;element). Check the returned
+                            value: ZCL_END_PAYLOAD_REACHED_STATUS will be returned when the last
+                            element fitting into the payload is written.</li>
+
+                    </ol>
+</li>
+
+                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-3A511D08-0E3D-4A13-80FB-949BA627AEE6"><span class="indent-level-default">4.</span>Set the requestLength field of
+                    the <a class="xref" href="GUID-D668683F-F251-4340-973F-733DE28B6748.html">ZCL_Request_t</a> instance to element.payloadLength.</li>
+
+                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-82951BBF-6EB8-441A-82E2-78ED9159A037"><span class="indent-level-default">5.</span>Set the requestPayload field of
+                    the <a class="xref" href="GUID-D668683F-F251-4340-973F-733DE28B6748.html">ZCL_Request_t</a> instance in the request to buffer.</li>
+
+            </ol>
+
+        </div>
+
+    </div>
+
+<div class="related-links">
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF.html">ZCL Components Usage</a></div>
+</div>
+</div></body>
+</html>

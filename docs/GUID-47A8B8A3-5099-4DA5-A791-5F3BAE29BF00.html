@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
+<meta name="DC.rights.owner" content="(C) Copyright 2022" />
+<meta name="DC.type" content="topic" />
+<meta name="DC.title" content="ZCL DataStructures" />
+<meta name="DC.relation" scheme="URI" content="GUID-747CBB24-84B4-451A-A43E-6114D8F4A565.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-6DC07B6C-CCE5-4805-8A55-7981BABA5043.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-0F877622-9EBB-46FE-8953-7A1C8DB6DEE2.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-F6F0DF5F-F9AE-45C0-9128-4B0EA9B6A1F7.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-29F24B27-7FA0-4495-A1EB-D1024B76CE53.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-B8041A8D-CE37-473A-8E30-295E32348DA6.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-7DE8E39E-096F-4DB4-9094-BBC893F7EBEF.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-1FECCE8A-3C04-4F86-8054-3C29AA748401.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-01DED763-8CB5-4B98-8492-6A115AB46502.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-AF90026E-D809-419A-9F29-1E03DC7FFC9C.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-DFDF6464-97E5-43C2-9D60-051E28617635.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-E0FBFA0B-5033-482D-872A-1E1F220B47FC.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-D668683F-F251-4340-973F-733DE28B6748.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-61C9D90F-B50A-4F86-9BCA-309C1B270B47.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-01E5A5F8-EE79-473A-B2BE-3D0C334595E0.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-00081355-4EF5-454C-AAE5-CB39AE740E58.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-F98E0699-A260-429B-B529-04F1E624D373.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-F6C388EF-B816-45F2-A117-4035EFDD2CA3.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-19E7154B-4CB3-4D7D-89EC-90F88E15C95D.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-A4CFA5D4-5AE3-4FDA-87FD-078D0322DA5A.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-CF4AF3F9-25C8-49E6-A3D5-3557775805FB.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-AD6277FE-6C93-4086-9B8B-148050582507.html" />
+<meta name="DC.relation" scheme="URI" content="ISHPUBLMODULEMISSING.html" />
+<meta name="DC.format" content="XHTML" />
+<meta name="DC.identifier" content="GUID-47A8B8A3-5099-4DA5-A791-5F3BAE29BF00" />
+<meta name="DC.language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="stylesheets/atmel.css" />
+<title>ZCL DataStructures</title>
+<meta name="Microsoft.Help.Id" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-47A8B8A3-5099-4DA5-A791-5F3BAE29BF00" />
+<meta name="Microsoft.Help.TocParent" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-747CBB24-84B4-451A-A43E-6114D8F4A565" />
+<meta name="Microsoft.Help.TocOrder" content="7" />
+<meta name="Microsoft.Help.Locale" content="en-US" />
+<meta name="Microsoft.Help.TopicLocale" content="en-US" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<script language="javascript">
+       
+       if (window.parent.location.protocol != 'file:') {
+				document.addEventListener('click', function(e) {
+				    if (e.target) {
+               if (e.target.nodeName == "A" ) {
+                    if (!e.target.target) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                              
+                      var origUrl = window.parent.location.href.substr(0, window.parent.location.href.indexOf("?"));
+                      if (origUrl.length === 0) {
+                          origUrl = window.parent.location.href;
+                      }
+                      var href= e.target.getAttribute("href");
+                      var parts = href.split("#");
+          
+                      var url = "";
+                      if (parts.length == 2 ) {
+                        if (!parts[0].length) {
+                            url = window.parent.location.search.replace('?','')
+                        } else {
+                            url = parts[0].replace('.html','');
+                        }
+                      } else {
+                        url = parts[0].replace('.html','');
+                      }
+
+                      if (parts.length == 2) {
+                          url += "#" + parts[1];
+                      }
+    
+                      window.parent.location.href = origUrl + "?" + url;
+
+                      return false;
+                    }
+               }
+            }
+				});
+			}
+
+		</script><script language="javascript">
+         
+         function copyContent(content, button) {
+         
+            var textArea = document.createElement("textarea");
+            
+            // Place in the top-left corner of screen regardless of scroll position.
+            textArea.style.position = 'fixed';
+            textArea.style.top = 0;
+            textArea.style.left = 0;
+            
+            // Ensure it has a small width and height. Setting to 1px / 1em
+            // doesn't work as this gives a negative w/h on some browsers.
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            
+            // We don't need padding, reducing the size if it does flash render.
+            textArea.style.padding = 0;
+            
+            // Clean up any borders.
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            
+            // Avoid flash of the white box if rendered for any reason.
+            textArea.style.background = 'transparent';
+            
+            textArea.value = content;
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+               var successful = document.execCommand('copy');
+               var msg = successful ? 'successful' : 'unsuccessful';
+               if (!button.classList.contains("copied")){
+                  button.textContent = "Copied";
+                  button.classList.add("copied");
+                  setTimeout(function(){
+                     button.textContent = "Copy";
+                     button.classList.remove("copied");
+                  },1000);
+               }
+            } catch (err) {
+               console.log('Oops, unable to copy');
+            }
+            
+            document.body.removeChild(textArea);
+         }
+         
+         function cpy(id, button) {
+            var element = document.getElementById(id);
+            var content = element.getAttribute("content");
+            
+            copyContent(content, button);
+         }
+         
+         document.addEventListener("DOMContentLoaded", function(event) {
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.style.position = "relative";
+               var copy = document.createElement("button");
+               copy.textContent = "Copy";
+               copy.setAttribute("class", "copy-code");
+               
+               var content = elem.textContent;
+               
+               copy.addEventListener("click", function(){
+                  copyContent(content, copy);
+               });
+               
+               elem.addEventListener("mouseenter", function(evt){
+                  elem.prepend(copy);
+               });
+            });
+            
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.addEventListener("mouseleave", function(evt){
+                  document.querySelector(".copy-code").remove();
+               });
+            });
+         });
+         
+      </script><script language="javascript">
+          
+          // Add the MathML namespace to html
+          var html = document.getElementsByTagName("html")[0],
+          head = document.getElementsByTagName("head")[0];
+          
+          var mathJax = document.createElement("script");
+          mathJax.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML";
+          head.appendChild(mathJax);
+          
+          html.setAttribute("xmlns:m","http://www.w3.org/1998/Math/MathML");
+          
+          function inIframe() { try { return window.self !== window.top; } catch (e) { return true; } }
+          
+          if (!inIframe()) { 
+          
+          var Default = "index.html?GUID-47A8B8A3-5099-4DA5-A791-5F3BAE29BF00"; 
+          
+          var displaylocation = "value" + window.location.href;
+          
+          var GUIDS = displaylocation.split('GUID');          
+          
+          if (displaylocation.indexOf('#GUID') != -1) {            
+          var First = GUIDS[1].split('.html');  
+          if (GUIDS[3]){First = GUIDS[2].split('.html');}
+          if (GUIDS[4]){First = GUIDS[3].split('.html');}
+          if (GUIDS[5]){First = GUIDS[4].split('.html');}
+          
+          var Second = GUIDS[2].split('#');   
+          if (GUIDS[3]){Second = GUIDS[3].split('#');}
+          if (GUIDS[4]){Second = GUIDS[4].split('#');}
+          if (GUIDS[5]){Second = GUIDS[5].split('#');}
+          
+          Default = "index.html?" + "GUID" + First[0] + "GUID" + Second[0];     
+          }                    
+          window.top.location = Default;
+          }       
+          
+        </script><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /><style xml:space="">
+        
+          button.copy-code{
+            display:none;
+            padding:0.7em 1.4em;
+            margin:0 0.3em 0.3em 0;
+            border-radius:0.15em;
+            box-sizing: border-box;
+            text-decoration:none;
+            font-family:'Roboto',sans-serif;
+            text-transform:uppercase;
+            font-weight:400;
+            color:#FFFFFF;
+            background-color:#9c9c9c;
+            box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+            text-align:center;
+            position:relative;
+            border: 0;
+            float: right;
+            border-radius: .5em;
+            cursor: pointer;
+          }
+          button.copy-code:active{
+            top:0.1em;
+          }
+          
+          pre:hover button.copy-code{
+            display: inline-block !important;
+          }
+          button.copy-code.copied {
+            cursor: default !important;
+          }
+          
+          
+          @media all and (max-width:30em){
+            button.copy-code{
+              display:block;
+              margin:0.4em auto;
+            }
+          }
+        
+        
+      </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
+<body id="GUID-47A8B8A3-5099-4DA5-A791-5F3BAE29BF00">
+
+<h1 class="title topictitle1" id="GUID-47A8B8A3-5099-4DA5-A791-5F3BAE29BF00__GUID-97351334-A545-4F53-B23F-508461034033">ZCL DataStructures</h1>
+<div class="related-links">
+<ul class="ullinks">
+<li class="link ulchildlink"><strong><a href="GUID-6DC07B6C-CCE5-4805-8A55-7981BABA5043.html">ZCL_Addressing_t struct</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-0F877622-9EBB-46FE-8953-7A1C8DB6DEE2.html">GUID-0F877622-9EBB-46FE-8953-7A1C8DB6DEE2.html</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-F6F0DF5F-F9AE-45C0-9128-4B0EA9B6A1F7.html">ZCL_Cluster_t struct</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-29F24B27-7FA0-4495-A1EB-D1024B76CE53.html">ZCL_DeviceEndpoint_t struct</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-B8041A8D-CE37-473A-8E30-295E32348DA6.html">ZCL_Get_t struct</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-7DE8E39E-096F-4DB4-9094-BBC893F7EBEF.html">ZCL_NextElement_t struct</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-1FECCE8A-3C04-4F86-8054-3C29AA748401.html">ZCL_Notify_t struct</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-01DED763-8CB5-4B98-8492-6A115AB46502.html">ZCL_OtauImageNotify_t struct</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-AF90026E-D809-419A-9F29-1E03DC7FFC9C.html">ZCL_OtauInitParams_t struct</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-DFDF6464-97E5-43C2-9D60-051E28617635.html">ZCL_OtauUpgradeEndResp_t struct</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-E0FBFA0B-5033-482D-872A-1E1F220B47FC.html">ZCL_ReadAttributeReq_t struct</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-D668683F-F251-4340-973F-733DE28B6748.html">ZCL_Request_t struct</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-61C9D90F-B50A-4F86-9BCA-309C1B270B47.html">ZCL_SecurityStatus_t Enum</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-01E5A5F8-EE79-473A-B2BE-3D0C334595E0.html">ZCL_Set_t struct</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-00081355-4EF5-454C-AAE5-CB39AE740E58.html">ZCL_StartSecurityConf_t struct</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-F98E0699-A260-429B-B529-04F1E624D373.html">ZCL_StartSecurityReq_t struct</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-F6C388EF-B816-45F2-A117-4035EFDD2CA3.html">ZCL_Status_t Enum</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-19E7154B-4CB3-4D7D-89EC-90F88E15C95D.html">ZCL_OtauStatInd_t typedef</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-A4CFA5D4-5AE3-4FDA-87FD-078D0322DA5A.html">ZCL_WriteAttributeReq t</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-CF4AF3F9-25C8-49E6-A3D5-3557775805FB.html">ZCL_ReadAttributeResp_t struct</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-AD6277FE-6C93-4086-9B8B-148050582507.html">ZCL_WriteAttributeResp_t Struct</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="ISHPUBLMODULEMISSING.html">ISHPUBLMODULEMISSING.html</a></strong><br />
+</li>
+</ul>
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-747CBB24-84B4-451A-A43E-6114D8F4A565.html">Components Data Structures</a></div>
+</div>
+</div></body>
+</html>

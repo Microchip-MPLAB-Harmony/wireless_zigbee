@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
+<meta name="DC.rights.owner" content="(C) Copyright 2022" />
+<meta name="DC.type" content="topic" />
+<meta name="DC.title" content="Sending ZDP requests" />
+<meta name="DC.relation" scheme="URI" content="GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3.html" />
+<meta name="DC.format" content="XHTML" />
+<meta name="DC.identifier" content="GUID-E61C299E-3CC5-4694-899F-4BBDBED1AEF7" />
+<meta name="DC.language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="stylesheets/atmel.css" />
+<title>Sending ZDP requests</title>
+<meta name="Microsoft.Help.Id" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-E61C299E-3CC5-4694-899F-4BBDBED1AEF7" />
+<meta name="Microsoft.Help.TocParent" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3" />
+<meta name="Microsoft.Help.TocOrder" content="2" />
+<meta name="Microsoft.Help.Locale" content="en-US" />
+<meta name="Microsoft.Help.TopicLocale" content="en-US" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<script language="javascript">
+       
+       if (window.parent.location.protocol != 'file:') {
+				document.addEventListener('click', function(e) {
+				    if (e.target) {
+               if (e.target.nodeName == "A" ) {
+                    if (!e.target.target) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                              
+                      var origUrl = window.parent.location.href.substr(0, window.parent.location.href.indexOf("?"));
+                      if (origUrl.length === 0) {
+                          origUrl = window.parent.location.href;
+                      }
+                      var href= e.target.getAttribute("href");
+                      var parts = href.split("#");
+          
+                      var url = "";
+                      if (parts.length == 2 ) {
+                        if (!parts[0].length) {
+                            url = window.parent.location.search.replace('?','')
+                        } else {
+                            url = parts[0].replace('.html','');
+                        }
+                      } else {
+                        url = parts[0].replace('.html','');
+                      }
+
+                      if (parts.length == 2) {
+                          url += "#" + parts[1];
+                      }
+    
+                      window.parent.location.href = origUrl + "?" + url;
+
+                      return false;
+                    }
+               }
+            }
+				});
+			}
+
+		</script><script language="javascript">
+         
+         function copyContent(content, button) {
+         
+            var textArea = document.createElement("textarea");
+            
+            // Place in the top-left corner of screen regardless of scroll position.
+            textArea.style.position = 'fixed';
+            textArea.style.top = 0;
+            textArea.style.left = 0;
+            
+            // Ensure it has a small width and height. Setting to 1px / 1em
+            // doesn't work as this gives a negative w/h on some browsers.
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            
+            // We don't need padding, reducing the size if it does flash render.
+            textArea.style.padding = 0;
+            
+            // Clean up any borders.
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            
+            // Avoid flash of the white box if rendered for any reason.
+            textArea.style.background = 'transparent';
+            
+            textArea.value = content;
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+               var successful = document.execCommand('copy');
+               var msg = successful ? 'successful' : 'unsuccessful';
+               if (!button.classList.contains("copied")){
+                  button.textContent = "Copied";
+                  button.classList.add("copied");
+                  setTimeout(function(){
+                     button.textContent = "Copy";
+                     button.classList.remove("copied");
+                  },1000);
+               }
+            } catch (err) {
+               console.log('Oops, unable to copy');
+            }
+            
+            document.body.removeChild(textArea);
+         }
+         
+         function cpy(id, button) {
+            var element = document.getElementById(id);
+            var content = element.getAttribute("content");
+            
+            copyContent(content, button);
+         }
+         
+         document.addEventListener("DOMContentLoaded", function(event) {
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.style.position = "relative";
+               var copy = document.createElement("button");
+               copy.textContent = "Copy";
+               copy.setAttribute("class", "copy-code");
+               
+               var content = elem.textContent;
+               
+               copy.addEventListener("click", function(){
+                  copyContent(content, copy);
+               });
+               
+               elem.addEventListener("mouseenter", function(evt){
+                  elem.prepend(copy);
+               });
+            });
+            
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.addEventListener("mouseleave", function(evt){
+                  document.querySelector(".copy-code").remove();
+               });
+            });
+         });
+         
+      </script><script language="javascript">
+          
+          // Add the MathML namespace to html
+          var html = document.getElementsByTagName("html")[0],
+          head = document.getElementsByTagName("head")[0];
+          
+          var mathJax = document.createElement("script");
+          mathJax.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML";
+          head.appendChild(mathJax);
+          
+          html.setAttribute("xmlns:m","http://www.w3.org/1998/Math/MathML");
+          
+          function inIframe() { try { return window.self !== window.top; } catch (e) { return true; } }
+          
+          if (!inIframe()) { 
+          
+          var Default = "index.html?GUID-E61C299E-3CC5-4694-899F-4BBDBED1AEF7"; 
+          
+          var displaylocation = "value" + window.location.href;
+          
+          var GUIDS = displaylocation.split('GUID');          
+          
+          if (displaylocation.indexOf('#GUID') != -1) {            
+          var First = GUIDS[1].split('.html');  
+          if (GUIDS[3]){First = GUIDS[2].split('.html');}
+          if (GUIDS[4]){First = GUIDS[3].split('.html');}
+          if (GUIDS[5]){First = GUIDS[4].split('.html');}
+          
+          var Second = GUIDS[2].split('#');   
+          if (GUIDS[3]){Second = GUIDS[3].split('#');}
+          if (GUIDS[4]){Second = GUIDS[4].split('#');}
+          if (GUIDS[5]){Second = GUIDS[5].split('#');}
+          
+          Default = "index.html?" + "GUID" + First[0] + "GUID" + Second[0];     
+          }                    
+          window.top.location = Default;
+          }       
+          
+        </script><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /><style xml:space="">
+        
+          button.copy-code{
+            display:none;
+            padding:0.7em 1.4em;
+            margin:0 0.3em 0.3em 0;
+            border-radius:0.15em;
+            box-sizing: border-box;
+            text-decoration:none;
+            font-family:'Roboto',sans-serif;
+            text-transform:uppercase;
+            font-weight:400;
+            color:#FFFFFF;
+            background-color:#9c9c9c;
+            box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+            text-align:center;
+            position:relative;
+            border: 0;
+            float: right;
+            border-radius: .5em;
+            cursor: pointer;
+          }
+          button.copy-code:active{
+            top:0.1em;
+          }
+          
+          pre:hover button.copy-code{
+            display: inline-block !important;
+          }
+          button.copy-code.copied {
+            cursor: default !important;
+          }
+          
+          
+          @media all and (max-width:30em){
+            button.copy-code{
+              display:block;
+              margin:0.4em auto;
+            }
+          }
+        
+        
+      </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
+<body id="GUID-E61C299E-3CC5-4694-899F-4BBDBED1AEF7">
+<h1 class="title topictitle1" id="GUID-E61C299E-3CC5-4694-899F-4BBDBED1AEF7__GUID-80379D68-D07F-4398-90C4-5AFCD42B5FEE">Sending ZDP requests</h1><div class="body"><p class="p">Zigbee Device Profile (ZDP) requests provide a set of functionality for managing the network, discovering devices and services, etc. The</p>
+<p class="p"><a class="xref" href="GUID-B12FDF61-A423-4EFD-AFE8-21430ED24CAE.html">ZDO_ZdpReq()</a> function issues a ZDP request. A particular action performed by the function is detemined by the <code class="ph codeph">reqCluster</code> field in an instance of the <a class="xref" href="GUID-5D3CD4DF-40C1-4C83-BAA5-E5EFE26646BF.html">ZDO_ZdpReq_t</a> type representing request parameters. Additional request parameters are given in the <code class="ph codeph">req.reqPayload</code> field, which is actually a union, so that the same memory is used for parameters specific for different request types.</p>
+<p class="p">Since the function is executed asynchronously, request parameters' instance shall be defined in a global scope (or file scope - using the static keyword). Note that an instance of request parameters must not be reused until the confirmation callback is called for the current request, because the callback function uses the pointer to response parameters residing in the instance of the request parameters, as an argument.</p>
+<p class="p">The following sections provide some examples of issuing ZDP requests of various types. For more examples explore the code of sample applications provided with the SDK.</p>
+</div>
+<div class="related-links">
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3.html">ZDO Component Usage</a></div>
+</div>
+</div><div class="topic nested1" aria-labelledby="TOPIC_TZR_JKY_J5B__GUID-1A5E1CFA-9401-41B5-9941-8BB7A94397CC" id="TOPIC_TZR_JKY_J5B"><h2 class="title topictitle2" id="TOPIC_TZR_JKY_J5B__GUID-1A5E1CFA-9401-41B5-9941-8BB7A94397CC">Device Discovery requests</h2><div class="body"><p class="p">Two typical tasks in Zigbee application development are obtaining the extended address of a remote device corresponding to a given short address and the reverse task of discovering the short address of the device with a given extended address. These tasks are accomplished with a help of ZDP requests of IEEE_ADDR_CLID and NWK_ADDR_CLID types, respectively. For example, to obtain the extended address the following code may be used:</p>
+<pre class="pre"><a class="xref" href="GUID-25ED609C-8332-42AE-85DE-F3383DA05BA8.html">ZDO_IeeeAddrReq_t</a> *ieeeAddrReq = &amp;zdpReq.req.reqPayload.ieeeAddrReq;
+zdpReq.ZDO_ZdpResp = zdpIeeeAddrResp; //confirmation callback function
+zdpReq.reqCluster = IEEE_ADDR_CLID; //type of request
+ieeeAddrReq-&gt;nwkAddrOfInterest = nwkAddr; //the destination short address
+ieeeAddrReq-&gt;reqType = SINGLE_RESPONSE_REQUESTTYPE; //indicate that response is expected from//one node only - and not from its children
+ieeeAddrReq-&gt;startIndex = 0;
+<a class="xref" href="GUID-B12FDF61-A423-4EFD-AFE8-21430ED24CAE.html">ZDO_ZdpReq()</a>(&amp;zdpReq); //send the request</pre>
+<p class="p">Implementation of the callback function for this request might look like the following:</p>
+<pre class="pre">static void zdpIeeeAddrResp(ZDO_ZdpResp_t *resp)
+{
+  //Convert the response to the appropriate type
+  <a class="xref" href="GUID-88C0EC57-2642-40FA-BF5E-767E80A0A15C.html">ZDO_IeeeAddrResp_t</a> *ieeeAddrResp = (ZDO_IeeeAddrResp_t *) &amp;resp-&gt;respPayload.ieeeAddrResp;
+  //Check whether the operation is a success
+  if (ZDO_SUCCESS_STATUS == resp-&gt;respPayload.status)
+  {
+    //The desired extended address is contained in ieeeAddrResp-&gt;ieeeAddrRemote field
+    ... //Perform actions that required obtaining the address
+     //Post a task to notify the stack that for an appropriate task to be executed
+     <a class="xref" href="GUID-1C45A73B-6270-469B-9BAD-18B5FAD9413A.html">SYS_PostTask</a>(...);
+  }
+  else
+  {
+    //Execute required logic, e.g. perform IEEE request again
+  }
+}
+</pre>
+<p class="p">Note that the response payload should be converted to the type conforming to the type of the issued request. For that, select appropriate field from the union inside the <code class="ph codeph">respPayload</code> field.</p>
+</div>
+</div>
+<div class="topic nested1" aria-labelledby="TOPIC_OJT_DKY_J5B__GUID-13650DC1-4D80-4804-87B1-B70FED3B3FE5" id="TOPIC_OJT_DKY_J5B"><h2 class="title topictitle2" id="TOPIC_OJT_DKY_J5B__GUID-13650DC1-4D80-4804-87B1-B70FED3B3FE5">Service Discovery requests</h2><div class="body"><p class="p">Service Discovery stands for procedures of collecting information about network devices and functionality (clusters) they support. Using Service Discovery, the application on the current node is able to find out short addresses of devices that support certain input or output clusters and accomplish some other similar tasks.</p>
+<p class="p">An essential ZDP request implementing Service Discovery that is frequently needed in applications is of type MATCH_DESCRIPTOR_CLID. It launches a search for devices that have registered endpoints supporting the specified clusters. The request can be sent either to a specific node identified with the short address or to a broadcast address. The application can specify a list of input and a list of output clusters, although it is rarely useful to point out more than one cluster, because a destination node responds with a list of all its endpoints that support at least one input or output cluster specified in the request. The following code sends a match descriptor request:</p>
+<pre class="pre">//define global variables
+static <a class="xref" href="GUID-5D3CD4DF-40C1-4C83-BAA5-E5EFE26646BF.html">ZDO_ZdpReq_t</a> zdpReq;
+...
+<a class="xref" href="GUID-28E1C7BC-C059-43BC-9AFA-A4010E7E514A.html">ZDO_MatchDescReq_t</a> *matchDescReq = &amp;zdpReq.req.reqPayload.matchDescReq;
+
+zdpReq.ZDO_ZdpResp = zdpMatchDescResp; //confirmation callback
+zdpReq.reqCluster = MATCH_DESCRIPTOR_CLID; //set request type
+
+matchDescReq-&gt;nwkAddrOfInterest = CPU_TO_LE16(BROADCAST_SHORT_ADDRESS);
+matchDescReq-&gt;profileId = CPU_TO_LE16(APP_PROFILE); //set profile ID
+matchDescReq-&gt;numInClusters = 1; //number of clusters
+matchDescReq-&gt;inClusterList[0] = APP_CLUSTER; //set cluster ID
+<a class="xref" href="GUID-B12FDF61-A423-4EFD-AFE8-21430ED24CAE.html">ZDO_ZdpReq</a>(&amp;zdpReq); //send the request</pre>
+<p class="p">Each reply from a discovered device received by the request's originator causes the confirmation callback to be called. As soon as the request is issued the stack starts a timer and waits for replies during a period of time specified in the CS_ZDP_RESPONSE_TIMEOUT parameter. When the timer elapses, the stack fires the callback with the ZDO_CMD_COMPLETED_STATUS status code. The default CS_ZDP_RESPONSE_TIMEOUT's value is calculated by the stack in such a way that the devices sleeping at the moment the request is sent are not expected to have time to awake and answer the request. So the request will normally reach only active devices.</p>
+<p class="p">Each response contains the short address, the number of matching endpoints and the list of matching endpoints. The confirmation callback's implementation can be like this:</p>
+<pre class="pre">//A callback function for the ZDP match descriptor request
+static void zdpMatchDescResp(ZDO_ZdpResp_t *resp)
+{
+  <a class="xref" href="GUID-8544194D-18B1-4B4F-9E60-E11AC21EBB39.html">ZDO_MatchDescResp_t</a> *matchResp = &amp;resp-&gt;respPayload.matchDescResp;
+  if (ZDO_CMD_COMPLETED_STATUS == resp-&gt;respPayload.status) 
+  {
+    //timeout has expired; this is the last time the callback is called
+    //for the current request
+  }
+  else if (ZDO_SUCCESS_STATUS == resp-&gt;respPayload.status)
+ {
+    //process another response from the network: for example, the application
+    //can immediately send a ZDP request to obtain the extended address of the device
+    doIeeeAddrReq();
+  }
+  else {
+    //process failure statuses
+  }
+}
+</pre>
+</div>
+</div>
+<div class="topic nested1" aria-labelledby="TOPIC_JTD_BKY_J5B__GUID-420764DF-5520-4DB5-96F9-75847798676E" id="TOPIC_JTD_BKY_J5B"><h2 class="title topictitle2" id="TOPIC_JTD_BKY_J5B__GUID-420764DF-5520-4DB5-96F9-75847798676E">Leaving the network</h2><div class="body"><p class="p">To force a device to leave the network issue a ZDP request of the MGMT_LEAVE_CLID type. The request can also be used to force a remote node to leave the network. A node that has left the network cannot be reached by remote data requests and can not sent data to remote nodes from the application layer. To return to the network the node should issue network start request. To ensure that the same network will be chosen during network scan procedures, the PANID value of the previous network shall be saved before network leave and indicated as predefined.</p>
+<p class="p">The following examples illustrates parameters configuration for the MGMT_LEAVE_CLID request which will force the current node to leave the network:</p>
+<pre class="pre">static <a class="xref" href="GUID-5D3CD4DF-40C1-4C83-BAA5-E5EFE26646BF.html">ZDO_ZdpReq_t</a> zdpLeaveReq; //globally defined variable
+...
+//set corresponding cluster ID 
+zdpLeaveReq.reqCluster = MGMT_LEAVE_CLID; 
+zdpLeaveReq.dstAddrMode = EXT_ADDR_MODE;
+zdpLeaveReq.dstExtAddr = 0; // for own node address shall be 0
+zdpLeaveReq.ZDO_ZdpResp = ZDO_ZdpLeaveResp; // callback//for own node address shall be 0 
+zdpLeaveReq.req.reqPayload.mgmtLeaveReq.deviceAddr = 0;
+//specify whether to force children leave or not 
+zdpLeaveReq.req.reqPayload.mgmtLeaveReq.removeChildren = 0;
+
+//specify whether to perform rejoin procedure after network leave 
+zdpLeaveReq.req.reqPayload.mgmtLeaveReq.rejoin = 0;
+<a class="xref" href="GUID-B12FDF61-A423-4EFD-AFE8-21430ED24CAE.html">ZDO_ZdpReq</a>(&amp;zdpLeaveReq); // request for network leave</pre>
+<p class="p">The request can also be used for asking a remote node to leave. Moreover, it is possible to force all its direct children to leave. For that, parameters shall be configured in a different way as it is shown below:</p>
+<pre class="pre">static <a class="xref" href="GUID-5D3CD4DF-40C1-4C83-BAA5-E5EFE26646BF.html">ZDO_ZdpReq_t</a> zdpLeaveReq; //globally defined variable
+...
+//set corresponding cluster ID 
+zdpLeaveReq.reqCluster = MGMT_LEAVE_CLID; 
+zdpLeaveReq.dstAddrMode = EXT_ADDR_MODE;
+zdpLeaveReq.dstExtAddr = DST_EXT_ADDRESS; //for own node address shall be 0
+zdpLeaveReq.ZDO_ZdpResp = ZDO_ZdpLeaveResp; //confirmation callback//for own node should be 0 (or equal own address)
+zdpLeaveReq.req.reqPayload.mgmtLeaveReq.deviceAddr = DST_EXT_ADDRESS;
+//specify whether to force children leave or not 
+zdpLeaveReq.req.reqPayload.mgmtLeaveReq.removeChildren = 1;
+
+//specify whether to perform rejoin procedure after network leave
+zdpLeaveReq.req.reqPayload.mgmtLeaveReq.rejoin = 0;
+<a class="xref" href="GUID-B12FDF61-A423-4EFD-AFE8-21430ED24CAE.html">ZDO_ZdpReq</a>(&amp;zdpLeaveReq); // request for network leave</pre>
+<p class="p">If the <code class="ph codeph">rejoin</code> field is set to <code class="ph codeph">1</code>, then a destination node will attempt to join the network again after the network leave is complete. It may be used to force a device to change its parent or join with a different short address. </p>
+</div>
+</div>
+</body>
+</html>

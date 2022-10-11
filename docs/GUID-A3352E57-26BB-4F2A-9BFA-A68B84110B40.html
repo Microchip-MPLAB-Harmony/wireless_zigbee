@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
+<meta name="DC.rights.owner" content="(C) Copyright 2022" />
+<meta name="DC.type" content="topic" />
+<meta name="DC.title" content="Parsing the response payload" />
+<meta name="DC.relation" scheme="URI" content="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF.html" />
+<meta name="DC.format" content="XHTML" />
+<meta name="DC.identifier" content="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40" />
+<meta name="DC.language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="stylesheets/atmel.css" />
+<title>Parsing the response payload</title>
+<meta name="Microsoft.Help.Id" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40" />
+<meta name="Microsoft.Help.TocParent" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF" />
+<meta name="Microsoft.Help.TocOrder" content="2" />
+<meta name="Microsoft.Help.Locale" content="en-US" />
+<meta name="Microsoft.Help.TopicLocale" content="en-US" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<script language="javascript">
+       
+       if (window.parent.location.protocol != 'file:') {
+				document.addEventListener('click', function(e) {
+				    if (e.target) {
+               if (e.target.nodeName == "A" ) {
+                    if (!e.target.target) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                              
+                      var origUrl = window.parent.location.href.substr(0, window.parent.location.href.indexOf("?"));
+                      if (origUrl.length === 0) {
+                          origUrl = window.parent.location.href;
+                      }
+                      var href= e.target.getAttribute("href");
+                      var parts = href.split("#");
+          
+                      var url = "";
+                      if (parts.length == 2 ) {
+                        if (!parts[0].length) {
+                            url = window.parent.location.search.replace('?','')
+                        } else {
+                            url = parts[0].replace('.html','');
+                        }
+                      } else {
+                        url = parts[0].replace('.html','');
+                      }
+
+                      if (parts.length == 2) {
+                          url += "#" + parts[1];
+                      }
+    
+                      window.parent.location.href = origUrl + "?" + url;
+
+                      return false;
+                    }
+               }
+            }
+				});
+			}
+
+		</script><script language="javascript">
+         
+         function copyContent(content, button) {
+         
+            var textArea = document.createElement("textarea");
+            
+            // Place in the top-left corner of screen regardless of scroll position.
+            textArea.style.position = 'fixed';
+            textArea.style.top = 0;
+            textArea.style.left = 0;
+            
+            // Ensure it has a small width and height. Setting to 1px / 1em
+            // doesn't work as this gives a negative w/h on some browsers.
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            
+            // We don't need padding, reducing the size if it does flash render.
+            textArea.style.padding = 0;
+            
+            // Clean up any borders.
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            
+            // Avoid flash of the white box if rendered for any reason.
+            textArea.style.background = 'transparent';
+            
+            textArea.value = content;
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+               var successful = document.execCommand('copy');
+               var msg = successful ? 'successful' : 'unsuccessful';
+               if (!button.classList.contains("copied")){
+                  button.textContent = "Copied";
+                  button.classList.add("copied");
+                  setTimeout(function(){
+                     button.textContent = "Copy";
+                     button.classList.remove("copied");
+                  },1000);
+               }
+            } catch (err) {
+               console.log('Oops, unable to copy');
+            }
+            
+            document.body.removeChild(textArea);
+         }
+         
+         function cpy(id, button) {
+            var element = document.getElementById(id);
+            var content = element.getAttribute("content");
+            
+            copyContent(content, button);
+         }
+         
+         document.addEventListener("DOMContentLoaded", function(event) {
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.style.position = "relative";
+               var copy = document.createElement("button");
+               copy.textContent = "Copy";
+               copy.setAttribute("class", "copy-code");
+               
+               var content = elem.textContent;
+               
+               copy.addEventListener("click", function(){
+                  copyContent(content, copy);
+               });
+               
+               elem.addEventListener("mouseenter", function(evt){
+                  elem.prepend(copy);
+               });
+            });
+            
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.addEventListener("mouseleave", function(evt){
+                  document.querySelector(".copy-code").remove();
+               });
+            });
+         });
+         
+      </script><script language="javascript">
+          
+          // Add the MathML namespace to html
+          var html = document.getElementsByTagName("html")[0],
+          head = document.getElementsByTagName("head")[0];
+          
+          var mathJax = document.createElement("script");
+          mathJax.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML";
+          head.appendChild(mathJax);
+          
+          html.setAttribute("xmlns:m","http://www.w3.org/1998/Math/MathML");
+          
+          function inIframe() { try { return window.self !== window.top; } catch (e) { return true; } }
+          
+          if (!inIframe()) { 
+          
+          var Default = "index.html?GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40"; 
+          
+          var displaylocation = "value" + window.location.href;
+          
+          var GUIDS = displaylocation.split('GUID');          
+          
+          if (displaylocation.indexOf('#GUID') != -1) {            
+          var First = GUIDS[1].split('.html');  
+          if (GUIDS[3]){First = GUIDS[2].split('.html');}
+          if (GUIDS[4]){First = GUIDS[3].split('.html');}
+          if (GUIDS[5]){First = GUIDS[4].split('.html');}
+          
+          var Second = GUIDS[2].split('#');   
+          if (GUIDS[3]){Second = GUIDS[3].split('#');}
+          if (GUIDS[4]){Second = GUIDS[4].split('#');}
+          if (GUIDS[5]){Second = GUIDS[5].split('#');}
+          
+          Default = "index.html?" + "GUID" + First[0] + "GUID" + Second[0];     
+          }                    
+          window.top.location = Default;
+          }       
+          
+        </script><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /><style xml:space="">
+        
+          button.copy-code{
+            display:none;
+            padding:0.7em 1.4em;
+            margin:0 0.3em 0.3em 0;
+            border-radius:0.15em;
+            box-sizing: border-box;
+            text-decoration:none;
+            font-family:'Roboto',sans-serif;
+            text-transform:uppercase;
+            font-weight:400;
+            color:#FFFFFF;
+            background-color:#9c9c9c;
+            box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+            text-align:center;
+            position:relative;
+            border: 0;
+            float: right;
+            border-radius: .5em;
+            cursor: pointer;
+          }
+          button.copy-code:active{
+            top:0.1em;
+          }
+          
+          pre:hover button.copy-code{
+            display: inline-block !important;
+          }
+          button.copy-code.copied {
+            cursor: default !important;
+          }
+          
+          
+          @media all and (max-width:30em){
+            button.copy-code{
+              display:block;
+              margin:0.4em auto;
+            }
+          }
+        
+        
+      </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
+<body id="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40">
+
+<h1 class="title topictitle1" id="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40__GUID-16FE5815-0E5D-4FAA-B42E-720C50763407">Parsing the response payload</h1>
+<div class="body">
+        <p class="p">In the callback function for a general cluster command’s response, the application should
+            first check the status of the command’s execution . Parsing response payload is needed
+            in case of:</p>
+
+        <ul class="ul" id="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40__UL_C5P_CD2_4TB">
+            <li class="li" id="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40__GUID-16EF991C-AEFA-472C-902F-5FC17E5D6605">Successful execution of the read attributes command</li>
+
+            <li class="li" id="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40__GUID-96E08A5D-342A-4C30-8EE6-0E3666395FCC">Error in execution of a write attributes command for several attributes at once (the
+                payload will contain IDs of attributes for which writing operation has failed)</li>
+
+        </ul>
+
+        <p class="p">For the write attributes response the success status means that all attributes have been
+            written successfully, while the error status means that some attributes have not been
+            written. In the latter case the response payload contains a separate status report for
+            each attribute (Refer ZCL specification).</p>
+
+        <p class="p">To process the response payload, the application should configure an instance of <a class="xref" href="GUID-7DE8E39E-096F-4DB4-9094-BBC893F7EBEF.html">ZCL_NextElement_t</a> type and use the <a class="xref" href="GUID-57BD67CF-AC4F-45E8-9588-37F44A1180F0.html">ZCL_GetNextElement()</a> function to extract subsequent attribute records:</p>
+
+        <ol class="ol" id="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40__OL_ISQ_KD2_4TB">
+            <li class="li" id="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40__GUID-A2FB3036-0CF9-462C-8CD1-5391348368FF"><span class="indent-level-default">1.</span>Define a variable of <a class="xref" href="GUID-7DE8E39E-096F-4DB4-9094-BBC893F7EBEF.html">ZCL_NextElement_t</a> type and a variable of the <a class="xref" href="GUID-AD6277FE-6C93-4086-9B8B-148050582507.html">ZCL_ WriteAttributeResp_t</a> type (for read attributes response) or of the
+                ZCL_WriteAttributeResp_t type (for write attributes response). For
+                example:<pre class="pre"><a class="xref" href="GUID-7DE8E39E-096F-4DB4-9094-BBC893F7EBEF.html">ZCL_NextElement_t</a> element;</pre>
+and
+                <pre class="pre"><a class="xref" href="GUID-CF4AF3F9-25C8-49E6-A3D5-3557775805FB.html">ZCL_ ReadAttributeResp_t</a> *temp = NULL;</pre>
+or<pre class="pre"><a class="xref" href="GUID-AD6277FE-6C93-4086-9B8B-148050582507.html">ZCL_ WriteAttributeResp_t</a> *temp = NULL;</pre>
+</li>
+
+            <li class="li" id="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40__GUID-82061BA3-45C7-49BC-9A58-E02163EC5012"><span class="indent-level-default">2.</span>Configure element in the following
+                    way:<pre class="pre">element.payloadLength = resp-&gt;responseLength;
+element.payload = resp-&gt;responsePayload;
+element.content = NULL;</pre>
+<div class="p">For
+                    read attributes
+                    response:<pre class="pre">element.id = ZCL_READ_ATTRIBUTES_RESPONSE_COMMAND_ID;</pre>
+</div>
+For
+                write attributes
+                response:<pre class="pre">element.id = ZCL_WRITE_ATTRIBUTES_RESPONSE_COMMAND_ID;</pre>
+</li>
+
+            <li class="li" id="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40__GUID-5C5CDCAB-9604-44E4-8080-7968D08FE2D4"><span class="indent-level-default">3.</span>For each requested attribute repeat
+                the following steps:<ol class="ol" type="a" id="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40__OL_LSQ_KD2_4TB">
+                    <li class="li" id="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40__GUID-3F870AC2-FF7D-45B4-BEE8-12365B83DA62"><span class="indent-level-default">a.</span>Call<a class="xref" href="GUID-57BD67CF-AC4F-45E8-9588-37F44A1180F0.html">ZCL_GetNextElement</a>(&amp;element).</li>
+
+                    <li class="li" id="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40__GUID-94D0A358-4E66-4E8B-B5C1-5E131EE2C3A9"><span class="indent-level-default">b.</span>Cast element.content to <a class="xref" href="GUID-CF4AF3F9-25C8-49E6-A3D5-3557775805FB.html">ZCL_ReadAttributeResp_t</a>* for read attributes response and to
+                            <a class="xref" href="GUID-AD6277FE-6C93-4086-9B8B-148050582507.html">ZCL_WriteAttributeResp_t</a>* for write attribute response.</li>
+
+                    <li class="li" id="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40__GUID-5C1E09BF-0884-405C-BBAB-BCB5A3C1CCE7"><span class="indent-level-default">c.</span>Access the value as
+                        *(&lt;AttrType&gt;*)value or check the id and status fields (the status
+                        field describes the result of read attributes command).</li>
+
+                </ol>
+For
+                example:<pre class="pre"><a class="xref" href="GUID-57BD67CF-AC4F-45E8-9588-37F44A1180F0.html">ZCL_GetNextElement</a>(&amp;element);
+temp = (<a class="xref" href="GUID-CF4AF3F9-25C8-49E6-A3D5-3557775805FB.html">ZCL_ReadAttributeResp_t</a> *) element.content;
+if (ZCL_SUCCESS_STATUS == temp-&gt;status)
+{
+ uint64_t value = *(uint64_t*)temp-&gt;value;
+ //Process the received value
+}</pre>
+</li>
+
+            <li class="li" id="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40__GUID-A82CB0FB-30DA-49EB-B016-4367EDEB23FC"><span class="indent-level-default">4.</span>Check the value returned by <a class="xref" href="GUID-57BD67CF-AC4F-45E8-9588-37F44A1180F0.html">ZCL_GetNextElement()</a>. When the last element from the payload is read,
+                the function returns ZCL_END_PAYLOAD_REACHED_STATUS.</li>
+
+        </ol>
+
+</div>
+
+<div class="related-links">
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF.html">ZCL Components Usage</a></div>
+</div>
+</div></body>
+</html>

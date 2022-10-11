@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
+<meta name="DC.rights.owner" content="(C) Copyright 2022" />
+<meta name="DC.type" content="topic" />
+<meta name="DC.title" content="APS_DataInd_t struct" />
+<meta name="DC.relation" scheme="URI" content="GUID-15E7011D-066B-489E-9D52-13654016EDD5.html" />
+<meta name="DC.format" content="XHTML" />
+<meta name="DC.identifier" content="aps-dataind-t-struct" />
+<link rel="stylesheet" type="text/css" href="stylesheets/atmel.css" />
+<title>APS_DataInd_t struct</title>
+<meta name="Microsoft.Help.Id" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-aps-dataind-t-struct" />
+<meta name="Microsoft.Help.TocParent" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-15E7011D-066B-489E-9D52-13654016EDD5" />
+<meta name="Microsoft.Help.TocOrder" content="0" />
+<meta name="Microsoft.Help.Locale" content="en-US" />
+<meta name="Microsoft.Help.TopicLocale" content="en-US" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<script language="javascript">
+       
+       if (window.parent.location.protocol != 'file:') {
+				document.addEventListener('click', function(e) {
+				    if (e.target) {
+               if (e.target.nodeName == "A" ) {
+                    if (!e.target.target) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                              
+                      var origUrl = window.parent.location.href.substr(0, window.parent.location.href.indexOf("?"));
+                      if (origUrl.length === 0) {
+                          origUrl = window.parent.location.href;
+                      }
+                      var href= e.target.getAttribute("href");
+                      var parts = href.split("#");
+          
+                      var url = "";
+                      if (parts.length == 2 ) {
+                        if (!parts[0].length) {
+                            url = window.parent.location.search.replace('?','')
+                        } else {
+                            url = parts[0].replace('.html','');
+                        }
+                      } else {
+                        url = parts[0].replace('.html','');
+                      }
+
+                      if (parts.length == 2) {
+                          url += "#" + parts[1];
+                      }
+    
+                      window.parent.location.href = origUrl + "?" + url;
+
+                      return false;
+                    }
+               }
+            }
+				});
+			}
+
+		</script><script language="javascript">
+         
+         function copyContent(content, button) {
+         
+            var textArea = document.createElement("textarea");
+            
+            // Place in the top-left corner of screen regardless of scroll position.
+            textArea.style.position = 'fixed';
+            textArea.style.top = 0;
+            textArea.style.left = 0;
+            
+            // Ensure it has a small width and height. Setting to 1px / 1em
+            // doesn't work as this gives a negative w/h on some browsers.
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            
+            // We don't need padding, reducing the size if it does flash render.
+            textArea.style.padding = 0;
+            
+            // Clean up any borders.
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            
+            // Avoid flash of the white box if rendered for any reason.
+            textArea.style.background = 'transparent';
+            
+            textArea.value = content;
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+               var successful = document.execCommand('copy');
+               var msg = successful ? 'successful' : 'unsuccessful';
+               if (!button.classList.contains("copied")){
+                  button.textContent = "Copied";
+                  button.classList.add("copied");
+                  setTimeout(function(){
+                     button.textContent = "Copy";
+                     button.classList.remove("copied");
+                  },1000);
+               }
+            } catch (err) {
+               console.log('Oops, unable to copy');
+            }
+            
+            document.body.removeChild(textArea);
+         }
+         
+         function cpy(id, button) {
+            var element = document.getElementById(id);
+            var content = element.getAttribute("content");
+            
+            copyContent(content, button);
+         }
+         
+         document.addEventListener("DOMContentLoaded", function(event) {
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.style.position = "relative";
+               var copy = document.createElement("button");
+               copy.textContent = "Copy";
+               copy.setAttribute("class", "copy-code");
+               
+               var content = elem.textContent;
+               
+               copy.addEventListener("click", function(){
+                  copyContent(content, copy);
+               });
+               
+               elem.addEventListener("mouseenter", function(evt){
+                  elem.prepend(copy);
+               });
+            });
+            
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.addEventListener("mouseleave", function(evt){
+                  document.querySelector(".copy-code").remove();
+               });
+            });
+         });
+         
+      </script><script language="javascript">
+          
+          // Add the MathML namespace to html
+          var html = document.getElementsByTagName("html")[0],
+          head = document.getElementsByTagName("head")[0];
+          
+          var mathJax = document.createElement("script");
+          mathJax.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML";
+          head.appendChild(mathJax);
+          
+          html.setAttribute("xmlns:m","http://www.w3.org/1998/Math/MathML");
+          
+          function inIframe() { try { return window.self !== window.top; } catch (e) { return true; } }
+          
+          if (!inIframe()) { 
+          
+          var Default = "index.html?GUID-E9966CB9-1D92-48AA-A8A1-9BAD70D1D7A9"; 
+          
+          var displaylocation = "value" + window.location.href;
+          
+          var GUIDS = displaylocation.split('GUID');          
+          
+          if (displaylocation.indexOf('#GUID') != -1) {            
+          var First = GUIDS[1].split('.html');  
+          if (GUIDS[3]){First = GUIDS[2].split('.html');}
+          if (GUIDS[4]){First = GUIDS[3].split('.html');}
+          if (GUIDS[5]){First = GUIDS[4].split('.html');}
+          
+          var Second = GUIDS[2].split('#');   
+          if (GUIDS[3]){Second = GUIDS[3].split('#');}
+          if (GUIDS[4]){Second = GUIDS[4].split('#');}
+          if (GUIDS[5]){Second = GUIDS[5].split('#');}
+          
+          Default = "index.html?" + "GUID" + First[0] + "GUID" + Second[0];     
+          }                    
+          window.top.location = Default;
+          }       
+          
+        </script><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /><style xml:space="">
+        
+          button.copy-code{
+            display:none;
+            padding:0.7em 1.4em;
+            margin:0 0.3em 0.3em 0;
+            border-radius:0.15em;
+            box-sizing: border-box;
+            text-decoration:none;
+            font-family:'Roboto',sans-serif;
+            text-transform:uppercase;
+            font-weight:400;
+            color:#FFFFFF;
+            background-color:#9c9c9c;
+            box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+            text-align:center;
+            position:relative;
+            border: 0;
+            float: right;
+            border-radius: .5em;
+            cursor: pointer;
+          }
+          button.copy-code:active{
+            top:0.1em;
+          }
+          
+          pre:hover button.copy-code{
+            display: inline-block !important;
+          }
+          button.copy-code.copied {
+            cursor: default !important;
+          }
+          
+          
+          @media all and (max-width:30em){
+            button.copy-code{
+              display:block;
+              margin:0.4em auto;
+            }
+          }
+        
+        
+      </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
+<body id="aps-dataind-t-struct">
+<h1 class="title topictitle1" id="ariaid-title1">APS_DataInd_t struct</h1><div class="body"></div>
+<div class="related-links">
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-15E7011D-066B-489E-9D52-13654016EDD5.html">APS DataStructures</a></div>
+</div>
+</div><div class="topic nested1" aria-labelledby="ariaid-title2" id="c"><h2 class="title topictitle2" id="ariaid-title2">C</h2><div class="body"><pre class="pre codeblock c"><strong class="hl-keyword">typedef</strong> <strong class="hl-keyword">struct</strong>
+{
+  <span class="hl-tag-doctype-comment">/** \cond SERVICE_FIELDS **/</span>
+  <strong class="hl-keyword">struct</strong>
+  {
+    <strong class="hl-keyword">void</strong> *next; <em class="hl-comment">/*!&lt; Service field for queue support */</em>
+#ifdef _ZAPPSI_
+    <em class="hl-comment">/* to be compatible with MAC service. */</em>
+    uint8_t requestId;
+    <em class="hl-comment">/* Sequence number to identify request-response pair. */</em>
+    uint8_t sequenceNumber;
+    <strong class="hl-keyword">union</strong>
+    {
+      <em class="hl-comment">/* Callback wrapper routine pointer */</em>
+      <strong class="hl-keyword">void</strong> (*callback)(<strong class="hl-keyword">void</strong>*);
+      <em class="hl-comment">/* Processing routine pointer to call after required memory will become free */</em>
+      <strong class="hl-keyword">void</strong> (*process)(<strong class="hl-keyword">void</strong>*);
+    } zsi;
+#endif <em class="hl-comment">/* # _ZAPPSI_ */</em>
+  } service;
+  <span class="hl-tag-doctype-comment">/** \endcond **/</span>
+
+  <span class="hl-tag-doctype-comment">/** The addressing mode used to identify the destination
+   * in the data frame that has been received.
+   * May take any non-reserved value from the following list:
+   APS_NO_ADDRESS (0x00) - used for binding; set dstAddress and dstEndpoint
+   APS_GROUP_ADDRESS (0x01) - used for group transmission; 16-bit group address should be specified in dstAddress; dstEndpoint is not set
+   APS_SHORT_ADDRESS (0x02) - identifying the destination (unicast or broadcast) with  a 16-bit short address specified
+   * in dstAddress and the endpoint set in dstEndpoint
+   APS_EXT_ADDRESS (0x03) - identifying the destination with a 64-bit extended address specified in dstAddress and the endpoint set in dstEndpoint
+   0x04..0xff - reserved values, must not be used by the application*/</span>
+  APS_AddrMode_t dstAddrMode;
+  <span class="hl-tag-doctype-comment">/**  Endian "[LE]" The individual device address or group addressto which
+   * the ASDU is directed. Value size depends on the dstAddrMode parameter. */</span>
+  APS_Address_t dstAddress;
+  <span class="hl-tag-doctype-comment">/** The target endpoint on the local entity to which the ASDU is directed. */</span>
+  Endpoint_t dstEndpoint;
+  <span class="hl-tag-doctype-comment">/** The addressing mode for the source address used in this primitive
+   * and of the APDU that has been received. May possess any non-reserved value
+   * from the following list:
+    APS_SHORT_ADDRESS (0x02) - short address is used in srcAddress and srcEndpoint is specified
+    APS_EXT_ADDRESS (0x03) - extended address is used in srcAddress and srcEndpoint is specified
+   * */</span>
+  APS_AddrMode_t srcAddrMode;
+  <span class="hl-tag-doctype-comment">/**  Endian "[LE]" The individual device address of the entity from which
+   * the ASDU has been received.
+   * Value type and size is depend of the srcAddrMode parameter. */</span>
+  APS_Address_t srcAddress;
+  <span class="hl-tag-doctype-comment">/**  Endian "[LE]" Network address of previous hop from which the packet
+   * received. */</span>
+  ShortAddr_t prevHopAddr;
+  <span class="hl-tag-doctype-comment">/** The number of the individual endpoint of the entity from
+   * which the ASDU has been received. */</span>
+  Endpoint_t srcEndpoint;
+  <span class="hl-tag-doctype-comment">/**  Endian "[LE]" The identifier of the profile from
+   * which this frame originates. */</span>
+  ProfileId_t profileId;
+  <span class="hl-tag-doctype-comment">/**  Endian "[LE]" The identifier of the received object. */</span>
+  ClusterId_t clusterId;
+  <span class="hl-tag-doctype-comment">/** The number of octets comprising the ASDU being indicated by the APSDE. */</span>
+  uint16_t asduLength;
+  <span class="hl-tag-doctype-comment">/** The set of octets comprising the ASDU being indicated by the APSDE. */</span>
+  uint8_t *asdu;
+  <span class="hl-tag-doctype-comment">/** The status of the incoming frame processing. */</span>
+  APS_Status_t status;
+  <span class="hl-tag-doctype-comment">/**
+    APS_UNSECURED_STATUS=0xaf if the ASDU was received without any security.
+    APS_SECURED_NWK_KEY_STATUS=0xac if the received ASDU was secured
+                                     with the NWK key,
+   APS_SECURED_LINK_KEY_STATUS=0xab if the ASDU was secured with a link key,
+   APS_SECURED_TRUST_CENTER_LINK_KEY_STATUS=0xb1 if the ASDU was secured
+                                      with the trust center link key,
+   APS_SECURED_HASH_OF_TRUST_CENTER_LINK_KEY_STATUS=0xb2 if secured
+                                     with hash of the trust center link key.
+   */</span>
+  APS_Status_t securityStatus;
+  <span class="hl-tag-doctype-comment">/** The status of whether the NSDU is using security: TRUE = use,
+   * FALSE = doesn't use. */</span>
+  bool nwkSecurityStatus;
+  <span class="hl-tag-doctype-comment">/** The link quality indication delivered by the NLDE. */</span>
+  uint8_t linkQuality;
+  <span class="hl-tag-doctype-comment">/** Timestamp for the received packet based on the local clock,
+   * as provided by the NWK layer. */</span>
+  uint32_t rxTime;
+  int8_t rssi;
+} APS_DataInd_t;
+
+</pre></div>
+</div>
+<div class="topic nested1" aria-labelledby="ariaid-title3" id="description"><h2 class="title topictitle2" id="ariaid-title3">Description</h2><div class="body"><pre class="pre codeblock"><button title="Copy Code" class="copy-code" onclick="cpy('d24959e27', this);">Copy</button><code id="d24959e27" content="struct APS_DataInd_t apsdeData.h &#34;aps.h&#34;&#xD;&#xA;&#xD;&#xA;The structure for indication of data reception&#xD;&#xA;&#xD;&#xA;A pointer to an instance of this type is passed to a data indication callback registered for a given&#xD;&#xA;endpoint when the data is received destined to the endpoint.&#xD;&#xA;The structure definition follows APSDE-DATA indication primitive described in&#xD;&#xA;Zigbee Specification r18, 2.2.4.1.3 APSDE-DATA.indication, page 29.&#xD;">struct APS_DataInd_t apsdeData.h "aps.h"&#xD;
+&#xD;
+The structure for indication of data reception&#xD;
+&#xD;
+A pointer to an instance of this type is passed to a data indication callback registered for a given&#xD;
+endpoint when the data is received destined to the endpoint.&#xD;
+The structure definition follows APSDE-DATA indication primitive described in&#xD;
+Zigbee Specification r18, 2.2.4.1.3 APSDE-DATA.indication, page 29.&#xD;</code></pre></div>
+</div>
+</body>
+</html>
