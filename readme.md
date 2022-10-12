@@ -26,8 +26,8 @@ reference information.
 
 - [Release Notes](release_notes.md)
 - [MPLAB® Harmony License](mplab_harmony_license.md)
-- [MPLAB® Harmony 3 Wireless Wiki](https://github.com/Microchip-MPLAB-Harmony/wireless/wiki)
-- [MPLAB® Harmony 3 Wireless API Help](docs/MPLAB_Harmony_Wireless_Zigbee_APIhelp.chm)
+- [MPLAB® Harmony 3 Wireless Zigbee Wiki](https://github.com/Microchip-MPLAB-Harmony/wireless_zigbee/wiki)
+- [MPLAB® Harmony 3 Wireless Zigbee API Help](docs/MPLAB_Harmony_Wireless_Zigbee_APIhelp.chm)
 
 To download or clone these application from the github, go to the top of the repository page and click: ![](./images/clone.png)
 
@@ -57,8 +57,6 @@ The following applications are provided to demonstrate the typical or interestin
 
 | Driver | Status |
 | --- | :---: |
-| [BLE stack](driver/ble/docs/readme.md) | ![app-beta](https://img.shields.io/badge/driver-beta-orange?style=plastic) |
-| [PIC32CX-BZ Device Support](driver/pic32cx-bz/docs/readme.md) | ![app-beta](https://img.shields.io/badge/driver-beta-orange?style=plastic) |
 | [Zigbee stack](driver/zigbee/docs/readme.md) | ![app-beta](https://img.shields.io/badge/driver-beta-orange?style=plastic) |
 
 ____

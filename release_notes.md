@@ -23,7 +23,6 @@
 + RGB Led Light integration through System Services Harmony Component
 + Stability tested in a 10 node network for more than 24 hours
 + P2P Range tested upto 100 meters
-+ Zigbee Harmony component folder structure optimized to reduce the path size & better readability
 + Device / Stack power handling and backoff implemenation.User options to set FCC/ETSI/Custom antenna gain.
 + Zigbee Application Device Support - 
   + Lights ( Extended Color, Dimmable, Temperature Color , OnOff , Color)
@@ -34,9 +33,8 @@
   + Muti Sensors ( Occupancy , Light, Humidity , Temperature)
   + Green Power Support ( Proxy and Sink)
 
-### Known Issues
-+ Zigbee Mesh is not run on a larger node bed / test to verify/fine tune  Netowrk traffic / Mising Acks / Retries.
-+ CCA Mode-3 not full verified when Arbiter Mode set as part of the wireless subsystem. However verified with Static and IP mode.
+### Known Issues/Limitations
++ CCA Mode-3 not fully verified when Arbiter Mode set as part of the wireless subsystem. However verified with Static and IP mode.
 
 
 ### Development Tools
