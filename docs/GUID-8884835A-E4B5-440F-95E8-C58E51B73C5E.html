@@ -4,9 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
+<meta name="DC.rights.owner" content="(C) Copyright 2023" />
+<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
 <meta name="DC.title" content="The main() function" />
 <meta name="DC.relation" scheme="URI" content="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686.html" />
 <meta name="DC.format" content="XHTML" />
@@ -19,7 +19,7 @@
 <meta name="Microsoft.Help.TocOrder" content="2" />
 <meta name="Microsoft.Help.Locale" content="en-US" />
 <meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
 <script language="javascript">
        
        if (window.parent.location.protocol != 'file:') {
@@ -226,7 +226,7 @@
         
       </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
 <body id="GUID-8884835A-E4B5-440F-95E8-C58E51B73C5E">
-<h1 class="title topictitle1" id="GUID-8884835A-E4B5-440F-95E8-C58E51B73C5E__GUID-8D1BC64A-4D49-462B-91ED-9C3698FC786F">The main() function</h1><div class="body"><p class="p">The starting point of a User application is the <code class="ph codeph">main()</code> function. The <code class="ph codeph">main()</code> function body is defined by the user's application to make the application development more flexible.</p>
+<h1 class="title topictitle1" id="GUID-8884835A-E4B5-440F-95E8-C58E51B73C5E__GUID-8D1BC64A-4D49-462B-91ED-9C3698FC786F" style="">The main() function</h1><div class="body"><p class="p">The starting point of a User application is the <code class="ph codeph">main()</code> function. The <code class="ph codeph">main()</code> function body is defined by the user's application to make the application development more flexible.</p>
 <p class="p">The <code class="ph codeph">main()</code> function must contain two mandatory elements: a call to the SYS_Initialize ( NULL ) function and the infinite loop with SYS_Tasks ( ) inside, which allows the task scheduler (eg: freeRTOS) to call the next appropriate task handler.</p>
 <p class="p">A typical <code class="ph codeph">main()</code> function implementation is shown below:</p>
 <pre class="pre">int main ( void )

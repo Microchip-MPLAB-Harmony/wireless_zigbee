@@ -243,20 +243,20 @@
 #ifndef _NETWORK_MANAGER_
 #define _NETWORK_MANAGER_
 #endif
-#ifndef _NWK_DIRECT_JOIN_
-#define _NWK_DIRECT_JOIN_
-#endif
 #ifndef _FREQUENCY_AGILITY_
 #define _FREQUENCY_AGILITY_
-#endif
-#ifndef _CERTIFICATION_
-#define _CERTIFICATION_
 #endif
 #ifndef _INTERPAN_
 #define _INTERPAN_
 #endif
+#ifndef _NWK_DIRECT_JOIN_
+#define _NWK_DIRECT_JOIN_
+#endif
 #ifndef _NWK_ORPHAN_JOIN_
 #define _NWK_ORPHAN_JOIN_
+#endif
+#ifndef _CERTIFICATION_
+#define _CERTIFICATION_
 #endif
 #ifndef _NWK_PASSIVE_ACK_
 #define _NWK_PASSIVE_ACK_
@@ -296,6 +296,9 @@
 #endif
 #ifndef _TC_ALLOW_REJOIN_WITH_GLOBAL_LINK_KEY_
 #define _TC_ALLOW_REJOIN_WITH_GLOBAL_LINK_KEY_
+#endif
+#ifndef _PIC32CX_BZ3_
+#define _PIC32CX_BZ3_
 #endif
 #ifndef RELEASE
 #define RELEASE

@@ -61,7 +61,6 @@
 #include <z3device/common/include/otauService.h>
 #include <zcl/include/zclCommandManager.h>
 #include <hal/include/sleep.h>
-#include <hal/cortexm4/pic32cx/include/halSleep.h>
 #include <systemenvironment/include/sysIdleHandler.h>
 #ifdef OTAU_CLIENT
 #include <zcl/include/zclOtauManager.h>
@@ -74,11 +73,6 @@
 /*******************************************************************************
                     Static functions section
 *******************************************************************************/
-#if defined (_SLEEP_WHEN_IDLE_) //&& (APP_ENABLE_CONSOLE == 1)
-  static void sleepModeHandler(SYS_EventId_t eventId, SYS_EventData_t data);
-  static void sleepEventHandler(SYS_EventId_t eventId, SYS_EventData_t data);
-  static void ZDO_WakeUpConf(ZDO_WakeUpConf_t *conf);
-#endif
 static void isBusyOrPollCheck(SYS_EventId_t eventId, SYS_EventData_t data);
 
 #ifdef OTAU_CLIENT 
@@ -130,11 +124,6 @@ static AppBindReq_t iasACEBindReq =
   .startIdentifyingFn= iasIdentifyStartIdetifyingCb
 };
 
-#if defined (_SLEEP_WHEN_IDLE_) //&& (APP_ENABLE_CONSOLE == 1)
-  static ZDO_WakeUpReq_t zdoWakeUpReq;
-  static SYS_EventReceiver_t sleepEventListener = {.func = sleepEventHandler};
-  static SYS_EventReceiver_t sleepModeListener = {.func = sleepModeHandler};
-#endif
 static SYS_EventReceiver_t zdoBusyPollCheck = { .func = isBusyOrPollCheck};
 
 /******************************************************************************
@@ -166,11 +155,6 @@ void appDeviceInit(void)
 #if (ZB_COMMISSIONING_ON_STARTUP  == 1)
   SYS_EnableSleepWhenIdle();
 #endif
-#if (APP_ENABLE_CONSOLE == 1)
-  SYS_SubscribeToEvent(HAL_EVENT_FALLING_ASLEEP, &sleepModeListener);
-  SYS_SubscribeToEvent(HAL_EVENT_CONTINUING_SLEEP, &sleepModeListener);
-#endif
-  SYS_SubscribeToEvent(HAL_EVENT_WAKING_UP, &sleepEventListener);
 #endif
   SYS_SubscribeToEvent(BC_EVENT_POLL_REQUEST, &zdoBusyPollCheck);
 }
@@ -213,6 +197,13 @@ void appDeviceTaskHandler(void)
   }
 }
 
+/**************************************************************************//**
+\brief backup ZCL attributes
+******************************************************************************/
+void APP_BackupZCLAttributes(void)
+{
+	//Add implementation here to backup zcl attributes if any.
+}
 
 /**************************************************************************//**
 \brief Stops identifying on endpoints
@@ -231,51 +222,6 @@ void appIdentifyStop(void)
 {
   iasIdentifyStop();
 }
-
-#if defined (_SLEEP_WHEN_IDLE_)
-/**************************************************************************//**
-  \brief Processes HAL_EVENT_WAKING_UP event
-
-  \param[in] eventId - id of raised event;
-  \param[in] data    - event's data.
-******************************************************************************/
-static void sleepEventHandler(SYS_EventId_t eventId, SYS_EventData_t data)
-{
-  HAL_SleepControl_t *sleepControl = (HAL_SleepControl_t *)data;
-
-  if (HAL_WAKEUP_SOURCE_EXT_IRQ == sleepControl->wakeupSource)
-  {
-    zdoWakeUpReq.ZDO_WakeUpConf = ZDO_WakeUpConf;
-    ZDO_WakeUpReq(&zdoWakeUpReq);
-  }
-  (void)eventId; /* Do nothing, to avoid compiler warning */
-}
-#endif
-
-#if defined (_SLEEP_WHEN_IDLE_) //&& (APP_ENABLE_CONSOLE == 1)
-/**************************************************************************//**
-  \brief Processes HAL_EVENT_FALL_ASLEEP & HAL_EVENT_CONITUING_SLEEP events
-
-  \param[in] eventId - id of raised event;
-  \param[in] data    - event's data.
-******************************************************************************/
-static void sleepModeHandler(SYS_EventId_t eventId, SYS_EventData_t data)
-{
-  // when console is enabled, we go to idle mode to handle UART Rx interrupt
-  // because UART Rx interrupt will not wake up the MCU from power save or power down modes
-  *(HAL_SleepMode_t *)data = HAL_SLEEP_MODE_IDLE;
-  (void)eventId;
-}
-/**************************************************************************//**
-  \brief Wake up confirmation handler.
-
-  \param[in] conf - confirmation parameters.
-*****************************************************************************/
-static void ZDO_WakeUpConf(ZDO_WakeUpConf_t *conf)
-{
-  (void)conf;
-}
-#endif
 
 /**************************************************************************//**
   \brief Processes BC_EVENT_BUSY_REQUEST and BC_EVENT_POLL_REQUEST events

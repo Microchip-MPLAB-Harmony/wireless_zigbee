@@ -4,9 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
+<meta name="DC.rights.owner" content="(C) Copyright 2023" />
+<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
 <meta name="DC.title" content="Requests and confirmations" />
 <meta name="DC.relation" scheme="URI" content="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686.html" />
 <meta name="DC.format" content="XHTML" />
@@ -19,7 +19,7 @@
 <meta name="Microsoft.Help.TocOrder" content="5" />
 <meta name="Microsoft.Help.Locale" content="en-US" />
 <meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
 <script language="javascript">
        
        if (window.parent.location.protocol != 'file:') {
@@ -227,7 +227,7 @@
       </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
 <body id="GUID-4B11E416-2460-4B98-8A36-0C6BCAA60F1B">
 
-<h1 class="title topictitle1" id="GUID-4B11E416-2460-4B98-8A36-0C6BCAA60F1B__GUID-7441F347-CEC7-4803-B100-93DE8C2D7EE5">Requests and confirmations</h1>
+<h1 class="title topictitle1" id="GUID-4B11E416-2460-4B98-8A36-0C6BCAA60F1B__GUID-7441F347-CEC7-4803-B100-93DE8C2D7EE5" style="">Requests and confirmations</h1>
 <div class="body">
         <p class="p">A function that performs an asynchronous request to a stack component commonly has a name
             ended with <em class="ph i">Req</em>. The function argument in this case is a pointer to a structure
@@ -237,7 +237,7 @@
             execution. In addition to the callback function, request parameters include confirmation
             parameters structure as a field. The latter structure's name is obtained by replacing
                 <em class="ph i">Req</em> in its name to <em class="ph i">Conf</em>. For example, network start request is issued
-            by the<a class="xref" href="GUID-8149671D-FC16-4A0F-BA99-5EAFE079011F.html">ZDO_StartNetworkReq</a>(<a class="xref" href="GUID-CB1C7F82-4A2A-469B-836B-A05E9B649FFA.html">ZDO_StartNetworkReq_t</a>*req) function, where <a class="xref" href="GUID-CB1C7F82-4A2A-469B-836B-A05E9B649FFA.html">ZDO_StartNetworkReq_t</a>has the confirm field of the ZDO_StartNetworkConf_t
+            by the<a class="xref" href="GUID-8149671D-FC16-4A0F-BA99-5EAFE079011F.html">ZDO_StartNetworkReq</a>(<a class="xref" href="GUID-CB1C7F82-4A2A-469B-836B-A05E9B649FFA.html">ZDO_StartNetworkReq_t</a>*req) function, where <a class="xref" href="GUID-CB1C7F82-4A2A-469B-836B-A05E9B649FFA.html">ZDO_StartNetworkReq_t</a> has the confirm field of the ZDO_StartNetworkConf_t
             type.</p>
 
         <p class="p">An instance of request parameters must be declared as a global variable, because the

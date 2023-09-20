@@ -42,7 +42,6 @@
 #include <z3device/stack_interface/zgb_api.h>
 #include <z3device/stack_interface/bdb/include/bdb_api.h>
 #include <z3device/stack_interface/zcl/include/zcl_api.h>
-#include <z3device/stack_interface/configServer/include/cs_api.h>
 #include <z3device/stack_interface/nwk/include/nwk_api.h>
 #include <z3device/stack_interface/bdb/include/BDB_Unpack.h>
 #include <configserver/include/configserver.h>
@@ -70,6 +69,9 @@
 #include "zllplatform/ZLL/N_Connection/include/N_Connection_Internal.h"
 #include "zllplatform/ZLL/N_LinkTarget/include/N_LinkTarget.h"
 
+#ifdef OTAU_CLIENT
+#include <zcl/include/zclOtauClient.h>
+#endif
 #ifdef _GREENPOWER_SUPPORT_
 #if APP_ZGP_DEVICE_TYPE >= APP_ZGP_DEVICE_TYPE_PROXY_BASIC
 #include <z3device/common/include/zgpAppInterface.h>
@@ -270,6 +272,7 @@ BDB_CommissioningMode_t autoCommissionsEnableMask = ((APP_COMMISSIONING_TOUCHLIN
 
 extern OSAL_QUEUE_HANDLE_TYPE zigbeeRequestQueueHandle;
 extern TaskHandle_t zigbeeTaskHandle;
+
 /**************************************************************************
 \brief Create Application queue for zigbee and usart events
 ***************************************************************************/
@@ -390,7 +393,11 @@ void installCodeSetCallback(InstallCode_Configuration_Status_t status)
 */
 void bdbInitCompleted(void)
 {
-
+<#if DEVICE_DEEP_SLEEP_ENABLED && RESET_TO_FN_ENABLE>
+  uint8_t deepSleepWakeupSrc;
+  CS_ReadParameter(CS_DEVICE_DEEP_SLEEP_WAKEUP_SRC_ID, &deepSleepWakeupSrc);
+  BSP_EvaluateUserButton(deepSleepWakeupSrc);
+</#if>
 }
 
 /**************************************************************************//**
@@ -586,6 +593,7 @@ static void ResetToFactoryDefaults(void)
   APP_Zigbee_Event_t event;
   event.eventGroup = EVENT_ZIGBEE;
   event.eventId = EVENT_RESET_TO_FACTORY_DEFAULTS;
+  memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
   APP_Zigbee_Handler(event);
 }
 
@@ -632,6 +640,7 @@ static void networkEventsHandler(SYS_EventId_t eventId, SYS_EventData_t data)
       APP_Zigbee_Event_t event;
       event.eventGroup = EVENT_ZIGBEE;
       event.eventId = EVENT_LEFT_FROM_NETWORK;
+	  memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
       APP_Zigbee_Handler(event);
       SYS_UnsubscribeFromEvent(BC_EVENT_NETWORK_LEFT, &networkEventsListener);
       if (resetToFactoryNew)
@@ -838,6 +847,7 @@ static void commissioningDone(BDB_InvokeCommissioningConf_t *conf)
           {
             event.eventId = EVENT_STARTED_DISTRIBUTED_NETWORK;
           }
+		  memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
           APP_Zigbee_Handler(event);
         }
         break;
@@ -991,6 +1001,7 @@ void ZDO_MgmtNwkUpdateNotf_CB(ZDO_MgmtNwkUpdateNotf_t *notify)
     case ZDO_NWK_UPDATE_STATUS:
     {
       event.eventId = EVENT_NWK_UPDATE;
+	  memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
       APP_Zigbee_Handler(event);
     }
     break;
@@ -1012,6 +1023,7 @@ void ZDO_WakeUpInd_CB(void)
   APP_Zigbee_Event_t event;
   event.eventGroup = EVENT_ZIGBEE;
   event.eventId = EVENT_WAKEUP;
+  memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
   APP_Zigbee_Handler(event);
 }
 
@@ -1069,6 +1081,14 @@ void App_SetCommissioningStatus(bool val)
 }
 
 /**************************************************************************//**
+\brief Callback function for user button short press action.
+*****************************************************************************/
+static void userButtonShortPressAction(void)
+{
+    /* Add custom action when user button short pressed here. */
+}
+
+/**************************************************************************//**
 \brief Application and stack parameters initialization
 *****************************************************************************/
 static void initApp(void)
@@ -1076,6 +1096,9 @@ static void initApp(void)
   ExtAddr_t extAddr;
   DeviceType_t deviceType;
   //Reads the UID set in configuration.h
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+  uint8_t deepSleepWakeupSrc;
+</#if>
   CS_ReadParameter(CS_UID_ID,&extAddr);
   if (extAddr == 0 || extAddr > APS_MAX_UNICAST_EXT_ADDRESS)
   {
@@ -1088,6 +1111,10 @@ static void initApp(void)
   deviceType = detectNwkAddrAndDevType();
   // Set parameters to config server
   CS_WriteParameter(CS_DEVICE_TYPE_ID, &deviceType);
+  
+<#if SLEEP_SUPPORTED_DEVICE && RESET_TO_FN_ENABLE>
+  BSP_InitializeUserButton((App_ButtonPressCallback_t)userButtonShortPressAction);
+</#if>
 
   errHInit();
   /* BDB Advance features like parallel Finding & Binding are enabled which is non Compliance */
@@ -1097,6 +1124,15 @@ static void initApp(void)
 </#if>
   BDB_EventsSubscribe(&s_BDB_EventsCallback);
   BDB_Init(bdbInitCompleted);
+  
+<#if SLEEP_SUPPORTED_DEVICE && RESET_TO_FN_ENABLE>
+<#if !(DEVICE_DEEP_SLEEP_ENABLED)>
+  EIC_CallbackRegister(0U, (EIC_CALLBACK)BSP_EvaluateUserButton, 0U);
+<#else>
+  EIC_CallbackRegister(0U, (EIC_CALLBACK)BSP_EvaluateUserButton, 7U);
+</#if>
+  EIC_InterruptEnable(0U);
+</#if> 
   
 <#if (JOIN_ONLY_INSTALL_CODE == true) >
   /* If device is not in network, set the Install code settings needed for allowing install code only joining */
@@ -1119,12 +1155,26 @@ static void initApp(void)
 </#if>
   //BSP_OpenLeds();
   appDeviceInit();
+<#if DEVICE_DEEP_SLEEP_ENABLED>  
+  CS_ReadParameter(CS_DEVICE_DEEP_SLEEP_WAKEUP_SRC_ID, &deepSleepWakeupSrc);
 
+  /* Check if it is not wakeup from deep sleep. */
+  if(deepSleepWakeupSrc == 0U)
+  {
+</#if>  
 #ifdef _ZCL_REPORTING_SUPPORT_
-  resetReportConfig();
-  ZCL_StartReporting();
+    resetReportConfig();
+    ZCL_StartReporting();
 #endif
-
+<#if DEVICE_DEEP_SLEEP_ENABLED> 
+  }
+  else
+  {
+#ifdef OTAU_CLIENT
+    ZCL_RestoreOtauparams();
+#endif
+  }
+</#if>
 #ifdef _GREENPOWER_SUPPORT_
 #if APP_ZGP_DEVICE_TYPE >= APP_ZGP_DEVICE_TYPE_PROXY_BASIC
   ZGP_AppInit();
@@ -1175,6 +1225,7 @@ static void initApp(void)
     APP_Zigbee_Event_t event;
     event.eventGroup = EVENT_ZIGBEE;
     event.eventId = EVENT_COMMISSIONING_STARTED;
+	memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
     APP_Zigbee_Handler(event);
     appState = APP_START_NETWORK_STATE;
   }
@@ -1232,6 +1283,7 @@ static void Connected(void)
 
   event.eventGroup = EVENT_ZIGBEE;
   event.eventId = EVENT_NETWORK_ESTABLISHED;
+  memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
   APP_Zigbee_Handler(event);
 }
 
@@ -1269,6 +1321,7 @@ static void Disconnected(void)
   APP_Zigbee_Event_t event;
   event.eventGroup = EVENT_ZIGBEE;
   event.eventId = EVENT_DISCONNECTED;
+  memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
   APP_Zigbee_Handler(event);
 </#if> 
 }
@@ -1398,6 +1451,7 @@ void process_ZB_evt(void)
           APP_Zigbee_Event_t event;
           event.eventGroup = EVENT_ZIGBEE;
           event.eventId = EVENT_COMMISSIONING_COMPLETE;
+		  memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
           APP_Zigbee_Handler(event);
           appState = APP_IN_NETWORK_IDLE_STATE;
         }
@@ -1454,6 +1508,27 @@ void process_ZB_evt(void)
         break;
   }
 }
+
+
+/**************************************************************************//**
+\brief Backing up up required paramaters for stack
+
+\param[in]
+  bool None
+******************************************************************************/
+void SYS_BackupStackParams(uint32_t expectedSleepTime)
+{
+  ZDO_BackupZdoParams();
+  CS_BackupNwkParams();
+  HAL_BackupRunningTimers(expectedSleepTime);
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+  APP_BackupZCLAttributes();
+#ifdef OTAU_CLIENT
+  ZCL_BackupOtauparams();
+#endif
+</#if>  
+}
+
 
 #if defined WIN
 /**************************************************************************//**

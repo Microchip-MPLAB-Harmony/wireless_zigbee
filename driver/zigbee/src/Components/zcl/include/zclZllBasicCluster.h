@@ -77,7 +77,7 @@ to factory defaults.
 /***************************************************************************//**
   \brief ZCL Basic Cluster client side commands amount
 *******************************************************************************/
-#define ZCL_BASIC_CLUSTER_CLIENT_ATTRIBUTES_AMOUNT        1
+#define ZCL_BASIC_CLUSTER_CLIENT_ATTRIBUTES_AMOUNT        2
 //There are no any attributes at the client side
 
 /***************************************************************************//**
@@ -196,6 +196,7 @@ to factory defaults.
   ZCL_BasicClusterClientAttributes_t basicClusterAttributes = ZCL_DEFINE_BASIC_CLUSTER_CLIENT_ATTRIBUTES();
 *******************************************************************************/
 #define ZCL_DEFINE_BASIC_CLUSTER_CLIENT_ATTRIBUTES()                                                            \
+  DEFINE_ATTRIBUTE(swBuildId, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SW_BUILD_ID_ATTRIBUTE_ID, ZCL_CHARACTER_STRING_DATA_TYPE_ID), \
   DEFINE_ATTRIBUTE(clusterVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_VERSION_ATTRIBUTE_ID, ZCL_U16BIT_DATA_TYPE_ID)
   
 /**

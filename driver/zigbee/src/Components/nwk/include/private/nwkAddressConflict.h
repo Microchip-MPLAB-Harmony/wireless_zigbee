@@ -82,6 +82,8 @@ typedef struct _NwkAddrConflict_t
   ShortAddr_t shortAddr;
   /** Finite-state machine */
   NwkAddrConflictState_t state;
+  /** To track the same address conflict detection by other device*/
+  bool alreadyAnnounced;
   bool sendNwkStatus;
 } NwkAddrConflict_t;
 

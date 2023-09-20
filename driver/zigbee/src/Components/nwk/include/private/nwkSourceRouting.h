@@ -129,13 +129,16 @@ NWK_PRIVATE void nwkConfirmTransitSoureRouteTx(NwkOutputPacket_t *const outPkt,
   \param[in] nwkHeader - pointer to the raw NWK header of a source route packet.
   \return None.
  ******************************************************************************/
-NWK_PRIVATE
-void nwkUpdateSourceRouteInfo(const NwkFrameHeader_t *const nwkHeader);
+/* As continuation to the CCB 1487,
+     if is a source routed frame, it is better not to update routeRequired field as false
+     so that route record will be sent even for a reply to a (first)source routed packet 
+    (after mto rreq), So there could be a probability of getting a better and optimal route
+NWK_PRIVATE void nwkUpdateSourceRouteInfo(const NwkFrameHeader_t *const nwkHeader); */
 
 #else /* NWK_ROUTING_CAPACITY and _NWK_SOURCE_ROUTING_ */
 #define nwkPrepareTransitSourceRouteTx NULL
 #define nwkConfirmTransitSoureRouteTx NULL
-#define nwkUpdateSourceRouteInfo(nwkHeader) (void)0
+//#define nwkUpdateSourceRouteInfo(nwkHeader) (void)0
 #endif /* NWK_ROUTING_CAPACITY and _NWK_SOURCE_ROUTING_ */
 
 #endif /* _NWK_SOURCE_ROUTING_H */

@@ -4,9 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
+<meta name="DC.rights.owner" content="(C) Copyright 2023" />
+<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
 <meta name="DC.title" content="Sending ZDP requests" />
 <meta name="DC.relation" scheme="URI" content="GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3.html" />
 <meta name="DC.format" content="XHTML" />
@@ -19,7 +19,7 @@
 <meta name="Microsoft.Help.TocOrder" content="2" />
 <meta name="Microsoft.Help.Locale" content="en-US" />
 <meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
 <script language="javascript">
        
        if (window.parent.location.protocol != 'file:') {
@@ -226,7 +226,7 @@
         
       </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
 <body id="GUID-E61C299E-3CC5-4694-899F-4BBDBED1AEF7">
-<h1 class="title topictitle1" id="GUID-E61C299E-3CC5-4694-899F-4BBDBED1AEF7__GUID-80379D68-D07F-4398-90C4-5AFCD42B5FEE">Sending ZDP requests</h1><div class="body"><p class="p">Zigbee Device Profile (ZDP) requests provide a set of functionality for managing the network, discovering devices and services, etc. The</p>
+<h1 class="title topictitle1" id="GUID-E61C299E-3CC5-4694-899F-4BBDBED1AEF7__GUID-80379D68-D07F-4398-90C4-5AFCD42B5FEE" style="">Sending ZDP requests</h1><div class="body"><p class="p">Zigbee Device Profile (ZDP) requests provide a set of functionality for managing the network, discovering devices and services, etc. The</p>
 <p class="p"><a class="xref" href="GUID-B12FDF61-A423-4EFD-AFE8-21430ED24CAE.html">ZDO_ZdpReq()</a> function issues a ZDP request. A particular action performed by the function is detemined by the <code class="ph codeph">reqCluster</code> field in an instance of the <a class="xref" href="GUID-5D3CD4DF-40C1-4C83-BAA5-E5EFE26646BF.html">ZDO_ZdpReq_t</a> type representing request parameters. Additional request parameters are given in the <code class="ph codeph">req.reqPayload</code> field, which is actually a union, so that the same memory is used for parameters specific for different request types.</p>
 <p class="p">Since the function is executed asynchronously, request parameters' instance shall be defined in a global scope (or file scope - using the static keyword). Note that an instance of request parameters must not be reused until the confirmation callback is called for the current request, because the callback function uses the pointer to response parameters residing in the instance of the request parameters, as an argument.</p>
 <p class="p">The following sections provide some examples of issuing ZDP requests of various types. For more examples explore the code of sample applications provided with the SDK.</p>
@@ -235,7 +235,7 @@
 <div class="familylinks">
 <div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3.html">ZDO Component Usage</a></div>
 </div>
-</div><div class="topic nested1" aria-labelledby="TOPIC_TZR_JKY_J5B__GUID-1A5E1CFA-9401-41B5-9941-8BB7A94397CC" id="TOPIC_TZR_JKY_J5B"><h2 class="title topictitle2" id="TOPIC_TZR_JKY_J5B__GUID-1A5E1CFA-9401-41B5-9941-8BB7A94397CC">Device Discovery requests</h2><div class="body"><p class="p">Two typical tasks in Zigbee application development are obtaining the extended address of a remote device corresponding to a given short address and the reverse task of discovering the short address of the device with a given extended address. These tasks are accomplished with a help of ZDP requests of IEEE_ADDR_CLID and NWK_ADDR_CLID types, respectively. For example, to obtain the extended address the following code may be used:</p>
+</div><div class="topic nested1" aria-labelledby="TOPIC_TZR_JKY_J5B__GUID-1A5E1CFA-9401-41B5-9941-8BB7A94397CC" id="TOPIC_TZR_JKY_J5B"><h2 class="title topictitle2" id="TOPIC_TZR_JKY_J5B__GUID-1A5E1CFA-9401-41B5-9941-8BB7A94397CC" style="">Device Discovery requests</h2><div class="body"><p class="p">Two typical tasks in Zigbee application development are obtaining the extended address of a remote device corresponding to a given short address and the reverse task of discovering the short address of the device with a given extended address. These tasks are accomplished with a help of ZDP requests of IEEE_ADDR_CLID and NWK_ADDR_CLID types, respectively. For example, to obtain the extended address the following code may be used:</p>
 <pre class="pre"><a class="xref" href="GUID-25ED609C-8332-42AE-85DE-F3383DA05BA8.html">ZDO_IeeeAddrReq_t</a> *ieeeAddrReq = &amp;zdpReq.req.reqPayload.ieeeAddrReq;
 zdpReq.ZDO_ZdpResp = zdpIeeeAddrResp; //confirmation callback function
 zdpReq.reqCluster = IEEE_ADDR_CLID; //type of request
@@ -265,7 +265,7 @@ ieeeAddrReq-&gt;startIndex = 0;
 <p class="p">Note that the response payload should be converted to the type conforming to the type of the issued request. For that, select appropriate field from the union inside the <code class="ph codeph">respPayload</code> field.</p>
 </div>
 </div>
-<div class="topic nested1" aria-labelledby="TOPIC_OJT_DKY_J5B__GUID-13650DC1-4D80-4804-87B1-B70FED3B3FE5" id="TOPIC_OJT_DKY_J5B"><h2 class="title topictitle2" id="TOPIC_OJT_DKY_J5B__GUID-13650DC1-4D80-4804-87B1-B70FED3B3FE5">Service Discovery requests</h2><div class="body"><p class="p">Service Discovery stands for procedures of collecting information about network devices and functionality (clusters) they support. Using Service Discovery, the application on the current node is able to find out short addresses of devices that support certain input or output clusters and accomplish some other similar tasks.</p>
+<div class="topic nested1" aria-labelledby="TOPIC_OJT_DKY_J5B__GUID-13650DC1-4D80-4804-87B1-B70FED3B3FE5" id="TOPIC_OJT_DKY_J5B"><h2 class="title topictitle2" id="TOPIC_OJT_DKY_J5B__GUID-13650DC1-4D80-4804-87B1-B70FED3B3FE5" style="">Service Discovery requests</h2><div class="body"><p class="p">Service Discovery stands for procedures of collecting information about network devices and functionality (clusters) they support. Using Service Discovery, the application on the current node is able to find out short addresses of devices that support certain input or output clusters and accomplish some other similar tasks.</p>
 <p class="p">An essential ZDP request implementing Service Discovery that is frequently needed in applications is of type MATCH_DESCRIPTOR_CLID. It launches a search for devices that have registered endpoints supporting the specified clusters. The request can be sent either to a specific node identified with the short address or to a broadcast address. The application can specify a list of input and a list of output clusters, although it is rarely useful to point out more than one cluster, because a destination node responds with a list of all its endpoints that support at least one input or output cluster specified in the request. The following code sends a match descriptor request:</p>
 <pre class="pre">//define global variables
 static <a class="xref" href="GUID-5D3CD4DF-40C1-4C83-BAA5-E5EFE26646BF.html">ZDO_ZdpReq_t</a> zdpReq;
@@ -304,7 +304,7 @@ static void zdpMatchDescResp(ZDO_ZdpResp_t *resp)
 </pre>
 </div>
 </div>
-<div class="topic nested1" aria-labelledby="TOPIC_JTD_BKY_J5B__GUID-420764DF-5520-4DB5-96F9-75847798676E" id="TOPIC_JTD_BKY_J5B"><h2 class="title topictitle2" id="TOPIC_JTD_BKY_J5B__GUID-420764DF-5520-4DB5-96F9-75847798676E">Leaving the network</h2><div class="body"><p class="p">To force a device to leave the network issue a ZDP request of the MGMT_LEAVE_CLID type. The request can also be used to force a remote node to leave the network. A node that has left the network cannot be reached by remote data requests and can not sent data to remote nodes from the application layer. To return to the network the node should issue network start request. To ensure that the same network will be chosen during network scan procedures, the PANID value of the previous network shall be saved before network leave and indicated as predefined.</p>
+<div class="topic nested1" aria-labelledby="TOPIC_JTD_BKY_J5B__GUID-420764DF-5520-4DB5-96F9-75847798676E" id="TOPIC_JTD_BKY_J5B"><h2 class="title topictitle2" id="TOPIC_JTD_BKY_J5B__GUID-420764DF-5520-4DB5-96F9-75847798676E" style="">Leaving the network</h2><div class="body"><p class="p">To force a device to leave the network issue a ZDP request of the MGMT_LEAVE_CLID type. The request can also be used to force a remote node to leave the network. A node that has left the network cannot be reached by remote data requests and can not sent data to remote nodes from the application layer. To return to the network the node should issue network start request. To ensure that the same network will be chosen during network scan procedures, the PANID value of the previous network shall be saved before network leave and indicated as predefined.</p>
 <p class="p">The following examples illustrates parameters configuration for the MGMT_LEAVE_CLID request which will force the current node to leave the network:</p>
 <pre class="pre">static <a class="xref" href="GUID-5D3CD4DF-40C1-4C83-BAA5-E5EFE26646BF.html">ZDO_ZdpReq_t</a> zdpLeaveReq; //globally defined variable
 ...

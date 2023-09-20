@@ -305,9 +305,8 @@
 </#if> 
 #endif
 
-#define TX_POWER_REGION    ${CUSTOM_ANT_REGION}
-#define TX_POWER_REQ       ${APP_TX_POWER}
-
+#define CS_RF_TX_POWER   ${APP_TX_POWER}
+#define CS_TX_ANTENNA_GAIN    ${CUSTOM_ANT_GAIN}
 
 #ifndef _USE_LIB_
 /* Bit Cloud Configurations*/

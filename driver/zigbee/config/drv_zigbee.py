@@ -1,3 +1,26 @@
+"""*****************************************************************************
+* Copyright (C) 2022 Microchip Technology Inc. and its subsidiaries.
+*
+* Subject to your compliance with these terms, you may use Microchip software
+* and any derivatives exclusively with Microchip products. It is your
+* responsibility to comply with third party license terms applicable to your
+* use of third party software (including open source software) that may
+* accompany Microchip software.
+*
+* THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER
+* EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED
+* WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A
+* PARTICULAR PURPOSE.
+*
+* IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE,
+* INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND
+* WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS
+* BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO THE
+* FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN
+* ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
+* THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
+*****************************************************************************"""
+
 ##################################################################################################
 ######################### ZigbeeDriver Configurations ############################################
 ##################################################################################################
@@ -288,6 +311,19 @@ def instantiateComponent(drvZigbeeComponent):
         print('{} file: {} pos: {}'.format(n, f, p))
         n = n + 1
 
+    ######################    hal appTimer.c file    ######################
+    
+    # Add appTimer.c - generated file
+    appTimerSourceFile = drvZigbeeComponent.createFileSymbol(None, None)
+    appTimerSourceFile.setSourcePath('driver/zigbee/templates/appTimer.c.ftl')
+    appTimerSourceFile.setOutputName('appTimer.c')
+    appTimerSourceFile.setOverwrite(True)
+    appTimerSourceFile.setDestPath('/zigbee/systemresource/hal/cortexm4/common/src/')
+    appTimerSourceFile.setProjectPath('/config/default/zigbee/systemresource/hal/cortexm4/common/src/')
+    appTimerSourceFile.setType('SOURCE')
+    appTimerSourceFile.setEnabled(True)
+    appTimerSourceFile.setMarkup(True)
+    
     ###############  app_zigbee.c app_zigbee.h files ######################
     # Add app_zigbee.c - generated file
     app_zgbSourceFile = drvZigbeeComponent.createFileSymbol(None, None)
@@ -1447,7 +1483,7 @@ def instantiateComponent(drvZigbeeComponent):
         ['hal/cortexm4/pic32cx/src/halSleepTimerClock.c',     condAlways],
         #['hal/cortexm4/pic32cx/src/hpl_aes.c',                condAlways],
         ['hal/cortexm4/pic32cx/src/halAes.c',                 condAlways],
-        ['hal/cortexm4/common/src/appTimer.c',                condAlways],
+        #['hal/cortexm4/common/src/appTimer.c',                condAlways],
         ['hal/cortexm4/common/src/flash.c',                   condAlways],
         ['hal/cortexm4/common/src/halTaskManager.c',          condAlways],
         ['hal/cortexm4/common/src/sleep.c',                   condAlways],

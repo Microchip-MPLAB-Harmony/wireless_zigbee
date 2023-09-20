@@ -4,6 +4,23 @@
 ---
 # Zigbee Driver Library Release notes
 
+## Zigbee Release v5.1.0
+
+### Feature sets and Enhancements
+
++ Deep Sleep support for Zigbee End devices (with retention RAM)
++ Custom Cluster support
++ Custom Device support with Custom Cluster
++ Device / Stack Tx power handling and backoff implemenation.User options to set FCC/ETSI/IC/China/Korea/Taiwan regions with Custom antenna gain.
++ Standby Sleep improvements with Combo(BLE) devices
+
+
+### Development Tools
++ [MPLAB X v6.10](https://www.microchip.com/mplab/mplab-x-ide)
++ [MPLAB® XC32 C/C++ Compiler v4.21](https://www.microchip.com/mplab/compilers)
++ MPLAB® X IDE plug-ins: MPLAB® Code Configurator (MCC) v5.3.7 and above
+
+
 ## Zigbee Release v5.0.0
 
 ### Feature sets and Enhancements
@@ -23,6 +40,7 @@
 + RGB Led Light integration through System Services Harmony Component
 + Stability tested in a 10 node network for more than 24 hours
 + P2P Range tested upto 100 meters
++ Zigbee Harmony component folder structure optimized to reduce the path size & better readability
 + Device / Stack power handling and backoff implemenation.User options to set FCC/ETSI/Custom antenna gain.
 + Zigbee Application Device Support - 
   + Lights ( Extended Color, Dimmable, Temperature Color , OnOff , Color)
@@ -33,8 +51,9 @@
   + Muti Sensors ( Occupancy , Light, Humidity , Temperature)
   + Green Power Support ( Proxy and Sink)
 
-### Known Issues/Limitations
-+ CCA Mode-3 not fully verified when Arbiter Mode set as part of the wireless subsystem. However verified with Static and IP mode.
+### Known Issues
++ Zigbee Mesh is not run on a larger node bed / test to verify/fine tune  Netowrk traffic / Mising Acks / Retries.
++ CCA Mode-3 not full verified when Arbiter Mode set as part of the wireless subsystem. However verified with Static and IP mode.
 
 
 ### Development Tools

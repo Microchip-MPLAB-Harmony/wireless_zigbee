@@ -4,17 +4,23 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
+<meta name="DC.rights.owner" content="(C) Copyright 2023" />
+<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
 <meta name="DC.title" content="ZDO APIs" />
 <meta name="DC.relation" scheme="URI" content="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-FC890FAD-4B35-47AF-AE74-76E8EC3C860C.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-B386E4D3-0009-472E-9EBC-1C89173AABBF.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-ED81C8C6-60CA-45BC-BFB3-5ED680BFA02F.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-502BED1C-B836-408A-828D-D8D38EB24770.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-701FB045-479F-4334-8EBF-C7D3F90BFB2D.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-07EE67E5-472A-415E-8E6F-2668CF1C7202.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-53F661F9-E6CE-44A2-BA0E-64F60BEAC4A2.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-E534EF11-6178-4FBB-B475-06111580F7FC.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-E89751D0-02AE-4A96-ADFA-A937630FB0C0.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-3795A457-8FF7-44C4-AE5B-31635C006DAE.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-2EAFE920-7CBF-4B96-AC6D-776FAC1802B2.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-8A679E07-3349-4758-96B6-203AE35A4F1C.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-D4DB9C17-ACD6-4781-9BE4-72D34E2B03C1.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-39F9EF5F-1821-45D9-B3B8-05A4EBA187AA.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-DD92A162-732C-4CD2-919C-CCB764ECCA1C.html" />
@@ -38,7 +44,7 @@
 <meta name="Microsoft.Help.TocOrder" content="1" />
 <meta name="Microsoft.Help.Locale" content="en-US" />
 <meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
 <script language="javascript">
        
        if (window.parent.location.protocol != 'file:') {
@@ -246,7 +252,7 @@
       </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
 <body id="GUID-5578CE1F-C01F-4ECE-AF4E-7B9AED1FCBFA">
 
-<h1 class="title topictitle1" id="GUID-5578CE1F-C01F-4ECE-AF4E-7B9AED1FCBFA__GUID-96FA8212-9E43-4446-A2A7-CFDF5E772435">ZDO APIs</h1>
+<h1 class="title topictitle1" id="GUID-5578CE1F-C01F-4ECE-AF4E-7B9AED1FCBFA__GUID-96FA8212-9E43-4446-A2A7-CFDF5E772435" style="">ZDO APIs</h1>
     <div class="body">
         <p class="p">This page lists public API functions of the ZDO component. </p>
 
@@ -431,6 +437,60 @@
 
                     </tr>
 
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>ExtAddr_t*</span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>ZDO_FindExtByShort(const ShortAddr_t shortAddr)<p class="p">Determines Extended
+                                64-bit address by NWK address.</p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>ShortAddr_t*</span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>ZDO_FindShortByExt(const ExtAddr_t *const extAddr)<p class="p">Determines NWK
+                                address by Extended 64-bit address.</p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>void</span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>ZDO_GetNeibAmount(ZDO_GetNeibAmount_t *amount)<p class="p">Gets neighbor
+                                routers and children amount.</p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>NodeDescriptor_t*</span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>ZDO_GetNodeDescriptor(void)<p class="p">Gets the node descriptor of the
+                                device.</p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>void</span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>ZDO_IncreaseJoinAttemptsAmount(uint8_t amount)<p class="p">Increases join
+                                network attempts amount.</p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>bool</span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>ZDO_IsDeviceReadyToSleep(void)<p class="p">Returns the information whether the
+                                stack is ready to sleep.</p>
+</span></td>
+
+                    </tr>
+
                 </tbody>
 
             </table>
@@ -442,15 +502,27 @@
 <ul class="ullinks">
 <li class="link ulchildlink"><strong><a href="GUID-FC890FAD-4B35-47AF-AE74-76E8EC3C860C.html">ZDO_BindIndication Function</a></strong><br />
 </li>
+<li class="link ulchildlink"><strong><a href="GUID-B386E4D3-0009-472E-9EBC-1C89173AABBF.html">ZDO_FindExtByShort Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-ED81C8C6-60CA-45BC-BFB3-5ED680BFA02F.html">ZDO_FindShortByExt Function</a></strong><br />
+</li>
 <li class="link ulchildlink"><strong><a href="GUID-502BED1C-B836-408A-828D-D8D38EB24770.html">ZDO_GetChildrenAddr Function</a></strong><br />
 </li>
 <li class="link ulchildlink"><strong><a href="GUID-701FB045-479F-4334-8EBF-C7D3F90BFB2D.html">ZDO_GetLqiRssi Function</a></strong><br />
 </li>
+<li class="link ulchildlink"><strong><a href="GUID-07EE67E5-472A-415E-8E6F-2668CF1C7202.html">ZDO_GetNeibAmount Function</a></strong><br />
+</li>
 <li class="link ulchildlink"><strong><a href="GUID-53F661F9-E6CE-44A2-BA0E-64F60BEAC4A2.html">ZDO_GetNeibTable Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-E534EF11-6178-4FBB-B475-06111580F7FC.html">ZDO_GetNodeDescriptor Function</a></strong><br />
 </li>
 <li class="link ulchildlink"><strong><a href="GUID-E89751D0-02AE-4A96-ADFA-A937630FB0C0.html">ZDO_GetNwkStatus Function</a></strong><br />
 </li>
 <li class="link ulchildlink"><strong><a href="GUID-3795A457-8FF7-44C4-AE5B-31635C006DAE.html">ZDO_GetParentAddr Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-2EAFE920-7CBF-4B96-AC6D-776FAC1802B2.html">ZDO_IncreaseJoinAttemptsAmount Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-8A679E07-3349-4758-96B6-203AE35A4F1C.html">ZDO_IsDeviceReadyToSleep Function</a></strong><br />
 </li>
 <li class="link ulchildlink"><strong><a href="GUID-D4DB9C17-ACD6-4781-9BE4-72D34E2B03C1.html">ZDO_MgmtNwkUpdateNotf Function</a></strong><br />
 </li>

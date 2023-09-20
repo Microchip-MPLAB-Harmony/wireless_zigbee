@@ -1324,6 +1324,22 @@ static ZCL_Status_t processActionOnCompletePairing(zgpPairingConfigContextInfo_t
       }
     }
 
+
+    if (REMOVE_PAIRING == pairingConfigContextInfo->actions.action)
+    {
+      ZGP_TransTableIndicationInfo_t transTableInfo;
+
+      memset(&transTableInfo, 0x00, sizeof(transTableInfo));
+      transTableInfo.transTableIndType = REMOVE_TRANS_TABLE_PAIRING;
+
+      memcpy (&transTableInfo.indicationData.removePairingEntry.gpdId,
+              &pairingConfigContextInfo->basicContextInfo.gpdId,
+              sizeof(ZGP_GpdId_t));
+      transTableInfo.indicationData.removePairingEntry.endPointList = pairingConfigContextInfo->basicContextInfo.pairedEndPointPtr;
+      transTableInfo.indicationData.removePairingEntry.noOfEndPoints = pairingConfigContextInfo->basicContextInfo.noOfPairedEndpoints;
+      SYS_PostEvent(BC_EVENT_ZGPH_TRANS_TABLE_INDICATION, (SYS_EventData_t)&transTableInfo);
+    }
+
     if (!ZGPL_AddOrUpdateTableEntryOnNvm((void *)sinkTableEntry, tableAction, ZGP_SINK_ENTRY))
     {
       return ZCL_INSUFFICIENT_SPACE_STATUS;

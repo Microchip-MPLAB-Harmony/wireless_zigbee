@@ -4,9 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
+<meta name="DC.rights.owner" content="(C) Copyright 2023" />
+<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
 <meta name="DC.title" content="ZCL_WriteAttributeValue Function" />
 <meta name="DC.relation" scheme="URI" content="GUID-0ACA2901-CB92-4FDC-99DA-1C61E23DBE9A.html" />
 <meta name="DC.format" content="XHTML" />
@@ -18,7 +18,7 @@
 <meta name="Microsoft.Help.TocOrder" content="0" />
 <meta name="Microsoft.Help.Locale" content="en-US" />
 <meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
 <script language="javascript">
        
        if (window.parent.location.protocol != 'file:') {
@@ -225,50 +225,50 @@
         
       </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
 <body id="zcl-writeattributevalue-function">
-<h1 class="title topictitle1" id="ariaid-title1">ZCL_WriteAttributeValue Function</h1><div class="body"></div>
+<h1 class="title topictitle1" id="ariaid-title1" style="">ZCL_WriteAttributeValue Function</h1><div class="body"></div>
 <div class="related-links">
 <div class="familylinks">
 <div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-0ACA2901-CB92-4FDC-99DA-1C61E23DBE9A.html">ZCL Generic APIs</a></div>
 </div>
-</div><div class="topic nested1" aria-labelledby="ariaid-title2" id="c"><h2 class="title topictitle2" id="ariaid-title2">C</h2><div class="body"><pre class="pre codeblock c">ZCL_Status_t <span class="hl-functions">ZCL_WriteAttributeValue</span>(Endpoint_t endpointId, ClusterId_t clusterId,uint8_t clusterSide,
+</div><div class="topic nested1" aria-labelledby="ariaid-title2" id="c"><h2 class="title topictitle2" id="ariaid-title2" style="">C</h2><div class="body"><pre class="pre codeblock c">ZCL_Status_t <span class="hl-functions">ZCL_WriteAttributeValue</span>(Endpoint_t endpointId, ClusterId_t clusterId,uint8_t clusterSide,
                                     ZCL_AttributeId_t attrId, uint8_t attrType, uint8_t *attrValue);</pre></div>
 </div>
-<div class="topic nested1" aria-labelledby="ariaid-title3" id="description"><h2 class="title topictitle2" id="ariaid-title3">Description</h2><div class="body"><p class="p">Finds an attribute in ZCL and rewrites its value by the new one</p>
+<div class="topic nested1" aria-labelledby="ariaid-title3" id="description"><h2 class="title topictitle2" id="ariaid-title3" style="">Description</h2><div class="body"><p class="p">Finds an attribute in ZCL and rewrites its value by the new one</p>
 <p class="p">The function may be used to set or rewrite only local attributes.
 Affects attribute reporting on change.
 To set a new value to an attribute on a remote device, send a write attributes
 general cluster command via the ZCL_AttributeReq() function.</p>
 </div>
 </div>
-<div class="topic nested1" aria-labelledby="ariaid-title4" id="parameters"><h2 class="title topictitle2" id="ariaid-title4">Parameters</h2><div class="body">
-<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" class="table" frame="border" border="1" rules="all"><col style="width:" /><col style="width:" /><thead class="thead" style="text-align:left;"><tr class="row"><th class="entry cellrowborder" style="text-align:left;vertical-align:middle;" id="d14687e41"><span>Param</span></th>
-<th class="entry cellrowborder" style="text-align:left;vertical-align:middle;" id="d14687e43"><span>Description</span></th>
+<div class="topic nested1" aria-labelledby="ariaid-title4" id="parameters"><h2 class="title topictitle2" id="ariaid-title4" style="">Parameters</h2><div class="body">
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" class="table" frame="border" border="1" rules="all"><col style="width:" /><col style="width:" /><thead class="thead" style="text-align:left;"><tr class="row"><th class="entry cellrowborder" style="text-align:left;vertical-align:middle;" id="d17227e41"><span>Param</span></th>
+<th class="entry cellrowborder" style="text-align:left;vertical-align:middle;" id="d17227e43"><span>Description</span></th>
 </tr>
 </thead>
-<tbody class="tbody"><tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d14687e41 "><span>endpointId</span></td>
-<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d14687e43 "><span>endpoint on which cluster is registered</span></td>
+<tbody class="tbody"><tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d17227e41 "><span>endpointId</span></td>
+<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d17227e43 "><span>endpoint on which cluster is registered</span></td>
 </tr>
-<tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d14687e41 "><span>clusterId</span></td>
-<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d14687e43 "><span>cluster unique identifier</span></td>
+<tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d17227e41 "><span>clusterId</span></td>
+<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d17227e43 "><span>cluster unique identifier</span></td>
 </tr>
-<tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d14687e41 "><span>clusterSide</span></td>
-<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d14687e43 "><span>detects the cluster's side (client or server)</span></td>
+<tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d17227e41 "><span>clusterSide</span></td>
+<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d17227e43 "><span>detects the cluster's side (client or server)</span></td>
 </tr>
-<tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d14687e41 "><span>attrId</span></td>
-<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d14687e43 "><span>attribute unique identifier</span></td>
+<tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d17227e41 "><span>attrId</span></td>
+<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d17227e43 "><span>attribute unique identifier</span></td>
 </tr>
-<tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d14687e41 "><span>attrType</span></td>
-<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d14687e43 "><span>type of the attribute to be set</span></td>
+<tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d17227e41 "><span>attrType</span></td>
+<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d17227e43 "><span>type of the attribute to be set</span></td>
 </tr>
-<tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d14687e41 "><span>attrValue</span></td>
-<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d14687e43 "><span>pointer to attribute value to be set</span></td>
+<tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d17227e41 "><span>attrValue</span></td>
+<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d17227e43 "><span>pointer to attribute value to be set</span></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 </div>
-<div class="topic nested1" aria-labelledby="ariaid-title5" id="returns"><h2 class="title topictitle2" id="ariaid-title5">Returns</h2><div class="body"><p class="p">The status of the operation:
+<div class="topic nested1" aria-labelledby="ariaid-title5" id="returns"><h2 class="title topictitle2" id="ariaid-title5" style="">Returns</h2><div class="body"><p class="p">The status of the operation:
 <em class="ph i">::ZCL_SUCCESS_STATUS (0x00)</em> - new value has been written successfully</p>
 <p class="p"><em class="ph i">::ZCL_UNSUPPORTED_ATTRIBUTE_STATUS (0x86)</em> - the specified attribute is not supported</p>
 <p class="p"><em class="ph i">::ZCL_INVALID_PARAMETER_STATUS (0xFF)</em> - NULL has been provided as the attribute's value</p>

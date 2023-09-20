@@ -103,6 +103,7 @@ void lightBasicClusterInit(void)
   memcpy(lightBasicClusterServerAttributes.swBuildId.value, "\xf abcdefgh", 10);
 #if ZLO_EXTRA_CLUSTERS_SUPPORT == 1
   lightBasicClusterClientAttributes.clusterVersion.value      = 1;
+  memcpy(lightBasicClusterClientAttributes.swBuildId.value, "\xf abcdefgh", 10);
 #endif
   //Yog Workaround needs to check :::::  cluster->ZCL_DefaultRespInd = commandZclDefaultResp;
 }

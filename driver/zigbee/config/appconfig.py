@@ -1,3 +1,26 @@
+"""*****************************************************************************
+* Copyright (C) 2022 Microchip Technology Inc. and its subsidiaries.
+*
+* Subject to your compliance with these terms, you may use Microchip software
+* and any derivatives exclusively with Microchip products. It is your
+* responsibility to comply with third party license terms applicable to your
+* use of third party software (including open source software) that may
+* accompany Microchip software.
+*
+* THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER
+* EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED
+* WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A
+* PARTICULAR PURPOSE.
+*
+* IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE,
+* INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND
+* WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS
+* BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO THE
+* FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN
+* ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
+* THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
+*****************************************************************************"""
+
 #####################################################################################################################
 ########################               APPLICATION CONFIGURATION                             ########################
 #####################################################################################################################
@@ -15,6 +38,30 @@ def appChannelTypeCheckMask(symbol, event):
         symbol.setVisible(True)
     else:
         symbol.setVisible(False)
+
+
+
+def zigbeeDevResetToFN(symbol, event):
+    if( deviceName in pic32cx_bz2_family):
+        wbzSymbols = Database.getComponentByID('pic32cx_bz2_devsupport')
+    else:
+        wbzSymbols = Database.getComponentByID('pic32cx_bz3_devsupport')
+        
+    resetToFNSymbol = wbzSymbols.getSymbolByID('ENABLE_RESET_TO_FN')
+    if((event["value"] == True)):
+        symbol.setValue(True)
+        resetToFNSymbol.setValue(True)
+        eicActiavtionResult = Database.activateComponents(["eic"])
+        if(eicActiavtionResult):
+            eicDeepSleepConfig()
+        else:
+            print("EIC activation failed")
+        
+    elif((event["value"] == False)):
+        symbol.setValue(False)
+        resetToFNSymbol.setValue(False)
+        eicActiavtionResult = Database.deactivateComponents(["eic"])
+
 
 # Configuration selection to use channel or channel mask
 global appConfigUseChannel
@@ -58,6 +105,13 @@ appConfigSecondaryChannelMask.setMax(0xFFFFFFFF)
 appConfigSecondaryChannelMask.setVisible(appConfigUseChannel.getValue() == "NO")
 appConfigSecondaryChannelMask.setDependencies(appChannelTypeCheckMask, ["APP_USE_CHANNEL"])
 
+
+global ResetTOFnEnabling
+ResetTOFnEnabling = drvZigbeeComponent.createBooleanSymbol("RESET_TO_FN_ENABLE", applicationConfigMenu)
+ResetTOFnEnabling.setLabel("Reset To FN on button press")
+ResetTOFnEnabling.setVisible((drvZigbeeComponent.getID() in deviceDeepSleepEnabledList))
+ResetTOFnEnabling.setDefaultValue(False)
+ResetTOFnEnabling.setDependencies(zigbeeDevResetToFN, ["RESET_TO_FN_ENABLE"]) 
 # Console
 global appConfigEnableConsole
 appConfigEnableConsole = drvZigbeeComponent.createBooleanSymbol("APP_ENABLE_CONSOLE", applicationConfigMenu)

@@ -79,6 +79,21 @@
 #ifdef OTAU_CLIENT
 #include <zcl/include/zclOtauManager.h>
 #endif
+
+<#compress>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  <#assign devicetype = DEVICE_TYPE_FILE_PATH >
+#include <z3device/${devicetype}/include/${deviceTypeFunctionPrefix + clusterName}Cluster.h>
+#include <zcl/include/zcl${clusterName}Cluster.h>
+
+  </#list>
+  
+</#compress>
+
 /******************************************************************************
                    type(s) section
 ******************************************************************************/
@@ -156,8 +171,16 @@ static ClusterId_t customClientClusterToBindIds[] =
 </#if><#if (IASZONE_CLUSTER_ENABLE == true) && (IASZONE_CLUSTER_CS != "SERVER")  >
   IAS_ZONE_CLUSTER_ID,
 </#if><#if (IASACE_CLUSTER_ENABLE == true) && (IASACE_CLUSTER_CS != "SERVER")  >
-  IAS_ACE_CLUSTER_ID
+  IAS_ACE_CLUSTER_ID,
 </#if>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#if (DEVICE == "CLIENT")  >
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  ${clusterName?upper_case}_CLUSTER_ID,
+  </#if>
+  </#list>  
 };
 
 static ClusterId_t customServerClusterToBindIds[] =
@@ -201,8 +224,16 @@ static ClusterId_t customServerClusterToBindIds[] =
 </#if><#if (IASACE_CLUSTER_ENABLE == true) && (IASACE_CLUSTER_CS != "CLIENT")  >
   IAS_ACE_CLUSTER_ID,
 </#if><#if (DIAGONSTICS_CLUSTER_ENABLE == true) && (DIAGONSTICS_CLUSTER_CS != "CLIENT")  >
-  DIAGNOSTICS_CLUSTER_ID
+  DIAGNOSTICS_CLUSTER_ID,
 </#if>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#if (DEVICE == "SERVER")  >
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  ${clusterName?upper_case}_CLUSTER_ID,
+  </#if>  
+  </#list>
 };
 
 static AppBindReq_t customBindReq =
@@ -293,6 +324,12 @@ void appDeviceInit(void)
 #endif
   /**CHANGE* - cluster version need to be reinitilized here after PDS Restore same for all devices
     implement a common function to reinitilized */
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+<#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+<#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+<#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  ${deviceTypeFunctionPrefix}${clusterName}Init();
+</#list>
 }
 
 /**************************************************************************//**
@@ -329,6 +366,30 @@ void appDeviceTaskHandler(void)
 /*******************************************************************************
 \brief callback called on the finishing of binding of one cluster
 ********************************************************************************/
+<#function hasReporableServerCluster>
+
+
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+
+  <#if DEVICE == "SERVER">
+
+  <#assign prefixAttribute  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_" + "SERVER" + "_ATTRIBUTES_">
+
+  <#list 0..<(prefixAttribute  + "NO")?eval as attributeIndex>
+      <#if (prefixAttribute +"PROP_REPORTABLE_"+attributeIndex)?eval>
+          <#return true>
+      </#if>
+  </#list>
+
+  </#if>
+
+</#list>
+
+  <#return false>
+
+</#function>
 static void customFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterId_t clusterId)
 {
   ZCL_Cluster_t *serverCluster;
@@ -361,6 +422,13 @@ static void customFindingBindingFinishedForACluster(Endpoint_t ResponentEp, Clus
 #endif
 
       break;
+    <#if (hasReporableServerCluster())>
+    default:
+       ZCL_StartReporting();
+      break;
+    </#if>
+
+
   }
 
 }

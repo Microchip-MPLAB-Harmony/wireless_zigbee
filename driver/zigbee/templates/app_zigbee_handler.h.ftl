@@ -101,6 +101,8 @@ typedef enum
     CMD_SENSOR_OPEN,
     /* Sensor Event */
     CMD_SENSOR_READ,
+    /* Button Event */        
+    CMD_BUTTON_LONG_PRESS,
 
     /* Events in the Zigbee Group Event */
     /* Network joining/rejoining done*/
@@ -639,6 +641,46 @@ typedef enum
   /* Command ZCL_HumdityMeasurementReportInd*/
     CMD_ZCL_REPORTING_HUMIDITY_MEASUREMENT,
 </#if>
+
+<#function isReportable customClusterIndex>
+<#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+
+
+<#assign result = false>
+<#assign prefixAttribute  = "ZCC" + customClusterIndex + "_CUSTOM_CLUSTER_" + "SERVER" + "_ATTRIBUTES_">
+
+<#list 0..<(prefixAttribute  + "NO")?eval as attributeIndex>
+    <#if (prefixAttribute +"PROP_REPORTABLE_"+attributeIndex)?eval>
+        <#return true>
+    </#if>
+</#list>
+
+<#assign prefixAttribute  = "ZCC" + customClusterIndex + "_CUSTOM_CLUSTER_" + "CLIENT" + "_ATTRIBUTES_">
+
+<#list 0..<(prefixAttribute  + "NO")?eval as attributeIndex>
+    <#if (prefixAttribute +"PROP_REPORTABLE_"+attributeIndex)?eval>
+        <#return true>
+    </#if>
+</#list>
+
+<#return false>
+
+</#function>
+<#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX>
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >  
+  <#if DEVICE == "CLIENT" && isReportable(customClusterIndex) >
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >  
+    /*Command ZCL ${deviceTypeFunctionPrefix}${clusterName}ReportInd*/
+    CMD_ZCL_REPORTING_${clusterName?upper_case},
+  <#elseif DEVICE == "SERVER">
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >  
+    /*Command ZCL ${deviceTypeFunctionPrefix}${clusterName}AttributeEventInd*/
+    CMD_ZCL_ATTR_${clusterName?upper_case},
+   </#if>  
+</#list>
+
+
 } APP_Zigbee_EventId_t;
 
 /*******************************************************************************

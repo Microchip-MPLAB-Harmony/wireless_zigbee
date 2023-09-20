@@ -4,12 +4,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
+<meta name="DC.rights.owner" content="(C) Copyright 2023" />
+<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
 <meta name="DC.title" content="HAL APIs" />
 <meta name="DC.relation" scheme="URI" content="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-6B5BA030-4541-4024-AE20-4358FFE06099.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-5EA991EC-2629-4D3D-9E78-B8FF5A23D7B4.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-7EB90785-99C5-423A-A86A-CCCEB4C98180.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-259C36E2-A11A-4CE2-8EE2-1A4359E7CEC3.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-498EDB5B-D3B5-42BA-A85B-95CD7386C342.html" />
 <meta name="DC.format" content="XHTML" />
@@ -22,7 +24,7 @@
 <meta name="Microsoft.Help.TocOrder" content="5" />
 <meta name="Microsoft.Help.Locale" content="en-US" />
 <meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
 <script language="javascript">
        
        if (window.parent.location.protocol != 'file:') {
@@ -230,7 +232,7 @@
       </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
 <body id="GUID-BD68D16B-283C-40B6-9CF8-CEC2C27DCD4A">
 
-<h1 class="title topictitle1" id="GUID-BD68D16B-283C-40B6-9CF8-CEC2C27DCD4A__GUID-BBBEBBA2-C662-4896-903E-CF2E71D15D3A">HAL APIs</h1>
+<h1 class="title topictitle1" id="GUID-BD68D16B-283C-40B6-9CF8-CEC2C27DCD4A__GUID-BBBEBBA2-C662-4896-903E-CF2E71D15D3A" style="">HAL APIs</h1>
 <div class="body">
         <p class="p">HAL functions used for various purposes including functions that invoke hardware reset or
             read UID (extended address).</p>
@@ -280,6 +282,25 @@
 
                         </tr>
 
+                        <tr class="row">
+                            <td class="entry cellrowborder" style="vertical-align:middle;"><span>uint32_t</span></td>
+
+                            <td class="entry cellrowborder" style="vertical-align:middle;"><span>HAL_GetElapsedAppTimerTimeSinceLastIsr (void)<p class="p">Returns the time
+                                    elapsed from the last timer tick - (10 ms tick
+                                interval).</p>
+</span></td>
+
+                        </tr>
+
+                        <tr class="row">
+                            <td class="entry cellrowborder" style="vertical-align:middle;"><span>int</span></td>
+
+                            <td class="entry cellrowborder" style="vertical-align:middle;"><span>HAL_RemainingAppTimer (void)<p class="p">Gives the remaining time in the
+                                    given app timer.</p>
+</span></td>
+
+                        </tr>
+
                     </tbody>
 
                 </table>
@@ -290,7 +311,11 @@
 
 <div class="related-links">
 <ul class="ullinks">
+<li class="link ulchildlink"><strong><a href="GUID-6B5BA030-4541-4024-AE20-4358FFE06099.html">HAL_GetElapsedAppTimerTimeSinceLastIsr Function</a></strong><br />
+</li>
 <li class="link ulchildlink"><strong><a href="GUID-5EA991EC-2629-4D3D-9E78-B8FF5A23D7B4.html">HAL_GetSystemTime Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-7EB90785-99C5-423A-A86A-CCCEB4C98180.html">HAL_RemainingAppTimer Function</a></strong><br />
 </li>
 <li class="link ulchildlink"><strong><a href="GUID-259C36E2-A11A-4CE2-8EE2-1A4359E7CEC3.html">HAL_StartAppTimer Function</a></strong><br />
 </li>

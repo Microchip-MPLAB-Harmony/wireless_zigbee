@@ -4,9 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
+<meta name="DC.rights.owner" content="(C) Copyright 2023" />
+<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
 <meta name="DC.title" content="Sending a Cluster-specific command" />
 <meta name="DC.relation" scheme="URI" content="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF.html" />
 <meta name="DC.format" content="XHTML" />
@@ -19,7 +19,7 @@
 <meta name="Microsoft.Help.TocOrder" content="3" />
 <meta name="Microsoft.Help.Locale" content="en-US" />
 <meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
 <script language="javascript">
        
        if (window.parent.location.protocol != 'file:') {
@@ -227,7 +227,7 @@
       </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
 <body id="GUID-CDA2A98F-5409-4E41-A200-70F6A72CC7D2">
 
-<h1 class="title topictitle1" id="GUID-CDA2A98F-5409-4E41-A200-70F6A72CC7D2__GUID-00700403-3CA8-4F91-9044-F2B1C5754F72">Sending a Cluster-specific command</h1>
+<h1 class="title topictitle1" id="GUID-CDA2A98F-5409-4E41-A200-70F6A72CC7D2__GUID-00700403-3CA8-4F91-9044-F2B1C5754F72" style="">Sending a Cluster-specific command</h1>
 <div class="body">
 <p class="p">To send a cluster specific command the ZCL_CommandReq() function is used with the pointer to an
             instance of the <a class="xref" href="GUID-D668683F-F251-4340-973F-733DE28B6748.html">ZCL_Request_t</a> type as an argument that is used very similar as in
@@ -290,7 +290,7 @@
   ZCL_CommandReq(tmpZclReq);</pre>
 </div>
 
-        <p class="p">Note that for a cluster-specific command the application shall use the <a class="xref" href="">ZCL_GetNextSeqNumber()</a> function to obtain ZCL sequence numbers set it to the
+        <p class="p">Note that for a cluster-specific command the application shall use the<a class="xref" href="GUID-FBC7E4C8-9C81-4055-B65A-B99666B48C9A.html">ZCL_GetNextSeqNumber()</a> function to obtain ZCL sequence numbers set it to the
             sequenceNumber field in the dstAddressing structure of the argument of <a class="xref" href="GUID-C85A2170-8219-4EFA-A9EC-E57F5CE504D3.html">ZCL_CommandReq()</a>.</p>
 
 </div>

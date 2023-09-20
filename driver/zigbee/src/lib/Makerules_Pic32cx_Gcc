@@ -18,7 +18,7 @@ OBJDUMP  = xc32-objdump
 SIZE     = xc32-size
 
 #-Compiler flags-------------------------------
-CFLAGS =  -x c -c -Os -mprocessor=32CX1012BZ25048E -mdfp=C:/Users/i41610/.mchp_packs/Microchip/PIC32CX-BZ-ENG_DFP/1.0.55/BZ25 -mfloat-abi=softfp -DRELEASE -DARM_CM4F_GCC -D_SLEEP_WHEN_IDLE_
+CFLAGS =  -x c -c -Os -D_PIC32CX_BZ2_ -mprocessor=32CX1012BZ25048E -mdfp=C:/Users/x55142/.mchp_packs/Microchip/PIC32CX-BZ-ENG_DFP/1.0.55/BZ25 -DRELEASE -DARM_CM4F_GCC -D_SLEEP_WHEN_IDLE_
 AR_KEYS = cr
 
 

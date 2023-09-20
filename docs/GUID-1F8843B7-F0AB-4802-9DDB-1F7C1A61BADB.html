@@ -4,9 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
+<meta name="DC.rights.owner" content="(C) Copyright 2023" />
+<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
 <meta name="DC.title" content="Synchronous and Asynchronous APIs" />
 <meta name="DC.relation" scheme="URI" content="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686.html" />
 <meta name="DC.format" content="XHTML" />
@@ -19,7 +19,7 @@
 <meta name="Microsoft.Help.TocOrder" content="4" />
 <meta name="Microsoft.Help.Locale" content="en-US" />
 <meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
 <script language="javascript">
        
        if (window.parent.location.protocol != 'file:') {
@@ -226,7 +226,7 @@
         
       </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
 <body id="GUID-1F8843B7-F0AB-4802-9DDB-1F7C1A61BADB">
-<h1 class="title topictitle1" id="GUID-1F8843B7-F0AB-4802-9DDB-1F7C1A61BADB__GUID-93CBEB16-277C-4FFB-BD32-57B634162A70">Synchronous and Asynchronous APIs</h1><div class="body"><p class="p">A few API calls, which do not consume much execution time, are synchronous such as those that involve reading from and writing to internal stack structures. For example, NWK_GetShortAddr() API returns the short address maintained by network layer synchronously. But tasks implying sending requests to other nodes in the network are always executed asynchronously as they result in considerably longer waiting for response. In order not to block the execution flow (which is single-threaded on an MCU) such requests provide pointers to callbacks which are called at the end of request execution by the underlying layer, to which the request is issued. For example , BDB_InvokeCommissioningReq(mode) API can be invoked from application layer and the corresponding callback is called once the commissioning procedure is complete, between this API invocation and callback, application layer is free to execute any other task.</p>
+<h1 class="title topictitle1" id="GUID-1F8843B7-F0AB-4802-9DDB-1F7C1A61BADB__GUID-93CBEB16-277C-4FFB-BD32-57B634162A70" style="">Synchronous and Asynchronous APIs</h1><div class="body"><p class="p">A few API calls, which do not consume much execution time, are synchronous such as those that involve reading from and writing to internal stack structures. For example, NWK_GetShortAddr() API returns the short address maintained by network layer synchronously. But tasks implying sending requests to other nodes in the network are always executed asynchronously as they result in considerably longer waiting for response. In order not to block the execution flow (which is single-threaded on an MCU) such requests provide pointers to callbacks which are called at the end of request execution by the underlying layer, to which the request is issued. For example , BDB_InvokeCommissioningReq(mode) API can be invoked from application layer and the corresponding callback is called once the commissioning procedure is complete, between this API invocation and callback, application layer is free to execute any other task.</p>
 </div>
 <div class="related-links">
 <div class="familylinks">

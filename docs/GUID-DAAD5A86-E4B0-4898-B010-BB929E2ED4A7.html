@@ -4,9 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
+<meta name="DC.rights.owner" content="(C) Copyright 2023" />
+<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
 <meta name="DC.title" content="Features" />
 <meta name="DC.relation" scheme="URI" content="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38.html" />
 <meta name="DC.format" content="XHTML" />
@@ -19,7 +19,7 @@
 <meta name="Microsoft.Help.TocOrder" content="1" />
 <meta name="Microsoft.Help.Locale" content="en-US" />
 <meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
 <script language="javascript">
        
        if (window.parent.location.protocol != 'file:') {
@@ -226,7 +226,7 @@
         
       </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
 <body id="GUID-DAAD5A86-E4B0-4898-B010-BB929E2ED4A7">
-<h1 class="title topictitle1" id="GUID-DAAD5A86-E4B0-4898-B010-BB929E2ED4A7__GUID-71B495E7-E2E3-4FBC-BAB0-3396C5622E65">Features</h1><div class="body"><p class="p">BitCloud internal architecture follows IEEE 802.15.4 Standard, Zigbee-defined separation of the networking stack into logical layers. Besides the core stack containing protocol implementation, the stack contains additional layers implementing shared services (e.g. task manager, security and power manager) and hardware abstractions (e.g. hardware abstraction layer HAL ). The APIs contributed by these layers are outside the scope of core stack functionality. However, these essential additions to the set of APIs significantly help reduce application complexity and simplify integration.</p>
+<h1 class="title topictitle1" id="GUID-DAAD5A86-E4B0-4898-B010-BB929E2ED4A7__GUID-71B495E7-E2E3-4FBC-BAB0-3396C5622E65" style="">Features</h1><div class="body"><p class="p">BitCloud internal architecture follows IEEE 802.15.4 Standard, Zigbee-defined separation of the networking stack into logical layers. Besides the core stack containing protocol implementation, the stack contains additional layers implementing shared services (e.g. task manager, security and power manager) and hardware abstractions (e.g. hardware abstraction layer HAL ). The APIs contributed by these layers are outside the scope of core stack functionality. However, these essential additions to the set of APIs significantly help reduce application complexity and simplify integration.</p>
 <p class="p">The topmost of the core stack layers, BDB, provides the highest level of initilization, commissioning and operating related APIs visible to the application. Also, some generic APIs to access and configure parameters which are part of BDB information base.</p>
 <p class="p">ZDO provides a set of fully compliant Zigbee Device Object APIs which enable main network management functionality (start, reset, formation, join) which are in turn used by BDB layer. ZDO also defines Zigbee Device Profile types,device and service discovery, binding commands implemented by the stack, and provides APIs for unicast, multicast, and broadcast data transmission and acknowledgment. Also, ZDO provides notifications/indications to the application on occurence of various network events.</p>
 <p class="p">ZCL provides set of APIs to send and receive various cluster specific/generic commands (e.g ON, OFF, Read attribute, Write attribute etc.,) to operate on attributes of the clusters on various Zigbee 3.0 application devices.</p>

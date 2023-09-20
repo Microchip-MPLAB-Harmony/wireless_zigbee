@@ -1553,8 +1553,8 @@ static void processEnhancedAddSceneToThermostatCmd(const ScanValue_t *args)
 static void processCopySceneCmd(const ScanValue_t *args)
 {
 <#if (SCENES_CLUSTER_CS != "SERVER")  && (SCC_COPYSCENE == true) >
-    SceneMode_t mode;
-    mode.copyAllScenes = args[3].uint8;
+    SceneMode_t mode = {.copyAllScenes =args[3].uint8,
+                        .reserved = 0};
     scenesSendCopyScene(determineAddressMode(args), args[1].uint16, args[2].uint8,
     srcEp, mode, args[4].uint16, args[5].uint16, args[6].uint16, args[7].uint16);
 

@@ -1,3 +1,26 @@
+"""*****************************************************************************
+* Copyright (C) 2022 Microchip Technology Inc. and its subsidiaries.
+*
+* Subject to your compliance with these terms, you may use Microchip software
+* and any derivatives exclusively with Microchip products. It is your
+* responsibility to comply with third party license terms applicable to your
+* use of third party software (including open source software) that may
+* accompany Microchip software.
+*
+* THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER
+* EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED
+* WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A
+* PARTICULAR PURPOSE.
+*
+* IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE,
+* INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND
+* WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS
+* BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO THE
+* FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN
+* ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
+* THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
+*****************************************************************************"""
+
 ##################################################################################################
 ######################### MacTester Configurations ############################################
 ##################################################################################################
@@ -6,12 +29,48 @@
 ################################################################################
 ################################# Component ####################################
 ################################################################################
-def finalizeComponent(drvMacTester):
-    res = Database.activateComponents(["tcc2","pic32cx_bz2_devsupport", "lib_crypto"])
-    result = Database.connectDependencies([[drvMacTester.getID(), 'TCC2_PWM_Zigbee', 'tcc2', 'TCC2_PWM']])
-    result = Database.connectDependencies([[drvMacTester.getID(), 'Zigbee_WolfCrypt_Dependency', 'lib_wolfcrypt', 'lib_wolfcrypt']])
-    result = Database.connectDependencies([['lib_crypto', 'LIB_CRYPTO_WOLFCRYPT_Dependency', 'lib_wolfcrypt', 'lib_wolfcrypt']])
+pic32cx_bz2_family = {'PIC32CX1012BZ25048',
+                      'PIC32CX1012BZ25032',
+                      'PIC32CX1012BZ24032',
+                      'WBZ451',
+                      'WBZ450',
+                      }
 
+pic32cx_bz3_family = {'PIC32CX5109BZ31048',
+                      'PIC32CX5109BZ31032',
+                      'WBZ351',
+                      'WBZ350',
+                      }
+
+global deviceName
+deviceName = Variables.get("__PROCESSOR")
+
+def finalizeComponent(drvMacTester):
+    if (deviceName in pic32cx_bz2_family):
+        res = Database.activateComponents(["tc0","pic32cx_bz2_devsupport", "lib_crypto"])
+        result = Database.connectDependencies([[drvMacTester.getID(), 'Zigbee_WolfCrypt_Dependency', 'lib_wolfcrypt', 'lib_wolfcrypt']])
+        result = Database.connectDependencies([['lib_crypto', 'LIB_CRYPTO_WOLFCRYPT_Dependency', 'lib_wolfcrypt', 'lib_wolfcrypt']])
+        result = Database.connectDependencies([[drvMacTester.getID(), 'TC0_TMR_Zigbee', 'tc0', 'TC0_TMR']])
+    elif (deviceName in pic32cx_bz3_family):
+        res = Database.activateComponents(["tcc2","pic32cx_bz3_devsupport"])
+        result = Database.connectDependencies([[drvMacTester.getID(), 'TCC2_PWM_Zigbee', 'tcc2', 'TCC2_PWM']])
+    
+    #responsible for adding custom app.c to project path instead of the app.c from device support
+    try:
+        if( deviceName in pic32cx_bz2_family):
+            disableDeviceApp = Database.getComponentByID("pic32cx_bz2_devsupport")
+            devicecAppFile = disableDeviceApp.getSymbolByID("DEVICE_APP_C")
+            devicecAppFile.setEnabled(False)
+            print("DISABLED APP FILE GENERATION FROM DEVICE SUPPORT")
+        elif( deviceName in pic32cx_bz3_family):
+            disableDeviceApp = Database.getComponentByID("pic32cx_bz3_devsupport")
+            devicecAppFile = disableDeviceApp.getSymbolByID("DEVICE_APP_C")
+            devicecAppFile.setEnabled(False)
+            print("DISABLED APP FILE GENERATION FROM DEVICE SUPPORT")
+        
+    except Exception as e:
+        print("EXCEPTION AT DRV_MAC_TESTER.py Custom App generation at finalizeComponent(), Exception: " ,e)
+    
 def handleMessage(messageID, args):
     # Log.writeInfoMessage('drv_zigbee_lib:handleMessage ID={} argLen={}'.format(messageID, len(args)))
     ''' This message handler is designed to process messages
@@ -42,9 +101,10 @@ def instantiateComponent(drvMacTester):
     ############################################################################
     ### Auto Activate and Dependent components
     ############################################################################
-    activeComponents = Database.getActiveComponentIDs()
-    requiredComponents = ['trng', 'lib_wolfcrypt']
-    for r in requiredComponents:
+    if (deviceName in pic32cx_bz2_family):
+      activeComponents = Database.getActiveComponentIDs()
+      requiredComponents = ['trng', 'lib_wolfcrypt']
+      for r in requiredComponents:
         if r not in activeComponents:
             print("require component '{}' - activating it".format(r))
             res = Database.activateComponents([r])
@@ -52,8 +112,8 @@ def instantiateComponent(drvMacTester):
     #rtcReq = Database.activateComponents(["rtc"])    
     #Database.setSymbolValue("rtc", "RTC_MODE0_INTENSET_CMP0_ENABLE", True)
 
-    remoteComponent = Database.getComponentByID("trng")
-    if (remoteComponent):
+      remoteComponent = Database.getComponentByID("trng")
+      if (remoteComponent):
         print('Printing TRNG remoteComponent Value')    
         print(remoteComponent)
         symbol = remoteComponent.getSymbolByID("trngEnableInterrupt")
@@ -64,10 +124,9 @@ def instantiateComponent(drvMacTester):
         symbol.setReadOnly(True)
         symbol1.setReadOnly(True)
         symbol2.setReadOnly(True)
-    Database.setSymbolValue("core", "AES_CLOCK_ENABLE", True)
+      Database.setSymbolValue("core", "AES_CLOCK_ENABLE", True)
     Database.setSymbolValue("core", "ZIGBEE_CLOCK_ENABLE", True)
     Database.setSymbolValue("core", "CONFIG_SCOM0_HSEN", "DIRECT")
-
 
     global MacAsSource
     MacAsSource = drvMacTester.createBooleanSymbol("MAC_AS_SOURCE", None)
@@ -82,6 +141,27 @@ def instantiateComponent(drvMacTester):
     UseRTOS.setVisible(False)
     UseRTOS.setDefaultValue(True)
     UseRTOS.setDescription("Use FreeRTOS")
+
+    # Timer Configuration Menu
+    if(deviceName in pic32cx_bz2_family):
+        timerConfigMenu = drvMacTester.createMenuSymbol("TIMERCONFIG_MENU", None)
+        timerConfigMenu.setLabel("Timer Configuration")
+        timerConfigMenu.setVisible(True)
+
+
+    if( deviceName in pic32cx_bz2_family):
+        drvMacTester.setDependencyEnabled('TCC2_PWM_Zigbee', False) #If bz2, disable TCC2 by default
+    elif( deviceName in pic32cx_bz3_family):
+        drvMacTester.setDependencyEnabled('TC0_TMR_Zigbee', False)
+
+    global drvComponent # used to pass component to timerconfig.py
+    drvComponent = drvMacTester
+    
+#####################################################################################################
+#################               TIMER CONFIGURATION                                   ###############
+#####################################################################################################
+    # Timer Configuration
+    execfile(Module.getPath() +"/driver/zigbee/config/timerconfig.py")
 
 #####################################################################################################
     checkMacAsSource             =  (MacAsSource.getValue() == True)
@@ -166,6 +246,16 @@ def instantiateComponent(drvMacTester):
     macPreIncludeConf.setType("HEADER")
     macPreIncludeConf.setOverwrite(True)
     macPreIncludeConf.setMarkup(True)
+    
+    #global macSleepSupportedDevice
+    macSleepSupportedDevice = drvMacTester.createBooleanSymbol("SLEEP_SUPPORTED_DEVICE", None)
+    macSleepSupportedDevice.setVisible(False)
+    macSleepSupportedDevice.setDefaultValue(False)
+    
+    #global deviceDeepSleepenabled1
+    deviceDeepSleepenabled1 = drvMacTester.createBooleanSymbol('DEVICE_DEEP_SLEEP_ENABLED', None)
+    deviceDeepSleepenabled1.setVisible(False)
+    deviceDeepSleepenabled1.setDefaultValue(False)
     #################################################################
     ###############  System Initialization Settings   ###############
     #################################################################
@@ -470,6 +560,26 @@ def instantiateComponent(drvMacTester):
     ]
 
     zdrvStackHALIncFiles = [
+        #['hal/cortexm4/pic32cx_bz2/include/hal_aes_sync.h',          condAlways],
+        #['hal/cortexm4/pic32cx_bz2/include/halAppClock.h',           condAlways],
+		['hal/cortexm4/pic32cx_bz2/include/halAppClock.h',           condAlways],
+        ['hal/cortexm4/pic32cx_bz2/include/halAssert.h',             condAlways],
+        ['hal/cortexm4/pic32cx_bz2/include/halDbg.h',                condAlways],
+        ['hal/cortexm4/pic32cx_bz2/include/halDiagnostic.h',         condAlways],
+        #['hal/cortexm4/pic32cx_bz2/include/halFlash.h',              condAlways],
+        #['hal/cortexm4/pic32cx_bz2/include/halMacIsr.h',             condAlways],
+		['hal/cortexm4/pic32cx_bz2/include/halMacIsr.h',             condAlways],
+        ['hal/cortexm4/pic32cx_bz2/include/halRfCtrl.h',             condAlways],
+        #['hal/cortexm4/pic32cx_bz2/include/halSleep.h',              condAlways],
+        #['hal/cortexm4/pic32cx_bz2/include/halSleepTimerClock.h',    condAlways],
+        #['hal/cortexm4/pic32cx_bz2/include/hpl_aes.h',               condAlways],
+        #['hal/cortexm4/pic32cx_bz2/include/hpl_aes_sync.h',          condAlways],
+        #['hal/cortexm4/pic32cx_bz2/include/hri_aes_e54.h',           condAlways],
+        ['hal/cortexm4/pic32cx_bz2/include/halAes.h',                condAlways],
+        # ['hal/cortexm4/pic32cx_bz2/include/Pic32cx_Miscellaneous.h', condAlways],
+    ]
+    
+    zdrvStackHALCommonIncFiles = [
         ['hal/include/atomic.h',                                 condAlways],
         ['hal/include/bcTimer.h',                                condAlways],
         ['hal/include/appTimer.h',                               condAlways],
@@ -477,23 +587,38 @@ def instantiateComponent(drvMacTester):
         #['hal/include/flash.h',                                  condAlways],
         ['hal/include/halTaskManager.h',                         condAlways],
         ['hal/include/sleep.h',                                  condAlways],
-        ['hal/include/sleepTimer.h',                             condAlways],
+        #['hal/include/sleepTimer.h',                             condAlways],
         ['hal/include/statStack.h',                              condAlways],
-        #['hal/cortexm4/pic32cx/include/hal_aes_sync.h',          condAlways],
-        ['hal/cortexm4/pic32cx/include/halAppClock.h',           condAlways],
-        ['hal/cortexm4/pic32cx/include/halAssert.h',             condAlways],
-        ['hal/cortexm4/pic32cx/include/halDbg.h',                condAlways],
-        ['hal/cortexm4/pic32cx/include/halDiagnostic.h',         condAlways],
-        #['hal/cortexm4/pic32cx/include/halFlash.h',              condAlways],
-        ['hal/cortexm4/pic32cx/include/halMacIsr.h',             condAlways],
-        ['hal/cortexm4/pic32cx/include/halRfCtrl.h',             condAlways],
-        ['hal/cortexm4/pic32cx/include/halSleep.h',              condAlways],
-        ['hal/cortexm4/pic32cx/include/halSleepTimerClock.h',    condAlways],
-        #['hal/cortexm4/pic32cx/include/hpl_aes.h',               condAlways],
-        #['hal/cortexm4/pic32cx/include/hpl_aes_sync.h',          condAlways],
-        #['hal/cortexm4/pic32cx/include/hri_aes_e54.h',           condAlways],
-        ['hal/cortexm4/pic32cx/include/halAes.h',                condAlways],
-        # ['hal/cortexm4/pic32cx/include/Pic32cx_Miscellaneous.h', condAlways],
+    ]
+    
+    zdrvStackBZ3HALIncFiles = [
+        #['hal/cortexm4/pic32cx_bz3/include/hal_aes_sync.h',          condAlways],
+        ['hal/cortexm4/pic32cx_bz3/include/halAppClock.h',           condAlways],
+        ['hal/cortexm4/pic32cx_bz3/include/halAssert.h',             condAlways],
+        ['hal/cortexm4/pic32cx_bz3/include/halDbg.h',                condAlways],
+        ['hal/cortexm4/pic32cx_bz3/include/halDiagnostic.h',         condAlways],
+        #['hal/cortexm4/pic32cx_bz3/include/halFlash.h',              condAlways],
+        ['hal/cortexm4/pic32cx_bz3/include/halMacIsr.h',             condAlways],
+        ['hal/cortexm4/pic32cx_bz3/include/halRfCtrl.h',             condAlways],
+        #['hal/cortexm4/pic32cx_bz3/include/halSleep.h',              condAlways],
+        #['hal/cortexm4/pic32cx_bz3/include/halSleepTimerClock.h',    condAlways],
+        #['hal/cortexm4/pic32cx_bz3/include/hpl_aes.h',               condAlways],
+        ['hal/cortexm4/pic32cx_bz3/include/halTrng.h',               condAlways],
+        #['hal/cortexm4/pic32cx_bz3/include/hri_aes_e54.h',           condAlways],
+        ['hal/cortexm4/pic32cx_bz3/include/halAes.h',                condAlways],
+        # ['hal/cortexm4/pic32cx_bz3/include/Pic32cx_Miscellaneous.h', condAlways],
+    ]
+
+    zdrvStackBZ3HALCommonIncFiles = [
+        ['hal/include/atomic.h',                                 condAlways],
+        ['hal/include/bcTimer.h',                                condAlways],
+        ['hal/include/appTimer.h',                               condAlways],
+        # ['hal/include/eeprom.h',                                 condAlways],
+        #['hal/include/flash.h',                                  condAlways],
+        ['hal/include/halTaskManager.h',                         condAlways],
+        ['hal/include/sleep.h',                                  condAlways],
+        #['hal/include/sleepTimer.h',                             condAlways],
+        ['hal/include/statStack.h',                              condAlways],
     ]
 
     zdrvStackPdsServerIncFiles = [
@@ -538,8 +663,26 @@ def instantiateComponent(drvMacTester):
     for incFileEntry in zdrvStackMACIncFiles:
         importIncFile(drvMacTester, configName, incFileEntry)
 
-    for incFileEntry in zdrvStackHALIncFiles:
+    if (deviceName in pic32cx_bz3_family):
+      for incFileEntry in zdrvStackBZ3HALCommonIncFiles:
         importIncFile(drvMacTester, configName, incFileEntry)
+
+      incPathSym = drvMacTester.createSettingSymbol('SILEX_PATH_INCLUDE_PATH', None)
+      incPathSym.setValue('../src/config/default/driver/security' + ';')
+      incPathSym.setCategory('C32')
+      incPathSym.setKey('extra-include-directories')
+      incPathSym.setAppend(True, ';')
+      incPathSym.setEnabled(True)
+    else:
+      for incFileEntry in zdrvStackHALCommonIncFiles:
+        importIncFile(drvMacTester, configName, incFileEntry)
+        
+    if (deviceName in pic32cx_bz3_family):
+      for incFileEntry in zdrvStackBZ3HALIncFiles:
+        importHalIncFile(drvMacTester, configName, incFileEntry)
+    else:
+      for incFileEntry in zdrvStackHALIncFiles:
+        importHalIncFile(drvMacTester, configName, incFileEntry)
 
     for incFileEntry in zdrvStackSYSENVIncFiles:
         importIncFile(drvMacTester, configName, incFileEntry)
@@ -719,22 +862,48 @@ def instantiateComponent(drvMacTester):
 
 
     zdrvStackHALSrcFiles = [
-        ['hal/cortexm4/pic32cx/src/atomic.c',                 condAlways],
-        #['hal/cortexm4/pic32cx/src/hal_aes_sync.c',           condAlways],
-        ['hal/cortexm4/pic32cx/src/halAppClock.c',            condAlways],
-        #['hal/cortexm4/pic32cx/src/halFlash.c',               condAlways],
-        ['hal/cortexm4/pic32cx/src/halMacIsr.c',              condAlways],
-        ['hal/cortexm4/pic32cx/src/halRfCtrl.c',              condAlways],
-        ['hal/cortexm4/pic32cx/src/halSleep.c',               condAlways],
-        ['hal/cortexm4/pic32cx/src/halSleepTimerClock.c',     condAlways],
-        #['hal/cortexm4/pic32cx/src/hpl_aes.c',                condAlways],
-        ['hal/cortexm4/pic32cx/src/halAes.c',                 condAlways],
-        ['hal/cortexm4/common/src/appTimer.c',                condAlways],
+        ['hal/cortexm4/pic32cx_bz2/src/atomic.c',                 condAlways],
+        #['hal/cortexm4/pic32cx_bz2/src/hal_aes_sync.c',           condAlways],
+        #['hal/cortexm4/pic32cx_bz2/src/halAppClock.c',            condAlways],
+        #['hal/cortexm4/pic32cx_bz2/src/halFlash.c',               condAlways],
+        #['hal/cortexm4/pic32cx_bz2/src/halMacIsr.c',              condAlways],
+        ['hal/cortexm4/pic32cx_bz2/src/halRfCtrl.c',              condAlways],
+        #['hal/cortexm4/pic32cx_bz2/src/halSleep.c',               condAlways],
+        #['hal/cortexm4/pic32cx_bz2/src/halSleepTimerClock.c',     condAlways],
+        #['hal/cortexm4/pic32cx_bz2/src/hpl_aes.c',                condAlways],
+        ['hal/cortexm4/pic32cx_bz2/src/halAes.c',                 condAlways],
+    ]
+    
+    zdrvStackHALCommonSrcFiles = [
+        #['hal/cortexm4/common/src/appTimer.c',                condAlways],
+        ##['hal/cortexm4/common/src/flash.c',                   condAlways],
+        ['hal/cortexm4/common/src/halTaskManager.c',          condAlways],
+        #['hal/cortexm4/common/src/sleep.c',                   condAlways],
+        #['hal/cortexm4/common/src/sleepTimer.c',              condAlways],
+        ['hal/cortexm4/common/src/statStack.c',               condAlways],
+        ['hal/cortexm4/common/src/timer.c',                   condAlways],
+    ]
+    
+    zdrvStackBZ3HALSrcFiles = [
+        ['hal/cortexm4/pic32cx_bz3/src/atomic.c',                 condAlways],
+        #['hal/cortexm4/pic32cx_bz3/src/hal_aes_sync.c',           condAlways],
+        ['hal/cortexm4/pic32cx_bz3/src/halAppClock.c',            condAlways],
+        #['hal/cortexm4/pic32cx_bz3/src/halFlash.c',               condAlways],
+        ['hal/cortexm4/pic32cx_bz3/src/halMacIsr.c',              condAlways],
+        ['hal/cortexm4/pic32cx_bz3/src/halRfCtrl.c',              condAlways],
+        #['hal/cortexm4/pic32cx_bz3/src/halSleep.c',               condAlways],
+        #['hal/cortexm4/pic32cx_bz3/src/halSleepTimerClock.c',     condAlways],
+        ['hal/cortexm4/pic32cx_bz3/src/halTrng.c',                condAlways],
+        ['hal/cortexm4/pic32cx_bz3/src/halAes.c',                 condAlways],
+    ]
+
+    zdrvStackBZ3HALCommonSrcFiles = [
+        #['hal/cortexm4/common/src/appTimer.c',                condAlways],
         ##['hal/cortexm4/common/src/flash.c',                   condAlways],
         ['hal/cortexm4/common/src/halTaskManager.c',          condAlways],
         ['hal/cortexm4/common/src/sleep.c',                   condAlways],
-        ['hal/cortexm4/common/src/sleepTimer.c',              condAlways],
-        ['hal/cortexm4/common/src/statStack.c',               condAlways],
+        #['hal/cortexm4/common/src/sleepTimer.c',              condAlways],
+        #['hal/cortexm4/common/src/statStack.c',               condAlways],
         ['hal/cortexm4/common/src/timer.c',                   condAlways],
     ]
 
@@ -764,7 +933,18 @@ def instantiateComponent(drvMacTester):
     for srcFileEntry in zdrvStackSECSrcFiles:
         importSrcFile(drvMacTester, configName, srcFileEntry)
 
-    for srcFileEntry in zdrvStackHALSrcFiles:
+    if (deviceName in pic32cx_bz3_family):
+      for srcFileEntry in zdrvStackBZ3HALSrcFiles:
+        importSrcHalFile(drvMacTester, configName, srcFileEntry)
+    else:
+      for srcFileEntry in zdrvStackHALSrcFiles:
+        importSrcHalFile(drvMacTester, configName, srcFileEntry)
+
+    if (deviceName in pic32cx_bz3_family):
+      for srcFileEntry in zdrvStackBZ3HALCommonSrcFiles:
+        importSrcFile(drvMacTester, configName, srcFileEntry)
+    else:
+      for srcFileEntry in zdrvStackHALCommonSrcFiles:
         importSrcFile(drvMacTester, configName, srcFileEntry)
 
     for srcFileEntry in zdrvBSPSrcFiles:
@@ -833,6 +1013,17 @@ def instantiateComponent(drvMacTester):
     for incPathEntry in zigbeeStackdrvIncPaths:
         setIncPath(drvMacTester, configName, incPathEntry)
 
+    # Add appTimer.c - generated file
+    appTimerSourceFile = drvMacTester.createFileSymbol(None, None)
+    appTimerSourceFile.setSourcePath('driver/zigbee/templates/appTimer.c.ftl')
+    appTimerSourceFile.setOutputName('appTimer.c')
+    appTimerSourceFile.setOverwrite(True)
+    appTimerSourceFile.setDestPath('/zigbee/systemresource/hal/cortexm4/common/src/')
+    appTimerSourceFile.setProjectPath('/config/default/zigbee/systemresource/hal/cortexm4/common/src/')
+    appTimerSourceFile.setType('SOURCE')
+    appTimerSourceFile.setEnabled(True)
+    appTimerSourceFile.setMarkup(True)
+    
     # Add app_uart.c - generated file
     app_uartSourceFile = drvMacTester.createFileSymbol(None, None)
     app_uartSourceFile.setSourcePath('driver/zigbee/templates/app_uart.c.ftl')
@@ -890,7 +1081,10 @@ def instantiateComponent(drvMacTester):
 
     # Setting the required heap size for the application
     Database.sendMessage("core", "HEAP_SIZE", {"heap_size":4096})
-    Database.sendMessage("pic32cx_bz2_devsupport", "CONSOLE_ENABLE", {"isEnabled":True})
+    if (deviceName in pic32cx_bz2_family):
+      Database.sendMessage("pic32cx_bz2_devsupport", "CONSOLE_ENABLE", {"isEnabled":True})
+    elif (deviceName in pic32cx_bz3_family):
+      Database.sendMessage("pic32cx_bz3_devsupport", "CONSOLE_ENABLE", {"isEnabled":True})
     Database.setSymbolValue("drv_usart", "DRV_USART_COMMON_MODE", "Asynchronous")
 
     preprocessorLD = drvMacTester.createSettingSymbol('ZIGBEE_PREPRECESSOR_LD3', None)
@@ -900,7 +1094,10 @@ def instantiateComponent(drvMacTester):
     preprocessorLD.setEnabled(True)
 
     preprocessorAS = drvMacTester.createSettingSymbol('ZIGBEE_PREPRECESSOR_AS', None)
-    preprocessorAS.setValue('PIC32CX_CHIP_SOC;_PIC32CX_;HAL_USE_FLASH_ACCESS;_MAC2_')
+    if (deviceName in pic32cx_bz2_family):
+        preprocessorAS.setValue('PIC32CX_CHIP_SOC;_PIC32CX_;HAL_USE_FLASH_ACCESS;_MAC2_')
+    elif (deviceName in pic32cx_bz3_family):
+        preprocessorAS.setValue('PIC32CX_CHIP_SOC;_PIC32CX_;HAL_USE_FLASH_ACCESS;_MAC2_;PLATFORM_BUCKLAND')
     preprocessorAS.setCategory('C32')
     preprocessorAS.setKey('preprocessor-macros')
     preprocessorAS.setAppend(True, ';')
@@ -930,8 +1127,12 @@ def instantiateComponent(drvMacTester):
     setAdditionaloptionXC32GCC.setDependencies(setEnableMACSource, ["MAC_AS_SOURCE"])
 
     macAppMakeRulesFile = drvMacTester.createFileSymbol("ZIGBEE_MAKERULE_HEADER", None)
-    macAppMakeRulesFile.setSourcePath("/driver/zigbee/application//zigbee_only/WSNTester/WSNTester_configs/Mac2_CommonMac_StdzgpSec_Pic32cx_Rf233_Gcc_Makerules.h")
-    macAppMakeRulesFile.setOutputName("Mac2_CommonMac_StdzgpSec_Pic32cx_Rf233_Gcc_Makerules.h")
+    if (deviceName in pic32cx_bz2_family):   
+      macAppMakeRulesFile.setSourcePath("/driver/zigbee/application//zigbee_only/WSNTester/WSNTester_configs/Mac_Common_StdzgpSec_bz2_Makerules.h")
+      macAppMakeRulesFile.setOutputName("Mac_Common_StdzgpSec_bz2_Makerules.h")
+    elif (deviceName in pic32cx_bz3_family):
+      macAppMakeRulesFile.setSourcePath("/driver/zigbee/application//zigbee_only/WSNTester/WSNTester_configs/Mac_Common_StdzgpSec_bz3_Makerules.h")
+      macAppMakeRulesFile.setOutputName("Mac_Common_StdzgpSec_bz3_Makerules.h")
     macAppMakeRulesFile.setDestPath("/zigbee/lib/")
     macAppMakeRulesFile.setProjectPath("config/" + configName + "/zigbee/lib/")
     macAppMakeRulesFile.setType("HEADER")
@@ -939,7 +1140,10 @@ def instantiateComponent(drvMacTester):
     macAppMakeRulesFile.setMarkup(True)
     
     setAdditionaloptionXC32GCC1 = drvMacTester.createSettingSymbol('SET_XC32_GCC_ADD_INC_LIB', None)
-    setAdditionaloptionXC32GCC1.setValue('-include"lib/Mac2_CommonMac_StdzgpSec_Pic32cx_Rf233_Gcc_Makerules.h"')
+    if (deviceName in pic32cx_bz2_family):
+      setAdditionaloptionXC32GCC1.setValue('-include"lib/Mac_Common_StdzgpSec_bz2_Makerules.h"')
+    elif (deviceName in pic32cx_bz3_family):    
+      setAdditionaloptionXC32GCC1.setValue('-include"lib/Mac_Common_StdzgpSec_bz3_Makerules.h"')
     setAdditionaloptionXC32GCC1.setCategory('C32')
     setAdditionaloptionXC32GCC1.setKey('appendMe')
     setAdditionaloptionXC32GCC1.setEnabled(checkMacAsLib)
@@ -947,8 +1151,12 @@ def instantiateComponent(drvMacTester):
 
     MacLibFile = drvMacTester.createLibrarySymbol("ZBMAC_LIB_FILE", None)
     MacLibFile.setDestPath('/zigbee/lib/')
-    MacLibFile.setSourcePath("/driver/zigbee/src/lib/Mac2_CommonMac_StdzgpSec_Pic32cx_Rf233_Gcc_Lib.a")
-    MacLibFile.setOutputName("Mac2_CommonMac_StdzgpSec_Pic32cx_Rf233_Gcc_Lib.a")
+    if (deviceName in pic32cx_bz2_family):
+      MacLibFile.setSourcePath("/driver/zigbee/src/lib/Mac_Common_StdzgpSec_bz2_Lib.a")
+      MacLibFile.setOutputName("Mac_Common_StdzgpSec_bz2_Lib.a")
+    elif (deviceName in pic32cx_bz3_family):
+      MacLibFile.setSourcePath("/driver/zigbee/src/lib/Mac_Common_StdzgpSec_bz3_Lib.a")
+      MacLibFile.setOutputName("Mac_Common_StdzgpSec_bz3_Lib.a")
     MacLibFile.setEnabled(checkMacAsLib)
     MacLibFile.setDependencies(setEnableMACLib, ["MAC_AS_SOURCE"])
 ################################### SOURCE FILES ####################################################
@@ -980,6 +1188,42 @@ def importIncFile(component, configName, incFileEntry, firmwarePath = None):
     incFileSym.setType('HEADER')
     incFileSym.setOverwrite(True)
     incFileSym.setEnabled(isEnabled)
+
+    if callback and dependencies:
+        incFileSym.setDependencies(callback, dependencies)
+
+def importHalIncFile(component, configName, incFileEntry, firmwarePath = None):
+    incFilePath  = incFileEntry[0]
+    isEnabled    = incFileEntry[1][0]
+    callback     = incFileEntry[1][1]
+    dependencies = incFileEntry[1][2]
+
+    incFilePathTup = incFilePath.rsplit('/', 1)
+
+    if len(incFilePathTup) == 1:
+        secName = ''
+        incFile = incFilePathTup[0]
+    else :
+        secName = incFilePathTup[0]
+        incFile = incFilePathTup[1]
+
+    symName = incFile.replace('.', '_').upper()
+    secSName = secName + '/'
+    secDName = secSName
+    setDestPath = '/zigbee/lib/inc/' + secDName
+    setNewDestPathL = setDestPath.rsplit('/',3)[0]
+    setNewDestPathRSplit = setDestPath.rsplit('/',2)
+    setNewDestPathREnd = setNewDestPathRSplit[1]
+    setNewDestPathR = setNewDestPathREnd.rsplit('/', 1)[-1]
+
+    incFileSym = component.createFileSymbol(symName, None)
+    incFileSym.setSourcePath('driver/zigbee/src/Components/' + secSName + '/' + incFile)
+    incFileSym.setOutputName(incFile)
+    incFileSym.setDestPath(setNewDestPathL + '/pic32cx/' + setNewDestPathR + '/')
+    incFileSym.setProjectPath('config/' + configName + setNewDestPathL + '/pic32cx/' + setNewDestPathR + '/')
+    incFileSym.setType('HEADER')
+    incFileSym.setOverwrite(True)
+    incFileSym.setEnabled(isEnabled)    
 
     if callback and dependencies:
         incFileSym.setDependencies(callback, dependencies)
@@ -1198,6 +1442,42 @@ def importSrcFile(component, configName, srcFileEntry, firmwarePath = None):
     if callback and dependencies:
         srcFileSym.setDependencies(callback, dependencies)
 
+def importSrcHalFile(component, configName, srcFileEntry, firmwarePath = None):
+    srcFilePath  = srcFileEntry[0]
+    isEnabled    = srcFileEntry[1][0]
+    callback     = srcFileEntry[1][1]
+    dependencies = srcFileEntry[1][2]
+
+    srcFilePathTup = srcFilePath.rsplit('/', 1)
+
+    if len(srcFilePathTup) == 1:
+        secName = ''
+        srcFile = srcFilePathTup[0]
+    else:
+        secName = srcFilePathTup[0]
+        srcFile = srcFilePathTup[1]
+
+    srcFilePrefix   = ''
+    symName = srcFile.replace('.', '_').upper()
+    secSName = secName + '/'
+    secDName = secSName
+    setDestPath = '/zigbee/systemresource/' + secDName
+    setNewDestPathL = setDestPath.rsplit('/',3)[0]
+    setNewDestPathRSplit = setDestPath.rsplit('/',2)
+    setNewDestPathREnd = setNewDestPathRSplit[1]
+    setNewDestPathR = setNewDestPathREnd.rsplit('/', 1)[-1]
+
+    srcFileSym = component.createFileSymbol(symName, None)
+    srcFileSym.setSourcePath('driver/zigbee/src/Components/' + secSName + srcFile)
+    srcFileSym.setOutputName(srcFile.rsplit('/', 1)[-1])
+    srcFileSym.setDestPath(setNewDestPathL + '/pic32cx/' + setNewDestPathR + '/')
+    srcFileSym.setProjectPath('config/' + configName + setNewDestPathL + '/pic32cx/' + setNewDestPathR + '/')
+    srcFileSym.setType('SOURCE')
+    srcFileSym.setEnabled(isEnabled)
+
+    if callback and dependencies:
+        srcFileSym.setDependencies(callback, dependencies)
+
 def setIncPath(component, configName, incPathEntry):
     incPath      = incPathEntry[0]
     isEnabled    = incPathEntry[1][0]
@@ -1281,7 +1561,10 @@ def onAttachmentConnected(source, target):
 
     if (connectID == "Zigbee_USART"):
         Database.setSymbolValue("drv_usart", "DRV_USART_COMMON_MODE", "Asynchronous")
-        Database.sendMessage("pic32cx_bz2_devsupport", "CONSOLE_ENABLE", {"isEnabled":True})
+        if (deviceName in pic32cx_bz2_family):
+          Database.sendMessage("pic32cx_bz2_devsupport", "CONSOLE_ENABLE", {"isEnabled":True})
+        elif (deviceName in pic32cx_bz3_family):
+          Database.sendMessage("pic32cx_bz3_devsupport", "CONSOLE_ENABLE", {"isEnabled":True})
         print("setting ENABLE CONSOLE in application Configuration as True Since DRV_USART is connected")
     elif (connectID == "Zigbee_WolfCrypt_Dependency"):
         print("drv_zigbee_lib:onAttachmentConnected configuring lib_wolfcrypt")
@@ -1317,5 +1600,8 @@ def onAttachmentDisconnected(source, target):
     targetID = target["id"]
 
     if (connectID == "Zigbee_USART"):
-        Database.sendMessage("pic32cx_bz2_devsupport", "CONSOLE_ENABLE", {"isEnabled":False})
+        if (deviceName in pic32cx_bz2_family):
+          Database.sendMessage("pic32cx_bz2_devsupport", "CONSOLE_ENABLE", {"isEnabled":False})
+        elif (deviceName in pic32cx_bz3_family):
+          Database.sendMessage("pic32cx_bz3_devsupport", "CONSOLE_ENABLE", {"isEnabled":False})
         print("setting ENABLE CONSOLE in application Configuration as False Since DRV_USART is disconnected")

@@ -48,6 +48,9 @@
 #include <systemenvironment/include/sysTypes.h>
 #include <app_zigbee/app_zigbee_handler.h>
 
+<#if SLEEP_SUPPORTED_DEVICE && RESET_TO_FN_ENABLE>
+typedef void (*App_ButtonPressCallback_t) (void);
+</#if>
 
 /******************************************************************************
                    Implementations section
@@ -156,6 +159,51 @@ void BSP_TempSensorOpen();
     None
 ******************************************************************************/
 void BSP_ReadTempSensor(uint16_t *measuredValue);
+
+<#if SLEEP_SUPPORTED_DEVICE && RESET_TO_FN_ENABLE>
+/**************************************************************************//**
+\brief Initialize the user button.
+
+\return
+    None
+\param[in]
+    buttonPressCallback - callback function when user button short pressed.
+******************************************************************************/
+void BSP_InitializeUserButton(App_ButtonPressCallback_t buttonPressCallback);
+
+/**************************************************************************//**
+\brief Return the User Button State.
+
+\return
+    True - if the button is pressed.
+	False - if the button is released.
+\param[in]
+    None
+******************************************************************************/
+bool BSP_IsUserButtonPressed(void);
+
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+/**************************************************************************//**
+\brief Evaluate wether the user button is long pressed.
+
+\return
+    None
+\param[in]
+    Deep sleep wakeup source.
+******************************************************************************/
+void BSP_EvaluateUserButton(uint8_t deepSleepWakeupSrc);
+<#else>
+/**************************************************************************//**
+\brief Evaluate wether the user button is long pressed.
+
+\return
+    None
+\param[in]
+    None
+******************************************************************************/
+void BSP_EvaluateUserButton(void);
+</#if>
+</#if>
 
 #endif
 #endif

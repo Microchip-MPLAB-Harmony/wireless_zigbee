@@ -62,19 +62,12 @@ ENTRY(__XC32_RESET_HANDLER_NAME)
  *************************************************************************/
 
 #ifndef ROM_ORIGIN
-#  define ROM_ORIGIN 0x1000000
+#  define ROM_ORIGIN 0x1004000
 #endif
 #ifndef ROM_LENGTH
 #  define ROM_LENGTH 0x100000
-#endif
-#ifndef ROM_APP
-#  define ROM_APP 0x1000200
-#endif
-#ifndef ROM_APP_LENGTH
-#  define ROM_APP_LENGTH (0x100000-0x200)
-#endif
-#if (ROM_APP_LENGTH > (0x100000-0x200))
-#  error ROM_APP_LENGTH is greater than the max size of (0x100000-0x200)
+#elif (ROM_LENGTH > 0x100000)
+#  error ROM_LENGTH is greater than the max size of 0x100000
 #endif
 #ifndef BOOT_ROM_ORIGIN
 #  define BOOT_ROM_ORIGIN 0x0
@@ -88,8 +81,8 @@ ENTRY(__XC32_RESET_HANDLER_NAME)
 #  define RAM_ORIGIN 0x20000000
 #endif
 #ifndef RAM_LENGTH
-#  define RAM_LENGTH (0x20000-1024)
-#elif (RAM_LENGTH > (0x20000-1024))
+#  define RAM_LENGTH 0x20000
+#elif (RAM_LENGTH > 0x20000)
 #  error RAM_LENGTH is greater than the max size of 0x20000
 #endif
 
@@ -98,7 +91,7 @@ ENTRY(__XC32_RESET_HANDLER_NAME)
 #endif
 
 #ifndef PDS_ORIGIN
-#  define PDS_ORIGIN 0x0107C000
+#  define PDS_ORIGIN 0x1000000
 #endif
 
 
@@ -111,32 +104,13 @@ MEMORY
 {
   boot_rom (LRX) : ORIGIN = BOOT_ROM_ORIGIN, LENGTH = BOOT_ROM_LENGTH
   pds (RX) : ORIGIN = PDS_ORIGIN, LENGTH = PDS_LENGTH
-  rom (LRX) : ORIGIN = ROM_APP, LENGTH = ROM_APP_LENGTH
+  rom (LRX) : ORIGIN = ROM_ORIGIN, LENGTH = ROM_LENGTH
   ram (WX!R) : ORIGIN = RAM_ORIGIN, LENGTH = RAM_LENGTH
-  config_00045F80 : ORIGIN = 0x00045F80, LENGTH = 0x4
-  config_00045F84 : ORIGIN = 0x00045F84, LENGTH = 0x4
-  config_00045F88 : ORIGIN = 0x00045F88, LENGTH = 0x4
-  config_00045F8C : ORIGIN = 0x00045F8C, LENGTH = 0x4
-  config_00045F90 : ORIGIN = 0x00045F90, LENGTH = 0x4
-  config_00045F94 : ORIGIN = 0x00045F94, LENGTH = 0x4
-  config_00045F98 : ORIGIN = 0x00045F98, LENGTH = 0x4
-  config_00045F9C : ORIGIN = 0x00045F9C, LENGTH = 0x4
-  config_00045FB0 : ORIGIN = 0x00045FB0, LENGTH = 0x4
-  config_00045FB4 : ORIGIN = 0x00045FB4, LENGTH = 0x4
-  config_00045FB8 : ORIGIN = 0x00045FB8, LENGTH = 0x4
-  config_00045FBC : ORIGIN = 0x00045FBC, LENGTH = 0x4
-  config_00045E80 : ORIGIN = 0x00045E80, LENGTH = 0x4
-  config_00045E84 : ORIGIN = 0x00045E84, LENGTH = 0x4
-  config_00045E88 : ORIGIN = 0x00045E88, LENGTH = 0x4
-  config_00045E8C : ORIGIN = 0x00045E8C, LENGTH = 0x4
-  config_00045E90 : ORIGIN = 0x00045E90, LENGTH = 0x4
-  config_00045E94 : ORIGIN = 0x00045E94, LENGTH = 0x4
-  config_00045E98 : ORIGIN = 0x00045E98, LENGTH = 0x4
-  config_00045E9C : ORIGIN = 0x00045E9C, LENGTH = 0x4
-  config_00045EB0 : ORIGIN = 0x00045EB0, LENGTH = 0x4
-  config_00045EB4 : ORIGIN = 0x00045EB4, LENGTH = 0x4
-  config_00045EB8 : ORIGIN = 0x00045EB8, LENGTH = 0x4
-  config_00045EBC : ORIGIN = 0x00045EBC, LENGTH = 0x4
+  config_D0045F88 : ORIGIN = 0xD0045F88, LENGTH = 0x4
+  config_D0045F8C : ORIGIN = 0xD0045F8C, LENGTH = 0x4
+  config_D0045F90 : ORIGIN = 0xD0045F90, LENGTH = 0x4
+  config_D0045F94 : ORIGIN = 0xD0045F94, LENGTH = 0x4
+  config_D0045F98 : ORIGIN = 0xD0045F98, LENGTH = 0x4
 
 }
 
@@ -162,7 +136,7 @@ MEMORY
 # define DATA_REGION ram
 #endif 
 #ifndef VECTOR_REGION
-# define VECTOR_REGION rom /*boot_rom*/
+# define VECTOR_REGION boot_rom
 #endif
 #ifndef PDS_REGION
 #define PDS_REGION pds
@@ -176,78 +150,21 @@ __ram_end = ORIGIN(ram) + LENGTH(ram);
  *************************************************************************/
 SECTIONS
 {
-    .config_00045F80 : {
-      KEEP(*(.config_00045F80))
-    } > config_00045F80
-    .config_00045F84 : {
-      KEEP(*(.config_00045F84))
-    } > config_00045F84
-    .config_00045F88 : {
-      KEEP(*(.config_00045F88))
-    } > config_00045F88
-    .config_00045F8C : {
-      KEEP(*(.config_00045F8C))
-    } > config_00045F8C
-    .config_00045F90 : {
-      KEEP(*(.config_00045F90))
-    } > config_00045F90
-    .config_00045F94 : {
-      KEEP(*(.config_00045F94))
-    } > config_00045F94
-    .config_00045F98 : {
-      KEEP(*(.config_00045F98))
-    } > config_00045F98
-    .config_00045F9C : {
-      KEEP(*(.config_00045F9C))
-    } > config_00045F9C
-    .config_00045FB0 : {
-      KEEP(*(.config_00045FB0))
-    } > config_00045FB0
-    .config_00045FB4 : {
-      KEEP(*(.config_00045FB4))
-    } > config_00045FB4
-    .config_00045FB8 : {
-      KEEP(*(.config_00045FB8))
-    } > config_00045FB8
-    .config_00045FBC : {
-      KEEP(*(.config_00045FBC))
-    } > config_00045FBC
-    .config_00045E80 : {
-      KEEP(*(.config_00045E80))
-    } > config_00045E80
-    .config_00045E84 : {
-      KEEP(*(.config_00045E84))
-    } > config_00045E84
-    .config_00045E88 : {
-      KEEP(*(.config_00045E88))
-    } > config_00045E88
-    .config_00045E8C : {
-      KEEP(*(.config_00045E8C))
-    } > config_00045E8C
-    .config_00045E90 : {
-      KEEP(*(.config_00045E90))
-    } > config_00045E90
-    .config_00045E94 : {
-      KEEP(*(.config_00045E94))
-    } > config_00045E94
-    .config_00045E98 : {
-      KEEP(*(.config_00045E98))
-    } > config_00045E98
-    .config_00045E9C : {
-      KEEP(*(.config_00045E9C))
-    } > config_00045E9C
-    .config_00045EB0 : {
-      KEEP(*(.config_00045EB0))
-    } > config_00045EB0
-    .config_00045EB4 : {
-      KEEP(*(.config_00045EB4))
-    } > config_00045EB4
-    .config_00045EB8 : {
-      KEEP(*(.config_00045EB8))
-    } > config_00045EB8
-    .config_00045EBC : {
-      KEEP(*(.config_00045EBC))
-    } > config_00045EBC
+    .config_D0045F88 : {
+      KEEP(*(.config_D0045F88))
+    } > config_D0045F88
+    .config_D0045F8C : {
+      KEEP(*(.config_D0045F8C))
+    } > config_D0045F8C
+    .config_D0045F90 : {
+      KEEP(*(.config_D0045F90))
+    } > config_D0045F90
+    .config_D0045F94 : {
+      KEEP(*(.config_D0045F94))
+    } > config_D0045F94
+    .config_D0045F98 : {
+      KEEP(*(.config_D0045F98))
+    } > config_D0045F98
 
     /*
      * The linker moves the .vectors section into itcm when itcm is

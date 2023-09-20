@@ -574,7 +574,7 @@ static bool zgpVerifyAddressConflictInTables(ZDO_DeviceAnnceReq_t *devAnnounce, 
       gpIdInfo.gpdIeeeAddr = tableGenericInfo->gpdId.gpdIeeeAddr;
 
     alias = ZGP_NWK_ADDRESS_GROUP_INIT;
-    if (tableGenericInfo->gpdAssignedAlias != ZGP_NWK_ADDRESS_GROUP_INIT)
+    if ((tableGenericInfo->gpdAssignedAlias != ZGP_NWK_ADDRESS_GROUP_INIT) && (tableGenericInfo->gpdAssignedAlias != 0x0000))
       alias = tableGenericInfo->gpdAssignedAlias;
     else  if(isDerivedGroupCast)
       alias = ZGPL_GetAliasSourceAddr(&gpIdInfo);

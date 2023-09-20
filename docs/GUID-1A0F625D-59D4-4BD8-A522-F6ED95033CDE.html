@@ -4,9 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
+<meta name="DC.rights.owner" content="(C) Copyright 2023" />
+<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
 <meta name="DC.title" content="Security keys" />
 <meta name="DC.relation" scheme="URI" content="GUID-C306947F-F175-4699-B119-75961F5CDE21.html" />
 <meta name="DC.format" content="XHTML" />
@@ -19,7 +19,7 @@
 <meta name="Microsoft.Help.TocOrder" content="5" />
 <meta name="Microsoft.Help.Locale" content="en-US" />
 <meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
 <script language="javascript">
        
        if (window.parent.location.protocol != 'file:') {
@@ -226,7 +226,7 @@
         
       </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
 <body id="GUID-1A0F625D-59D4-4BD8-A522-F6ED95033CDE">
-<h1 class="title topictitle1" id="GUID-1A0F625D-59D4-4BD8-A522-F6ED95033CDE__GUID-5BCB6F0B-1886-4214-9988-7426EF58EB8D">Security keys</h1><div class="body"><p class="p"></p>
+<h1 class="title topictitle1" id="GUID-1A0F625D-59D4-4BD8-A522-F6ED95033CDE__GUID-5BCB6F0B-1886-4214-9988-7426EF58EB8D" style="">Security keys</h1><div class="body"><p class="p"></p>
 <div class="section" id="GUID-1A0F625D-59D4-4BD8-A522-F6ED95033CDE__SECTION_UZX_MSB_JTB"><h2 class="title sectiontitle">Security keys</h2><p class="p">BitCloud makes use of three types of security keys: network key, link key, and master key. A network key is used for all security modes. Link keys are used in standard link security. Master keys are only valid for high security mode, which is not supported by publicly available microchip Zigbee packages.</p>
 <p class="p">All network keys take 16-byte values. A typical way to set up a value in code in to use an array of <code class="ph codeph">uint8_t</code>:</p>
 <pre class="pre">uint8_t[] securityKey = {0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa};

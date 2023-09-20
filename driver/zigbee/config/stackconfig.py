@@ -1,3 +1,26 @@
+"""*****************************************************************************
+* Copyright (C) 2022 Microchip Technology Inc. and its subsidiaries.
+*
+* Subject to your compliance with these terms, you may use Microchip software
+* and any derivatives exclusively with Microchip products. It is your
+* responsibility to comply with third party license terms applicable to your
+* use of third party software (including open source software) that may
+* accompany Microchip software.
+*
+* THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER
+* EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED
+* WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A
+* PARTICULAR PURPOSE.
+*
+* IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE,
+* INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND
+* WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS
+* BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO THE
+* FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN
+* ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
+* THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
+*****************************************************************************"""
+
 ############################################################################################################
 ########################               STACK CONFIGURATION                                   ###############
 ############################################################################################################
@@ -7,6 +30,22 @@ def customDeviceTypeCheckForBindingTable():
         return(25)
     else:
         return(14)
+
+pic32cx_bz2_family = {'PIC32CX1012BZ25048',
+                      'PIC32CX1012BZ25032',
+                      'PIC32CX1012BZ24032',
+                      'WBZ451',
+                      'WBZ450',
+                      }
+
+pic32cx_bz3_family = {'PIC32CX5109BZ31048',
+                      'PIC32CX5109BZ31032',
+                      'WBZ351',
+                      'WBZ350',
+                      }
+
+global deviceName
+deviceName = Variables.get("__PROCESSOR")
 
 # Stack Device Type
 global stackConfigDeviceType
@@ -37,6 +76,22 @@ stackConfigBindingTableSize.setDefaultValue(customDeviceTypeCheckForBindingTable
 stackConfigBindingTableSize.setMin(1)
 stackConfigBindingTableSize.setMax(30)
 stackConfigBindingTableSize.setVisible(stackMenuCheck())
+
+#Radio Arbiter mode
+if (deviceName in pic32cx_bz2_family):
+  stackConfigArbMode = drvZigbeeComponent.createIntegerSymbol("CS_RADIO_ARB_MODE", stackConfigMenu)
+  stackConfigArbMode.setLabel("Set Arb Mode")
+  stackConfigArbMode.setDefaultValue(2)
+  stackConfigArbMode.setMin(0)
+  stackConfigArbMode.setMax(2)
+  stackConfigArbMode.setVisible(stackMenuCheck())
+elif (deviceName in pic32cx_bz3_family):
+  stackConfigArbMode = drvZigbeeComponent.createIntegerSymbol("CS_RADIO_ARB_MODE", stackConfigMenu)
+  stackConfigArbMode.setLabel("Set Arb Mode")
+  stackConfigArbMode.setDefaultValue(0)
+  stackConfigArbMode.setMin(0)
+  stackConfigArbMode.setMax(2)
+  stackConfigArbMode.setVisible(stackMenuCheck())
 
 # Max Children Amount
 stackConfigMaxChildren = drvZigbeeComponent.createIntegerSymbol("CS_MAX_CHILDREN_AMOUNT", stackConfigMenu)

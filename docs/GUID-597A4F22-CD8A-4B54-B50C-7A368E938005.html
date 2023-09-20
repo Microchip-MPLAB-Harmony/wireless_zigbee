@@ -4,9 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
+<meta name="DC.rights.owner" content="(C) Copyright 2023" />
+<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
 <meta name="DC.title" content="CS_GetMemory Function" />
 <meta name="DC.relation" scheme="URI" content="GUID-8AA085AA-BA13-4729-80C9-6224832A7555.html" />
 <meta name="DC.format" content="XHTML" />
@@ -18,7 +18,7 @@
 <meta name="Microsoft.Help.TocOrder" content="0" />
 <meta name="Microsoft.Help.Locale" content="en-US" />
 <meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
 <script language="javascript">
        
        if (window.parent.location.protocol != 'file:') {
@@ -225,14 +225,14 @@
         
       </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
 <body id="cs-getmemory-function">
-<h1 class="title topictitle1" id="ariaid-title1">CS_GetMemory Function</h1><div class="body"></div>
+<h1 class="title topictitle1" id="ariaid-title1" style="">CS_GetMemory Function</h1><div class="body"></div>
 <div class="related-links">
 <div class="familylinks">
 <div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-8AA085AA-BA13-4729-80C9-6224832A7555.html">CS APIs</a></div>
 </div>
-</div><div class="topic nested1" aria-labelledby="ariaid-title2" id="c"><h2 class="title topictitle2" id="ariaid-title2">C</h2><div class="body"><pre class="pre codeblock c"><strong class="hl-keyword">void</strong> <span class="hl-functions">CS_GetMemory</span>(CS_MemoryItemId_t memoryId, <strong class="hl-keyword">void</strong> **memoryPtr);</pre></div>
+</div><div class="topic nested1" aria-labelledby="ariaid-title2" id="c"><h2 class="title topictitle2" id="ariaid-title2" style="">C</h2><div class="body"><pre class="pre codeblock c"><strong class="hl-keyword">void</strong> <span class="hl-functions">CS_GetMemory</span>(CS_MemoryItemId_t memoryId, <strong class="hl-keyword">void</strong> **memoryPtr);</pre></div>
 </div>
-<div class="topic nested1" aria-labelledby="ariaid-title3" id="description"><h2 class="title topictitle2" id="ariaid-title3">Description</h2><div class="body"><p class="p">Gets a pointer to the memory allocated for a specific internal structure</p>
+<div class="topic nested1" aria-labelledby="ariaid-title3" id="description"><h2 class="title topictitle2" id="ariaid-title3" style="">Description</h2><div class="body"><p class="p">Gets a pointer to the memory allocated for a specific internal structure</p>
 <p class="p">\ingroup cs_functions</p>
 <p class="p">The function is used to obtain a pointer to the memory identified by a special value. The memory
 is allocated by the stack for certain internal buffers and tables. For example, this function can be
@@ -245,23 +245,23 @@ obtained with the function to write data to the memory, or the memory may become
 the starting point of the memory.</p>
 </div>
 </div>
-<div class="topic nested1" aria-labelledby="ariaid-title4" id="parameters"><h2 class="title topictitle2" id="ariaid-title4">Parameters</h2><div class="body">
-<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" class="table" frame="border" border="1" rules="all"><col style="width:" /><col style="width:" /><thead class="thead" style="text-align:left;"><tr class="row"><th class="entry cellrowborder" style="text-align:left;vertical-align:middle;" id="d25048e47"><span>Param</span></th>
-<th class="entry cellrowborder" style="text-align:left;vertical-align:middle;" id="d25048e49"><span>Description</span></th>
+<div class="topic nested1" aria-labelledby="ariaid-title4" id="parameters"><h2 class="title topictitle2" id="ariaid-title4" style="">Parameters</h2><div class="body">
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" class="table" frame="border" border="1" rules="all"><col style="width:" /><col style="width:" /><thead class="thead" style="text-align:left;"><tr class="row"><th class="entry cellrowborder" style="text-align:left;vertical-align:middle;" id="d28947e47"><span>Param</span></th>
+<th class="entry cellrowborder" style="text-align:left;vertical-align:middle;" id="d28947e49"><span>Description</span></th>
 </tr>
 </thead>
-<tbody class="tbody"><tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d25048e47 "><span><span class="xref"></span> memoryId</span></td>
-<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d25048e49 "><span>and ID of a parameter or a specific part of the memory</span></td>
+<tbody class="tbody"><tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d28947e47 "><span><span class="xref"></span> memoryId</span></td>
+<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d28947e49 "><span>and ID of a parameter or a specific part of the memory</span></td>
 </tr>
-<tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d25048e47 "><span><span class="xref"></span> memoryPtr</span></td>
-<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d25048e49 "><span>a pointer to which a starting address of the memory is written</span></td>
+<tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d28947e47 "><span><span class="xref"></span> memoryPtr</span></td>
+<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d28947e49 "><span>a pointer to which a starting address of the memory is written</span></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 </div>
-<div class="topic nested1" aria-labelledby="ariaid-title5" id="returns"><h2 class="title topictitle2" id="ariaid-title5">Returns</h2><div class="body"><p class="p">None</p>
+<div class="topic nested1" aria-labelledby="ariaid-title5" id="returns"><h2 class="title topictitle2" id="ariaid-title5" style="">Returns</h2><div class="body"><p class="p">None</p>
 </div>
 </div>
 </body>

@@ -95,8 +95,9 @@ MAKERULES_ONLY = FALSE
 #PLATFORM = PLATFORM_STK500_RF2XX
 #PLATFORM = PLATFORM_SAM7X_EK_RF2XX
 #PLATFORM = PLATFORM_SAMD20_XPLAINED_PRO
-# PLATFORM = PLATFORM_SAMR21
-PLATFORM = PLATFORM_PIC32CX
+#PLATFORM = PLATFORM_SAMR21
+#PLATFORM = PLATFORM_PIC32CX
+PLATFORM = PLATFORM_PIC32CXBZ3
 #PLATFORM = PLATFORM_CUSTOM_1
 #PLATFORM = PLATFORM_CUSTOM_2
 #PLATFORM = PLATFORM_CUSTOM_3
@@ -228,6 +229,15 @@ ifeq ($(PLATFORM), PLATFORM_PIC32CX)
   RFCHIP = AT86RF233
 endif # PLATFORM_PIC32CX
 
+#-------------------------------------------------------------------------------
+# BUCKLAND platform specific options:
+#-------------------------------------------------------------------------------
+ifeq ($(PLATFORM), PLATFORM_PIC32CXBZ3)
+  # Microcontroller's type declaration. The following variants are possible:
+  HAL = _PIC32CX_
+  # RFCHIP type declaration.  The following variants are possible:
+  RFCHIP = AT86RF233
+endif # PLATFORM_PIC32CX
 #-------------------------------------------------------------------------------
 # ATML_SAM3S_EK platform specific options:
 #-------------------------------------------------------------------------------
@@ -381,7 +391,7 @@ PERMISSIONS = FALSE
 # Options used to test various stack features, not used in normal work.
 #-------------------------------------------------------------------------------
 #Enables RF Battery Monitor.
-ifneq (, $(findstring $(PLATFORM), PLATFORM_SAMR21, PLATFORM_PIC32CX))
+ifneq (, $(findstring $(PLATFORM), PLATFORM_SAMR21, PLATFORM_PIC32CX, PLATFORM_PIC32CXBZ3))
   RF_BATTERY_MONITOR = FALSE
 else
   RF_BATTERY_MONITOR = TRUE
@@ -495,7 +505,7 @@ CUSTOM_ZCL_MSP_SUPPORT   = FALSE
 APS_MULTICAST     = TRUE
 #APS_MULTICAST     = FALSE
 
-ifneq (, $(findstring $(PLATFORM), PLATFORM_ZIGBIT, PLATFORM_RAVEN, PLATFORM_ATML_USB_DONGLE, PLATFORM_STK600, PLATFORM_MEGARF, PLATFORM_SAMD20_XPLAINED_PRO, PLATFORM_XPLAIN, PLATFORM_STK500_RF2XX, PLATFORM_REB_CBB, PLATFORM_SAMR21, PLATFORM_PIC32CX))
+ifneq (, $(findstring $(PLATFORM), PLATFORM_ZIGBIT, PLATFORM_RAVEN, PLATFORM_ATML_USB_DONGLE, PLATFORM_STK600, PLATFORM_MEGARF, PLATFORM_SAMD20_XPLAINED_PRO, PLATFORM_XPLAIN, PLATFORM_STK500_RF2XX, PLATFORM_REB_CBB, PLATFORM_SAMR21, PLATFORM_PIC32CX, PLATFORM_PIC32CXBZ3))
   ENABLE_PERSISTENT_SERVER     = TRUE
   #ENABLE_PERSISTENT_SERVER     = FALSE
 else
@@ -695,6 +705,10 @@ CUSTOM_NWK_HEADER = FALSE
 #CUSTOM_PARENT_LINK_RETRY = TRUE
 CUSTOM_PARENT_LINK_RETRY = FALSE
 
+#if this flag is enabled, BTT table is checked for broadcasts,before the decryption
+#CUSTOM_SECURED_BROADCAST_REJECTION = TRUE
+CUSTOM_SECURED_BROADCAST_REJECTION = FALSE
+
 # If this is enabled, then application can have the control to override the stack response and sends its own for testing purpose
 #STACK_INTERNAL_TEST_FRAMEWORK = TRUE
 STACK_INTERNAL_TEST_FRAMEWORK = FALSE
@@ -708,3 +722,4 @@ STACK_INTERNAL_TEST_FRAMEWORK = FALSE
 #MAC_POLL_CONF_BEFORE_DATA_IND = TRUE
 #ZAPPSI_SUPPORT = TRUE
 #MAC_ASYNC_COMM_STATUS_IND = TRUE
+#MAC_DISASSOCIATE = TRUE

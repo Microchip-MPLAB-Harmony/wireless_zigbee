@@ -4,9 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
+<meta name="DC.rights.owner" content="(C) Copyright 2023" />
+<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
 <meta name="DC.title" content="Sleeping end device's time spans" />
 <meta name="DC.relation" scheme="URI" content="GUID-C306947F-F175-4699-B119-75961F5CDE21.html" />
 <meta name="DC.format" content="XHTML" />
@@ -19,7 +19,7 @@
 <meta name="Microsoft.Help.TocOrder" content="2" />
 <meta name="Microsoft.Help.Locale" content="en-US" />
 <meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
 <script language="javascript">
        
        if (window.parent.location.protocol != 'file:') {
@@ -226,7 +226,7 @@
         
       </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
 <body id="GUID-F10F3EE4-47CD-48DA-976F-3178D0854597">
-<h1 class="title topictitle1" id="GUID-F10F3EE4-47CD-48DA-976F-3178D0854597__GUID-6720DE9B-C320-42F5-A489-76D3E56E5256">Sleeping end device's time spans</h1><div class="body"><p class="p">For correct communications between routers and sleeping end devices special attention should be given to a set of CS parameters. The CS_END_DEVICE_SLEEP_PERIOD parameter serves exactly as it is named, that is, on an end device it specifies the length of a time span for which the end device falls asleep when the sleep is requested.</p>
+<h1 class="title topictitle1" id="GUID-F10F3EE4-47CD-48DA-976F-3178D0854597__GUID-6720DE9B-C320-42F5-A489-76D3E56E5256" style="">Sleeping end device's time spans</h1><div class="body"><p class="p">For correct communications between routers and sleeping end devices special attention should be given to a set of CS parameters. The CS_END_DEVICE_SLEEP_PERIOD parameter serves exactly as it is named, that is, on an end device it specifies the length of a time span for which the end device falls asleep when the sleep is requested.</p>
 <p class="p">An end device's parent also uses CS_END_DEVICE_SLEEP_PERIOD to determine whether it should keep or drop a message addressed to the end device and to decide that the end device is lost if it does not send a poll request for a sufficiently long time. Upon receiving the frame for an end device child its parent saves the message if the CS_MAC_TRANSACTION_TIME is greater than the estimated time remaining till the next poll request is received from the child. The time of receiving the next poll request is estimated by adding CS_END_DEVICE_SLEEP_PERIOD to the moment of receiving the last poll request.</p>
 <p class="p">An end device sends poll requests with a period specified in the CS_INDIRECT_POLL_RATE parameter, which is also used to calculate the default value for CS_MAC_TRANSACTION_TIME. See CS parameters defaults for details.</p>
 <p class="p">Note that all time periods are measured in milliseconds.</p>

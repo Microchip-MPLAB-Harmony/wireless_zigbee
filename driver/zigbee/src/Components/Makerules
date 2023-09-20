@@ -28,6 +28,8 @@ else ifeq ($(PLATFORM), PLATFORM_SAMR21)
   BOARD = BOARD_SAMR21
 else ifeq ($(PLATFORM), PLATFORM_PIC32CX)
   BOARD = BOARD_PIC32CX
+else ifeq ($(PLATFORM), PLATFORM_PIC32CXBZ3)
+  BOARD = BOARD_PIC32CXBZ3
 else ifeq ($(PLATFORM), PLATFORM_SAM3S_EK_RF2XX)
   BOARD = BOARD_SAM3S_EK
 else ifeq ($(PLATFORM), PLATFORM_SAM4S_PIRRD)
@@ -62,7 +64,7 @@ ifneq (, $(findstring $(BUILD_TARGET), TARGET_ZIGBEE_STACK TARGET_ZIGBEE_BDB_STA
 else ifeq ($(BUILD_TARGET), TARGET_NWK)
   LIB_TYPE = Nwk
 else ifeq ($(BUILD_TARGET), TARGET_MAC)
-  LIB_TYPE = Mac2
+  LIB_TYPE = Mac
 else ifeq ($(BUILD_TARGET), TARGET_HAL_SE)
   LIB_TYPE = HalSe
 else
@@ -86,7 +88,9 @@ else ifeq ($(RFCHIP), AT86RF231)
 else ifeq ($(RFCHIP), AT86RF233)
   ifeq ($(PLATFORM), PLATFORM_PIC32CX)
     AES_TYPE = BUILTIN_AES_TYPE
-  else
+  else ifeq ($(PLATFORM), PLATFORM_PIC32CXBZ3)
+    AES_TYPE = BUILTIN_AES_TYPE
+  else	
     AES_TYPE = HW_AES_TYPE
   endif
 else ifeq ($(RFCHIP), AT86RF212)
@@ -422,8 +426,12 @@ ifeq ($(PLATFORM), PLATFORM_SAMR21)
   HAL_MAC_API_PATH    = $(HAL_PATH)/cortexm0+/atsamr21/common
 endif
 ifeq ($(PLATFORM), PLATFORM_PIC32CX)
-  HAL_HWD_COMMON_PATH = $(HAL_PATH)/cortexm4/pic32cx
-  HAL_MAC_API_PATH    = $(HAL_PATH)/cortexm4/pic32cx
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/cortexm4/pic32cx_bz2
+  HAL_MAC_API_PATH    = $(HAL_PATH)/cortexm4/pic32cx_bz2
+endif
+ifeq ($(PLATFORM), PLATFORM_PIC32CXBZ3)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/cortexm4/pic32cx_bz3
+  HAL_MAC_API_PATH    = $(HAL_PATH)/cortexm4/pic32cx_bz3
 endif
 ifeq ($(PLATFORM), PLATFORM_CUSTOM_1)
   HAL_HWD_COMMON_PATH = $(HAL_PATH)/arm7tdmi/at91sam7x256/common
@@ -568,8 +576,17 @@ ifeq ($(COMPILER_TYPE), GCC) # GCC flags -------------------------------
   ifeq ($(CROSS_COMPILER), xc32-)
     #HAL_CFLAGS += -mcpu=$(CPU)
     HAL_CFLAGS  += -Os
-    HAL_CFLAGS += -mprocessor=32CX1012BZ25048E
-    HAL_CFLAGS += -mdfp="C:/Users/i41610/.mchp_packs/Microchip/PIC32CX-BZ-ENG_DFP/1.0.55/BZ25"
+
+    ifeq ($(PLATFORM), PLATFORM_PIC32CX)
+	  HAL_CFLAGS += -D_PIC32CX_BZ2_
+      HAL_CFLAGS += -mprocessor=32CX1012BZ25048E
+      HAL_CFLAGS += -mdfp="C:/Users/I41664/.mchp_packs/Microchip/PIC32CX-BZ-ENG_DFP/1.0.55/BZ25"
+    else ifeq ($(PLATFORM), PLATFORM_PIC32CXBZ3)
+	  HAL_CFLAGS += -D_PIC32CX_BZ3_
+      HAL_CFLAGS += -mprocessor=32CX5109BZ31048E
+      HAL_CFLAGS += -mdfp="C:/Users/I41664/.mchp_packs/Microchip/PIC32CX-BZ3-ENG_DFP/0.0.90/BZ3"
+    endif
+
     ifeq ($(SOFT_FP), TRUE)
       HAL_CFLAGS += -mfloat-abi=softfp
     endif
@@ -899,6 +916,11 @@ ifneq ($(BUILD_TARGET), TARGET_HAL_SE)
 
   ifeq ($(CUSTOM_ROUTING_IMPROVEMENTS), TRUE)
     STACK_CFLAGS += -D_CUSTOM_ROUTING_IMPROVEMENTS_
+  endif
+
+
+  ifeq ($(CUSTOM_SECURED_BROADCAST_REJECTION), TRUE)
+    STACK_CFLAGS += -D_CUSTOM_SECURED_BROADCAST_REJECTION_
   endif
 
   ifeq ($(BUILD_TARGET), TARGET_ZIGBEE_BDB_STACK)

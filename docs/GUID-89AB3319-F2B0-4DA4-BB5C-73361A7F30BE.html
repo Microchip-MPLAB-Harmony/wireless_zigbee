@@ -4,14 +4,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
+<meta name="DC.rights.owner" content="(C) Copyright 2023" />
+<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
 <meta name="DC.title" content="System Environment APIs" />
 <meta name="DC.relation" scheme="URI" content="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-96953A02-BBE3-4566-AFBB-919AF5D344B3.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-BFE639CE-B485-44E4-A1D0-772BA06DAB4D.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-828C0C23-0CE8-45AD-94E5-B555F2B6DEC3.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-B526D5E9-E654-4425-A646-FB588117161F.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-22C507CA-6561-42E8-BFA8-C9DD4B8C479C.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-D764F0E1-501C-41E8-A24D-0A12C563A5C6.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-8D1CF7AB-FBBC-495D-9009-8010993C4D34.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-F91757C8-9F06-4940-8E39-320FF012D5B5.html" />
@@ -24,6 +26,7 @@
 <meta name="DC.relation" scheme="URI" content="GUID-1C45A73B-6270-469B-9BAD-18B5FAD9413A.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-92B8C2C4-A7BE-421B-BAC0-74CA21E46703.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-797FDA4F-317D-4F69-A613-0F555135EB8F.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-BB50EB86-FC0F-44AA-84A7-DBD458A47FFB.html" />
 <meta name="DC.relation" scheme="URI" content="GUID-F89621EC-E7D9-4374-87E9-B769C389E227.html" />
 <meta name="DC.format" content="XHTML" />
 <meta name="DC.identifier" content="GUID-89AB3319-F2B0-4DA4-BB5C-73361A7F30BE" />
@@ -35,7 +38,7 @@
 <meta name="Microsoft.Help.TocOrder" content="4" />
 <meta name="Microsoft.Help.Locale" content="en-US" />
 <meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
 <script language="javascript">
        
        if (window.parent.location.protocol != 'file:') {
@@ -243,7 +246,7 @@
       </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
 <body id="GUID-89AB3319-F2B0-4DA4-BB5C-73361A7F30BE">
 
-<h1 class="title topictitle1" id="GUID-89AB3319-F2B0-4DA4-BB5C-73361A7F30BE__GUID-AC7E9786-3354-49CC-9032-5D93278A281C">System Environment APIs</h1>
+<h1 class="title topictitle1" id="GUID-89AB3319-F2B0-4DA4-BB5C-73361A7F30BE__GUID-AC7E9786-3354-49CC-9032-5D93278A281C" style="">System Environment APIs</h1>
     <div class="body">
         <p class="p">API functions of the System Environment component.</p>
 
@@ -406,6 +409,34 @@
 
                     </tr>
 
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>void *</span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_ByteMemcpy(void *dst, const void *src, uint16_t size)<p class="p">Performs
+                                bytes memory copying operation. </p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>bool</span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_GetBitCloudRevision(uint8_t *strVersion, uint32_t
+                                *intVersion)<p class="p">Get the revision number as string and
+                            int.</p>
+</span></td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>void</span></td>
+
+                        <td class="entry cellrowborder" style="vertical-align:middle;"><span>SYS_Swap(uint8_t *array, uint8_t length)<p class="p">Performs swap bytes in
+                                array of length.</p>
+</span></td>
+
+                    </tr>
+
                 </tbody>
 
             </table>
@@ -415,11 +446,15 @@
 
 <div class="related-links">
 <ul class="ullinks">
+<li class="link ulchildlink"><strong><a href="GUID-96953A02-BBE3-4566-AFBB-919AF5D344B3.html">SYS_ByteMemcpy Function</a></strong><br />
+</li>
 <li class="link ulchildlink"><strong><a href="GUID-BFE639CE-B485-44E4-A1D0-772BA06DAB4D.html">SYS_Initialize Function</a></strong><br />
 </li>
 <li class="link ulchildlink"><strong><a href="GUID-828C0C23-0CE8-45AD-94E5-B555F2B6DEC3.html">SYS_ClearEvents Function</a></strong><br />
 </li>
 <li class="link ulchildlink"><strong><a href="GUID-B526D5E9-E654-4425-A646-FB588117161F.html">SYS_Crc16Ccitt Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-22C507CA-6561-42E8-BFA8-C9DD4B8C479C.html">SYS_GetBitCloudRevision Function</a></strong><br />
 </li>
 <li class="link ulchildlink"><strong><a href="GUID-D764F0E1-501C-41E8-A24D-0A12C563A5C6.html">SYS_GetNormalizedRandomNumber Function</a></strong><br />
 </li>
@@ -444,6 +479,8 @@
 <li class="link ulchildlink"><strong><a href="GUID-92B8C2C4-A7BE-421B-BAC0-74CA21E46703.html">SYS_RunTask Function</a></strong><br />
 </li>
 <li class="link ulchildlink"><strong><a href="GUID-797FDA4F-317D-4F69-A613-0F555135EB8F.html">SYS_SubscribeToEvent Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-BB50EB86-FC0F-44AA-84A7-DBD458A47FFB.html">SYS_Swap Function</a></strong><br />
 </li>
 <li class="link ulchildlink"><strong><a href="GUID-F89621EC-E7D9-4374-87E9-B769C389E227.html">SYS_UnsubscribeFromEvent Function</a></strong><br />
 </li>

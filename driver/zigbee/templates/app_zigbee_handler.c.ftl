@@ -331,6 +331,15 @@ void BSP_Event_Handler(APP_Zigbee_Event_t event)
             //appSnprintf("Sensor Read Event \r\n");
         }        
         break;
+		
+		case CMD_BUTTON_LONG_PRESS:
+        {
+            /* Button long press */
+			<#if SLEEP_SUPPORTED_DEVICE>
+            BDB_ResetToFactoryNew(true);
+			</#if>
+        }
+		break;
 
         default:
         break;
@@ -546,9 +555,9 @@ void Zigbee_Event_Handler(APP_Zigbee_Event_t event)
         case EVENT_IEEE_ADDRESS_RESPONSE:
         {
             if(event.eventData.ParentChildInfo.status == ZCL_SUCCESS_STATUS)
-                appSnprintf("->IeeeAddrResponse, status = %d, address = 0x%04x \r\n", event.eventData.ParentChildInfo.status, (uint32_t)(event.eventData.ParentChildInfo.extendedAddress >> 32), (uint32_t)(event.eventData.ParentChildInfo.extendedAddress & 0xFFFFFFFF));
+                appSnprintf("->IeeeAddrResponse, status = %d, address = 0x%016x \r\n", event.eventData.ParentChildInfo.status,(event.eventData.ParentChildInfo.extendedAddress));
             else
-                appSnprintf( "->IeeeAddrResponse, status = %d, address = 0x%04x \r\n", event.eventData.ParentChildInfo.status);
+                appSnprintf( "->IeeeAddrResponse, status = %d, address = 0x%016x \r\n", event.eventData.ParentChildInfo.status);
         }
         break;
 
@@ -2494,6 +2503,68 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
         }
         break;
 </#if>
+        
+        <#function isReportableClient customClusterIndex>
+        <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+        <#if DEVICE == "SERVER">
+        <#return false>
+        </#if>
+
+        <#assign result = false>
+        <#assign prefixAttribute  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_" + "SERVER" + "_ATTRIBUTES_">
+
+        <#list 0..<(prefixAttribute  + "NO")?eval as attributeIndex>
+            <#if (prefixAttribute +"PROP_REPORTABLE_"+attributeIndex)?eval>
+                <#return true>
+            </#if>
+        </#list>
+
+        <#assign prefixAttribute  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_" + "CLIENT" + "_ATTRIBUTES_">
+
+        <#list 0..<(prefixAttribute  + "NO")?eval as attributeIndex>
+            <#if (prefixAttribute +"PROP_REPORTABLE_"+attributeIndex)?eval>
+                <#return true>
+            </#if>
+        </#list>
+
+        <#return false>
+
+        </#function>
+        //Custom Clusters       
+        <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+        <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+        <#if isReportableClient(customClusterIndex)  >
+        <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+        <#-- Freemarker does not take spaces into account, so we pad it ourself -->        
+        case CMD_ZCL_REPORTING_${clusterName?upper_case}:
+        {
+            /*Report Indication */
+            //Access - > event.eventData.zclEventData.addressing;
+            //Access - > event.eventData.zclEventData.payloadLength;
+            //Access - > event.eventData.zclEventData.payload;      
+
+            //handle logic for multiple reportable attributes 
+
+            ZCL_Report_t *rep = (ZCL_Report_t *)event.eventData.zclEventData.payload;
+            uint16_t reportValue;
+            memcpy(&reportValue, &rep->value[0], sizeof(uint16_t));
+            appSnprintf( "<- ${clusterName} Attr Report: Value = 0x%x\r\n", reportValue);
+        }
+        break;   
+        <#elseif DEVICE == "SERVER">
+        <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+        case CMD_ZCL_ATTR_${clusterName?upper_case}:
+        {
+   
+            //add code for read attribute callback
+
+        }
+        break;
+        </#if>
+        </#list>
+
+
+
         default:
         break;
     }

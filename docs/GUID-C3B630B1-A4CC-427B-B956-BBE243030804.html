@@ -4,9 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
+<meta name="DC.rights.owner" content="(C) Copyright 2023" />
+<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
 <meta name="DC.title" content="GP Infrastructure devices" />
 <meta name="DC.relation" scheme="URI" content="GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C.html" />
 <meta name="DC.format" content="XHTML" />
@@ -19,7 +19,7 @@
 <meta name="Microsoft.Help.TocOrder" content="0" />
 <meta name="Microsoft.Help.Locale" content="en-US" />
 <meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
 <script language="javascript">
        
        if (window.parent.location.protocol != 'file:') {
@@ -226,11 +226,11 @@
         
       </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
 <body id="GUID-C3B630B1-A4CC-427B-B956-BBE243030804">
-<h1 class="title topictitle1" id="GUID-C3B630B1-A4CC-427B-B956-BBE243030804__GUID-24D3B4C5-4EC0-48F4-ABBF-3713900330BF">GP Infrastructure devices</h1><div class="related-links">
+<h1 class="title topictitle1" id="GUID-C3B630B1-A4CC-427B-B956-BBE243030804__GUID-24D3B4C5-4EC0-48F4-ABBF-3713900330BF" style="">GP Infrastructure devices</h1><div class="related-links">
 <div class="familylinks">
 <div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C.html">ZGP Component Usage</a></div>
 </div>
-</div><div class="topic nested1" aria-labelledby="TOPIC_V4C_LTY_J5B__GUID-470DC172-4548-4061-B309-B4F258AA493E" id="TOPIC_V4C_LTY_J5B"><h2 class="title topictitle2" id="TOPIC_V4C_LTY_J5B__GUID-470DC172-4548-4061-B309-B4F258AA493E">Initialization</h2><div class="body"><p class="p">1. Following public API is used to initialize the zgp high proxy which will do </p>
+</div><div class="topic nested1" aria-labelledby="TOPIC_V4C_LTY_J5B__GUID-470DC172-4548-4061-B309-B4F258AA493E" id="TOPIC_V4C_LTY_J5B"><h2 class="title topictitle2" id="TOPIC_V4C_LTY_J5B__GUID-470DC172-4548-4061-B309-B4F258AA493E" style="">Initialization</h2><div class="body"><p class="p">1. Following public API is used to initialize the zgp high proxy which will do </p>
 <ul class="ul" id="TOPIC_V4C_LTY_J5B__UL_PVG_VT2_KTB"><li class="li" id="TOPIC_V4C_LTY_J5B__GUID-67ABB66C-147A-493A-9E70-45CD9641FCB3">Getting the green power cluster information and adding the event handler for the zgp proxy attribute event </li>
 <li class="li" id="TOPIC_V4C_LTY_J5B__GUID-8BEB0782-36FF-44B7-80CD-A80BEDB5FE0E">Initializing zgp high generic and cluster generic feature </li>
 <li class="li" id="TOPIC_V4C_LTY_J5B__GUID-CCA0811F-BC8F-4118-B147-C3D29D9432F4">Initializing the zgp NVM table which contains the ID of GPD, security keys, frame counters and sink address list, commissioned id, endpoint etc </li>
@@ -257,7 +257,7 @@
 </ul>
 </div>
 </div>
-<div class="topic nested1" aria-labelledby="TOPIC_FJQ_GTY_J5B__GUID-426DB120-A248-420D-887B-1C9A2F2A5DC4" id="TOPIC_FJQ_GTY_J5B"><h2 class="title topictitle2" id="TOPIC_FJQ_GTY_J5B__GUID-426DB120-A248-420D-887B-1C9A2F2A5DC4">Commissioning</h2><div class="body"><p class="p">1. Following public API is used to put sink in commissioning mode. </p>
+<div class="topic nested1" aria-labelledby="TOPIC_FJQ_GTY_J5B__GUID-426DB120-A248-420D-887B-1C9A2F2A5DC4" id="TOPIC_FJQ_GTY_J5B"><h2 class="title topictitle2" id="TOPIC_FJQ_GTY_J5B__GUID-426DB120-A248-420D-887B-1C9A2F2A5DC4" style="">Commissioning</h2><div class="body"><p class="p">1. Following public API is used to put sink in commissioning mode. </p>
 <pre class="pre">void <a class="xref" href="GUID-EBE88ADF-31D9-4DC7-8E0A-D9888D34DD9E.html">ZGPH_PutLocalSinkInCommissioningMode</a>(uint8_t options, uint8_t endPoint, bool unicastComm);
 </pre>
 <p class="p"><strong class="ph b">Parameters:</strong></p>
@@ -294,7 +294,7 @@ proxyOptions-&gt;unicastCommunication = unicastComm;
 </pre>
 </div>
 </div>
-<div class="topic nested1" aria-labelledby="TOPIC_OLQ_BTY_J5B__GUID-3FD56969-5485-4D45-B6C3-5D9307F3E80E" id="TOPIC_OLQ_BTY_J5B"><h2 class="title topictitle2" id="TOPIC_OLQ_BTY_J5B__GUID-3FD56969-5485-4D45-B6C3-5D9307F3E80E">Generic ZGP infrastructure APIs</h2><div class="body"><p class="p">1. Following public API is used to enable or disable the direct mode of GPDF, and it is applicable for the COMBO basic devices(proxy + sink). Depending upon this it will forward c-stub indication to d-stub block. </p>
+<div class="topic nested1" aria-labelledby="TOPIC_OLQ_BTY_J5B__GUID-3FD56969-5485-4D45-B6C3-5D9307F3E80E" id="TOPIC_OLQ_BTY_J5B"><h2 class="title topictitle2" id="TOPIC_OLQ_BTY_J5B__GUID-3FD56969-5485-4D45-B6C3-5D9307F3E80E" style="">Generic ZGP infrastructure APIs</h2><div class="body"><p class="p">1. Following public API is used to enable or disable the direct mode of GPDF, and it is applicable for the COMBO basic devices(proxy + sink). Depending upon this it will forward c-stub indication to d-stub block. </p>
 <pre class="pre">void <a class="xref" href="GUID-9A7A37E2-C14B-404E-8D8E-BBB1C649CE39.html">ZGPL_EnableDisableDirectMode</a>(bool enabled);
 </pre>
 <p class="p"><strong class="ph b">Parameters:</strong></p>
@@ -452,7 +452,7 @@ proxyOptions-&gt;unicastCommunication = unicastComm;
 </ul>
 </div>
 </div>
-<div class="topic nested1" aria-labelledby="TOPIC_ETJ_5SY_J5B__GUID-B5F43692-1AB5-4C16-97E4-B0CAF8AB4972" id="TOPIC_ETJ_5SY_J5B"><h2 class="title topictitle2" id="TOPIC_ETJ_5SY_J5B__GUID-B5F43692-1AB5-4C16-97E4-B0CAF8AB4972">NVM_Table API's</h2><div class="body"><div class="section" id="TOPIC_ETJ_5SY_J5B__SECTION_UWG_VT2_KTB"><p class="p">Following sections explains about the API's usage with respect to NVM table</p>
+<div class="topic nested1" aria-labelledby="TOPIC_ETJ_5SY_J5B__GUID-B5F43692-1AB5-4C16-97E4-B0CAF8AB4972" id="TOPIC_ETJ_5SY_J5B"><h2 class="title topictitle2" id="TOPIC_ETJ_5SY_J5B__GUID-B5F43692-1AB5-4C16-97E4-B0CAF8AB4972" style="">NVM_Table API's</h2><div class="body"><div class="section" id="TOPIC_ETJ_5SY_J5B__SECTION_UWG_VT2_KTB"><p class="p">Following sections explains about the API's usage with respect to NVM table</p>
 <p class="p">1. Following public API is used to initilaize the NVM Table </p>
 <pre class="pre">void <a class="xref" href="GUID-98E3BF39-EA6A-4426-A73F-92BF42F4F5D5.html">ZGPL_NvmTableInit</a> (void);
 </pre>

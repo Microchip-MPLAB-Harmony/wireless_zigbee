@@ -4,9 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
+<meta name="DC.rights.owner" content="(C) Copyright 2023" />
+<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
 <meta name="DC.title" content="Task handlers" />
 <meta name="DC.relation" scheme="URI" content="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686.html" />
 <meta name="DC.format" content="XHTML" />
@@ -19,7 +19,7 @@
 <meta name="Microsoft.Help.TocOrder" content="1" />
 <meta name="Microsoft.Help.Locale" content="en-US" />
 <meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
 <script language="javascript">
        
        if (window.parent.location.protocol != 'file:') {
@@ -226,7 +226,7 @@
         
       </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
 <body id="GUID-50BAC389-580B-41FF-9568-F232A37AECE3">
-<h1 class="title topictitle1" id="GUID-50BAC389-580B-41FF-9568-F232A37AECE3__GUID-08BC20C4-F61D-4882-9B8C-3671214C0840">Task handlers</h1><div class="body"><p class="p">The user's applications and the Zigbee stack operate as two tasks in a RTOS environment. Allocation of the execution time is controlled by the Free RTOS scheduler, based on the priorities given for Zigbee stack and application tasks. The "zigbee_task" is the stack task. There is an internal mechanism implemented by the stack to schedule the layer specific tasks among stack layers. The task scheduler manages the order in which tasks raised by different stack components are executed. The order is based on the priority of layers. Tasks posted by a certain layer are processed with a call to the corresponding task handler which is a function specific for each layer.</p>
+<h1 class="title topictitle1" id="GUID-50BAC389-580B-41FF-9568-F232A37AECE3__GUID-08BC20C4-F61D-4882-9B8C-3671214C0840" style="">Task handlers</h1><div class="body"><p class="p">The user's applications and the Zigbee stack operate as two tasks in a RTOS environment. Allocation of the execution time is controlled by the Free RTOS scheduler, based on the priorities given for Zigbee stack and application tasks. The "zigbee_task" is the stack task. There is an internal mechanism implemented by the stack to schedule the layer specific tasks among stack layers. The task scheduler manages the order in which tasks raised by different stack components are executed. The order is based on the priority of layers. Tasks posted by a certain layer are processed with a call to the corresponding task handler which is a function specific for each layer.</p>
 <p class="p">The application task handler is defined as _APP_Tasks() and should be implemented by the application. When _APP_Tasks() is executed, various requests to the stack and indications from the stack, events from uart etc., are handled.</p>
 </div>
 <div class="related-links">

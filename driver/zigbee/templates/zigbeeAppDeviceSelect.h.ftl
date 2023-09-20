@@ -77,7 +77,7 @@
 #define APP_Z3_DEVICE_TYPE             ${ZB_DEVICE_TYPE}
 
 
-#define CS_UID 0xbee //Unique Identifier (UID) determining the device extended address
+#define CS_UID 0 //Unique Identifier (UID) determining the device extended address
 
 //Primary and secondary channel set configuration 
 <#if APP_USE_CHANNEL == "YES">
@@ -89,7 +89,6 @@
 </#if>
 
 #ifndef CPU_CLK_HZ
-#define CPU_CLK_HZ              64000000  // Core Clock
-//#define CPU_CLK_HZ              48000000  // Core Clock
+#define CPU_CLK_HZ              ${core.CPU_CLOCK_FREQUENCY}  // Core CPU Clock
 #endif
 #endif

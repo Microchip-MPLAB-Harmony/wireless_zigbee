@@ -66,6 +66,20 @@
 #include <z3device/custom/include/customCommissioningCluster.h>
 #include <z3device/custom/include/customDiagnosticsCluster.h>
 
+<#compress>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  <#assign devicetype = DEVICE_TYPE_FILE_PATH >
+#include <z3device/${devicetype}/include/${deviceTypeFunctionPrefix + clusterName}Cluster.h>
+#include <zcl/include/zcl${clusterName}Cluster.h>
+
+  </#list>
+
+</#compress>
+
 /******************************************************************************
                     Global variables
 ******************************************************************************/
@@ -112,6 +126,13 @@ ZCL_Cluster_t customServerClusters[CUSTOM_SERVER_CLUSTERS_COUNT] =
 </#if><#if (DIAGONSTICS_CLUSTER_ENABLE == true) && (DIAGONSTICS_CLUSTER_CS != "CLIENT")  >
   DEFINE_DIAGNOSTICS_CLUSTER(ZCL_SERVER_CLUSTER_TYPE,&customDiagnosticsClusterServerAttributes, NULL),
 </#if>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#if (DEVICE == "SERVER") >
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_SERVER_CLUSTER_TYPE, &${clusterName?lower_case}${DEVICE?capitalize}ClusterAttributes, &${clusterName?lower_case}${DEVICE?capitalize}ClusterCommands),
+  </#if>
+  </#list>
 };
 
 void (*customServerClusterInitFunctions[CUSTOM_SERVER_CLUSTER_INIT_COUNT])() =
@@ -157,6 +178,14 @@ void (*customServerClusterInitFunctions[CUSTOM_SERVER_CLUSTER_INIT_COUNT])() =
 </#if><#if (DIAGONSTICS_CLUSTER_ENABLE == true) && (DIAGONSTICS_CLUSTER_CS != "CLIENT")  >
   customDiagnosticsClusterInit
 </#if>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#if (DEVICE == "SERVER")  >
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  ${deviceTypeFunctionPrefix}${clusterName}Init,
+  </#if>
+  </#list>
 };
 
 
@@ -201,8 +230,16 @@ ClusterId_t customServerClusterIds[CUSTOM_SERVER_CLUSTERS_COUNT] =
 </#if><#if (TIME_CLUSTER_ENABLE == true) && (TIME_CLUSTER_CS != "CLIENT")  >
   TIME_CLUSTER_ID,
 </#if><#if (DIAGONSTICS_CLUSTER_ENABLE == true) && (DIAGONSTICS_CLUSTER_CS != "CLIENT")  >
-  DIAGNOSTICS_CLUSTER_ID
+  DIAGNOSTICS_CLUSTER_ID,
 </#if>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#if (DEVICE == "SERVER")  >
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  ${clusterName?upper_case}_CLUSTER_ID,
+  </#if>
+  </#list>
 };
 
 ZCL_Cluster_t customClientClusters[CUSTOM_CLIENT_CLUSTERS_COUNT] =
@@ -246,6 +283,13 @@ ZCL_Cluster_t customClientClusters[CUSTOM_CLIENT_CLUSTERS_COUNT] =
 </#if><#if (TIME_CLUSTER_ENABLE == true) && (TIME_CLUSTER_CS != "SERVER")  >
   DEFINE_TIME_CLUSTER(ZCL_CLIENT_CLUSTER_TYPE, NULL, NULL),
 </#if>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#if (DEVICE == "CLIENT")  >
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_CLIENT_CLUSTER_TYPE, &${clusterName?lower_case}${DEVICE?capitalize}ClusterAttributes, &${clusterName?lower_case}${DEVICE?capitalize}ClusterCommands),
+  </#if>
+  </#list>
 };
 
 
@@ -288,8 +332,16 @@ ClusterId_t customClientClusterIds[CUSTOM_CLIENT_CLUSTERS_COUNT] =
 </#if><#if (ALARMS_CLUSTER_ENABLE == true) && (ALARMS_CLUSTER_CS != "SERVER")  >
   ALARMS_CLUSTER_ID,
 </#if><#if (TIME_CLUSTER_ENABLE == true) && (TIME_CLUSTER_CS != "SERVER")  >
-  TIME_CLUSTER_ID
+  TIME_CLUSTER_ID,
 </#if>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#if (DEVICE == "CLIENT")  >
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  ${clusterName?upper_case}_CLUSTER_ID,
+  </#if>
+  </#list>
 };
 
 void (*customClientClusterInitFunctions[CUSTOM_CLIENT_CLUSTER_INIT_COUNT])() =
@@ -331,8 +383,16 @@ void (*customClientClusterInitFunctions[CUSTOM_CLIENT_CLUSTER_INIT_COUNT])() =
 </#if><#if (IASZONE_CLUSTER_ENABLE == true) && (IASZONE_CLUSTER_CS != "SERVER")  >
   customIasZoneClusterInit,
 </#if><#if (IASACE_CLUSTER_ENABLE == true) && (IASACE_CLUSTER_CS != "SERVER")  >
-  customIasACEClusterInit
+  customIasACEClusterInit,
 </#if>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#if (DEVICE == "CLIENT")  >
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  ${deviceTypeFunctionPrefix}${clusterName}Init,
+  </#if>
+  </#list>
 };
 
 

@@ -4,9 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
+<meta name="DC.rights.owner" content="(C) Copyright 2023" />
+<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
 <meta name="DC.title" content="FreeRTOS in Zigbee applications" />
 <meta name="DC.relation" scheme="URI" content="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686.html" />
 <meta name="DC.format" content="XHTML" />
@@ -19,7 +19,7 @@
 <meta name="Microsoft.Help.TocOrder" content="3" />
 <meta name="Microsoft.Help.Locale" content="en-US" />
 <meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
 <script language="javascript">
        
        if (window.parent.location.protocol != 'file:') {
@@ -226,7 +226,7 @@
         
       </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
 <body id="GUID-33F4B1D2-11CF-41E0-8F6D-767D9A2156D8">
-<h1 class="title topictitle1" id="GUID-33F4B1D2-11CF-41E0-8F6D-767D9A2156D8__GUID-9E202B23-627F-4540-AA0B-115687CF54F6">FreeRTOS in Zigbee applications</h1><div class="body"><p class="p"> Refer FreeRTOS <a class="xref" href="https://www.freertos.org/" target="_blank">https://www.freertos.org/</a> for more details w.r.t Queues, Semaphores APIs and usage. </p>
+<h1 class="title topictitle1" id="GUID-33F4B1D2-11CF-41E0-8F6D-767D9A2156D8__GUID-9E202B23-627F-4540-AA0B-115687CF54F6" style="">FreeRTOS in Zigbee applications</h1><div class="body"><p class="p"> Refer FreeRTOS <a class="xref" href="https://www.freertos.org/" target="_blank">https://www.freertos.org/</a> for more details w.r.t Queues, Semaphores APIs and usage. </p>
 <div class="section" id="GUID-33F4B1D2-11CF-41E0-8F6D-767D9A2156D8__SECTION_VPY_R1M_R5B"><h2 class="title sectiontitle">RTOS Tasks</h2></div>
 <p class="p">There are two tasks created in the RTOS, Application task (APP_Tasks) and Zigbee task(ZGB) during system initialization. The Zigbee task is to gain the CPU time to execute stack related activities, whereas APP_Tasks is for application related tasks. Zigbee task is given higher priority over the application. The interaction between these two tasks happens via IPC (e.g. Queue,semaphore) mechanism. Every request/indications from the application and stack to each other are posted in two different queues. Zigbee task is also designed to wait on the Semaphores which are posted on certain internal stack events and RF reception etc,. These tasks are designed to wait and service as shown in the picture below.</p>
 <p class="p"><img class="image" id="GUID-33F4B1D2-11CF-41E0-8F6D-767D9A2156D8__IMAGE_T4Z_ZMM_Y5B" src="GUID-59CF1584-4405-403A-9DFF-1F33CD44817E-low.jpg" /></p>

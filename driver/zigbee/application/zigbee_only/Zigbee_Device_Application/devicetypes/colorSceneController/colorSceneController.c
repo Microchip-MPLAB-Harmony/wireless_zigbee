@@ -65,7 +65,6 @@
 #include <pds/include/wlPdsMemIds.h>
 #include <z3device/common/include/otauService.h>
 #include <hal/include/sleep.h>
-#include <hal/cortexm4/pic32cx/include/halSleep.h>
 #include <zcl/include/zclCommandManager.h>
 #include <z3device/colorSceneController/include/cscClusters.h>
 #include <z3device/colorSceneController/include/cscBasicCluster.h>
@@ -92,7 +91,6 @@
 #if ((QTOUCH_SUPPORT == 1) && (BSP_SUPPORT == BOARD_SAMR21_ZLLEK))
 #include <qTouch.h>
 #include <z3device/clusters/include/levelControlCluster.h>
-#include <halSleepTimerClock.h>
 #endif
 
 /******************************************************************************
@@ -124,13 +122,7 @@
   #endif
 #endif
 
-#if defined (_SLEEP_WHEN_IDLE_)
-static void sleepEventHandler(SYS_EventId_t eventId, SYS_EventData_t data);
-#endif 
 
-#if defined (_SLEEP_WHEN_IDLE_) && (APP_ENABLE_CONSOLE == 1)
-  static void sleepModeHandler(SYS_EventId_t eventId, SYS_EventData_t data);
-#endif
 static void isBusyOrPollCheck(SYS_EventId_t eventId, SYS_EventData_t data);
 #if BSP_SUPPORT == BOARD_SAMR21_ZLLEK
   static void performTouchlink (void);
@@ -202,14 +194,6 @@ static AppBindReq_t cscBindReq =
   .startIdentifyingFn = cscIdetifyStartIdentifyingCb
 };
 
-#if defined (_SLEEP_WHEN_IDLE_)
-static void ZDO_WakeUpConf(ZDO_WakeUpConf_t *conf);
-static ZDO_WakeUpReq_t zdoWakeUpReq;
-static SYS_EventReceiver_t sleepEventListener = {.func = sleepEventHandler};
-#endif
-#if defined (_SLEEP_WHEN_IDLE_) && (APP_ENABLE_CONSOLE == 1)
-static SYS_EventReceiver_t sleepModeListener = {.func = sleepModeHandler};
-#endif
 static SYS_EventReceiver_t zdoBusyPollCheck = { .func = isBusyOrPollCheck};
 #ifdef OTAU_CLIENT
 static void configureImageKeyDone(void);
@@ -274,11 +258,6 @@ void appDeviceInit(void)
 #if (ZB_COMMISSIONING_ON_STARTUP == 1)
   SYS_EnableSleepWhenIdle();
 #endif
-#if (APP_ENABLE_CONSOLE == 1)
-  SYS_SubscribeToEvent(HAL_EVENT_FALLING_ASLEEP, &sleepModeListener);
-  SYS_SubscribeToEvent(HAL_EVENT_CONTINUING_SLEEP, &sleepModeListener);
-#endif
-  SYS_SubscribeToEvent(HAL_EVENT_WAKING_UP, &sleepEventListener);
 #endif
   SYS_SubscribeToEvent(BC_EVENT_POLL_REQUEST, &zdoBusyPollCheck);
 }
@@ -310,6 +289,14 @@ void appDeviceTaskHandler(void)
     default:
       break;
   }
+}
+
+/**************************************************************************//**
+\brief backup ZCL attributes
+******************************************************************************/
+void APP_BackupZCLAttributes(void)
+{
+	//Add implementation here to backup zcl attributes if any.
 }
 
 /**************************************************************************//**
@@ -522,53 +509,6 @@ static void appJoyStickInd(BSP_JoystickState_t state)
   }
 }
 #endif // BSP_SUPPORT == BOARD_SAMR21_ZLLEK
-
-#if defined (_SLEEP_WHEN_IDLE_)
-/**************************************************************************//**
-  \brief Processes HAL_EVENT_WAKING_UP event
-
-  \param[in] eventId - id of raised event;
-  \param[in] data    - event's data.
-******************************************************************************/
-static void sleepEventHandler(SYS_EventId_t eventId, SYS_EventData_t data)
-{
-  HAL_SleepControl_t *sleepControl = (HAL_SleepControl_t *)data;
-
-  if (HAL_WAKEUP_SOURCE_EXT_IRQ == sleepControl->wakeupSource)
-  {
-    zdoWakeUpReq.ZDO_WakeUpConf = ZDO_WakeUpConf;
-    ZDO_WakeUpReq(&zdoWakeUpReq);
-  }
-  (void)eventId; /* Do nothing, to avoid compiler warning */
-}
-
-/**************************************************************************//**
-  \brief Wake up confirmation handler.
-
-  \param[in] conf - confirmation parameters.
-*****************************************************************************/
-static void ZDO_WakeUpConf(ZDO_WakeUpConf_t *conf)
-{
-  (void)conf;
-}
-
-#if (APP_ENABLE_CONSOLE == 1)
-/**************************************************************************//**
-  \brief Processes HAL_EVENT_FALL_ASLEEP & HAL_EVENT_CONITUING_SLEEP events
-
-  \param[in] eventId - id of raised event;
-  \param[in] data    - event's data.
-******************************************************************************/
-static void sleepModeHandler(SYS_EventId_t eventId, SYS_EventData_t data)
-{
-  // when console is enabled, we go to idle mode to handle UART Rx interrupt
-  // because UART Rx interrupt will not wake up the MCU from power save or power down modes
-  *(HAL_SleepMode_t *)data = HAL_SLEEP_MODE_IDLE;
-  (void)eventId;
-}
-#endif
-#endif
-
 /**************************************************************************//**
   \brief Processes BC_EVENT_BUSY_REQUEST and BC_EVENT_POLL_REQUEST events
 

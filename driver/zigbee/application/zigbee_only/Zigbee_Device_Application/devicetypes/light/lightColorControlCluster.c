@@ -70,6 +70,7 @@
 
 #include <z3device/light/include/lightColorSchemesConversion.h>
 
+#include <zcl/include/zclAttributes.h>
 #include <zllplatform/ZLL/N_DeviceInfo/include/N_DeviceInfo_Bindings.h>
 #include <zllplatform/ZLL/N_DeviceInfo/include/N_DeviceInfo.h>
 #include <pds/include/wlPdsMemIds.h>
@@ -91,7 +92,7 @@
 #define MIN_COLOR_LEVEL           0
 #define MAX_COLOR_LEVEL           0xfeff
 
-#define DEFAULT_SATURATION_LEVEL (MAX_SATURATION_LEVEL / 2)
+#define DEFAULT_SATURATION_LEVEL 110
 #define DEFAULT_TRANSITION_TIME  2
 
 #define HUE_SATURATION_SUPPORTED    (1 << 0)
@@ -181,6 +182,10 @@ static bool prepareMoveColorTemperature(uint8_t moveMode, uint16_t rate, uint16_
 static void lightUpdateStartupColorTemperature(void);
 static void ZCL_ColorControlAttributeEventInd(ZCL_Addressing_t *addressing,
   ZCL_AttributeId_t attributeId, ZCL_AttributeEvent_t event);
+
+static void lightColorControlWriteAttributeEventHandler(SYS_EventId_t eventId, SYS_EventData_t data);
+
+static SYS_EventReceiver_t lightColorControlWriteAttributeEvent = { .func = lightColorControlWriteAttributeEventHandler};
 
 #endif // APP_Z3_DEVICE_TYPE >= APP_DEVICE_TYPE_EXTENDED_COLOR_LIGHT
 
@@ -300,9 +305,8 @@ void lightColorControlClusterInit(void)
     uint8_t colorCapabilities = 1;
 #endif // APP_Z3_DEVICE_TYPE == APP_DEVICE_TYPE_TEMPERATURE_COLOR_LIGHT
     lightColorControlClusterServerAttributes.currentHue.value                 = ZCL_ZLL_CLUSTER_CURRENT_HUE_DEFAULT_VALUE;
-    lightColorControlClusterServerAttributes.currentSaturation.value          = ZCL_ZLL_CLUSTER_CURRENT_SATURATION_DEFAULT_VALUE;
+    lightColorControlClusterServerAttributes.currentSaturation.value          = DEFAULT_SATURATION_LEVEL;
     lightColorControlClusterServerAttributes.remainingTime.value              = ZCL_ZLL_CLUSTER_REMAINING_TIME_DEFAULT_VALUE;
-
     lightColorControlClusterServerAttributes.currentX.value                   = ZCL_ZLL_CLUSTER_CURRENT_X_DEFAULT_VALUE;
     lightColorControlClusterServerAttributes.currentY.value                   = ZCL_ZLL_CLUSTER_CURRENT_Y_DEFAULT_VALUE;
     lightColorControlClusterServerAttributes.colorTemperature.value           = ZCL_ZCL_CLUSTER_COLOR_TEMP_DEFAULT_VALUE;
@@ -349,7 +353,7 @@ void lightColorControlClusterInit(void)
 #if APP_Z3_DEVICE_TYPE >= APP_DEVICE_TYPE_EXTENDED_COLOR_LIGHT
     lightColorControlClusterServerAttributes.colorCapabilities.value.colorTemperatureSupported = 1;
     lightColorControlClusterServerAttributes.startUpColorTemperatureMireds.value = ZCL_ZLL_STARTUP_COLOR_TEMPERATURE_PREVIOUS;
-    lightColorControlClusterServerAttributes.coupleColorTempToMinMireds.value = ZCL_ZCL_CLUSTER_TEMP_PHYSICAL_MIN_DEFAULT_VALUE;
+    lightColorControlClusterServerAttributes.coupleColorTempToLevelMinMireds.value = ZCL_ZCL_CLUSTER_TEMP_PHYSICAL_MIN_DEFAULT_VALUE;
     lightColorControlClusterServerAttributes.options.value = 0x00; // Bit#0: ExecuteIfOff
     gExecuteIfOff = false;
 #else
@@ -388,9 +392,12 @@ void lightColorControlClusterInit(void)
 
 #if APP_Z3_DEVICE_TYPE >= APP_DEVICE_TYPE_EXTENDED_COLOR_LIGHT
   lightUpdateStartupColorTemperature();
+  SYS_SubscribeToEvent(BC_ZCL_EVENT_ACTION_REQUEST, &lightColorControlWriteAttributeEvent);
 #endif //#if APP_Z3_DEVICE_TYPE >= APP_DEVICE_TYPE_EXTENDED_COLOR_LIGHT
 
   displayStatus();
+  
+
 }
 
 /**************************************************************************//**
@@ -635,13 +642,11 @@ static void startColorLoop(ZCL_ZllColorLoopAction_t action)
 static void handleHueTransition(void)
 {
   if (hueTransition.direction)
-  {// Up transition
+  // Up transition
     hueTransition.current += hueTransition.delta;
-  }
   else
-  {// Down transition
     hueTransition.current -= hueTransition.delta;
-  }
+
 
   setHue(hueTransition.current >> 16);
 }
@@ -923,7 +928,8 @@ static void updateTransitionState(void)
   if (lightColorControlClusterServerAttributes.remainingTime.value < 0xffff)
     lightColorControlClusterServerAttributes.remainingTime.value--;
 
-  if (lightColorControlClusterServerAttributes.remainingTime.value > 0)
+  if ((lightColorControlClusterServerAttributes.remainingTime.value > 0)
+      || (lightColorControlClusterServerAttributes.colorLoopActive.value ==1)) 
   {
     if (inTransition & HUE)
       handleHueTransition();
@@ -999,7 +1005,7 @@ static TransitionType_t prepareMoveToHue(uint16_t hue, uint8_t direction, uint16
   hueTransition.target = hue;
   hueTransition.byStep = byStep;
 
-  if (!byStep)
+
   {
     // Get shortest distance direction and delta
     if (hue > lightColorControlClusterServerAttributes.enhancedCurrentHue.value)
@@ -1066,7 +1072,7 @@ static TransitionType_t prepareMoveToSaturation(uint8_t saturation, uint16_t tra
   saturationTransition.target = saturation;
   saturationTransition.byStep = byStep;
 
-  if (!byStep)
+
   {
     // Get shortest distance direction and delta
     if (saturation > lightColorControlClusterServerAttributes.currentSaturation.value)
@@ -2521,7 +2527,8 @@ static void ZCL_ColorControlAttributeEventInd(ZCL_Addressing_t *addressing,
   if (((ZCL_WRITE_ATTRIBUTE_EVENT == event) && \
       ((ZCL_ZLL_CLUSTER_COLOR_TEMPERATURE_SERVER_ATTRIBUTE_ID == attributeId) || \
        (ZCL_ZLL_CLUSTER_STARTUP_COLOR_TEMPERATURE_SERVER_ATTRIBUTE_ID == attributeId))) || \
-       ((ZCL_CONFIGURE_ATTRIBUTE_REPORTING_EVENT == event) && \
+       (((ZCL_CONFIGURE_ATTRIBUTE_REPORTING_EVENT == event) || \
+        (ZCL_CONFIGURE_DEFAULT_ATTRIBUTE_REPORTING_EVENT == event)) && \
          ((ZCL_ZLL_CLUSTER_CURRENT_HUE_SERVER_ATTRIBUTE_ID == attributeId) || \
           (ZCL_ZLL_CLUSTER_CURRENT_SATURATION_SERVER_ATTRIBUTE_ID == attributeId) || \
           (ZCL_ZLL_CLUSTER_CURRENT_X_SERVER_ATTRIBUTE_ID == attributeId) || \
@@ -2557,7 +2564,7 @@ void lightUpdateCoupledColorTemperature(bool deviceOn, bool updateColorTemp, uin
       {        
         case ZCL_LEVEL_CONTROL_MAXIMUM_LEVEL:      
           lightColorControlClusterServerAttributes.colorTemperature.value =
-            lightColorControlClusterServerAttributes.coupleColorTempToMinMireds.value;
+            lightColorControlClusterServerAttributes.coupleColorTempToLevelMinMireds.value;
           break;
 
         case ZCL_LEVEL_CONTROL_MINIMUM_LEVEL:
@@ -2568,10 +2575,10 @@ void lightUpdateCoupledColorTemperature(bool deviceOn, bool updateColorTemp, uin
         default:
         {
           tmpColorTempMax = lightColorControlClusterServerAttributes.colorTempPhysicalMax.value -
-            lightColorControlClusterServerAttributes.coupleColorTempToMinMireds.value;
+            lightColorControlClusterServerAttributes.coupleColorTempToLevelMinMireds.value;
 
           tmpNewColorTemp = tmpColorTempMax - ((tmpColorTempMax / ZCL_LEVEL_CONTROL_MAXIMUM_LEVEL) * level);
-          tmpNewColorTemp += lightColorControlClusterServerAttributes.coupleColorTempToMinMireds.value;
+          tmpNewColorTemp += lightColorControlClusterServerAttributes.coupleColorTempToLevelMinMireds.value;
 
           lightColorControlClusterServerAttributes.colorTemperature.value = tmpNewColorTemp;
         }
@@ -2588,6 +2595,34 @@ void lightUpdateCoupledColorTemperature(bool deviceOn, bool updateColorTemp, uin
     PDS_Store(APP_LIGHT_COLOR_CONTROL_MEM_ID);
   }
 }
+/**************************************************************************//**
+  \brief Processes BC_ZCL_EVENT_ACTION_REQUEST
+
+  \param[in] eventId - id of raised event;
+  \param[in] data    - event's data
+ ******************************************************************************/
+static void lightColorControlWriteAttributeEventHandler(SYS_EventId_t eventId, SYS_EventData_t data)
+{
+  BcZCLActionReq_t *const actionReq = (BcZCLActionReq_t*)data;
+  
+  if(eventId == BC_ZCL_EVENT_ACTION_REQUEST) 
+  {
+    if (ZCL_ACTION_SPL_WRITE_ATTR_REQUEST == actionReq->action)
+    {
+      uint16_t attrVal = 0;
+      ZCLActionWriteAttrReq_t* zclWriteAttrReqInfo  = (ZCLActionWriteAttrReq_t*)actionReq->context;
+      memcpy(&attrVal, zclWriteAttrReqInfo->attrValue, sizeof(uint16_t));
+      if((COLOR_CONTROL_CLUSTER_ID == zclWriteAttrReqInfo->clusterId) &&
+              (ZCL_ZLL_CLUSTER_STARTUP_COLOR_TEMPERATURE_SERVER_ATTRIBUTE_ID == zclWriteAttrReqInfo->attrId) &&
+              (ZCL_ZLL_STARTUP_COLOR_TEMPERATURE_PREVIOUS == attrVal))
+          zclWriteAttrReqInfo->status = ZCL_SUCCESS_STATUS;
+    }
+  }
+}
+   
+
+
+
 #endif // APP_Z3_DEVICE_TYPE >= APP_DEVICE_TYPE_EXTENDED_COLOR_LIGHT
 
 #elif APP_Z3_DEVICE_TYPE != APP_DEVICE_TYPE_COLOR_SCENE_CONTROLLER

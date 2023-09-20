@@ -1,19 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <keywords publicationid="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8"
           language="en-US"
-          version="1"
+          version="3"
           documenttitle="MPLAB Harmony Wireless Zigbee"
           pubtype="Online Reference"
           pubsubtype=""
           pubuserguidesubtype=""
-          pubproductheirarchy=""
+          pubproducthierarchy=""
           devices=""
-          revisiondate="08/04/2022 00:00:00"
-          revisionletter="A"
+          revisiondate="29/08/2023 00:00:00"
+          revisionletter="3"
           isbn=""
           pubid=""
           reachid=""
           description=""
-          lastmodified="29/09/2022 04:55:28"
+          lastmodified="14/09/2023 12:18:54"
           covertitle="Wireless Zigbee Library"
-          frontcover=""/>
+          frontcover="">
+   <keyworditem topicid="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>Overview</register>
+      <title>Overview</title>
+      <bitfield/>
+      <keyword>WIRELESS_ZIGBEE_SW</keyword>
+   </keyworditem>
+</keywords>

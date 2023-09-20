@@ -4,9 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
+<meta name="DC.rights.owner" content="(C) Copyright 2023" />
+<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
 <meta name="DC.title" content="Event Management" />
 <meta name="DC.relation" scheme="URI" content="GUID-9EA8133D-53DD-415E-8E08-CBC0969FFCA5.html" />
 <meta name="DC.format" content="XHTML" />
@@ -19,7 +19,7 @@
 <meta name="Microsoft.Help.TocOrder" content="1" />
 <meta name="Microsoft.Help.Locale" content="en-US" />
 <meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference A 04/2022" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
 <script language="javascript">
        
        if (window.parent.location.protocol != 'file:') {
@@ -226,7 +226,7 @@
         
       </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
 <body id="GUID-FC9875D9-A408-4F6C-9FC9-20AF96FF9078">
-<h1 class="title topictitle1" id="GUID-FC9875D9-A408-4F6C-9FC9-20AF96FF9078__GUID-EFA9ACB0-159A-4625-8987-EF38F03C4BA4">Event Management</h1><div class="body"><p class="p">Events are used throughout the stack and may also be employed by the application. The application may add its own handlers to be executed upon events used by the stack.</p>
+<h1 class="title topictitle1" id="GUID-FC9875D9-A408-4F6C-9FC9-20AF96FF9078__GUID-EFA9ACB0-159A-4625-8987-EF38F03C4BA4" style="">Event Management</h1><div class="body"><p class="p">Events are used throughout the stack and may also be employed by the application. The application may add its own handlers to be executed upon events used by the stack.</p>
 <p class="p">Events used by the stack are defined in the <code class="ph codeph">firmware\src\config\default\zigbee\lib\inc\systemenvironment\include\sysEvents.h</code> file. The maximum number of events that may be supported by the System Environment component is given by SYS_MAX_EVENTS. Each event may have several subscribers (handlers) associated with callback functions called one by one when the event is raised.</p>
 <p class="p">To subscribe to event call the <a class="xref" href="GUID-797FDA4F-317D-4F69-A613-0F555135EB8F.html">SYS_SubscribeToEvent()</a> function, supplying event ID of the <a class="xref" href="GUID-05DC2E0C-5732-4DDA-A323-A3CD4B9DD7C5.html">SYS_EventId_t</a> type and the pointer to instance of the <a class="xref" href="GUID-B88FAEB5-B880-4BE6-AC5A-B945373AAFB2.html">SYS_EventReceiver_t</a> type. The latter instance must be defined statically (or globally). The <code class="ph codeph">func</code> field of the instance is set to the pointer to a callback function, which is executed when the event is raised. For example:</p>
 <pre class="pre">//The callback function for the event
