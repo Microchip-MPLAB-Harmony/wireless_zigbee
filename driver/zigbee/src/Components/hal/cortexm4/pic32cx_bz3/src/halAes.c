@@ -5,13 +5,13 @@
     Microchip Technology Inc.
 
   File Name:
-    hal_aes.c
+    halAes.c
 
   Summary:
-    This file contains the Implementation BitCloud HAL AES for chimera.
+    This file contains the Implementation of BitCloud HAL AES.
 
   Description:
-    This file contains the Implementation BitCloud HAL AES for chimera.
+    This file contains the Implementation of BitCloud HAL AES.
  *******************************************************************************/
 
 // DOM-IGNORE-BEGIN

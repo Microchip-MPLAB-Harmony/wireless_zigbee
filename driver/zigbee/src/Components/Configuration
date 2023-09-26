@@ -96,8 +96,8 @@ MAKERULES_ONLY = FALSE
 #PLATFORM = PLATFORM_SAM7X_EK_RF2XX
 #PLATFORM = PLATFORM_SAMD20_XPLAINED_PRO
 #PLATFORM = PLATFORM_SAMR21
-#PLATFORM = PLATFORM_PIC32CX
-PLATFORM = PLATFORM_PIC32CXBZ3
+PLATFORM = PLATFORM_PIC32CX
+#PLATFORM = PLATFORM_PIC32CXBZ3
 #PLATFORM = PLATFORM_CUSTOM_1
 #PLATFORM = PLATFORM_CUSTOM_2
 #PLATFORM = PLATFORM_CUSTOM_3
@@ -230,7 +230,7 @@ ifeq ($(PLATFORM), PLATFORM_PIC32CX)
 endif # PLATFORM_PIC32CX
 
 #-------------------------------------------------------------------------------
-# BUCKLAND platform specific options:
+# PIC32CXBZ3 platform specific options:
 #-------------------------------------------------------------------------------
 ifeq ($(PLATFORM), PLATFORM_PIC32CXBZ3)
   # Microcontroller's type declaration. The following variants are possible:

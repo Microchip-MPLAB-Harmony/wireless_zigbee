@@ -2370,7 +2370,7 @@ def instantiateComponent(drvZigbeeComponent):
     if (deviceName in pic32cx_bz2_family):
         preprocessorAS.setValue('PIC32CX_CHIP_SOC;_PIC32CX_;_USE_LIB_;_SUPER_SET_LIB_;HAL_USE_FLASH_ACCESS;Z3DEVICE_APP')
     elif (deviceName in pic32cx_bz3_family):
-        preprocessorAS.setValue('PIC32CX_CHIP_SOC;_PIC32CX_;_USE_LIB_;_SUPER_SET_LIB_;HAL_USE_FLASH_ACCESS;Z3DEVICE_APP;PLATFORM_BUCKLAND') 
+        preprocessorAS.setValue('PIC32CX_CHIP_SOC;_PIC32CX_;_USE_LIB_;_SUPER_SET_LIB_;HAL_USE_FLASH_ACCESS;Z3DEVICE_APP;PLATFORM_PIC32CXBZ3') 
     preprocessorAS.setCategory('C32')
     preprocessorAS.setKey('preprocessor-macros')
     preprocessorAS.setAppend(True, ';')

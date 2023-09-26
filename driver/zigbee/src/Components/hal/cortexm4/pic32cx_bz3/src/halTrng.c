@@ -1,17 +1,17 @@
 /*******************************************************************************
-  HAL Advanced Encryption Standard Source File
+  HAL True Random Number Generator Source File
 
   Company:
     Microchip Technology Inc.
 
   File Name:
-    hal_aes.c
+    halTrng.c
 
   Summary:
-    This file contains the Implementation BitCloud HAL AES for chimera.
+    This file provides the interface to true random number generator functions.
 
   Description:
-    This file contains the Implementation BitCloud HAL AES for chimera.
+    This file provides the interface to true random number generator functions.
  *******************************************************************************/
 
 // DOM-IGNORE-BEGIN

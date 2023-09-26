@@ -1164,7 +1164,7 @@ def instantiateComponent(drvzgpdevice):
     if (deviceName in pic32cx_bz2_family):
         preprocessorAS.setValue('PIC32CX_CHIP_SOC;_PIC32CX_;HAL_USE_FLASH_ACCESS;_MAC2_')
     elif (deviceName in pic32cx_bz3_family):
-        preprocessorAS.setValue('PIC32CX_CHIP_SOC;_PIC32CX_;HAL_USE_FLASH_ACCESS;_MAC2_;PLATFORM_BUCKLAND')
+        preprocessorAS.setValue('PIC32CX_CHIP_SOC;_PIC32CX_;HAL_USE_FLASH_ACCESS;_MAC2_;PLATFORM_PIC32CXBZ3')
     preprocessorAS.setCategory('C32')
     preprocessorAS.setKey('preprocessor-macros')
     preprocessorAS.setAppend(True, ';')
