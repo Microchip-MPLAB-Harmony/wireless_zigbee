@@ -3,14 +3,11 @@ package:
   name: "wireless_zigbee"
   type: "package"
   status: "production"
-  required: true
+  required: false
   version: "5.1.0"
 
   dependencies:
     - name: "csp"
-      type: "package"
-      version: "3.17.0"
-    - name: "dev_packs"
       type: "package"
       version: "3.17.0"
     - name: "bsp"
@@ -28,9 +25,6 @@ package:
     - name: "zlib"
       type: "package"
       version: "1.2.13"
-    - name: "mhc"
-      type: "package"
-      version: "3.8.3"
     - name: "wireless_pic32cxbz_wbz"
       type: "package"
       version: "1.2.0"      

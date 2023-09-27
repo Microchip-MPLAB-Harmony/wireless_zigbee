@@ -1,25 +1,45 @@
 
-## Family: PIC32CX-BZ
-## Function: Zigbee
+![Microchip logo](https://raw.githubusercontent.com/wiki/Microchip-MPLAB-Harmony/Microchip-MPLAB-Harmony.github.io/images/microchip_logo.png)
+![Harmony logo small](https://raw.githubusercontent.com/wiki/Microchip-MPLAB-Harmony/Microchip-MPLAB-Harmony.github.io/images/microchip_mplab_harmony_logo_small.png)
+
+# Microchip MPLAB® Harmony 3 Release Notes
+
 ---
+
 # Zigbee Driver Library Release notes
 
 ## Zigbee Release v5.1.0
 
-### Feature sets and Enhancements
+### New Features
 
 + Deep Sleep support for Zigbee End devices (with retention RAM)
 + Custom Cluster support
 + Custom Device support with Custom Cluster
-+ Device / Stack Tx power handling and backoff implemenation.User options to set FCC/ETSI/IC/China/Korea/Taiwan regions with Custom antenna gain.
++ Device / Stack Tx power handling and backoff implementation.User options to set FCC/ETSI/IC/China/Korea/Taiwan regions with Custom antenna gain.
 + Standby Sleep improvements with Combo(BLE) devices
 
+### Bug Fixes
 
++ Zigbee Stack Configuration options are not restored properly in MCC Reload
++ Extra Delay in ZED polling intervals during standby sleep in combo application with BLE
+
+### Changes
+  + Stack changes:
+	+ Handling radiated power input and set the tx power accordingly based on the antenna gain selected (China/Taiwan/Korea/FCC/ETSI/IC)
+	+ Created APIs to store and restore critical network paramters to use them before going/after wakingup to/from deep sleep
+	+ Standby Sleep improvement to better align with other technologies like BLE.
+  + MCC/Middleware changes :
+	+ Provided the framework to add the custom cluster on a standard device or custom device with configurable attributes and Commands
+
+### Known Issues/Limitations
+  + Max 3 OTAU clients can only be upgraded in parallel by single OTAU Server
+  
 ### Development Tools
-+ [MPLAB X v6.10](https://www.microchip.com/mplab/mplab-x-ide)
++ [MPLAB X v6.15](https://www.microchip.com/mplab/mplab-x-ide)
 + [MPLAB® XC32 C/C++ Compiler v4.21](https://www.microchip.com/mplab/compilers)
 + MPLAB® X IDE plug-ins: MPLAB® Code Configurator (MCC) v5.3.7 and above
 
+---
 
 ## Zigbee Release v5.0.0
 

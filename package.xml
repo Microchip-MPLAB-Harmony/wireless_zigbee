@@ -6,9 +6,7 @@
         <Dependency name="core" version="v3.13.0"/>
         <Dependency name="crypto" version="v3.8.0"/>
         <Dependency name="csp" version="v3.17.0"/>
-        <Dependency name="dev_packs" version="v3.17.0"/>
         <Dependency name="zlib" version="v1.2.13"/>
-        <Dependency name="mhc" version="v3.8.3"/>
         <Dependency name="wireless_pic32cxbz_wbz" version="1.2.0"/>
         <Dependency name="wolfssl" version="v4.8.1"/>
 </Dependencies>
