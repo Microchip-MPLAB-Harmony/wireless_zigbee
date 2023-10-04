@@ -9,14 +9,12 @@
 ### New Features
 
 + All features as v5.1.0
-+ Linux support 
-
-### Bug Fixes
++ Latest XC32 compiler version support XC32 v4.35
++ Linux support
 
 ### Changes
-  
   + MCC/Middleware changes :
-	+ One folder name changed w.r.t. case(Capita to small)
+    + Renamed a folder w.r.t. case sensitive ("stack_Interface" to "stack_interface")
 
 ### Development Tools
 + [MPLAB X v6.15](https://www.microchip.com/mplab/mplab-x-ide)
