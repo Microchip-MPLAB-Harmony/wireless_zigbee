@@ -4,6 +4,25 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Zigbee Release v5.1.1
+
+### New Features
+
++ All features as v5.1.0
++ Linux support 
+
+### Bug Fixes
+
+### Changes
+  
+  + MCC/Middleware changes :
+	+ One folder name changed w.r.t. case(Capita to small)
+
+### Development Tools
++ [MPLAB X v6.15](https://www.microchip.com/mplab/mplab-x-ide)
++ [MPLAB® XC32 C/C++ Compiler v4.35](https://www.microchip.com/mplab/compilers)
++ MPLAB® X IDE plug-ins: MPLAB® Code Configurator (MCC) v5.3.7 and above
+
 ---
 
 # Zigbee Driver Library Release notes
