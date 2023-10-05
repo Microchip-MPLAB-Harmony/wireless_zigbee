@@ -1,9 +1,4 @@
-﻿﻿---
-title: Harmony 3 Wireless Package
-nav_order: 1
----
-
-[![MCHP](https://www.microchip.com/ResourcePackages/Microchip/assets/dist/images/logo.png)](https://www.microchip.com) 
+﻿[![MCHP](https://www.microchip.com/ResourcePackages/Microchip/assets/dist/images/logo.png)](https://www.microchip.com) 
 # MPLAB® Harmony 3 Wireless
 
 MPLAB® Harmony 3 is an extension of the MPLAB® ecosystem for creating
