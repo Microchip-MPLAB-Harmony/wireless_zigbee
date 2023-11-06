@@ -54,8 +54,10 @@ def finalizeComponent(drvzgpdevice):
         result = Database.connectDependencies([[drvzgpdevice.getID(), 'TC0_TMR_Zigbee', 'tc0', 'TC0_TMR']])
 
     elif (deviceName in pic32cx_bz3_family):
-        res = Database.activateComponents(["tcc2","pic32cx_bz3_devsupport"])
-        result = Database.connectDependencies([[drvzgpdevice.getID(), 'TCC2_PWM_Zigbee', 'tcc2', 'TCC2_PWM']])
+        #res = Database.activateComponents(["tcc2","pic32cx_bz3_devsupport"])
+        #result = Database.connectDependencies([[drvzgpdevice.getID(), 'TCC2_PWM_Zigbee', 'tcc2', 'TCC2_PWM']])
+        res = Database.activateComponents(["tc0","pic32cx_bz3_devsupport"])
+        result = Database.connectDependencies([[drvzgpdevice.getID(), 'TC0_TMR_Zigbee', 'tc0', 'TC0_TMR']])
 
     #responsible for adding custom app.c to project path instead of the app.c from device support
     try:
@@ -132,7 +134,8 @@ def instantiateComponent(drvzgpdevice):
     Database.setSymbolValue("core", "CONFIG_SCOM0_HSEN", "DIRECT")
     if (deviceName in pic32cx_bz3_family):
           activeComponents = Database.getActiveComponentIDs()
-          requiredComponents = ["tcc2","pic32cx_bz3_devsupport"]
+          #requiredComponents = ["tcc2","pic32cx_bz3_devsupport"]
+          requiredComponents = ["tc0","pic32cx_bz3_devsupport"]
           for r in requiredComponents:
               if r not in activeComponents:
                   print("require component '{}' - activating it".format(r))
@@ -177,7 +180,8 @@ def instantiateComponent(drvzgpdevice):
     if( deviceName in pic32cx_bz2_family):
         drvzgpdevice.setDependencyEnabled('TCC2_PWM_Zigbee', False) #If bz2, disable TCC2 by default
     elif( deviceName in pic32cx_bz3_family):
-        drvzgpdevice.setDependencyEnabled('TC0_TMR_Zigbee', False)
+        #drvzgpdevice.setDependencyEnabled('TC0_TMR_Zigbee', False)
+        drvzgpdevice.setDependencyEnabled('TCC2_PWM_Zigbee', False)
 
     global drvComponent # used to pass component to timerconfig.py
     drvComponent = drvzgpdevice
@@ -1626,8 +1630,12 @@ def onAttachmentConnected(source, target):
     targetID = target["id"]
 
     if (connectID == "Zigbee_USART"):
+        # appConfigEnableConsole.setValue(True)
         Database.setSymbolValue("drv_usart", "DRV_USART_COMMON_MODE", "Asynchronous")
-        Database.sendMessage("pic32cx_bz2_devsupport", "CONSOLE_ENABLE", {"isEnabled":True})
+        if (deviceName in pic32cx_bz2_family):
+          Database.sendMessage("pic32cx_bz2_devsupport", "CONSOLE_ENABLE", {"isEnabled":True})
+        elif (deviceName in pic32cx_bz3_family):
+          Database.sendMessage("pic32cx_bz3_devsupport", "CONSOLE_ENABLE", {"isEnabled":True})
         print("setting ENABLE CONSOLE in application Configuration as True Since DRV_USART is connected")
     elif (connectID == "Zigbee_WolfCrypt_Dependency"):
         print("drv_zigbee_lib:onAttachmentConnected configuring lib_wolfcrypt")
@@ -1663,5 +1671,9 @@ def onAttachmentDisconnected(source, target):
     targetID = target["id"]
 
     if (connectID == "Zigbee_USART"):
-        Database.sendMessage("pic32cx_bz2_devsupport", "CONSOLE_ENABLE", {"isEnabled":False})
+        # appConfigEnableConsole.setValue(False)
+        if (deviceName in pic32cx_bz2_family):
+          Database.sendMessage("pic32cx_bz2_devsupport", "CONSOLE_ENABLE", {"isEnabled":False})
+        elif (deviceName in pic32cx_bz3_family):
+          Database.sendMessage("pic32cx_bz3_devsupport", "CONSOLE_ENABLE", {"isEnabled":False})
         print("setting ENABLE CONSOLE in application Configuration as False Since DRV_USART is disconnected")

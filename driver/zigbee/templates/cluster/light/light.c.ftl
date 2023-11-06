@@ -260,6 +260,30 @@ void appDeviceTaskHandler(void)
 /*******************************************************************************
 \brief callback called on the finishing of binding of one cluster
 ********************************************************************************/
+<#function hasReportableServerCluster>
+
+
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+
+  <#if DEVICE == "SERVER">
+
+  <#assign prefixAttribute  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_" + "SERVER" + "_ATTRIBUTES_">
+
+  <#list 0..<(prefixAttribute  + "NO")?eval as attributeIndex>
+      <#if (prefixAttribute +"PROP_REPORTABLE_"+attributeIndex)?eval>
+          <#return true>
+      </#if>
+  </#list>
+
+  </#if>
+
+</#list>
+
+  <#return false>
+
+</#function>
 static void lightFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterId_t clusterId)
 {
   ZCL_Cluster_t *serverCluster;
@@ -294,6 +318,10 @@ static void lightFindingBindingFinishedForACluster(Endpoint_t ResponentEp, Clust
 
       break;
 #endif
+<#if (hasReportableServerCluster())>
+    default:
+      ZCL_StartReporting();
+</#if>
   }
 
 }

@@ -28,13 +28,20 @@ global devicename # The deviceName from drvZigbeeLib shows erroneous behavious
 
 devicename = Variables.get("__PROCESSOR")
 
-print("CUSTOM CLUSTER EXECUTION ",devicename, devicename in pic32cx_bz2_family)
+#Condition to enable custom cluster in device
+enableCustomCluster = ( 
+    devicename in pic32cx_bz2_family or
+    devicename in pic32cx_bz3_family
+)
+            
+
+print("CUSTOM CLUSTER EXECUTION ",devicename, enableCustomCluster)
 
 global CUSTOM_CLUSTER_ENABLED
 CUSTOM_CLUSTER_ENABLED = True
 
 #We disable Custom clusters for devices not in bz2 family
-if (devicename not in pic32cx_bz2_family):
+if (not enableCustomCluster): #check if custom cluster is not enabled
     MAX_CLUSTER_SIZE, MAX_ATTRIBUTE_SIZE, MAX_COMMAND_SIZE, MAX_COMMAND_PARAMS = 1, 1, 1, 1 
     #The value used is 1 instead of zero because symbols will not be created if it's 0
     #If Custom Cluster symbols are not created, then associated template files won't get generated
@@ -45,6 +52,13 @@ if (devicename not in pic32cx_bz2_family):
 
 global devID
 devID = drvZigbeeComponent.getID()
+
+global isMultisensor
+isMultisensor = False
+
+if(devID == "ZIGBEE_MULTI_SENSOR"):
+    isMultisensor = True
+
 
 global FILE_PREFIX
 
@@ -939,7 +953,12 @@ for cli in range(MAX_CLUSTER_SIZE):
     customClusterCS.setDescription("CUSTOM Cluster Supported Implementation- Select the option")
     customClusterCS.setDependencies(customClusterCSCheck,['ZCC'+str(cli) + "_" + "CUSTOM_CLUSTER_ENABLE"])
 
-    #TODO
+    if(isMultisensor):
+        customClusterMultisensorEndpoint = drvZigbeeComponent.createComboSymbol('ZCC'+str(cli) + "_" + "MULTI_SENSOR_ENDPOINT",customCluster, ["OCCUPANCY", "HUMIDITY", "TEMPERATURE", "ILLUMINANCE"])
+        customClusterMultisensorEndpoint.setLabel("Multisensor Endpoint")
+        customClusterMultisensorEndpoint.setDefaultValue("OCCUPANCY")        
+        customClusterMultisensorEndpoint.setDescription("Choose the endpoint for cluster to be inserted")
+    
     customClusterReportInterval = drvZigbeeComponent.createIntegerSymbol('ZCC'+str(cli) + "_" + "CUSTOM_CLUSTER_REPORT_MIN", customCluster)
     customClusterReportInterval.setLabel("Report interval minimum")
     customClusterReportInterval.setDefaultValue(0)

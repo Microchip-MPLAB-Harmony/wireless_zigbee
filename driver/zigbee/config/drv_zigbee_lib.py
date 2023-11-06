@@ -42,6 +42,21 @@ pic32cx_bz3_family = {'PIC32CX5109BZ31048',
                       'WBZ351',
                       'WBZ350',
                       }
+                      
+TXPowerFamily1  = { 'PIC32CX1012BZ25048',
+                    'PIC32CX5109BZ31048',
+                    'WBZ451',
+                    'WBZ351',
+                    }
+                    
+TXPowerFamily2 = { 'PIC32CX1012BZ25032',
+                   'PIC32CX1012BZ24032',
+                   'WBZ450',
+                   }
+TXPowerFamily3 = { 'PIC32CX5109BZ31032',
+                   'WBZ350',
+                   }
+
 global deviceName
 deviceName = Variables.get("__PROCESSOR")
 
@@ -59,7 +74,7 @@ def powerRegionCheck(symbol, event):
     if (customAntennaRegion1.getValue() == True):  #ETSI
         symbol.setVisible(True)
         appPowerRegion.setMin(-14)
-        if((deviceName == "PIC32CX1012BZ25048") or (deviceName == 'WBZ451') or (deviceName == 'WBZ351')):
+        if(deviceName in TXPowerFamily1):
             ETSISetMax = 11
     elif (customAntennaRegion1.getValue() == False):
         ETSISetMax = 15
@@ -67,7 +82,7 @@ def powerRegionCheck(symbol, event):
     if (customAntennaRegion2.getValue() == True):   #FCC or Taiwan # China #IC 
         symbol.setVisible(True)
         appPowerRegion.setMin(-14)
-        if((deviceName == "PIC32CX1012BZ25048") or (deviceName == 'WBZ451') or (deviceName == 'WBZ351')):
+        if(deviceName in TXPowerFamily1):
             FCCSetMax = 15
     elif (customAntennaRegion2.getValue() == False): 
         FCCSetMax = 15
@@ -75,7 +90,7 @@ def powerRegionCheck(symbol, event):
     if (customAntennaRegion3.getValue() == True):   # Japan
         symbol.setVisible(True)
         appPowerRegion.setMin(-14)
-        if((deviceName == "PIC32CX1012BZ25048") or (deviceName == 'WBZ451') or (deviceName == 'WBZ351')):
+        if(deviceName in TXPowerFamily1):
             JapanSetMax = 12
     elif (customAntennaRegion3.getValue() == False): 
         JapanSetMax = 15
@@ -83,7 +98,7 @@ def powerRegionCheck(symbol, event):
     if (customAntennaRegion4.getValue() == True):  # Korea 
         symbol.setVisible(True)
         appPowerRegion.setMin(-14)
-        if((deviceName == "PIC32CX1012BZ25048") or (deviceName == 'WBZ451') or (deviceName == 'WBZ351')):
+        if(deviceName in TXPowerFamily1):
             KoreaSetMax = 8
     elif (customAntennaRegion4.getValue() == False):
         KoreaSetMax = 15
@@ -91,7 +106,7 @@ def powerRegionCheck(symbol, event):
     if (customAntennaRegion5.getValue() == True):  # CHINA 
         symbol.setVisible(True)
         appPowerRegion.setMin(-14)
-        if((deviceName == "PIC32CX1012BZ25048") or (deviceName == 'WBZ451') or (deviceName == 'WBZ351')):
+        if(deviceName in TXPowerFamily1):
             ChinaSetMax = 15
     elif (customAntennaRegion5.getValue() == False):
         ChinaSetMax = 15
@@ -99,15 +114,15 @@ def powerRegionCheck(symbol, event):
     if (customAntennaRegion6.getValue() == True):  # TAIWAN
         symbol.setVisible(True)
         appPowerRegion.setMin(-14)
-        if((deviceName == "PIC32CX1012BZ25048") or (deviceName == 'WBZ451') or (deviceName == 'WBZ351')):
+        if(deviceName in TXPowerFamily1):
             TaiwanSetMax = 15
     elif (customAntennaRegion6.getValue() == False):
         TaiwanSetMax = 15
         
-    if((deviceName == 'WBZ450') or (deviceName == "PIC32CX1012BZ25032") or (deviceName == "PIC32CX1012BZ24032")) :
+    if(deviceName in TXPowerFamily2):
         appPowerRegion.setMin(-14)
         appPowerRegion.setMax(11)
-    elif(deviceName == 'WBZ350'):
+    elif(deviceName in TXPowerFamily3):
         appPowerRegion.setMin(-14)
         appPowerRegion.setMax(9)
     else:
@@ -123,7 +138,7 @@ def finalizeComponent(zigbeeComponent):
         result = Database.connectDependencies([['lib_crypto', 'LIB_CRYPTO_WOLFCRYPT_Dependency', 'lib_wolfcrypt', 'lib_wolfcrypt']])
         result = Database.connectDependencies([[zigbeeDeviceType.getValue(), 'TC0_TMR_Zigbee', 'tc0', 'TC0_TMR']])
     elif (deviceName in pic32cx_bz3_family):
-        result = Database.connectDependencies([[zigbeeDeviceType.getValue(), 'TCC2_PWM_Zigbee', 'tcc2', 'TCC2_PWM']])
+        result = Database.connectDependencies([[zigbeeDeviceType.getValue(), 'TC0_TMR_Zigbee', 'tc0', 'TC0_TMR']])
     try:
         if (deviceName in pic32cx_bz2_family):    
             ETSImValue=Database.getSymbolValue("pic32cx_bz2_devsupport", "ETSI_REGION")
@@ -146,9 +161,10 @@ def finalizeComponent(zigbeeComponent):
         customAntennaRegion5.setValue(ChinamValue) 
         customAntennaRegion6.setValue(TaiwanmValue)      
         appPowerRegion.setDependencies(powerRegionCheck, ["ETSI_REGION", "FCC_REGION", "JAPAN_REGION", "KOREA_REGION", "CHINA_REGION", "TAIWAN_REGION"])
-      
+
     except Exception as e:
         print("EXcemption for getting Finalizd Dev_Support", e)
+
 	#Deep Sleep added
     DeviceTypes = zigbeeDeviceType.getValue()
     if((DeviceTypes == 'ZIGBEE_MULTI_SENSOR')or(DeviceTypes == 'ZIGBEE_COLOR_SCENE_CONTROLLER')or(DeviceTypes == 'ZIGBEE_IAS_ACE')):
@@ -159,7 +175,6 @@ def finalizeComponent(zigbeeComponent):
         deviceDeepSleepEnabled.setDependencies(zigbeeDevTypeEventDeepSleepConfigCheck, ["DEVICE_DEEP_SLEEP_ENABLED"])
         if( deviceName in pic32cx_bz2_family):
            Database.sendMessage("pic32cx_bz2_devsupport", "DEEP_SLEEP_ENABLE", {"isEnabled":True})
-           
         else:
            Database.sendMessage("pic32cx_bz3_devsupport", "DEEP_SLEEP_ENABLE", {"isEnabled":True})
 
@@ -263,7 +278,7 @@ def instantiateComponent(drvZigbeeComponent):
       Database.setSymbolValue("core", "AES_CLOCK_ENABLE", True)
     if (deviceName in pic32cx_bz3_family):
           activeComponents = Database.getActiveComponentIDs()
-          requiredComponents = ["tcc2","pic32cx_bz3_devsupport"]
+          requiredComponents = ["tc0","pic32cx_bz3_devsupport"]
           for r in requiredComponents:
               if r not in activeComponents:
                   print("require component '{}' - activating it".format(r))
@@ -377,16 +392,26 @@ def instantiateComponent(drvZigbeeComponent):
     deviceDeepSleepEnabled.setLabel("Enable Deep Sleep")
     deviceDeepSleepEnabled.setVisible(drvZigbeeComponent.getID() in deviceDeepSleepEnabledList )
     deviceDeepSleepEnabled.setDependencies(zigbeeDevTypeEventDeepSleepConfigCheck, ["DEVICE_DEEP_SLEEP_ENABLED"])
-
-
-
-    
     
     global sleepSupportedDevice
     sleepSupportedDevice = drvZigbeeComponent.createBooleanSymbol("SLEEP_SUPPORTED_DEVICE", None)
     sleepSupportedDevice.setVisible(False)
     sleepSupportedDevice.setDefaultValue(False)
     
+    global BZ3Symbol
+    BZ3Symbol = drvZigbeeComponent.createBooleanSymbol("PIC32CXBZ3", None)
+    BZ3Symbol.setDefaultValue(False)
+    BZ3Symbol.setVisible(False)
+    global BZ2Symbol
+    BZ2Symbol = drvZigbeeComponent.createBooleanSymbol("PIC32CXBZ2", None)
+    BZ2Symbol.setDefaultValue(False)
+    BZ2Symbol.setVisible(False)
+
+    if (deviceName in pic32cx_bz3_family):
+        BZ3Symbol.setDefaultValue(True)
+    if (deviceName in pic32cx_bz2_family):
+        BZ2Symbol.setDefaultValue(True)
+
     # Auto Configuration Option
     global zigbeeDevsym_autoConfig
     zigbeeDevsym_autoConfig = drvZigbeeComponent.createBooleanSymbol("AUTOMATIC_CONFIGURATION", None)
@@ -451,7 +476,6 @@ def instantiateComponent(drvZigbeeComponent):
     clusterConfigMenu.setVisible(zigbeeDevsym_manulConfig.getValue() == True)
     clusterConfigMenu.setDependencies(manualConfigVisibility, ["AUTOMATIC_CONFIGURATION", "MANUAL_CONFIGURATION"])
 
-
     # Timer Configuration Menu    
     if(deviceName in pic32cx_bz2_family):
         timerConfigMenu = drvZigbeeComponent.createMenuSymbol("TIMERCONFIG_MENU", zigbeeDevsym_manulConfig)
@@ -459,11 +483,10 @@ def instantiateComponent(drvZigbeeComponent):
         timerConfigMenu.setVisible(zigbeeDevsym_manulConfig.getValue() == True)
         timerConfigMenu.setDependencies(manualConfigVisibility, ["AUTOMATIC_CONFIGURATION", "MANUAL_CONFIGURATION"])
 
-
     if( deviceName in pic32cx_bz2_family):
         drvZigbeeComponent.setDependencyEnabled('TCC2_PWM_Zigbee', False) #If bz2, disable TCC2 by default
     elif( deviceName in pic32cx_bz3_family):
-        drvZigbeeComponent.setDependencyEnabled('TC0_TMR_Zigbee', False)
+        drvZigbeeComponent.setDependencyEnabled('TCC2_PWM_Zigbee', False)
 
     global drvComponent # used to pass component to timerconfig.py
     drvComponent = drvZigbeeComponent
@@ -582,8 +605,7 @@ def instantiateComponent(drvZigbeeComponent):
             appDevicePASelect.setValue('CS_DEVICE_POWER_LPA')
         else:
             appDevicePASelect.setValue('CS_DEVICE_POWER_MPA')        
-    
-    
+        
     # Responsible for auto activation of SST26
     if(deviceName in pic32cx_bz3_family):    
         enableSST = drvZigbeeComponent.createBooleanSymbol(None, None)
@@ -595,6 +617,10 @@ def instantiateComponent(drvZigbeeComponent):
     appPowerRegion = drvZigbeeComponent.createIntegerSymbol("APP_TX_POWER", applicationConfigMenu)
     appPowerRegion.setLabel("Tx Power Set")
     if (deviceName == "PIC32CX1012BZ25048"):
+        appPowerRegion.setDefaultValue(3)
+        appPowerRegion.setMin(-11)
+        appPowerRegion.setMax(15)
+    elif (deviceName == "PIC32CX5109BZ31048"):
         appPowerRegion.setDefaultValue(3)
         appPowerRegion.setMin(-11)
         appPowerRegion.setMax(15)
@@ -614,17 +640,19 @@ def instantiateComponent(drvZigbeeComponent):
         appPowerRegion.setDefaultValue(3)
         appPowerRegion.setMin(-13)
         appPowerRegion.setMax(6)
+    elif(deviceName == "PIC32CX5109BZ31032"):
+        appPowerRegion.setDefaultValue(3)
+        appPowerRegion.setMin(-13)
+        appPowerRegion.setMax(6)
     elif(deviceName == "WBZ450"):
         appPowerRegion.setDefaultValue(3)
         appPowerRegion.setMin(-11)
         appPowerRegion.setMax(6)
     else:
         appPowerRegion.setDefaultValue(5)
-     
-    #appPowerRegion.setDependencies(powerRegionCheck, ["CUSTOM_ANT_REGION", "CUSTOM_ANT_REGION", "ETSI_REGION", "FCC_REGION", "JAPAN_REGION", "KOREA_REGION"])
+    
     appPowerRegion.setDependencies(powerRegionCheck, ["ETSI_REGION", "FCC_REGION", "JAPAN_REGION", "KOREA_REGION", "CHINA_REGION", "TAIWAN_REGION"])
     
-
     global appConfigChannel26power
     appConfigChannel26power = drvZigbeeComponent.createIntegerSymbol("APP_CHANNEL_26_POWER", applicationConfigMenu)
     appConfigChannel26power.setLabel("Channel-26 Power Set")
@@ -2204,12 +2232,12 @@ def instantiateComponent(drvZigbeeComponent):
          # Multi Sensor
         ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/hsBasicCluster.c',                    condDevMultiSensor],
         ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/hsGroupsCluster.c',                   condDevMultiSensor],
-        ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/hsHumidityMeasurementCluster.c',      condDevMultiSensor],
+        # ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/hsHumidityMeasurementCluster.c',      condDevMultiSensor],
         ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/hsIdentifyCluster.c',                 condDevMultiSensor],
         ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/lsBasicCluster.c',                    condDevMultiSensor],
         ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/lsGroupsCluster.c',                   condDevMultiSensor],
         ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/lsIdentifyCluster.c',                 condDevMultiSensor],
-        ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/lsIlluminanceMeasurementCluster.c',   condDevMultiSensor],
+        # ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/lsIlluminanceMeasurementCluster.c',   condDevMultiSensor],
         # ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/msClusters.c',                        condDevMultiSensor],
         #['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/msConsole.c',                         condDevMultiSensor],
         ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/msPdt.c',                             condDevMultiSensor],
@@ -2217,11 +2245,11 @@ def instantiateComponent(drvZigbeeComponent):
         ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/osBasicCluster.c',                    condDevMultiSensor],
         ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/osGroupsCluster.c',                   condDevMultiSensor],
         ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/osIdentifyCluster.c',                 condDevMultiSensor],
-        ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/osOccupancySensingCluster.c',         condDevMultiSensor],
+        # ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/osOccupancySensingCluster.c',         condDevMultiSensor],
         ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/tsBasicCluster.c',                    condDevMultiSensor],
         ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/tsGroupsCluster.c',                   condDevMultiSensor],
         ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/tsIdentifyCluster.c',                 condDevMultiSensor],
-        ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/tsTemperatureMeasurementCluster.c',   condDevMultiSensor],
+        # ['application/zigbee_only/Zigbee_Device_Application/devicetypes/multiSensor/tsTemperatureMeasurementCluster.c',   condDevMultiSensor],
 
          # Thermostat
         ['application/zigbee_only/Zigbee_Device_Application/devicetypes/thermostat/thAlarmsCluster.c',                     condDevThermostat], 
@@ -2895,13 +2923,17 @@ def eicDeepSleepConfig():
     try:
         component = Database.getComponentByID("eic")
         #The boolean symbols (tick boxes) to enable in the EIC configuration menu
-        enableBooleanSymbols = ["EIC_CHAN_0", "EIC_INT_0", "EIC_EXTINTEO_0", "EIC_CONFIG_FILTEN_0"]
+        if (deviceName in pic32cx_bz2_family):
+            enableBooleanSymbols = ["EIC_CHAN_0", "EIC_INT_0", "EIC_EXTINTEO_0", "EIC_CONFIG_FILTEN_0"]
+            #The boolean symbols (tick boxes) to enable in the EIC configuration menu
+            #In the form of keyValueSymbolID to select and the Key to set
+            selectKeyValueSymbols = [ ("EIC_CONFIG_SENSE_0", "BOTH"), ("EIC_ASYNCH_0","ASYNC"),]
 
-        #The boolean symbols (tick boxes) to enable in the EIC configuration menu
-        #In the form of keyValueSymbolID to select and the Key to set
-        selectKeyValueSymbols = [ ("EIC_CONFIG_SENSE_0", "BOTH"), 
-                                  ("EIC_ASYNCH_0","ASYNC"),
-                                ]
+        if (deviceName in pic32cx_bz3_family):
+            enableBooleanSymbols = ["EIC_CHAN_1", "EIC_INT_1", "EIC_EXTINTEO_1", "EIC_CONFIG_FILTEN_1"]
+            #The boolean symbols (tick boxes) to enable in the EIC configuration menu
+            #In the form of keyValueSymbolID to select and the Key to set
+            selectKeyValueSymbols = [ ("EIC_CONFIG_SENSE_1", "BOTH"), ("EIC_ASYNCH_1","ASYNC"),]
 
         for booleanSymbolID in enableBooleanSymbols:
             booleanSymbol = component.getSymbolByID(booleanSymbolID)

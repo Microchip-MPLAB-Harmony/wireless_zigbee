@@ -308,7 +308,7 @@ typedef struct PACK _ZCL_${clusterName?upper_case}_${(prefix+"NAME_"+attributeIn
 <#if ( (prefix+"CLASSTYPE_"+attributeIndex)?eval == "Enumeration") >
 typedef enum _ZCL_${clusterName?capitalize}${(prefix+"NAME_"+attributeIndex)?eval?capitalize?replace(' ','')}Enum_t
 {
-    ${clusterName?upper_case}_${(prefix+"NAME_"+attributeIndex)?eval?upper_case}_${attributeIndex} = 0x00
+    ${clusterName?upper_case}_${(prefix+"NAME_"+attributeIndex)?eval?upper_case?replace(' ','')}_${attributeIndex} = 0x00
 }ZCL_${clusterName?capitalize}${(prefix+"NAME_"+attributeIndex)?eval?capitalize?replace(' ','')}Enum_t;
 
 </#if>
@@ -319,7 +319,7 @@ typedef enum _ZCL_${clusterName?capitalize}${(prefix+"NAME_"+attributeIndex)?eva
 <#if ( (prefix+"CLASSTYPE_"+attributeIndex)?eval == "Enumeration") >
 typedef enum _ZCL_${clusterName?capitalize}${(prefix+"NAME_"+attributeIndex)?eval?capitalize?replace(' ','')}Enum_t
 {
-    ${clusterName?upper_case}_${(prefix+"NAME_"+attributeIndex)?eval?upper_case}_${attributeIndex} = 0x00
+    ${clusterName?upper_case}_${(prefix+"NAME_"+attributeIndex)?eval?upper_case?replace(' ','')}_${attributeIndex} = 0x00
 }ZCL_${clusterName?capitalize}${(prefix+"NAME_"+attributeIndex)?eval?capitalize?replace(' ','')}Enum_t;
 
 </#if>

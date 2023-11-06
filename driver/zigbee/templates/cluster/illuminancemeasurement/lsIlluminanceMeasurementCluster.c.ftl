@@ -87,12 +87,59 @@ static ZCL_DeviceEndpoint_t lsEndpoint =
 static ClusterId_t lsServerClusterToBindIds[] =
 {
   ILLUMINANCE_MEASUREMENT_CLUSTER_ID,
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
+  <#if (DEVICE == "SERVER") && (ENDPOINT == "ILLUMINANCE") >
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  ${clusterName?upper_case}_CLUSTER_ID,
+  </#if>
+</#list>
+
 };
+<#assign clusterCount = 0>
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#assign ENDPOINT = ("ZCC" + customClusterIndex + "_MULTI_SENSOR_ENDPOINT")?eval >
+  <#if (ENDPOINT == "ILLUMINANCE") && (DEVICE == "CLIENT") >    
+    <#assign clusterCount = clusterCount + 1>        
+  </#if>  
+</#list>
+<#if (clusterCount > 0)>
+
+static ClusterId_t lsClientClusterToBindIds[] =
+{
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
+  <#if (DEVICE == "CLIENT") && (ENDPOINT == "ILLUMINANCE") >
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  ${clusterName?upper_case}_CLUSTER_ID,
+  </#if>
+</#list>
+};
+</#if>
+
+<#function lsClientClusterToBindIds>
+<#if (clusterCount > 0)>
+  <#return "lsClientClusterToBindIds">
+</#if>
+  <#return "NULL">
+</#function>
+
+<#function lsClientClusterToBindIdsCount>
+<#if (clusterCount > 0)>
+  <#return "ARRAY_SIZE(lsClientClusterToBindIds)">
+</#if>
+  <#return "0">
+</#function>
 
 static AppBindReq_t lsBindReq =
 {
-  .remoteServers     = NULL,
-  .remoteServersCnt  = 0,
+  .remoteServers     = ${lsClientClusterToBindIds()},
+  .remoteServersCnt  = ${lsClientClusterToBindIdsCount()},
   .remoteClients     = lsServerClusterToBindIds,
   .remoteClientsCnt  = ARRAY_SIZE(lsServerClusterToBindIds),
   .groupId           = 0xffff,
@@ -184,6 +231,30 @@ void illuminanceMeasurementUpdateMeasuredValue(void)
 /*******************************************************************************
 \brief callback called on the finishing of binding of one cluster
 ********************************************************************************/
+<#function hasReportableServerCluster>
+
+
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
+  <#if (DEVICE == "SERVER") && (ENDPOINT == "ILLUMINANCE")>
+
+  <#assign prefixAttribute  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_" + "SERVER" + "_ATTRIBUTES_">
+
+  <#list 0..<(prefixAttribute  + "NO")?eval as attributeIndex>
+      <#if (prefixAttribute +"PROP_REPORTABLE_"+attributeIndex)?eval>
+          <#return true>
+      </#if>
+  </#list>
+
+  </#if>
+
+</#list>
+
+  <#return false>
+
+</#function>
 static void lsFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterId_t clusterId)
 {
   if (ILLUMINANCE_MEASUREMENT_CLUSTER_ID == clusterId)
@@ -193,6 +264,12 @@ static void lsFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterI
       sendConfigureReportingToNotify(APP_ENDPOINT_EXTENDED_COLOR_LIGHT_SENSOR, APP_ENDPOINT_COMBINED_INTERFACE, ILLUMINANCE_MEASUREMENT_CLUSTER_ID,
       ZCL_ILLUMINANCE_MEASUREMENT_CLUSTER_MEASURED_VALUE_SERVER_ATTRIBUTE_ID, ILLUMINANCE_MEASUREMENT_VAL_MAX_REPORT_PERIOD, lsConfigureReportingResp);
   }
+  <#if (hasReportableServerCluster())>
+  else
+  {
+  ZCL_StartReporting();
+  }
+  </#if>
 }
 
 

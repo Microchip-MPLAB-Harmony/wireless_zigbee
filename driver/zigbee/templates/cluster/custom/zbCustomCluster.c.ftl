@@ -286,17 +286,37 @@ NULL<#sep>, <#t></#list><#compress>
 /**************************************************************************//**
 \brief Initialization function for the cluster
 ******************************************************************************/
+<#assign deviceType = deviceType?remove_beginning("ZIGBEE_")>
+<#if deviceType == "MULTI_SENSOR">
+    <#assign ENDPOINT = (NAME +"_MULTI_SENSOR_ENDPOINT")?eval >
+    <#switch (ENDPOINT)>
+        <#case "OCCUPANCY">
+            <#assign deviceType = "OCCUPANCY_SENSOR">
+            <#break>
+        <#case "HUMIDITY">
+            <#assign deviceType = "HUMIDITY_SENSOR">
+            <#break>
+        <#case "TEMPERATURE">
+            <#assign deviceType = "TEMPERATURE_SENSOR">
+            <#break>
+        <#case "ILLUMINANCE">
+            <#assign deviceType = "EXTENDED_COLOR_LIGHT_SENSOR">
+            <#break>
+        <#default>
+            <#assign deviceType = "OCCUPANCY_SENSOR">
+    </#switch>
+</#if>
 void ${deviceTypeFunctionPrefix}${clusterName}Init(void)
-{
-    <#assign deviceType = deviceType?remove_beginning("ZIGBEE_")>
+{    
     <#if REPORTABLE_CLIENT == true>
     /* Executes only for Reportable Client. */
     ZCL_Cluster_t *cluster = ZCL_GetCluster(APP_ENDPOINT_${deviceType}, ${clusterName?upper_case}_CLUSTER_ID, ZCL_CLUSTER_SIDE_CLIENT);
 
     if (cluster)
+    {
         cluster->ZCL_ReportInd = ${deviceTypeFunctionPrefix}${clusterName}ReportInd;
-
-    cluster->ZCL_DefaultRespInd = ZCL_CommandZclDefaultResp;
+        cluster->ZCL_DefaultRespInd = ZCL_CommandZclDefaultResp;
+    }
 
     <#elseif DEVICE == "SERVER">
     /* Executes only for Server. */

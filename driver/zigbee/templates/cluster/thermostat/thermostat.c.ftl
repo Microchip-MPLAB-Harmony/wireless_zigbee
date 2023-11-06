@@ -304,6 +304,30 @@ static void updateSensorsAttributeValues(void)
 /*******************************************************************************
 \brief callback called on the finishing of binding of one cluster
 ********************************************************************************/
+<#function hasReportableServerCluster>
+
+
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+
+  <#if DEVICE == "SERVER">
+
+  <#assign prefixAttribute  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_" + "SERVER" + "_ATTRIBUTES_">
+
+  <#list 0..<(prefixAttribute  + "NO")?eval as attributeIndex>
+      <#if (prefixAttribute +"PROP_REPORTABLE_"+attributeIndex)?eval>
+          <#return true>
+      </#if>
+  </#list>
+
+  </#if>
+
+</#list>
+
+  <#return false>
+
+</#function>
 static void thFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterId_t clusterId)
 {
   ZCL_Cluster_t *serverCluster;
@@ -336,7 +360,12 @@ static void thFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterI
          sendConfigureReportingToNotify(APP_ENDPOINT_THERMOSTAT, 0, 
                                       TEMPERATURE_MEASUREMENT_CLUSTER_ID, ZCL_TEMPERATURE_MEASUREMENT_CLUSTER_SERVER_MEASURED_VALUE_ATTRIBUTE_ID, 
                                       TEMPERATURE_MEASUREMENT_VAL_MAX_REPORT_PERIOD, thConfigureReportingResp);
-      break;   
+      break; 
+      
+<#if (hasReportableServerCluster())>
+  default:
+    ZCL_StartReporting();
+</#if>  
   }
 }
 

@@ -86,12 +86,59 @@ static ZCL_DeviceEndpoint_t hsEndpoint =
 static ClusterId_t hsServerClusterToBindIds[] =
 {
   HUMIDITY_MEASUREMENT_CLUSTER_ID,
-};
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
+  <#if (DEVICE == "SERVER") && (ENDPOINT == "HUMIDITY") >
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  ${clusterName?upper_case}_CLUSTER_ID,
+  </#if>
+</#list>
 
+};
+<#assign clusterCount = 0>
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#assign ENDPOINT = ("ZCC" + customClusterIndex + "_MULTI_SENSOR_ENDPOINT")?eval >
+  <#if (ENDPOINT == "HUMIDITY") && (DEVICE == "CLIENT") >    
+    <#assign clusterCount = clusterCount + 1>        
+  </#if>  
+</#list>
+<#if (clusterCount > 0)>
+
+static ClusterId_t hsClientClusterToBindIds[] =
+{
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
+  <#if (DEVICE == "CLIENT") && (ENDPOINT == "HUMIDITY") >
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  ${clusterName?upper_case}_CLUSTER_ID,
+  </#if>
+</#list>
+
+};
+</#if>
+
+<#function hsClientClusterToBindIds>
+<#if (clusterCount > 0)>
+  <#return "hsClientClusterToBindIds">
+</#if>
+  <#return "NULL">
+</#function>
+
+<#function hsClientClusterToBindIdsCount>
+<#if (clusterCount > 0)>
+  <#return "ARRAY_SIZE(hsClientClusterToBindIds)">
+</#if>
+  <#return "0">
+</#function>
 static AppBindReq_t hsBindReq =
 {
-  .remoteServers     = NULL,
-  .remoteServersCnt  = 0,
+  .remoteServers     = ${hsClientClusterToBindIds()},
+  .remoteServersCnt  = ${hsClientClusterToBindIdsCount()},
   .remoteClients     = hsServerClusterToBindIds,
   .remoteClientsCnt  = ARRAY_SIZE(hsServerClusterToBindIds),
   .groupId           = 0xffff,
@@ -175,6 +222,30 @@ void humidityMeasurementUpdateMeasuredValue(void)
 /*******************************************************************************
 \brief callback called on the finishing of binding of one cluster
 ********************************************************************************/
+<#function hasReportableServerCluster>
+
+
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
+  <#if (DEVICE == "SERVER") && (ENDPOINT == "HUMIDITY")>
+
+  <#assign prefixAttribute  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_" + "SERVER" + "_ATTRIBUTES_">
+
+  <#list 0..<(prefixAttribute  + "NO")?eval as attributeIndex>
+      <#if (prefixAttribute +"PROP_REPORTABLE_"+attributeIndex)?eval>
+          <#return true>
+      </#if>
+  </#list>
+
+  </#if>
+
+</#list>
+
+  <#return false>
+
+</#function>
 static void hsFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterId_t clusterId)
 {
   if (HUMIDITY_MEASUREMENT_CLUSTER_ID == clusterId)
@@ -185,6 +256,12 @@ static void hsFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterI
       ZCL_HUMIDITY_MEASUREMENT_CLUSTER_SERVER_MEASURED_VALUE_ATTRIBUTE_ID, HUMIDITY_MEASUREMENT_VAL_MAX_REPORT_PERIOD, hsConfigureReportingResp);
       
   }
+  <#if (hasReportableServerCluster())>
+  else
+  {
+  ZCL_StartReporting();
+  }
+  </#if>
 }
 
 

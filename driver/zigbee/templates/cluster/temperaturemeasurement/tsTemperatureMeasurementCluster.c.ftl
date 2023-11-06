@@ -85,12 +85,58 @@ static ZCL_DeviceEndpoint_t tsEndpoint =
 static ClusterId_t tsServerClusterToBindIds[] =
 {
   TEMPERATURE_MEASUREMENT_CLUSTER_ID,
-};
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
+  <#if (DEVICE == "SERVER") && (ENDPOINT == "TEMPERATURE") >
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  ${clusterName?upper_case}_CLUSTER_ID,
+  </#if>
+</#list>
 
+};
+<#assign clusterCount = 0>
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#assign ENDPOINT = ("ZCC" + customClusterIndex + "_MULTI_SENSOR_ENDPOINT")?eval >
+  <#if (ENDPOINT == "TEMPERATURE") && (DEVICE == "CLIENT") >    
+    <#assign clusterCount = clusterCount + 1>        
+  </#if>  
+</#list>
+<#if (clusterCount > 0)>
+
+static ClusterId_t tsClientClusterToBindIds[] =
+{
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
+  <#if (DEVICE == "CLIENT") && (ENDPOINT == "TEMPERATURE") >
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  ${clusterName?upper_case}_CLUSTER_ID,
+  </#if>
+</#list>
+};
+</#if>
+
+<#function tsClientClusterToBindIds>
+<#if (clusterCount > 0)>
+  <#return "tsClientClusterToBindIds">
+</#if>
+  <#return "NULL">
+</#function>
+
+<#function tsClientClusterToBindIdsCount>
+<#if (clusterCount > 0)>
+  <#return "ARRAY_SIZE(tsClientClusterToBindIds)">
+</#if>
+  <#return "0">
+</#function>
 static AppBindReq_t tsBindReq =
 {
-  .remoteServers     = NULL,
-  .remoteServersCnt  = 0,
+  .remoteServers     = ${tsClientClusterToBindIds()},
+  .remoteServersCnt  = ${tsClientClusterToBindIdsCount()},
   .remoteClients     = tsServerClusterToBindIds,
   .remoteClientsCnt  = ARRAY_SIZE(tsServerClusterToBindIds),
   .groupId           = 0xffff,
@@ -180,6 +226,30 @@ void tempeartureMeasurementUpdateMeasuredValue(void)
 /*******************************************************************************
 \brief callback called on the finishing of binding of one cluster
 ********************************************************************************/
+<#function hasReportableServerCluster>
+
+
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
+  <#if (DEVICE == "SERVER") && (ENDPOINT == "TEMPERATURE")>
+
+  <#assign prefixAttribute  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_" + "SERVER" + "_ATTRIBUTES_">
+
+  <#list 0..<(prefixAttribute  + "NO")?eval as attributeIndex>
+      <#if (prefixAttribute +"PROP_REPORTABLE_"+attributeIndex)?eval>
+          <#return true>
+      </#if>
+  </#list>
+
+  </#if>
+
+</#list>
+
+  <#return false>
+
+</#function>
 static void tsFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterId_t clusterId)
 {
   if (TEMPERATURE_MEASUREMENT_CLUSTER_ID == clusterId)
@@ -189,6 +259,12 @@ static void tsFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterI
       sendConfigureReportingToNotify(APP_ENDPOINT_TEMPERATURE_SENSOR, APP_ENDPOINT_COMBINED_INTERFACE, TEMPERATURE_MEASUREMENT_CLUSTER_ID,
       ZCL_TEMPERATURE_MEASUREMENT_CLUSTER_SERVER_MEASURED_VALUE_ATTRIBUTE_ID, TEMPERATURE_MEASUREMENT_VAL_MAX_REPORT_PERIOD, tsConfigureReportingResp);
   }
+  <#if (hasReportableServerCluster())>
+  else
+  {
+  ZCL_StartReporting();
+  }
+  </#if>
 }
 
 

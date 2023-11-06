@@ -51,8 +51,8 @@
 #include <sxsymcrypt/trng_api.h>
 #include <sxsymcrypt/statuscodes.h>
 
-#include <hal\include\halTaskManager.h>
-#include <systemenvironment\include\sysAssert.h>
+#include <hal/include/halTaskManager.h>
+#include <systemenvironment/include/sysAssert.h>
 
 
 

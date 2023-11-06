@@ -250,6 +250,7 @@ void otauUnicastMatchDescResp(ZDO_ZdpResp_t *zdpResp);
 bool otauExternalPageWrite(uint8_t* otauDataBuffer, uint32_t writeAddress);
 bool otauCacheExternalFlashPage(otauPageBuff_t* clientBuffer, uint8_t* data, uint32_t* writeAddress, uint16_t blockLength);
 DRV_HANDLE * getSstHandle(void);
+bool getEraseStatus(void);
 #endif
 
 #if (defined _LINK_SECURITY_) && (!defined _LIGHT_LINK_PROFILE_)
@@ -276,7 +277,6 @@ void otauUpgradeEndReq(void);
 void otauStartSwitch(void);
 void otauStartWrite(void);
 void otauStartErase(void);
-
 void otauSwitchCallback(OFD_Status_t status);
 
 void zclOtauFillOutgoingZclRequest(uint8_t id, uint8_t length, uint8_t *payload);

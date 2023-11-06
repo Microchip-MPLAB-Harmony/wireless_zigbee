@@ -69,27 +69,22 @@
 /******************************************************************************
                     Definitions section
 ******************************************************************************/
-<#assign customClusterServerCount = 0>
-<#assign customClusterClientCount = 0>
+<#function customClusterCount DEVICE_PARAM ENDPOINT_PARAM>
+<#assign clusterCount = 0>
 
 <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-
-  <#if (DEVICE == "SERVER")  >
-  <#assign customClusterServerCount = customClusterServerCount + 1>
-
-  <#elseif (DEVICE == "CLIENT") >
-  <#assign customClusterClientCount = customClusterClientCount + 1>
-
+  <#assign ENDPOINT = ("ZCC" + customClusterIndex + "_MULTI_SENSOR_ENDPOINT")?eval >
+  
+  <#if (ENDPOINT == ENDPOINT_PARAM) && (DEVICE == DEVICE_PARAM) >    
+    <#assign clusterCount = clusterCount + 1>
+        
   </#if>
-
+  
 </#list>
 
-<#function customClusterCount DEVICE>
-<#assign count = ("customCluster"+ DEVICE?capitalize +"Count")?eval>
-
-<#if (count != 0) >
-<#return "+ "+ count>
+<#if (clusterCount != 0) >
+<#return "+ "+ clusterCount>
 
 <#else>
 <#return "">
@@ -97,45 +92,49 @@
 
 </#function>
 
+<#assign OS_SERVER = customClusterCount("SERVER", "OCCUPANCY") >
 #ifdef APP_SENSOR_TYPE_OCCUPANCY_SENSOR
-#define OS_SERVER_CLUSTERS_COUNT     3 ${customClusterCount("SERVER")}
+#define OS_SERVER_CLUSTERS_COUNT     3 ${OS_SERVER}
 #else
-#define OS_SERVER_CLUSTERS_COUNT     0 ${customClusterCount("SERVER")}
+#define OS_SERVER_CLUSTERS_COUNT     0 ${OS_SERVER}
 #endif
 
+<#assign LS_SERVER = customClusterCount("SERVER", "ILLUMINANCE") >
 #ifdef APP_SENSOR_TYPE_LIGHT_SENSOR
-#define LS_SERVER_CLUSTERS_COUNT     3 ${customClusterCount("SERVER")}
+#define LS_SERVER_CLUSTERS_COUNT     3 ${LS_SERVER}
 #else
-#define LS_SERVER_CLUSTERS_COUNT     0 ${customClusterCount("SERVER")}
+#define LS_SERVER_CLUSTERS_COUNT     0 ${LS_SERVER}
 #endif
 
+<#assign TS_SERVER = customClusterCount("SERVER", "TEMPERATURE") >
 #ifdef APP_SENSOR_TYPE_TEMPERATURE_SENSOR
-#define TS_SERVER_CLUSTERS_COUNT     3 ${customClusterCount("SERVER")}
+#define TS_SERVER_CLUSTERS_COUNT     3 ${TS_SERVER}
 #else
-#define TS_SERVER_CLUSTERS_COUNT     0 ${customClusterCount("SERVER")}
+#define TS_SERVER_CLUSTERS_COUNT     0 ${TS_SERVER}
 #endif
 
+<#assign HS_SERVER = customClusterCount("SERVER", "HUMIDITY") >
 #ifdef APP_SENSOR_TYPE_HUMIDITY_SENSOR
-#define HS_SERVER_CLUSTERS_COUNT     3 ${customClusterCount("SERVER")}
+#define HS_SERVER_CLUSTERS_COUNT     3 ${HS_SERVER}
 #else
-#define HS_SERVER_CLUSTERS_COUNT     0 ${customClusterCount("SERVER")}
+#define HS_SERVER_CLUSTERS_COUNT     0 ${HS_SERVER}
 #endif
 
-#define OS_CLIENT_CLUSTERS_COUNT   2 ${customClusterCount("CLIENT")}
-#define LS_CLIENT_CLUSTERS_COUNT   2 ${customClusterCount("CLIENT")}
-#define TS_CLIENT_CLUSTERS_COUNT   2 ${customClusterCount("CLIENT")}
-#define HS_CLIENT_CLUSTERS_COUNT   2 ${customClusterCount("CLIENT")}
+#define OS_CLIENT_CLUSTERS_COUNT   2 ${customClusterCount("CLIENT","OCCUPANCY")}
+#define LS_CLIENT_CLUSTERS_COUNT   2 ${customClusterCount("CLIENT","ILLUMINANCE")}
+#define TS_CLIENT_CLUSTERS_COUNT   2 ${customClusterCount("CLIENT","TEMPERATURE")}
+#define HS_CLIENT_CLUSTERS_COUNT   2 ${customClusterCount("CLIENT","HUMIDITY")}
 
 
-#define MS_SERVER_CLUSTERS_COUNT     0 ${customClusterCount("SERVER")}
+#define MS_SERVER_CLUSTERS_COUNT     0
 #define MS_SERVER_CLUSTER_INIT_COUNT MS_SERVER_CLUSTERS_COUNT
 
 #ifdef OTAU_CLIENT
-  #define MS_CLIENT_CLUSTERS_COUNT   (1) ${customClusterCount("CLIENT")}
-  #define MS_CLIENT_CLUSTER_INIT_COUNT 1 ${customClusterCount("CLIENT")}
+  #define MS_CLIENT_CLUSTERS_COUNT   (1)
+  #define MS_CLIENT_CLUSTER_INIT_COUNT 1
 #else
-  #define MS_CLIENT_CLUSTERS_COUNT   0 ${customClusterCount("CLIENT")}
-  #define MS_CLIENT_CLUSTER_INIT_COUNT 0 ${customClusterCount("CLIENT")}
+  #define MS_CLIENT_CLUSTERS_COUNT   0
+  #define MS_CLIENT_CLUSTER_INIT_COUNT 0
 #endif
 
 /* Multi sensor device type logical device Id form reserved space */

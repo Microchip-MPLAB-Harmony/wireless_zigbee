@@ -52,8 +52,10 @@ def finalizeComponent(drvMacTester):
         result = Database.connectDependencies([['lib_crypto', 'LIB_CRYPTO_WOLFCRYPT_Dependency', 'lib_wolfcrypt', 'lib_wolfcrypt']])
         result = Database.connectDependencies([[drvMacTester.getID(), 'TC0_TMR_Zigbee', 'tc0', 'TC0_TMR']])
     elif (deviceName in pic32cx_bz3_family):
-        res = Database.activateComponents(["tcc2","pic32cx_bz3_devsupport"])
-        result = Database.connectDependencies([[drvMacTester.getID(), 'TCC2_PWM_Zigbee', 'tcc2', 'TCC2_PWM']])
+        #res = Database.activateComponents(["tcc2","pic32cx_bz3_devsupport"])
+        #result = Database.connectDependencies([[drvMacTester.getID(), 'TCC2_PWM_Zigbee', 'tcc2', 'TCC2_PWM']])
+        res = Database.activateComponents(["tc0","pic32cx_bz3_devsupport"])
+        result = Database.connectDependencies([[drvMacTester.getID(), 'TC0_TMR_Zigbee', 'tc0', 'TC0_TMR']])
     
     #responsible for adding custom app.c to project path instead of the app.c from device support
     try:
@@ -152,7 +154,8 @@ def instantiateComponent(drvMacTester):
     if( deviceName in pic32cx_bz2_family):
         drvMacTester.setDependencyEnabled('TCC2_PWM_Zigbee', False) #If bz2, disable TCC2 by default
     elif( deviceName in pic32cx_bz3_family):
-        drvMacTester.setDependencyEnabled('TC0_TMR_Zigbee', False)
+        #drvMacTester.setDependencyEnabled('TC0_TMR_Zigbee', False)
+        drvMacTester.setDependencyEnabled('TCC2_PWM_Zigbee', False)
 
     global drvComponent # used to pass component to timerconfig.py
     drvComponent = drvMacTester

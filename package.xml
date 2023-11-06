@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Package name="wireless_zigbee">
     <Dependencies>
-        <Dependency name="bsp" version="v3.16.0"/>
-        <Dependency name="CMSIS-FreeRTOS" version="v10.3.1"/>
-        <Dependency name="core" version="v3.13.0"/>
-        <Dependency name="crypto" version="v3.8.0"/>
-        <Dependency name="csp" version="v3.17.0"/>
-        <Dependency name="zlib" version="v1.2.13"/>
-        <Dependency name="wireless_pic32cxbz_wbz" version="v1.2.0"/>
-        <Dependency name="wolfssl" version="v4.8.1"/>
+        <Dependency name="wireless_pic32cxbz_wbz" version="1.3.0"/>
 </Dependencies>
 </Package>

@@ -56,7 +56,13 @@ static bool userButtonState = false;
 static App_ButtonPressCallback_t userButtonShortPressCallback;
 static uint32_t __attribute__((persistent)) rtcValueDuringButtonPress;
 
+
+<#if PIC32CXBZ3>
+#define USER_BUTTON_MASK    		(1<<9U)
+</#if>
+<#if PIC32CXBZ2>
 #define USER_BUTTON_MASK    		(1<<4U)
+</#if>
 #define BUTTON_RESET_PERIOD         3000U
 <#if DEVICE_DEEP_SLEEP_ENABLED>
 #define INT0_WAKEUP                 1U
@@ -300,8 +306,12 @@ void BSP_InitializeUserButton(App_ButtonPressCallback_t buttonPressCallback)
     /* Disable the configuration lock. */
     CFG_REGS->CFG_CFGCON0 &= ~(CFG_CFGCON0_IOLOCK_Msk);
     /* Enable the External interrupt 0. */
+<#if PIC32CXBZ2>
     PPS_REGS->PPS_EXTINT0R = 5U;
-	
+</#if>
+<#if PIC32CXBZ3>
+    PPS_REGS->PPS_EXTINT1R = 6U;
+</#if>
 	userButtonShortPressCallback = buttonPressCallback;
 }
 

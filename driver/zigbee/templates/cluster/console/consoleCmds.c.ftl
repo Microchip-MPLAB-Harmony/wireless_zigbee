@@ -54,10 +54,11 @@
 #include <zllplatform/ZLL/N_LinkTarget/include/N_LinkTarget.h>
 #include <configserver/include/private/csSIB.h>
 #include <z3device/common/include/z3Device.h>
+#include <nwk/include/nwk.h>
 #include <z3device/stack_interface/nwk/include/nwk_api.h>
 #include <z3device/stack_interface/bdb/include/bdb_api.h>
 
-#define N_Connection_AssociateDiscovery N_Connection_AssociateDiscovery_Impl
+#include <zllplatform/ZLL/N_DeviceInfo/include/N_DeviceInfo.h>
 #include <zllplatform/ZLL/N_Connection/include/N_Connection.h>
 #if APP_ZGP_DEVICE_TYPE >= APP_ZGP_DEVICE_TYPE_PROXY_BASIC
 #include <zgp/GPInfrastructure/highZgp/include/zgpInfraDevice.h>
@@ -116,6 +117,7 @@ static void processUnBindReqCmd(const ScanValue_t *args);
 static void processUnBindReqCmdWithSrcAddrDestEndpoint(const ScanValue_t *args);
 #if BDB_TOUCHLINK_SUPPORT == 1 
 static void processSendBeaconReqCmd(const ScanValue_t *args);
+static void assocDiscoveryConf(NWK_NetworkDiscoveryConf_t *conf);
 #endif
 #ifdef OTAU_SERVER
 static void processSetAbortUpgradeEndReq(const ScanValue_t *args);
@@ -258,6 +260,23 @@ BDB_SetTargetType_t appSetTargetType;
   bool doFindAndBind = false;
 #endif
 ScanValue_t localVar;
+
+#if BDB_TOUCHLINK_SUPPORT == 1
+typedef struct _N_Cmi_NwkDiscovery_t
+{
+  NWK_NetworkDiscoveryReq_t request;
+
+} N_Cmi_NwkDiscovery_t;
+
+static N_Cmi_NwkDiscovery_t nwkDiscovery =
+{
+  .request =
+  {
+    .NWK_NetworkDiscoveryConf = assocDiscoveryConf,
+  },
+
+};
+#endif
 /******************************************************************************
                         Definitions section
 ******************************************************************************/
@@ -608,16 +627,16 @@ static void processMgmtSendPermitJoinCmd(const ScanValue_t *args)
 }
 
 #if BDB_TOUCHLINK_SUPPORT == 1
+
 /**************************************************************************//**
-\brief assocDiscoveryDone Callback
+\brief assocDiscovery Confirmation
 
-\param[in] result - result of action
+\param[in] conf - Discovery confirmation
 ******************************************************************************/
-static void assocDiscoveryDone(N_Connection_Result_t result)
+static void assocDiscoveryConf(NWK_NetworkDiscoveryConf_t *conf)
 {
-  (void)result;
+(void)conf;
 }
-
 /**************************************************************************//**
 \brief Processes Send Beacon Request command
 
@@ -625,8 +644,9 @@ static void assocDiscoveryDone(N_Connection_Result_t result)
 ******************************************************************************/
 static void processSendBeaconReqCmd(const ScanValue_t *args)
 {
-   N_Beacon_t beacon;
-   N_Connection_AssociateDiscovery(&beacon, N_Connection_AssociateDiscoveryMode_AnyPan, NULL, assocDiscoveryDone);
+   nwkDiscovery.request.scanDuration = N_Beacon_Order_60ms;
+   nwkDiscovery.request.scanChannels = N_DeviceInfo_GetPrimaryChannelMask();
+   NWK_NetworkDiscoveryReq(&nwkDiscovery.request);
 
  (void) args;
 }

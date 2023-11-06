@@ -236,7 +236,7 @@ void appDeviceTaskHandler(void)
 /*******************************************************************************
 \brief callback called on the finishing of binding of one cluster
 ********************************************************************************/
-<#function hasReporableServerCluster>
+<#function hasReportableServerCluster>
 
 
 <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
@@ -262,7 +262,7 @@ void appDeviceTaskHandler(void)
 </#function>
 void iasFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterId_t clusterId)
 {
-  <#if (hasReporableServerCluster())>
+  <#if (hasReportableServerCluster())>
   ZCL_StartReporting();
 
   </#if>

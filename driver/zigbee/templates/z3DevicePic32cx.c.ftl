@@ -119,6 +119,13 @@
 
 #define ACTIVITY_TIMER_PERIOD     (10000u)
 
+<#if PIC32CXBZ2>
+#define EXT_INT_PIN 0U
+</#if>
+<#if PIC32CXBZ3>
+#define EXT_INT_PIN 1U
+</#if>
+
 // the application task will block on this semaphore until we have new data to process
 
 static AppState_t appState = APP_INITIAL_STATE;
@@ -1127,13 +1134,13 @@ static void initApp(void)
   
 <#if SLEEP_SUPPORTED_DEVICE && RESET_TO_FN_ENABLE>
 <#if !(DEVICE_DEEP_SLEEP_ENABLED)>
-  EIC_CallbackRegister(0U, (EIC_CALLBACK)BSP_EvaluateUserButton, 0U);
+  EIC_CallbackRegister(EXT_INT_PIN, (EIC_CALLBACK)BSP_EvaluateUserButton, 0U);
 <#else>
-  EIC_CallbackRegister(0U, (EIC_CALLBACK)BSP_EvaluateUserButton, 7U);
+  EIC_CallbackRegister(EXT_INT_PIN, (EIC_CALLBACK)BSP_EvaluateUserButton, 7U);
 </#if>
-  EIC_InterruptEnable(0U);
+  EIC_InterruptEnable(EXT_INT_PIN);
 </#if> 
-  
+
 <#if (JOIN_ONLY_INSTALL_CODE == true) >
   /* If device is not in network, set the Install code settings needed for allowing install code only joining */
   if (!BDB_GetBdbNodeIsOnANetwork())

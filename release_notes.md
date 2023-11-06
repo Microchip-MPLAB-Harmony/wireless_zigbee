@@ -4,6 +4,29 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+# Zigbee Driver Library Release notes
+
+## Zigbee Release v6.0.0
+
+### New Features
+
++ This release includes Zigbee stack support for PIC32CX-BZ3/WBZ35x device families of 32-bit microcontrollers.
++ All features as v5.1.1 (But OTAU is supported with external DFU)
+
+
+### Known Issues/Limitations
+  + 2 Zigbee End Device Clients may not be upgraded in parallel by single OTAU server 
+  + OTAU Server may not responds to Client requests sometimes which may require the restart of OTAU procedure from GUI Tool
+  
+
+### Development Tools
++ [MPLAB X v6.15](https://www.microchip.com/mplab/mplab-x-ide)
++ [MPLAB® XC32 C/C++ Compiler v4.35](https://www.microchip.com/mplab/compilers)
++ MPLAB® X IDE plug-ins: MPLAB® Code Configurator (MCC) v5.3.7 and above
+
+
+---
+
 ## Zigbee Release v5.1.1
 
 ### New Features
@@ -22,8 +45,6 @@
 + MPLAB® X IDE plug-ins: MPLAB® Code Configurator (MCC) v5.3.7 and above
 
 ---
-
-# Zigbee Driver Library Release notes
 
 ## Zigbee Release v5.1.0
 

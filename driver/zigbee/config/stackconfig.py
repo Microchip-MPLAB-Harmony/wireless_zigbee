@@ -78,20 +78,13 @@ stackConfigBindingTableSize.setMax(30)
 stackConfigBindingTableSize.setVisible(stackMenuCheck())
 
 #Radio Arbiter mode
-if (deviceName in pic32cx_bz2_family):
-  stackConfigArbMode = drvZigbeeComponent.createIntegerSymbol("CS_RADIO_ARB_MODE", stackConfigMenu)
-  stackConfigArbMode.setLabel("Set Arb Mode")
-  stackConfigArbMode.setDefaultValue(2)
-  stackConfigArbMode.setMin(0)
-  stackConfigArbMode.setMax(2)
-  stackConfigArbMode.setVisible(stackMenuCheck())
-elif (deviceName in pic32cx_bz3_family):
-  stackConfigArbMode = drvZigbeeComponent.createIntegerSymbol("CS_RADIO_ARB_MODE", stackConfigMenu)
-  stackConfigArbMode.setLabel("Set Arb Mode")
-  stackConfigArbMode.setDefaultValue(0)
-  stackConfigArbMode.setMin(0)
-  stackConfigArbMode.setMax(2)
-  stackConfigArbMode.setVisible(stackMenuCheck())
+
+stackConfigArbMode = drvZigbeeComponent.createIntegerSymbol("CS_RADIO_ARB_MODE", stackConfigMenu)
+stackConfigArbMode.setLabel("Set Arb Mode")
+stackConfigArbMode.setDefaultValue(2)
+stackConfigArbMode.setMin(0)
+stackConfigArbMode.setMax(2)
+stackConfigArbMode.setVisible(stackMenuCheck())
 
 # Max Children Amount
 stackConfigMaxChildren = drvZigbeeComponent.createIntegerSymbol("CS_MAX_CHILDREN_AMOUNT", stackConfigMenu)
