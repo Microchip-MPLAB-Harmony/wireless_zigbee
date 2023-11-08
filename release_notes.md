@@ -8,15 +8,19 @@
 
 ## Zigbee Release v6.0.0
 
-### New Features
+### Features
 
 + This release includes Zigbee stack support for PIC32CX-BZ3/WBZ35x device families of 32-bit microcontrollers.
 + All features as v5.1.1 (But OTAU is supported with external DFU)
-
++ IEEE 802.15.4 MAC/PHY Certified
++ Zigbee Compliant Platform Certified - R22
++ Zigbee End Product Certified (Extended Color Light) - BDB 3.0.1/ZCL 8
++ Zigbee Green Power Proxy Basic Certified
 
 ### Known Issues/Limitations
-  + 2 Zigbee End Device Clients may not be upgraded in parallel by single OTAU server 
-  + OTAU Server may not responds to Client requests sometimes which may require the restart of OTAU procedure from GUI Tool
++ 2 Zigbee End Device Clients may not be upgraded in parallel by single OTAU server 
++ OTAU Server may not responds to Client requests sometimes which may require the restart of OTAU procedure from GUI Tool
++ Larger Mesh Network Tests and characterization are not tested for this release.
   
 
 ### Development Tools
