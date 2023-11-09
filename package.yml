@@ -4,7 +4,7 @@ package:
   type: "package"
   status: "production"
   required: false
-  version: "6.0.0"
+  version: "v6.0.0"
 
   dependencies:
     - name: "wireless_pic32cxbz_wbz"

@@ -21,6 +21,7 @@
 + 2 Zigbee End Device Clients may not be upgraded in parallel by single OTAU server 
 + OTAU Server may not responds to Client requests sometimes which may require the restart of OTAU procedure from GUI Tool
 + Larger Mesh Network Tests and characterization are not tested for this release.
++ Few MISRA C 'Required' Rule deviations
   
 
 ### Development Tools
