@@ -1,0 +1,29 @@
+#----------------------------------------------
+#HAL makerules - should be included into components Makerules
+#----------------------------------------------
+
+#-Compiler type definition---------------------
+COMPILER_TYPE = GCC
+COMPILER_AND_MICRO_TYPE = GCC_ARM
+#-Tools definitions----------------------------
+AS       = xc32-as
+LD       = xc32-ld
+CC       = xc32-gcc
+CPP      = xc32-g++
+AR       = xc32-ar
+NM       = xc32-nm
+STRIP    = xc32-strip
+OBJCOPY  = xc32-objcopy
+OBJDUMP  = xc32-objdump
+SIZE     = xc32-size
+
+#-Compiler flags-------------------------------
+CFLAGS =  -x c -c -Os -D_PIC32CX_BZ2_ -mprocessor=32CX1012BZ25048E -mdfp=C:/Users/x55142/.mchp_packs/Microchip/PIC32CX-BZ-ENG_DFP/1.0.55/BZ25 -DRELEASE -DARM_CM4F_GCC -D_SLEEP_WHEN_IDLE_
+AR_KEYS = cr
+
+
+#-Objects to be linked with app----------------
+PLATFORM_SPECIFIC_OBJECTS  = 
+
+SE_PATH      = $(COMPONENTS_PATH)/./systemenvironment
+CS_PATH      = $(COMPONENTS_PATH)/./configserver

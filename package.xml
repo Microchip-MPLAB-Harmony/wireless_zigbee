@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Package name="wireless_zigbee">
     <Dependencies>
-        <Dependency name="wireless_pic32cxbz_wbz" version="v1.3.0"/>
+        <Dependency name="wireless_pic32cxbz_wbz" version="v1.4.0"/>
 </Dependencies>
 </Package>
