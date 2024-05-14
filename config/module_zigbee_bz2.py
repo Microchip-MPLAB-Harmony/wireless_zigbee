@@ -27,6 +27,7 @@ pic32cx_bz2_family = {'PIC32CX1012BZ25048',
                       'PIC32CX1012BZ24032',
                       'WBZ451',
                       'WBZ450',
+                      'WBZ451H',
                       }
 
 pic32cx_bz3_family = {'PIC32CX5109BZ31048',
@@ -38,8 +39,11 @@ print('Load Module: Harmony Wireless Zigbee Driver (Devices and Stack Libraries)
 global deviceName
 deviceName = Variables.get("__PROCESSOR")
 
+#We get variable suffix from this file
+execfile(Module.getPath() + "/config/getDeviceSuffix.py")
+
 ## Zigbee Devices 
-DevColorSceneController  = Module.CreateComponent('ZIGBEE_COLOR_SCENE_CONTROLLER', 'Color Scene Controller', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee/config/drv_zigbee_lib.py')
+DevColorSceneController  = Module.CreateComponent('ZIGBEE_COLOR_SCENE_CONTROLLER', 'Color Scene Controller', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee' + suffix + '/config/drv_zigbee_lib.py')
 DevColorSceneController.setDisplayType('Zigbee Device')
 DevColorSceneController.addDependency('PDS_Module', 'PDS_SubSystem', None, True, True)
 DevColorSceneController.addDependency('TCC2_PWM_Zigbee', 'PWM', 'Zigbee Timer', False, True)
@@ -57,7 +61,7 @@ elif (deviceName in pic32cx_bz3_family):
 #DevColorSceneController.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
 
-DevMultiSensor           = Module.CreateComponent('ZIGBEE_MULTI_SENSOR', 'Multi Sensor', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee/config/drv_zigbee_lib.py')
+DevMultiSensor           = Module.CreateComponent('ZIGBEE_MULTI_SENSOR', 'Multi Sensor', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee' + suffix + '/config/drv_zigbee_lib.py')
 DevMultiSensor.setDisplayType('Zigbee Device')
 DevMultiSensor.addDependency('PDS_Module', 'PDS_SubSystem', None, True, True)
 DevMultiSensor.addDependency('TCC2_PWM_Zigbee', 'PWM', 'Zigbee Timer', False, True)
@@ -75,7 +79,7 @@ elif (deviceName in pic32cx_bz3_family):
 #DevMultiSensor.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
 
-DevCombinedInterface     = Module.CreateComponent('ZIGBEE_COMBINED_INTERFACE', 'Combined Interface', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee/config/drv_zigbee_lib.py')
+DevCombinedInterface     = Module.CreateComponent('ZIGBEE_COMBINED_INTERFACE', 'Combined Interface', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee' + suffix + '/config/drv_zigbee_lib.py')
 DevCombinedInterface.setDisplayType('Zigbee Device')
 DevCombinedInterface.addDependency('PDS_Module', 'PDS_SubSystem', None, True, True)
 DevCombinedInterface.addDependency('TCC2_PWM_Zigbee', 'PWM', 'Zigbee Timer', False, True)
@@ -92,7 +96,7 @@ elif (deviceName in pic32cx_bz3_family):
 #DevCombinedInterface.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
 
-DevThermostat            = Module.CreateComponent('ZIGBEE_THERMOSTAT', 'Thermostat', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee/config/drv_zigbee_lib.py')
+DevThermostat            = Module.CreateComponent('ZIGBEE_THERMOSTAT', 'Thermostat', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee' + suffix + '/config/drv_zigbee_lib.py')
 DevThermostat.setDisplayType('Zigbee Device')
 DevThermostat.addDependency('PDS_Module', 'PDS_SubSystem', None, True, True)
 DevThermostat.addDependency('TCC2_PWM_Zigbee', 'PWM', 'Zigbee Timer', False, True)
@@ -110,7 +114,7 @@ elif (deviceName in pic32cx_bz3_family):
 #DevThermostat.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
 
-DevIASACE                = Module.CreateComponent('ZIGBEE_IAS_ACE', 'IAS ACE', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee/config/drv_zigbee_lib.py')
+DevIASACE                = Module.CreateComponent('ZIGBEE_IAS_ACE', 'IAS ACE', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee' + suffix + '/config/drv_zigbee_lib.py')
 DevIASACE.setDisplayType('Zigbee Device')
 DevIASACE.addDependency('PDS_Module', 'PDS_SubSystem', None, True, True)
 DevIASACE.addDependency('TCC2_PWM_Zigbee', 'PWM', 'Zigbee Timer', False, True)
@@ -128,7 +132,7 @@ elif (deviceName in pic32cx_bz3_family):
 #DevIASACE.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
 
-DevOnOffLight            = Module.CreateComponent('ZIGBEE_ON_OFF_LIGHT', 'OnOff Light', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee/config/drv_zigbee_lib.py')
+DevOnOffLight            = Module.CreateComponent('ZIGBEE_ON_OFF_LIGHT', 'OnOff Light', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee' + suffix + '/config/drv_zigbee_lib.py')
 DevOnOffLight.setDisplayType('Zigbee Device')
 DevOnOffLight.addDependency('PDS_Module', 'PDS_SubSystem', None, True, True)
 DevOnOffLight.addDependency('TCC2_PWM_Zigbee', 'PWM', 'Zigbee Timer', False, True)
@@ -146,7 +150,7 @@ elif (deviceName in pic32cx_bz3_family):
 #DevOnOffLight.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
 
-DevDimmableLight         = Module.CreateComponent('ZIGBEE_DIMMABLE_LIGHT', 'Dimmable Light', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee/config/drv_zigbee_lib.py')
+DevDimmableLight         = Module.CreateComponent('ZIGBEE_DIMMABLE_LIGHT', 'Dimmable Light', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee' + suffix + '/config/drv_zigbee_lib.py')
 DevDimmableLight.setDisplayType('Zigbee Device')
 DevDimmableLight.addDependency('PDS_Module', 'PDS_SubSystem', None, True, True)
 DevDimmableLight.addDependency('TCC2_PWM_Zigbee', 'PWM', 'Zigbee Timer', False, True)
@@ -164,7 +168,7 @@ elif (deviceName in pic32cx_bz3_family):
 #DevDimmableLight.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
 
-DevColorLight            = Module.CreateComponent('ZIGBEE_COLOR_LIGHT', 'Color Light', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee/config/drv_zigbee_lib.py')
+DevColorLight            = Module.CreateComponent('ZIGBEE_COLOR_LIGHT', 'Color Light', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee' + suffix + '/config/drv_zigbee_lib.py')
 DevColorLight.setDisplayType('Zigbee Device')
 DevColorLight.addDependency('PDS_Module', 'PDS_SubSystem', None, True, True)
 DevColorLight.addDependency('TCC2_PWM_Zigbee', 'PWM', 'Zigbee Timer', False, True)
@@ -182,7 +186,7 @@ elif (deviceName in pic32cx_bz3_family):
 #DevColorLight.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
 
-DevExtendedColorLight    = Module.CreateComponent('ZIGBEE_EXTENDED_COLOR_LIGHT', 'Extended Color Light', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee/config/drv_zigbee_lib.py')
+DevExtendedColorLight    = Module.CreateComponent('ZIGBEE_EXTENDED_COLOR_LIGHT', 'Extended Color Light', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee' + suffix + '/config/drv_zigbee_lib.py')
 DevExtendedColorLight.setDisplayType('Zigbee Device')
 DevExtendedColorLight.addDependency('PDS_Module', 'PDS_SubSystem', None, True, True)
 DevExtendedColorLight.addDependency('TCC2_PWM_Zigbee', 'PWM', 'Zigbee Timer', False, True)
@@ -200,7 +204,7 @@ elif (deviceName in pic32cx_bz3_family):
 #DevExtendedColorLight.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
 
-DevTemperatureColorLight = Module.CreateComponent('ZIGBEE_TEMPERATURE_COLOR_LIGHT', 'Temperature Color Light', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee/config/drv_zigbee_lib.py')
+DevTemperatureColorLight = Module.CreateComponent('ZIGBEE_TEMPERATURE_COLOR_LIGHT', 'Temperature Color Light', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee' + suffix + '/config/drv_zigbee_lib.py')
 DevTemperatureColorLight.setDisplayType('Zigbee Device')
 DevTemperatureColorLight.addDependency('PDS_Module', 'PDS_SubSystem', None, True, True)
 DevTemperatureColorLight.addDependency('TCC2_PWM_Zigbee', 'PWM', 'Zigbee Timer', False, True)
@@ -218,7 +222,7 @@ elif (deviceName in pic32cx_bz3_family):
 #DevTemperatureColorLight.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
 
-DevCustomDevice          = Module.CreateComponent('ZIGBEE_CUSTOM', 'Custom Device', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee/config/drv_zigbee_lib.py')
+DevCustomDevice          = Module.CreateComponent('ZIGBEE_CUSTOM', 'Custom Device', 'Wireless/Drivers/Zigbee/Device Types', 'driver/zigbee' + suffix + '/config/drv_zigbee_lib.py')
 DevCustomDevice.setDisplayType('Zigbee Device')
 DevCustomDevice.addDependency('PDS_Module', 'PDS_SubSystem', None, True, True)
 DevCustomDevice.addDependency('TCC2_PWM_Zigbee', 'PWM', 'Zigbee Timer', False, True)
@@ -236,15 +240,15 @@ elif (deviceName in pic32cx_bz3_family):
 
 
 ## Zigbee Stack Libraries
-#LibSuperSet = Module.CreateComponent('SUPERSET_LIB', 'SuperSet', 'Wireless/ZIGBEE/StackLibrary', 'driver/zigbee/config/drv_zigbee_lib.py')
+#LibSuperSet = Module.CreateComponent('SUPERSET_LIB', 'SuperSet', 'Wireless/ZIGBEE/StackLibrary', 'driver/zigbee' + suffix + '/config/drv_zigbee_lib.py')
 #LibSuperSet.addCapability('Zigbee_Stack_Lib', 'Zigbee_Stack_Lib')
 #LibSuperSet.addDependency('PIC32CX_BZ2_DevSupport_Dependency', 'Device_Support', None, True, True)
 
-#LibCoordinator = Module.CreateComponent('COORDINATOR_LIB', 'Coordinator', 'Wireless/ZIGBEE/StackLibrary', 'driver/zigbee/config/drv_stack.py')
+#LibCoordinator = Module.CreateComponent('COORDINATOR_LIB', 'Coordinator', 'Wireless/ZIGBEE/StackLibrary', 'driver/zigbee' + suffix + '/config/drv_stack.py')
 #LibCoordinator.addCapability('StackLib_Coordinator', 'StackLib_Coordinator')
 #LibCoordinator.addDependency('PIC32CX_BZ2_DevSupport_Dependency', 'Device_Support', None, True, True)
 
-#LibRouter = Module.CreateComponent('ROUTER_LIB', 'Router', 'Wireless/ZIGBEE/StackLibrary', 'driver/zigbee/config/drv_stack.py')
+#LibRouter = Module.CreateComponent('ROUTER_LIB', 'Router', 'Wireless/ZIGBEE/StackLibrary', 'driver/zigbee' + suffix + '/config/drv_stack.py')
 #LibRouter.addCapability('StackLib_Router', 'StackLib_Router')
 #LibRouter.addDependency('PIC32CX_BZ2_DevSupport_Dependency', 'Device_Support', None, True, True)
 
@@ -253,7 +257,7 @@ elif (deviceName in pic32cx_bz3_family):
 #LibEndDevice.addDependency('PIC32CX_BZ2_DevSupport_Dependency', 'Device_Support', None, True, True)
 
 
-# ZAppSIRunnerApplication = Module.CreateComponent('ZIGBEE_ZAPPSI', 'ZAppSI', 'Wireless/Drivers/Zigbee/Test', 'driver/zigbee/config/drv_zappsi.py')
+# ZAppSIRunnerApplication = Module.CreateComponent('ZIGBEE_ZAPPSI', 'ZAppSI', 'Wireless/Drivers/Zigbee/Test', 'driver/zigbee' + suffix + '/config/drv_zappsi.py')
 # ZAppSIRunnerApplication.setDisplayType('ZigBee Application Serial Interface')
 # ZAppSIRunnerApplication.addDependency('PDS_Module', 'PDS_SubSystem', None, True, True)
 # ZAppSIRunnerApplication.addDependency('TCC2_PWM_Zigbee', 'PWM', 'Zigbee Timer', False, True)
@@ -265,7 +269,7 @@ elif (deviceName in pic32cx_bz3_family):
 # elif (deviceName in pic32cx_bz3_family):
     # ZAppSIRunnerApplication.addDependency('PIC32CX_BZ3_DevSupport_Dependency', 'Device_Support', None, True, True)
 
-# MACWSNTester = Module.CreateComponent('ZIGBEE_MACWSNTESTER', 'MAC Tester', 'Wireless/Drivers/Zigbee/MAC Apps', 'driver/zigbee/config/drv_mac_tester.py')
+# MACWSNTester = Module.CreateComponent('ZIGBEE_MACWSNTESTER', 'MAC Tester', 'Wireless/Drivers/Zigbee/MAC Apps', 'driver/zigbee' + suffix + '/config/drv_mac_tester.py')
 # MACWSNTester.setDisplayType('Zigbee Service')
 # MACWSNTester.addDependency('PDS_Module', 'PDS_SubSystem', None, True, True)
 # MACWSNTester.addDependency('TCC2_PWM_Zigbee', 'PWM', 'Zigbee Timer', False, True)
@@ -277,7 +281,7 @@ elif (deviceName in pic32cx_bz3_family):
 # elif (deviceName in pic32cx_bz3_family):
     # MACWSNTester.addDependency('PIC32CX_BZ3_DevSupport_Dependency', 'Device_Support', None, True, True)
     
-# GreenPowerDevSensor = Module.CreateComponent('ZIGBEE_GPD_SENSOR', 'Green Power Device-Sensor', 'Wireless/Drivers/Zigbee/MAC Apps', 'driver/zigbee/config/drv_zgpd.py')
+# GreenPowerDevSensor = Module.CreateComponent('ZIGBEE_GPD_SENSOR', 'Green Power Device-Sensor', 'Wireless/Drivers/Zigbee/MAC Apps', 'driver/zigbee' + suffix + 'x`/config/drv_zgpd.py')
 # GreenPowerDevSensor.setDisplayType('Zigbee Green Power Device')
 # GreenPowerDevSensor.addDependency('PDS_Module', 'PDS_SubSystem', None, True, True)
 # GreenPowerDevSensor.addDependency('TCC2_PWM_Zigbee', 'PWM', 'Zigbee Timer', False, True)
