@@ -17,7 +17,8 @@
     + OTAU improvements to support multi client parallel upgrade
     + All features as v5.1.1
     + Zigbee Compliant Platform Certified - R22 for both WBZ451 & WBZ451H Modules
-
+        + CSA listing for WBZ 451:    https://csa-iot.org/csa_product/bitcloud_5-2_pic32cx1012bz25048_wbz451/
+        + CSA listing for WBZ 451HPA: https://csa-iot.org/csa_product/bitcloud_5-2_pic32cx1012bz25048_wbz451h/
 
   + ### Known Issues/Limitations
     + More than 3 Clients may not be upgraded in parallel by single OTAU server 

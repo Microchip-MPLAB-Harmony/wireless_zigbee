@@ -70,6 +70,7 @@ appConfigUseChannel.setDefaultValue("NO")
 appConfigUseChannel.setLabel("Use Channel instead of Mask")
 
 # Primary Channel 
+global appConfigPrimaryChannel
 appConfigPrimaryChannel = drvZigbeeComponent.createIntegerSymbol("APP_PRIMARY_CHANNEL", applicationConfigMenu)
 appConfigPrimaryChannel.setLabel("Primary Channel")
 appConfigPrimaryChannel.setDefaultValue(20)
@@ -88,6 +89,7 @@ appConfigSecondaryChannel.setVisible(appConfigUseChannel.getValue() == "YES")
 appConfigSecondaryChannel.setDependencies(appChannelTypeCheckChannel, ["APP_USE_CHANNEL"])
 
 # Primary Channel Mask
+global appConfigPrimaryChannelMask
 appConfigPrimaryChannelMask = drvZigbeeComponent.createHexSymbol("APP_PRIMARY_CHANNELS_MASK", applicationConfigMenu)
 appConfigPrimaryChannelMask.setLabel("Primary Channel Mask")
 appConfigPrimaryChannelMask.setDefaultValue(0x2108800)

@@ -589,7 +589,7 @@ def instantiateComponent(drvZigbeeComponent):
     else:
         appPowerRegion.setDefaultValue(5)
     
-    appPowerRegion.setDependencies(powerRegionCheck, ["TX_PWR_MAX_NON_FHSS"])
+    appPowerRegion.setDependencies(powerRegionCheck, ["TX_PWR_MAX_NON_FHSS", "APP_PRIMARY_CHANNEL", "APP_PRIMARY_CHANNELS_MASK" ])
     
     global appConfigChannel26power
     appConfigChannel26power = drvZigbeeComponent.createIntegerSymbol("APP_CHANNEL_26_POWER", applicationConfigMenu)
@@ -2405,6 +2405,22 @@ def powerRegionCheck(symbol, event):
     appPowerRegion.setMin(TxMinPwr)
     customTxMaxFHSSVal2 = customTxMaxFHSSVal.getValue()
     appPowerRegion.setMax(customTxMaxFHSSVal2)
+
+    if (deviceName in pic32cx_bz2_hpa_family):
+       FCCmValue = False
+       ChannelConfig = appConfigUseChannel.getValue()
+       FCCmValue=Database.getSymbolValue("pic32cx_bz2_devsupport", "FCC_REGION")
+       if ((FCCmValue == True)):
+            if(ChannelConfig == "YES"):
+                ChannelVal = appConfigPrimaryChannel.getValue()
+                if((ChannelVal == 26)):#Channel is 26
+                    TxMax = 10
+                    appPowerRegion.setMax(TxMax)
+            elif(ChannelConfig == "NO"):
+                ChannelMaskVal  = appConfigPrimaryChannelMask.getValue()
+                if(ChannelMaskVal  == 67108864): #Channel is mask  26          
+                    TxMax = 10  
+                    appPowerRegion.setMax(TxMax)
 
 def powerRegionCheckFCC(symbol, event):
     if (deviceName in pic32cx_bz2_family):    
