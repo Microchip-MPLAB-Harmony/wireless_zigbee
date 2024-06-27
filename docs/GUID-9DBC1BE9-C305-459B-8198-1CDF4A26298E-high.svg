@@ -1,0 +1,2274 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="162.82999mm"
+   height="125.37207mm"
+   overflow="hidden"
+   version="1.1"
+   id="svg734"
+   sodipodi:docname="BitCloud ZigBee 3.0 Architecture=GUID-9DBC1BE9-C305-459B-8198-1CDF4A26298E=1=en-US=Source.svg"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview736"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     units="mm"
+     fit-margin-top="2"
+     fit-margin-left="2"
+     fit-margin-right="2"
+     fit-margin-bottom="2"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="369.10974"
+     inkscape:cy="224.5064"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg734"
+     inkscape:document-units="mm">
+    <sodipodi:guide
+       position="108.89009,67.085879"
+       orientation="0,-1"
+       id="guide7289" />
+    <sodipodi:guide
+       position="444.85046,295.39379"
+       orientation="1,0"
+       id="guide47944" />
+    <sodipodi:guide
+       position="350.81646,353.81175"
+       orientation="0,-1"
+       id="guide47950" />
+    <sodipodi:guide
+       position="8.3133205,136.47347"
+       orientation="1,0"
+       id="guide7362" />
+    <sodipodi:guide
+       position="360.38469,370.25521"
+       orientation="0,-1"
+       id="guide23564" />
+    <sodipodi:guide
+       position="186.32367,328.51141"
+       orientation="1,0"
+       id="guide36351" />
+  </sodipodi:namedview>
+  <defs
+     id="defs444">
+    <marker
+       style="overflow:visible"
+       id="TriangleInL"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleInL"
+       inkscape:isstock="true">
+      <path
+         transform="scale(-0.8)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path2387" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="TriangleOutL"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.8)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path14681" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Mend"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Mend"
+       inkscape:isstock="true">
+      <path
+         transform="scale(-0.6)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         id="path14566" />
+    </marker>
+    <filter
+       id="fx0"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer10">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR2" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG4" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB6" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA8" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur12" />
+    </filter>
+    <filter
+       id="fx1"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer23">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR15" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG17" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB19" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA21" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur25" />
+    </filter>
+    <filter
+       id="fx2"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer36">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR28" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG30" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB32" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA34" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur38" />
+    </filter>
+    <filter
+       id="fx3"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer49">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR41" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG43" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB45" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA47" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur51" />
+    </filter>
+    <filter
+       id="fx4"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer62">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR54" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG56" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB58" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA60" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur64" />
+    </filter>
+    <filter
+       id="fx5"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer75">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR67" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG69" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB71" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA73" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur77" />
+    </filter>
+    <filter
+       id="fx6"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer88">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR80" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG82" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB84" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA86" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur90" />
+    </filter>
+    <filter
+       id="fx7"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer101">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR93" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG95" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB97" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA99" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur103" />
+    </filter>
+    <filter
+       id="fx8"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer114">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR106" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG108" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB110" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA112" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur116" />
+    </filter>
+    <filter
+       id="fx9"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer127">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR119" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG121" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB123" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA125" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur129" />
+    </filter>
+    <filter
+       id="fx10"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer140">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR132" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG134" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB136" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA138" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur142" />
+    </filter>
+    <filter
+       id="fx11"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer153">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR145" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG147" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB149" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA151" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur155" />
+    </filter>
+    <filter
+       id="fx12"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer166">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR158" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG160" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB162" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA164" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur168" />
+    </filter>
+    <filter
+       id="fx13"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer179">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR171" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG173" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB175" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA177" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur181" />
+    </filter>
+    <filter
+       id="fx14"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer192">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR184" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG186" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB188" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA190" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur194" />
+    </filter>
+    <filter
+       id="fx15"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer205">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR197" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG199" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB201" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA203" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur207" />
+    </filter>
+    <filter
+       id="fx16"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer218">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR210" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG212" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB214" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA216" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur220" />
+    </filter>
+    <filter
+       id="fx17"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer231">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR223" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG225" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB227" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA229" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur233" />
+    </filter>
+    <filter
+       id="fx18"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer244">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR236" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG238" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB240" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA242" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur246" />
+    </filter>
+    <filter
+       id="fx19"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer257">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR249" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG251" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB253" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA255" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur259" />
+    </filter>
+    <filter
+       id="fx20"
+       x="-128"
+       y="-72"
+       width="1536"
+       height="864.00006"
+       filterUnits="userSpaceOnUse"
+       primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer
+         color-interpolation-filters="sRGB"
+         id="feComponentTransfer270">
+        <feFuncR
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncR262" />
+        <feFuncG
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncG264" />
+        <feFuncB
+           type="discrete"
+           tableValues="0 0"
+           id="feFuncB266" />
+        <feFuncA
+           type="linear"
+           slope="0.631373"
+           intercept="0"
+           id="feFuncA268" />
+      </feComponentTransfer>
+      <feGaussianBlur
+         stdDeviation="2 2"
+         id="feGaussianBlur272" />
+    </filter>
+    <linearGradient
+       x1="515"
+       y1="288.5"
+       x2="759"
+       y2="288.5"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill21">
+      <stop
+         offset="0"
+         stop-color="#F18C55"
+         id="stop275" />
+      <stop
+         offset="0.48"
+         stop-color="#F67B28"
+         id="stop277" />
+      <stop
+         offset="1"
+         stop-color="#E56B17"
+         id="stop279" />
+    </linearGradient>
+    <linearGradient
+       x1="515"
+       y1="347"
+       x2="759"
+       y2="347"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill22">
+      <stop
+         offset="0"
+         stop-color="#F18C55"
+         id="stop282" />
+      <stop
+         offset="0.48"
+         stop-color="#F67B28"
+         id="stop284" />
+      <stop
+         offset="1"
+         stop-color="#E56B17"
+         id="stop286" />
+    </linearGradient>
+    <clipPath
+       id="clip23">
+      <rect
+         x="7"
+         y="7"
+         width="87"
+         height="28"
+         id="rect289" />
+    </clipPath>
+    <linearGradient
+       x1="483"
+       y1="90"
+       x2="483"
+       y2="142"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill24">
+      <stop
+         offset="0"
+         stop-color="#81B861"
+         id="stop292" />
+      <stop
+         offset="0.5"
+         stop-color="#6FB242"
+         id="stop294" />
+      <stop
+         offset="1"
+         stop-color="#61A235"
+         id="stop296" />
+    </linearGradient>
+    <clipPath
+       id="clip25">
+      <rect
+         x="7"
+         y="7"
+         width="120"
+         height="28"
+         id="rect299" />
+    </clipPath>
+    <linearGradient
+       x1="539.5"
+       y1="462"
+       x2="539.5"
+       y2="544"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill26">
+      <stop
+         offset="0"
+         stop-color="#6083CB"
+         id="stop302" />
+      <stop
+         offset="0.5"
+         stop-color="#3E70CA"
+         id="stop304" />
+      <stop
+         offset="1"
+         stop-color="#2E61BA"
+         id="stop306" />
+    </linearGradient>
+    <linearGradient
+       x1="515"
+       y1="406"
+       x2="759"
+       y2="406"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill27">
+      <stop
+         offset="0"
+         stop-color="#F18C55"
+         id="stop309" />
+      <stop
+         offset="0.48"
+         stop-color="#F67B28"
+         id="stop311" />
+      <stop
+         offset="1"
+         stop-color="#E56B17"
+         id="stop313" />
+    </linearGradient>
+    <clipPath
+       id="clip28">
+      <rect
+         x="7"
+         y="7"
+         width="85"
+         height="45"
+         id="rect316" />
+    </clipPath>
+    <linearGradient
+       x1="637"
+       y1="462"
+       x2="637"
+       y2="534"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill29">
+      <stop
+         offset="0"
+         stop-color="#6083CB"
+         id="stop319" />
+      <stop
+         offset="0.5"
+         stop-color="#3E70CA"
+         id="stop321" />
+      <stop
+         offset="1"
+         stop-color="#2E61BA"
+         id="stop323" />
+    </linearGradient>
+    <clipPath
+       id="clip30">
+      <rect
+         x="9"
+         y="7"
+         width="41"
+         height="26"
+         id="rect326" />
+    </clipPath>
+    <linearGradient
+       x1="325"
+       y1="425"
+       x2="325"
+       y2="461"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill31">
+      <stop
+         offset="0"
+         stop-color="#6083CB"
+         id="stop329" />
+      <stop
+         offset="0.5"
+         stop-color="#3E70CA"
+         id="stop331" />
+      <stop
+         offset="1"
+         stop-color="#2E61BA"
+         id="stop333" />
+    </linearGradient>
+    <clipPath
+       id="clip32">
+      <rect
+         x="9"
+         y="7"
+         width="43"
+         height="26"
+         id="rect336" />
+    </clipPath>
+    <linearGradient
+       x1="245"
+       y1="426"
+       x2="245"
+       y2="461"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill33">
+      <stop
+         offset="0"
+         stop-color="#6083CB"
+         id="stop339" />
+      <stop
+         offset="0.5"
+         stop-color="#3E70CA"
+         id="stop341" />
+      <stop
+         offset="1"
+         stop-color="#2E61BA"
+         id="stop343" />
+    </linearGradient>
+    <clipPath
+       id="clip34">
+      <rect
+         x="7"
+         y="7"
+         width="28"
+         height="147"
+         id="rect346" />
+    </clipPath>
+    <linearGradient
+       x1="822"
+       y1="314.5"
+       x2="874"
+       y2="314.5"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill35">
+      <stop
+         offset="0"
+         stop-color="#6083CB"
+         id="stop349" />
+      <stop
+         offset="0.5"
+         stop-color="#3E70CA"
+         id="stop351" />
+      <stop
+         offset="1"
+         stop-color="#2E61BA"
+         id="stop353" />
+    </linearGradient>
+    <clipPath
+       id="clip36">
+      <rect
+         x="7"
+         y="7"
+         width="28"
+         height="147"
+         id="rect356" />
+    </clipPath>
+    <linearGradient
+       x1="863"
+       y1="307"
+       x2="915"
+       y2="307"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill37">
+      <stop
+         offset="0"
+         stop-color="#6083CB"
+         id="stop359" />
+      <stop
+         offset="0.5"
+         stop-color="#3E70CA"
+         id="stop361" />
+      <stop
+         offset="1"
+         stop-color="#2E61BA"
+         id="stop363" />
+    </linearGradient>
+    <linearGradient
+       x1="452"
+       y1="308"
+       x2="514"
+       y2="308"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill38"
+       gradientTransform="translate(1)">
+      <stop
+         offset="0"
+         stop-color="#F18C55"
+         id="stop366" />
+      <stop
+         offset="0.48"
+         stop-color="#F67B28"
+         id="stop368" />
+      <stop
+         offset="1"
+         stop-color="#E56B17"
+         id="stop370" />
+    </linearGradient>
+    <linearGradient
+       x1="659"
+       y1="200"
+       x2="761"
+       y2="200"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill39">
+      <stop
+         offset="0"
+         stop-color="#F18C55"
+         id="stop373" />
+      <stop
+         offset="0.48"
+         stop-color="#F67B28"
+         id="stop375" />
+      <stop
+         offset="1"
+         stop-color="#E56B17"
+         id="stop377" />
+    </linearGradient>
+    <linearGradient
+       x1="569"
+       y1="179"
+       x2="638"
+       y2="179"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill40">
+      <stop
+         offset="0"
+         stop-color="#F18C55"
+         id="stop380" />
+      <stop
+         offset="0.48"
+         stop-color="#F67B28"
+         id="stop382" />
+      <stop
+         offset="1"
+         stop-color="#E56B17"
+         id="stop384" />
+    </linearGradient>
+    <clipPath
+       id="clip41">
+      <rect
+         x="5"
+         y="9"
+         width="30"
+         height="66"
+         id="rect387" />
+    </clipPath>
+    <linearGradient
+       x1="906"
+       y1="295.5"
+       x2="959"
+       y2="295.5"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill42">
+      <stop
+         offset="0"
+         stop-color="#6083CB"
+         id="stop390" />
+      <stop
+         offset="0.5"
+         stop-color="#3E70CA"
+         id="stop392" />
+      <stop
+         offset="1"
+         stop-color="#2E61BA"
+         id="stop394" />
+    </linearGradient>
+    <clipPath
+       id="clip43">
+      <rect
+         x="5"
+         y="7"
+         width="28"
+         height="43"
+         id="rect397" />
+    </clipPath>
+    <linearGradient
+       x1="946"
+       y1="285.5"
+       x2="999"
+       y2="285.5"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill44">
+      <stop
+         offset="0"
+         stop-color="#6083CB"
+         id="stop400" />
+      <stop
+         offset="0.5"
+         stop-color="#3E70CA"
+         id="stop402" />
+      <stop
+         offset="1"
+         stop-color="#2E61BA"
+         id="stop404" />
+    </linearGradient>
+    <linearGradient
+       x1="255"
+       y1="584"
+       x2="255"
+       y2="603"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill45">
+      <stop
+         offset="0"
+         stop-color="#81B861"
+         id="stop407" />
+      <stop
+         offset="0.5"
+         stop-color="#6FB242"
+         id="stop409" />
+      <stop
+         offset="1"
+         stop-color="#61A235"
+         id="stop411" />
+    </linearGradient>
+    <linearGradient
+       x1="255.5"
+       y1="613"
+       x2="255.5"
+       y2="632"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill46">
+      <stop
+         offset="0"
+         stop-color="#F18C55"
+         id="stop414" />
+      <stop
+         offset="0.5"
+         stop-color="#F67B28"
+         id="stop416" />
+      <stop
+         offset="1"
+         stop-color="#E56B17"
+         id="stop418" />
+    </linearGradient>
+    <linearGradient
+       x1="255.5"
+       y1="641"
+       x2="255.5"
+       y2="660"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill47">
+      <stop
+         offset="0"
+         stop-color="#6083CB"
+         id="stop421" />
+      <stop
+         offset="0.5"
+         stop-color="#3E70CA"
+         id="stop423" />
+      <stop
+         offset="1"
+         stop-color="#2E61BA"
+         id="stop425" />
+    </linearGradient>
+    <linearGradient
+       x1="342"
+       y1="188.5"
+       x2="424"
+       y2="188.5"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill48">
+      <stop
+         offset="0"
+         stop-color="#F18C55"
+         id="stop428" />
+      <stop
+         offset="0.48"
+         stop-color="#F67B28"
+         id="stop430" />
+      <stop
+         offset="1"
+         stop-color="#E56B17"
+         id="stop432" />
+    </linearGradient>
+    <linearGradient
+       x1="461"
+       y1="189"
+       x2="547"
+       y2="189"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       id="fill49">
+      <stop
+         offset="0"
+         stop-color="#F18C55"
+         id="stop435" />
+      <stop
+         offset="0.48"
+         stop-color="#F67B28"
+         id="stop437" />
+      <stop
+         offset="1"
+         stop-color="#E56B17"
+         id="stop439" />
+    </linearGradient>
+    <image
+       width="33"
+       height="17"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAARCAMAAABkQDXwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABpUExURQAAAP///////7+AgMzMzICAgKqqqp+fn7+/v6qqqoCAgI+Hh46Ojo6OjpGIiIaDg4uFhYSBgYmDg4B7e4WDg4J9fYF+foJ9fYF7e4N9fYB8fIJ8fIB7e4B7e4F7e4B7e4B7e4B6eoB6ei+KChEAAAAidFJOUwACAwQFBgYICAwaIiQ0OkpYW2Nob4GEhaKlqL3r7/Hz9flMYozfAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAW0lEQVQoU8XKRw6AMAxE0YQSeu+dcP9DEqFZRDLewtv4S2PxmwCXF1UI3tAgwCWybYwxPkpq1bP9cr05eg+zUVOnXlKJ2fCJfJ8S6+FF14YohioUiiMdxGeEuAEk5AgbuQ2jawAAAABJRU5ErkJggg=="
+       preserveAspectRatio="none"
+       id="img50" />
+    <image
+       width="32"
+       height="17"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAARCAMAAACLgl7OAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAACcUExURQAAAICAgP///////7+AgL+/v4CAgKqqqoCAgICAgICAgJWAgIeHh46OjoaGhouAgICAgIqDg4iCgoeCgoyHh42EhIeAgIqDg4qGhoiEhIeBgYOAgIiCgouFhYWAgIJ9fYeCgomDg4WBgYSAgIV+foJ9fYR/f4R/f4N+foR9fYOAgIJ9fYB7e396eoF6eoB7e4F7e4B6eoB6eoB6ekvfcB0AAAAzdFJOUwACAgMEBAYGCAoMDBESFRYYIy8xNTpISkxPU1RYWF5iYmN5fH+Bg4eOk5ap3d/l6+73+QjgVXIAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAB2SURBVChTY6AzYGWHMnAADlERJigTK+CU1xaGMrECflUdJT4WZMDIyAiVAwEBLUMDTVlkICkhIQ6VBAExI2NMoAuVBAEudWN9DRkoUFCEADmoJBjwqOgp8zJDARsUQOUggFtKTQjKxAG4pQWhLFwAzUj6AAYGAJYYDH5Vw/9EAAAAAElFTkSuQmCC"
+       preserveAspectRatio="none"
+       id="img51" />
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL7547"
+       inkscape:isstock="true"
+       id="TriangleOutL7547">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path1936" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL7566"
+       inkscape:isstock="true"
+       id="TriangleOutL7566">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path1939" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL9263"
+       inkscape:isstock="true"
+       id="TriangleOutL9263">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path1942" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL149"
+       inkscape:isstock="true"
+       id="TriangleOutL149">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path1945" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL6872"
+       inkscape:isstock="true"
+       id="TriangleOutL6872">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path1948" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL5419"
+       inkscape:isstock="true"
+       id="TriangleOutL5419">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path1951" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL7571"
+       inkscape:isstock="true"
+       id="TriangleOutL7571">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path1954" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL9674"
+       inkscape:isstock="true"
+       id="TriangleOutL9674">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path1957" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL2295"
+       inkscape:isstock="true"
+       id="TriangleOutL2295">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path1960" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL557"
+       inkscape:isstock="true"
+       id="TriangleOutL557">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path1963" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL8072"
+       inkscape:isstock="true"
+       id="TriangleOutL8072">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path1966" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL7960"
+       inkscape:isstock="true"
+       id="TriangleOutL7960">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path1969" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL9471"
+       inkscape:isstock="true"
+       id="TriangleOutL9471">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path1972" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL8903"
+       inkscape:isstock="true"
+       id="TriangleOutL8903">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path1975" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL5903"
+       inkscape:isstock="true"
+       id="TriangleOutL5903">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path1978" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL2784"
+       inkscape:isstock="true"
+       id="TriangleOutL2784">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path1981" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL6061"
+       inkscape:isstock="true"
+       id="TriangleOutL6061">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path1984" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL4445"
+       inkscape:isstock="true"
+       id="TriangleOutL4445">
+      <path
+         transform="scale(0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path1987" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleInL5774"
+       inkscape:isstock="true"
+       id="TriangleInL5774">
+      <path
+         transform="scale(-0.8)"
+         style="fill:#000000;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path3190" />
+    </marker>
+  </defs>
+  <g
+     id="g3616">
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="13px"
+       id="text510"
+       x="308.22031"
+       y="381.86142"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.0605px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.754542" />
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="13px"
+       id="text592"
+       x="369.36627"
+       y="157.008"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.0605px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.754542" />
+    <text
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="9.80904px"
+       id="text670"
+       x="115.77369"
+       y="470.89734"
+       style="stroke-width:0.754542" />
+    <text
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="9.80904px"
+       id="text672"
+       x="122.43929"
+       y="470.89734"
+       style="stroke-width:0.754542" />
+    <text
+       font-family="'Calibri Light', 'Calibri Light_MSFontService', sans-serif"
+       font-weight="300"
+       font-size="18.109px"
+       id="text688"
+       x="8.9811239"
+       y="36.281326"
+       style="stroke-width:0.754542" />
+    <rect
+       x="242.6543"
+       y="182.25713"
+       width="202.19617"
+       height="53.97776"
+       stroke="#ed7d31"
+       stroke-width="1.7717"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       stroke-opacity="0.368627"
+       fill="url(#fill21)"
+       id="rect448"
+       style="fill:#f68d2e;fill-opacity:1;stroke:#ffffff;stroke-opacity:1" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL8903)"
+       d="M 196.37912,133.28814 H 177.32348 V 265.43467"
+       id="path1185"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#TriangleInL)"
+       d="M 216.67911,169.74888 H 370.44049"
+       id="path1191"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL6061)"
+       d="m 263.59774,147.19897 h 99.66213"
+       id="path1193"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#TriangleInL5774)"
+       d="m 358.60535,123.38906 h 10.59039"
+       id="path1195"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL4445)"
+       d="M 266.31221,115.35359 H 277.2616"
+       id="path1197"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL6872)"
+       d="M 142.56293,79.44926 V 98.005125"
+       id="path1199"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL5419)"
+       d="M 226.31571,79.02152 V 97.858678"
+       id="path1201"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL7571)"
+       d="M 317.81999,79.02152 V 98.285455"
+       id="path1203"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL9674)"
+       d="M 406.83347,78.166041 V 97.910455"
+       id="path1205"
+       sodipodi:nodetypes="cc" />
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="13px"
+       id="text450"
+       x="269.99945"
+       y="211.66138"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:0.754542"><tspan
+         sodipodi:role="line"
+         id="tspan61414"
+         x="269.99945"
+         y="211.66138">Application Support Sublayer (APS)</tspan></text>
+    <rect
+       x="242.6543"
+       y="236.23489"
+       width="202.19617"
+       height="43.76342"
+       stroke="#ed7d31"
+       stroke-width="1.58148"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       stroke-opacity="0.368627"
+       fill="url(#fill22)"
+       id="rect452"
+       style="fill:#f68d2e;fill-opacity:1;stroke:#ffffff;stroke-opacity:1" />
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="13px"
+       id="text454"
+       x="311.15863"
+       y="260.53198"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:0.754542"><tspan
+         sodipodi:role="line"
+         id="tspan62336"
+         x="311.15863"
+         y="260.53198">Network (NWK)</tspan></text>
+    <rect
+       x="8.2473755"
+       y="344.88885"
+       width="504.79556"
+       height="55.685284"
+       fill="url(#fill26)"
+       id="rect484"
+       style="fill:#194f90;fill-opacity:1;stroke-width:0.715828" />
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="13px"
+       id="text486"
+       x="31.369026"
+       y="375.20837"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.754542"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
+         id="tspan56413">MCU Dependent</tspan></text>
+    <rect
+       x="242.6543"
+       y="280.75284"
+       width="202.19617"
+       height="43.76342"
+       stroke="#ed7d31"
+       stroke-width="1.58148"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       stroke-opacity="0.368627"
+       fill="url(#fill27)"
+       id="rect488"
+       style="fill:#f68d2e;fill-opacity:1;stroke:#ffffff;stroke-opacity:1" />
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="13px"
+       id="text490"
+       x="283.66904"
+       y="305.04993"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:0.754542"><tspan
+         sodipodi:role="line"
+         id="tspan64140"
+         x="283.66904"
+         y="305.04993">Media Access Control (MAC)</tspan></text>
+    <rect
+       x="278.31879"
+       y="344.82718"
+       width="111.79553"
+       height="41.722443"
+       fill="url(#fill29)"
+       id="rect506"
+       style="fill:#194f90;fill-opacity:1;stroke:#ffffff;stroke-width:1.033;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="13px"
+       id="text508"
+       x="333.93628"
+       y="362.27499"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:0.754542"><tspan
+         sodipodi:role="line"
+         id="tspan61703"
+         x="333.93628"
+         y="362.27499"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">Radio</tspan><tspan
+         sodipodi:role="line"
+         id="tspan61705"
+         x="333.93628"
+         y="373.94165"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">Dependent</tspan></text>
+    <rect
+       x="72.619835"
+       y="286.93332"
+       width="61.606808"
+       height="57.201"
+       fill="url(#fill31)"
+       id="rect524"
+       style="fill:#194f90;fill-opacity:1;stroke:#ffffff;stroke-width:1.48611;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="13px"
+       id="text526"
+       x="103.27"
+       y="300.39221"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:0.754542"><tspan
+         sodipodi:role="line"
+         id="tspan47519"
+         x="103.27"
+         y="300.39221"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">Board</tspan><tspan
+         sodipodi:role="line"
+         id="tspan47521"
+         x="103.27"
+         y="312.05887"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">Support</tspan><tspan
+         sodipodi:role="line"
+         x="103.27"
+         y="323.72552"
+         id="tspan48503"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">Package</tspan><tspan
+         sodipodi:role="line"
+         x="103.27"
+         y="335.39221"
+         id="tspan50505"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">(BSP)</tspan></text>
+    <rect
+       x="8.3133202"
+       y="286.93332"
+       width="64.306511"
+       height="57.201"
+       fill="url(#fill33)"
+       id="rect540"
+       style="fill:#194f90;fill-opacity:1;stroke:#ffffff;stroke-width:1.50853;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="13px"
+       id="text542"
+       x="40.448345"
+       y="306.22556"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.754542"><tspan
+         sodipodi:role="line"
+         id="tspan43338"
+         x="40.448345"
+         y="306.22556"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">Hardware</tspan><tspan
+         sodipodi:role="line"
+         id="tspan43340"
+         x="40.448345"
+         y="317.89221"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">Abstraction</tspan><tspan
+         sodipodi:role="line"
+         x="40.448345"
+         y="329.55887"
+         id="tspan43342"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">Layer (HAL)</tspan></text>
+    <rect
+       x="473.82425"
+       y="31.521261"
+       width="39.225887"
+       height="368.63678"
+       fill="url(#fill35)"
+       id="rect556"
+       style="fill:#194f90;fill-opacity:1;stroke:#ffffff;stroke-width:1.03657;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="9.80904px"
+       transform="rotate(-90)"
+       id="text558"
+       x="-262.37183"
+       y="495.85257"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.754542">System Environment</text>
+    <rect
+       x="504.75238"
+       y="25.054031"
+       width="39.225887"
+       height="367.01987"
+       fill="url(#fill37)"
+       id="rect572"
+       style="fill:#194f90;fill-opacity:1;stroke:#ffffff;stroke-width:1.03657;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="9.80904px"
+       transform="rotate(-90)"
+       id="text574"
+       x="-255.25792"
+       y="526.7807"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.754542">Configuration Server</text>
+    <rect
+       x="186.32367"
+       y="182.33362"
+       width="56.254131"
+       height="82.49736"
+       stroke="#ed7d31"
+       stroke-width="1.76602"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       stroke-opacity="0.368627"
+       fill="url(#fill38)"
+       id="rect582"
+       style="fill:#f68d2e;fill-opacity:1;stroke:#ffffff;stroke-opacity:1" />
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="13px"
+       id="text584"
+       x="214.55099"
+       y="208.4407"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:0.754542"><tspan
+         sodipodi:role="line"
+         id="tspan25755"
+         x="214.55099"
+         y="208.4407"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">Zigbee</tspan><tspan
+         sodipodi:role="line"
+         id="tspan25757"
+         x="214.55099"
+         y="220.10736"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">Device</tspan><tspan
+         sodipodi:role="line"
+         x="214.55099"
+         y="231.77403"
+         id="tspan25759"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">Object</tspan><tspan
+         sodipodi:role="line"
+         x="214.55099"
+         y="243.44069"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle"
+         id="tspan27729">(ZDO)</tspan></text>
+    <rect
+       x="368.81647"
+       y="103.6264"
+       width="76.033997"
+       height="74.827003"
+       stroke="#ed7d31"
+       stroke-width="1.76035"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       stroke-opacity="0.368627"
+       fill="url(#fill39)"
+       id="rect588"
+       style="fill:#f68d2e;fill-opacity:1;stroke:none;stroke-opacity:1" />
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="13px"
+       id="text590"
+       x="406.5213"
+       y="126.82571"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:0.754542"><tspan
+         sodipodi:role="line"
+         id="tspan56905"
+         x="406.5213"
+         y="126.82571"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">Zigbee</tspan><tspan
+         sodipodi:role="line"
+         id="tspan56907"
+         x="406.5213"
+         y="138.49237"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">Light Link</tspan><tspan
+         sodipodi:role="line"
+         x="406.5213"
+         y="150.15903"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle"
+         id="tspan32657">(ZLL)</tspan><tspan
+         sodipodi:role="line"
+         x="406.5213"
+         y="161.8257"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle"
+         id="tspan32659">Platform</tspan></text>
+    <rect
+       x="282.78268"
+       y="103.59199"
+       width="70.074615"
+       height="39.594143"
+       stroke="#ed7d31"
+       stroke-width="2.31548"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       stroke-opacity="0.368627"
+       fill="url(#fill40)"
+       id="rect594"
+       style="fill:#f68d2e;fill-opacity:1;stroke:none;stroke-opacity:1" />
+    <rect
+       x="537.18915"
+       y="16.161482"
+       width="39.980228"
+       height="366.21146"
+       fill="url(#fill42)"
+       id="rect616"
+       style="fill:#194f90;fill-opacity:1;stroke:#ffffff;stroke-width:1.03657;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="9.80904px"
+       transform="rotate(-90)"
+       id="text618"
+       x="-217.77664"
+       y="559.5946"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.754542">Security</text>
+    <rect
+       x="567.36285"
+       y="8.0773401"
+       width="39.980228"
+       height="366.21146"
+       fill="url(#fill44)"
+       id="rect634"
+       style="fill:#194f90;fill-opacity:1;stroke:#ffffff;stroke-width:1.03657;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="9.80904px"
+       transform="rotate(-90)"
+       id="text636"
+       x="-255.08536"
+       y="589.76831"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:0.754542"><tspan
+         sodipodi:role="line"
+         id="tspan59130"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
+         x="-255.08536"
+         y="589.76831">Persistent Data Server (PDS)</tspan></text>
+    <rect
+       x="8.2473764"
+       y="408.94296"
+       width="74.706764"
+       height="14.336293"
+       fill="url(#fill45)"
+       id="rect644"
+       style="fill:#6cc24a;fill-opacity:1;stroke-width:0.75842" />
+    <rect
+       x="8.2473764"
+       y="430.82468"
+       width="74.706764"
+       height="14.336293"
+       fill="url(#fill46)"
+       id="rect652"
+       style="fill:#f68d2e;fill-opacity:1;stroke-width:0.754579" />
+    <rect
+       x="8.2473764"
+       y="451.95184"
+       width="74.706764"
+       height="14.336293"
+       fill="url(#fill47)"
+       id="rect660"
+       style="fill:#194f90;fill-opacity:1;stroke-width:0.754579" />
+    <text
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="13px"
+       id="text662"
+       x="90.119263"
+       y="418.86893"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.754542"><tspan
+         sodipodi:role="line"
+         id="tspan37314"
+         x="90.119263"
+         y="418.86893"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.754542">User Application</tspan></text>
+    <text
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="13px"
+       id="text668"
+       x="90.119263"
+       y="441.81052"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.754542"><tspan
+         sodipodi:role="line"
+         id="tspan44482"
+         x="90.119263"
+         y="441.81052"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.754542">Core Stack</tspan></text>
+    <text
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="13px"
+       id="text674"
+       x="90.119263"
+       y="462.24759"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.754542"><tspan
+         sodipodi:role="line"
+         id="tspan46198"
+         x="90.119263"
+         y="462.24759"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.754542">Shared, Low-level Services</tspan></text>
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="13px"
+       id="text700-0"
+       x="317.67416"
+       y="114.0808"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:0.754542"><tspan
+         sodipodi:role="line"
+         id="tspan14519"
+         x="317.67416"
+         y="114.0808"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">Zigbee</tspan><tspan
+         sodipodi:role="line"
+         x="317.67416"
+         y="125.74747"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle"
+         id="tspan19681">Cluster Library</tspan><tspan
+         sodipodi:role="line"
+         id="tspan14521"
+         x="317.67416"
+         y="137.41412"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">(ZCL)</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL9471)"
+       d="m 334.21654,323.73509 v 16.01486"
+       id="path1215"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.00157;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL9263)"
+       d="m 138.55457,155.35326 v 148.69468 h 99.26479"
+       id="path1181"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.00157;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL149)"
+       d="m 154.25053,155.5691 v 115.68662 h 83.54105"
+       id="path1183"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL5903)"
+       d="m 210.5938,154.69457 v 22.95557"
+       id="path1187"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL2784)"
+       d="m 253.91008,155.55831 v 21.98916"
+       id="path1189"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL2295)"
+       d="m 426.85089,63.817456 h 41.97"
+       id="path1207"
+       sodipodi:nodetypes="cc" />
+    <rect
+       x="111.62672"
+       y="103.59199"
+       width="61.872421"
+       height="52.142735"
+       stroke="#ed7d31"
+       stroke-width="1.75664"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       stroke-opacity="0.368627"
+       fill="url(#fill48)"
+       id="rect690"
+       style="fill:#f68d2e;fill-opacity:1;stroke:none;stroke-opacity:1" />
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="13px"
+       id="text692"
+       x="142.28038"
+       y="120.35509"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:0.754542"><tspan
+         sodipodi:role="line"
+         id="tspan4435"
+         x="142.28038"
+         y="120.35509"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">Zigbee</tspan><tspan
+         sodipodi:role="line"
+         id="tspan4437"
+         x="142.28038"
+         y="132.02174"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">Green Power</tspan><tspan
+         sodipodi:role="line"
+         id="tspan4439"
+         x="142.28038"
+         y="143.68842"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">(ZGP)</tspan></text>
+    <rect
+       x="186.32367"
+       y="103.59199"
+       width="79.984077"
+       height="52.142735"
+       stroke="#ed7d31"
+       stroke-width="1.96967"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       stroke-opacity="0.368627"
+       fill="url(#fill49)"
+       id="rect698"
+       style="fill:#f68d2e;fill-opacity:1;stroke:none;stroke-opacity:1" />
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="13px"
+       id="text700"
+       x="225.91922"
+       y="120.35509"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:0.754542"><tspan
+         sodipodi:role="line"
+         id="tspan11523"
+         x="225.91922"
+         y="120.35509"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">Base</tspan><tspan
+         sodipodi:role="line"
+         id="tspan11525"
+         x="225.91922"
+         y="132.02174"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">Device Behavior</tspan><tspan
+         sodipodi:role="line"
+         id="tspan11527"
+         x="225.91922"
+         y="143.68842"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">(BDB)</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL7547)"
+       d="M 40.466575,62.437467 V 282.18407"
+       id="path1177"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL7566)"
+       d="M 103.42324,64.252212 V 282.24881"
+       id="path1179"
+       sodipodi:nodetypes="cc" />
+    <rect
+       x="8.2473755"
+       y="44.199368"
+       width="418.60352"
+       height="39.236172"
+       fill="url(#fill24)"
+       id="rect468"
+       style="fill:#6cc24a;fill-opacity:1;stroke-width:0.755071" />
+    <text
+       fill="#ffffff"
+       font-family="Arial, Arial_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="13px"
+       id="text470"
+       x="195.04752"
+       y="66.230537"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.33333px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:0.754542">Application</text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL7960)"
+       d="m 443.96831,302.63457 h 24.8721"
+       id="path1213"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL557)"
+       d="m 443.95,213.97591 h 24.78494"
+       id="path1209"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL8072)"
+       d="m 444.03649,258.11661 h 24.80392"
+       id="path1211"
+       sodipodi:nodetypes="cc" />
+  </g>
+</svg>

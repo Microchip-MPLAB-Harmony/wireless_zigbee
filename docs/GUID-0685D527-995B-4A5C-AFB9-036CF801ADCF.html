@@ -1,260 +1,298 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
-<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
-<meta name="DC.rights.owner" content="(C) Copyright 2023" />
-<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
-<meta name="DC.title" content="ZCL Components Usage" />
-<meta name="DC.relation" scheme="URI" content="GUID-1599DD35-8680-4FD4-867D-938D77A52B57.html" />
-<meta name="DC.relation" scheme="URI" content="GUID-524ACEE2-A392-4353-8AD1-1EF70EE05579.html" />
-<meta name="DC.relation" scheme="URI" content="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D.html" />
-<meta name="DC.relation" scheme="URI" content="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40.html" />
-<meta name="DC.relation" scheme="URI" content="GUID-CDA2A98F-5409-4E41-A200-70F6A72CC7D2.html" />
-<meta name="DC.format" content="XHTML" />
-<meta name="DC.identifier" content="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF" />
-<meta name="DC.language" content="en-US" />
-<link rel="stylesheet" type="text/css" href="stylesheets/atmel.css" />
-<title>ZCL Components Usage</title>
-<meta name="Microsoft.Help.Id" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF" />
-<meta name="Microsoft.Help.TocParent" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-1599DD35-8680-4FD4-867D-938D77A52B57" />
-<meta name="Microsoft.Help.TocOrder" content="4" />
-<meta name="Microsoft.Help.Locale" content="en-US" />
-<meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
-<script language="javascript">
-       
-       if (window.parent.location.protocol != 'file:') {
-				document.addEventListener('click', function(e) {
-				    if (e.target) {
-               if (e.target.nodeName == "A" ) {
-                    if (!e.target.target) {
-                      e.preventDefault();
-                      e.stopPropagation();
-                              
-                      var origUrl = window.parent.location.href.substr(0, window.parent.location.href.indexOf("?"));
-                      if (origUrl.length === 0) {
-                          origUrl = window.parent.location.href;
-                      }
-                      var href= e.target.getAttribute("href");
-                      var parts = href.split("#");
-          
-                      var url = "";
-                      if (parts.length == 2 ) {
-                        if (!parts[0].length) {
-                            url = window.parent.location.search.replace('?','')
-                        } else {
-                            url = parts[0].replace('.html','');
-                        }
-                      } else {
-                        url = parts[0].replace('.html','');
-                      }
-
-                      if (parts.length == 2) {
-                          url += "#" + parts[1];
-                      }
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="24.1">
+    <head><link rel="shortcut icon" href="oxygen-webhelp\template\resources/images/favicon.ico"/><link rel="icon" href="oxygen-webhelp\template\resources/images/favicon.ico"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="description" content="Zigbee ® Cluster Library (ZCL) is a part of BitCloud ® , which is intended to create fully Zigbee compliant software for the following: Smart energy Building automation Home automation device ZCL ..."/><meta name="copyright" content="(C) Copyright 2024"/><meta name="generator" content="DITA-OT"/><title>4.5 Zigbee Cluster Library (ZCL) Components Usage</title><!--  Generated with Oxygen version 24.1, build number 2022062014.  --><meta name="wh-path2root" content=""/><meta name="wh-toc-id" content="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF-d2425e301"/><meta name="wh-source-relpath" content="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF.xml"/><meta name="wh-out-relpath" content="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF.html"/>
+    <!-- Latest compiled and minified Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="./oxygen-webhelp/lib/bootstrap/css/bootstrap.min.css"/>
     
-                      window.parent.location.href = origUrl + "?" + url;
+    <link rel="stylesheet" href="./oxygen-webhelp/lib/jquery-ui/jquery-ui.min.css"/>
+    
+    <!-- Template default styles  -->
+    <link rel="stylesheet" type="text/css" href="./oxygen-webhelp/app/topic-page.css?buildId=2022062014"/>
+    
+    
+    <script src="./oxygen-webhelp/lib/jquery/jquery-3.5.1.min.js"></script>
+    
+    <script data-main="./oxygen-webhelp/app/topic-page.js" src="./oxygen-webhelp/lib/requirejs/require.js"></script>
+<link rel="stylesheet" type="text/css" href="oxygen-webhelp/template/microchip.css?buildId=2022062014"/><link rel="stylesheet" type="text/css" href="oxygen-webhelp/template/notes.css?buildId=2022062014"/>
+<script src="mchp-context-help.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300" rel="stylesheet" type="text/css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async="" type="text/javascript"></script>
+    <script src="https://assets.adobedtm.com/6a72a357eb48/a636c708c7fe/launch-0b0023397020.min.js"></script><!-- Adobe Analytics -->
+</head>
 
-                      return false;
-                    }
-               }
-            }
-				});
-			}
+    <body id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+        <header class="navbar navbar-default wh_header">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container navbar-nav navbar-expand-md navbar-dark">
+            <div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    
+                    <a href="index.html" class=" wh_logo d-none d-sm-block "><img src="oxygen-webhelp\template\resources/images/microchip.png" alt="MPLAB® Harmony Wireless Zigbee &#xA;    "/></a>
+                    <div class=" wh_publication_title "><a href="index.html">MPLAB® Harmony Wireless Zigbee 
+    </a></div>
+                    
+                </div>
+                
+                
+            </div>
 
-		</script><script language="javascript">
-         
-         function copyContent(content, button) {
-         
-            var textArea = document.createElement("textarea");
-            
-            // Place in the top-left corner of screen regardless of scroll position.
-            textArea.style.position = 'fixed';
-            textArea.style.top = 0;
-            textArea.style.left = 0;
-            
-            // Ensure it has a small width and height. Setting to 1px / 1em
-            // doesn't work as this gives a negative w/h on some browsers.
-            textArea.style.width = '2em';
-            textArea.style.height = '2em';
-            
-            // We don't need padding, reducing the size if it does flash render.
-            textArea.style.padding = 0;
-            
-            // Clean up any borders.
-            textArea.style.border = 'none';
-            textArea.style.outline = 'none';
-            textArea.style.boxShadow = 'none';
-            
-            // Avoid flash of the white box if rendered for any reason.
-            textArea.style.background = 'transparent';
-            
-            textArea.value = content;
-            
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            
-            try {
-               var successful = document.execCommand('copy');
-               var msg = successful ? 'successful' : 'unsuccessful';
-               if (!button.classList.contains("copied")){
-                  button.textContent = "Copied";
-                  button.classList.add("copied");
-                  setTimeout(function(){
-                     button.textContent = "Copy";
-                     button.classList.remove("copied");
-                  },1000);
-               }
-            } catch (err) {
-               console.log('Oops, unable to copy');
-            }
-            
-            document.body.removeChild(textArea);
-         }
-         
-         function cpy(id, button) {
-            var element = document.getElementById(id);
-            var content = element.getAttribute("content");
-            
-            copyContent(content, button);
-         }
-         
-         document.addEventListener("DOMContentLoaded", function(event) {
-            document.querySelectorAll(".codeblock").forEach(function(elem) {
-               elem.style.position = "relative";
-               var copy = document.createElement("button");
-               copy.textContent = "Copy";
-               copy.setAttribute("class", "copy-code");
-               
-               var content = elem.textContent;
-               
-               copy.addEventListener("click", function(){
-                  copyContent(content, copy);
-               });
-               
-               elem.addEventListener("mouseenter", function(evt){
-                  elem.prepend(copy);
-               });
-            });
-            
-            document.querySelectorAll(".codeblock").forEach(function(elem) {
-               elem.addEventListener("mouseleave", function(evt){
-                  document.querySelector(".copy-code").remove();
-               });
-            });
-         });
-         
-      </script><script language="javascript">
-          
-          // Add the MathML namespace to html
-          var html = document.getElementsByTagName("html")[0],
-          head = document.getElementsByTagName("head")[0];
-          
-          var mathJax = document.createElement("script");
-          mathJax.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML";
-          head.appendChild(mathJax);
-          
-          html.setAttribute("xmlns:m","http://www.w3.org/1998/Math/MathML");
-          
-          function inIframe() { try { return window.self !== window.top; } catch (e) { return true; } }
-          
-          if (!inIframe()) { 
-          
-          var Default = "index.html?GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF"; 
-          
-          var displaylocation = "value" + window.location.href;
-          
-          var GUIDS = displaylocation.split('GUID');          
-          
-          if (displaylocation.indexOf('#GUID') != -1) {            
-          var First = GUIDS[1].split('.html');  
-          if (GUIDS[3]){First = GUIDS[2].split('.html');}
-          if (GUIDS[4]){First = GUIDS[3].split('.html');}
-          if (GUIDS[5]){First = GUIDS[4].split('.html');}
-          
-          var Second = GUIDS[2].split('#');   
-          if (GUIDS[3]){Second = GUIDS[3].split('#');}
-          if (GUIDS[4]){Second = GUIDS[4].split('#');}
-          if (GUIDS[5]){Second = GUIDS[5].split('#');}
-          
-          Default = "index.html?" + "GUID" + First[0] + "GUID" + Second[0];     
-          }                    
-          window.top.location = Default;
-          }       
-          
-        </script><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /><style xml:space="">
-        
-          button.copy-code{
-            display:none;
-            padding:0.7em 1.4em;
-            margin:0 0.3em 0.3em 0;
-            border-radius:0.15em;
-            box-sizing: border-box;
-            text-decoration:none;
-            font-family:'Roboto',sans-serif;
-            text-transform:uppercase;
-            font-weight:400;
-            color:#FFFFFF;
-            background-color:#9c9c9c;
-            box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
-            text-align:center;
-            position:relative;
-            border: 0;
-            float: right;
-            border-radius: .5em;
-            cursor: pointer;
-          }
-          button.copy-code:active{
-            top:0.1em;
-          }
-          
-          pre:hover button.copy-code{
-            display: inline-block !important;
-          }
-          button.copy-code.copied {
-            cursor: default !important;
-          }
-          
-          
-          @media all and (max-width:30em){
-            button.copy-code{
-              display:block;
-              margin:0.4em auto;
-            }
-          }
+            <div class="wh_top_menu_and_indexterms_link collapse navbar-collapse" id="wh_top_menu_and_indexterms_link">
+                
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</header>
         
         
-      </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
-<body id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF">
-<h1 class="title topictitle1" id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF__GUID-7DA9D6A5-0D23-43D0-AB63-A669E41EFC4F" style="">ZCL Components Usage</h1><div class="body"><p class="p">Zigbee Cluster Library (ZCL) is a part of BitCloud, which is intended to be used to create fully Zigbee compliant software for Smart Energy, Building Automation and Home Automation devices.</p>
-<p class="p">ZCL implements a set of standard Zigbee clusters. A cluster is a related collection of commands and attributes, which together define an interface to a specific functionality available on a given device. Zigbee 3.0 application device types may utilize some of the clusters defined in the ZCL.</p>
-<p class="p">References </p>
-<ul class="ul" id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF__UL_JXF_5JF_KTB"><li class="li" id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF__GUID-5F3A29B3-52DE-4F54-87E1-2FA6FE538D90">ZCL functions<ul class="ul" id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF__UL_KXF_5JF_KTB"><li class="li" id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF__GUID-3BDFC859-5BDC-4639-9662-A4BBEA694028"><a class="xref" href="GUID-0ACA2901-CB92-4FDC-99DA-1C61E23DBE9A.html">Common ZCL functions</a></li>
-<li class="li" id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF__GUID-3492A76B-B92B-400E-892C-74998FEA32E7"><a class="xref" href="GUID-27007B72-E2EB-409F-B228-FA222F74706F.html">OTAU functions</a></li>
-<li class="li" id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF__GUID-EFDB5204-0A54-4D3C-B6BC-AACFC70FA3E0"><a class="xref" href="GUID-D42460CB-F60F-4F52-A4DB-F0E1C410E6B1.html">Security functions</a></li>
-</ul>
-</li>
-<li class="li" id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF__GUID-C524955B-5FF1-43B0-BFAA-8A804EBDA916"><a class="xref" href="GUID-F6C388EF-B816-45F2-A117-4035EFDD2CA3.html">ZCL statuses</a></li>
-</ul>
+         
+        
+        <div class=" wh_search_input navbar-form wh_topic_page_search search " role="form">
+            
+            
+            
+            <form id="searchForm" method="get" role="search" action="search.html"><div class="d-flex justify-contents-around"><div class="flex-grow-1"></div><div class="position-relative flex-grow-1"><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div><div class="align-self-center flex-grow-1 ml-2"></div></div></form>
+            
+            <div class="mchp-color-stripe-grid-container">
+  <div class="mchp-main-bar mchp-orange-bar"></div>
+  <div class="mchp-main-bar mchp-blue-bar"></div>
+  <div class="mchp-main-bar mchp-green-bar"></div>
 </div>
-<div class="related-links">
-<ul class="ullinks">
-<li class="link ulchildlink"><strong><a href="GUID-524ACEE2-A392-4353-8AD1-1EF70EE05579.html">Sending a General cluster command.</a></strong><br />
-</li>
-<li class="link ulchildlink"><strong><a href="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D.html">Read or write a Remote Attribute</a></strong><br />
-</li>
-<li class="link ulchildlink"><strong><a href="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40.html">Parsing the response payload</a></strong><br />
-</li>
-<li class="link ulchildlink"><strong><a href="GUID-CDA2A98F-5409-4E41-A200-70F6A72CC7D2.html">Sending a Cluster-specific command</a></strong><br />
-</li>
-</ul>
+            
+        </div>
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
 
-<div class="familylinks">
-<div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-1599DD35-8680-4FD4-867D-938D77A52B57.html">Zigbee Stack Layer Usage</a></div>
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="GUID-1599DD35-8680-4FD4-867D-938D77A52B57"><div class="title"><a href="GUID-1599DD35-8680-4FD4-867D-938D77A52B57.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4</ph>
+Zigbee Stack Layer Usage</a></div></div></li><li class="active"><div class="topicref" data-id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF"><div class="title"><a href="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.5</ph>
+Zigbee Cluster Library (ZCL) Components Usage</a></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <button type="button" id="wh_toc_button" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            <div class="row" style="margin-top: -1em;"><div class="col-lg-9 col-md-9 col-sm-12 offset-lg-3 offset-md-3 text-right border-bottom mb-1"><h2 class="text-dark header_title">
+    </h2></div></div>
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        <nav id="wh_publication_toc" class="col-lg-3 col-md-3 col-sm-12 d-md-block d-none d-print-none" aria-label="Table of Contents Container">
+                            <div id="wh_publication_toc_content">
+		                        
+                            	<div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem"><div data-tocid="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801-d2425e11" class="topicref introduction" data-id="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801.html" id="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801-d2425e11-link">Introduction</a></div></div></li><li role="treeitem"><div data-tocid="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207-d2425e19" class="topicref introduction" data-id="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207.html" id="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207-d2425e19-link">Features</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5-d2425e27" class="topicref" data-id="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5-d2425e27-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5.html" id="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5-d2425e27-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1</ph>
+Quick References</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38-d2425e51" class="topicref" data-id="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38-d2425e51-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38.html" id="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38-d2425e51-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">2</ph>
+BitCloud Zigbee Stack Architecture and API Overview</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686-d2425e84" class="topicref" data-id="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686-d2425e84-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686.html" id="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686-d2425e84-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">3</ph>
+Programming Basics</a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="GUID-1599DD35-8680-4FD4-867D-938D77A52B57-d2425e141" class="topicref" data-id="GUID-1599DD35-8680-4FD4-867D-938D77A52B57" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action GUID-1599DD35-8680-4FD4-867D-938D77A52B57-d2425e141-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-1599DD35-8680-4FD4-867D-938D77A52B57.html" id="GUID-1599DD35-8680-4FD4-867D-938D77A52B57-d2425e141-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4</ph>
+Zigbee Stack Layer Usage</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B-d2425e149" class="topicref" data-id="GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B-d2425e149-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B.html" id="GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B-d2425e149-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.1</ph>
+BDB Component Usage</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-C306947F-F175-4699-B119-75961F5CDE21-d2425e197" class="topicref" data-id="GUID-C306947F-F175-4699-B119-75961F5CDE21" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-C306947F-F175-4699-B119-75961F5CDE21-d2425e197-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-C306947F-F175-4699-B119-75961F5CDE21.html" id="GUID-C306947F-F175-4699-B119-75961F5CDE21-d2425e197-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.2</ph>
+Configuration Server Component Usage</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-39CF18F8-E921-45B0-BA0B-B39CCD326B44-d2425e253" class="topicref" data-id="GUID-39CF18F8-E921-45B0-BA0B-B39CCD326B44" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-39CF18F8-E921-45B0-BA0B-B39CCD326B44-d2425e253-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-39CF18F8-E921-45B0-BA0B-B39CCD326B44.html" id="GUID-39CF18F8-E921-45B0-BA0B-B39CCD326B44-d2425e253-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.3</ph>
+HAL Component Usage</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-9EA8133D-53DD-415E-8E08-CBC0969FFCA5-d2425e277" class="topicref" data-id="GUID-9EA8133D-53DD-415E-8E08-CBC0969FFCA5" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-9EA8133D-53DD-415E-8E08-CBC0969FFCA5-d2425e277-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-9EA8133D-53DD-415E-8E08-CBC0969FFCA5.html" id="GUID-9EA8133D-53DD-415E-8E08-CBC0969FFCA5-d2425e277-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.4</ph>
+System Environment Components Usage</a></div></div></li><li role="treeitem" aria-expanded="true" class="active"><div data-tocid="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF-d2425e301" class="topicref" data-id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF-d2425e301-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF.html" id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF-d2425e301-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.5</ph>
+Zigbee Cluster Library (ZCL) Components Usage</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="GUID-524ACEE2-A392-4353-8AD1-1EF70EE05579-d2425e309" class="topicref" data-id="GUID-524ACEE2-A392-4353-8AD1-1EF70EE05579" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-524ACEE2-A392-4353-8AD1-1EF70EE05579.html" id="GUID-524ACEE2-A392-4353-8AD1-1EF70EE05579-d2425e309-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.5.1</ph>
+Sending a General Cluster Command</a></div></div></li><li role="treeitem"><div data-tocid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D-d2425e317" class="topicref" data-id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D.html" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D-d2425e317-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.5.2</ph>
+Read or Write a Remote Attribute</a></div></div></li><li role="treeitem"><div data-tocid="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40-d2425e325" class="topicref" data-id="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40.html" id="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40-d2425e325-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.5.3</ph>
+Parsing the Response Payload</a></div></div></li><li role="treeitem"><div data-tocid="GUID-CDA2A98F-5409-4E41-A200-70F6A72CC7D2-d2425e333" class="topicref" data-id="GUID-CDA2A98F-5409-4E41-A200-70F6A72CC7D2" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-CDA2A98F-5409-4E41-A200-70F6A72CC7D2.html" id="GUID-CDA2A98F-5409-4E41-A200-70F6A72CC7D2-d2425e333-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.5.4</ph>
+Sending a Cluster-specific Command</a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3-d2425e341" class="topicref" data-id="GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3-d2425e341-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3.html" id="GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3-d2425e341-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.6</ph>
+Zigbee Device Objects (ZDO) Component Usage</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C-d2425e373" class="topicref" data-id="GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C-d2425e373-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C.html" id="GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C-d2425e373-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.7</ph>
+Zigbee Green Power (ZGP) Component Usage</a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108-d2425e391" class="topicref" data-id="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108-d2425e391-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108.html" id="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108-d2425e391-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5</ph>
+References</a></div></div></li><li role="treeitem"><div data-tocid="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6-d2425e2685" class="topicref" data-id="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6.html" id="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6-d2425e2685-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">6</ph>
+Document Revision History</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2425e2693" class="topicref backmatter backmatter_parent" data-id="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2425e2693-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B.html" id="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2425e2693-link">Microchip Information</a></div></div></li></ul></div>
+		                        
+                            </div>
+                        </nav>
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        <button id="wh_close_publication_toc_button" class="close-toc-button d-none" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc" aria-expanded="true">
+                            <span class="close-toc-icon-container">
+                                <span class="close-toc-icon"></span>     
+                            </span>
+                        </button>
+                        
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article role="article" aria-labelledby="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF__GUID-7DA9D6A5-0D23-43D0-AB63-A669E41EFC4F"><h1 class="- topic/title title topictitle1" id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF__GUID-7DA9D6A5-0D23-43D0-AB63-A669E41EFC4F" style="">4.5 Zigbee Cluster Library (ZCL) Components
+    Usage</h1><div class="- topic/body body">
+    <div class="- topic/p p"><span class="- topic/tm tm">Zigbee<span class="- topic/tmmark tmmark ">®</span></span> Cluster Library (ZCL) is a part of <span class="- topic/tm tm">BitCloud<span class="- topic/tmmark tmmark ">®</span></span>, which is intended to create fully Zigbee compliant software for the following:<ul class="- topic/ul ul">
+        <li class="- topic/li li" id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF__GUID-44B0B564-B2E3-487B-88C0-1CD71F5A2C0A" data-ofbid="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF__GUID-44B0B564-B2E3-487B-88C0-1CD71F5A2C0A">Smart energy</li>
+        <li class="- topic/li li" id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF__GUID-C9107E21-923E-4906-B73F-2C62C3EC1D31" data-ofbid="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF__GUID-C9107E21-923E-4906-B73F-2C62C3EC1D31">Building automation</li>
+        <li class="- topic/li li" id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF__GUID-16693CE0-A6F7-435A-A761-9125C99C1B15" data-ofbid="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF__GUID-16693CE0-A6F7-435A-A761-9125C99C1B15">Home automation device</li>
+      </ul></div>
+    <p class="- topic/p p">ZCL implements a set of standard Zigbee clusters. A cluster is a related collection of
+      commands and attributes, which together define an interface to a specific functionality
+      available on a given device. Zigbee 3.0 application device types utilizes some of the clusters
+      defined in the ZCL.</p>
+  </div></article></main></div>
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <div class="mchp_disclaimer"><p class="mchp_disclaimer_text">The online versions of the documents are provided as a courtesy. Verify all content and data in the device’s PDF documentation found on the device product page.</p></div><footer class="navbar navbar-default wh_footer">
+  <div class=" footer-container mx-auto ">
+    <div class="footer">
+  <div class="mchp-wh-footer">
+    <div class="mchp-footer">
+      <div class="mchp-footer-tier1">
+        <div class="spacer"></div>
+        <div class="mchp-footer-container">
+          <div class="mchp-footer-links mchp-social-media-links">
+            <div class="mchp-component-items">
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.facebook.com/pages/Microchip-Technology-Inc/20320981741" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Facebook" src="oxygen-webhelp/template/resources/images/201016-corp-facebook.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.linkedin.com/company/microchip-technology" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip LinkedIn" src="oxygen-webhelp/template/resources/images/201016-corp-linkedin.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://twitter.com/MicrochipTech" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Twitter" src="oxygen-webhelp/template/resources/images/201016-corp-twitter.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.youtube.com/user/MicrochipTechnology" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip YouTube" src="oxygen-webhelp/template/resources/images/201016-corp-youtube.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.instagram.com/microchiptechnologyinc/" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Instagram" src="oxygen-webhelp/template/resources/images/201016-corp-instagram.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.weibo.com/microchiptech" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Weibo" src="oxygen-webhelp/template/resources/images/201016-corp-weibo.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.microchip.com/en-us/about/blog" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Blog" src="oxygen-webhelp/template/resources/images/201016-corp-blog.png"/>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="mchp-footer-links">
+            <div class="mchp-component-items">
+              <div class="mchp-component-item">
+                <div class="link">
+                  <a href="https://www.microchip.com/about-us/contact-us" class="mchp-link__link">Contact</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information" class="mchp-link__link">Legal</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information/privacy-policy" class="mchp-link__link">Privacy Policy</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information/microchip-cookie-statement" class="mchp-link__link">Cookies</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item">
+                <div class="link">
+                  <a href="https://careers.microchip.com/" class="mchp-link__link">Careers</a>
+                  <span class="mchp-link__separator"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mchp-footer-newsletter">
+            <div class="cmp-text">
+              <p>Stay on the leading edge with our blog</p>
+            </div>
+            <div class="mchp-button-wrapper">
+              <a role="button" href="https://www.microchip.com/en-us/about/blog" class="mchp-button mchp-button-regular solid">
+                <span class="mchp-button__span">MicroSolutions</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="graphic">
+          <img src="oxygen-webhelp/template/resources/images/footer-graphic.png"/>
+        </div>
+      </div>
+      <div class="mchp-footer-tier2">
+        <p class="mchp-copyright">© Copyright 1998-2022 Microchip Technology Inc. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async="true" src="https://www.googletagmanager.com/gtag/js?id=UA-2724382-19"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];  
+    function gtag(){dataLayer.push(arguments);}  
+    gtag('js', new Date());   
+    gtag('config', 'UA-2724382-19');
+  </script>
+  
+  <script type="text/javascript">_satellite.pageBottom();</script><!-- Adobe Analytics -->
+  <script type="text/javascript" src="mchp-js/prepend.js"></script><!-- Package for viewing PDFs on mobile devices -->
+  
 </div>
-</div></body>
+  </div>
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <div id="modal_img_container"></div>
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+       
+        </body>
 </html>

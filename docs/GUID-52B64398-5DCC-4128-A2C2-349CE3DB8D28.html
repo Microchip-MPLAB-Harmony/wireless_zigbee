@@ -1,0 +1,446 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="24.1">
+    <head><link rel="shortcut icon" href="oxygen-webhelp\template\resources/images/favicon.ico"/><link rel="icon" href="oxygen-webhelp\template\resources/images/favicon.ico"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="description" content="Syntax typedef enum { ZGP_SUCCESS_STATUS = 0x00 , /** ZGP Data request queue is full */ ZGP_TX_QUEUE_FULL = 0x70 , /* previous GPDF is overwritten */ ZGP_ENTRY_REPLACED = 0x71 , /* GPDF is added to ..."/><meta name="copyright" content="(C) Copyright 2024"/><meta name="generator" content="DITA-OT"/><title>5.2.9.13 ZGP_Status_t Enumeration</title><!--  Generated with Oxygen version 24.1, build number 2022062014.  --><meta name="wh-path2root" content=""/><meta name="wh-toc-id" content="GUID-52B64398-5DCC-4128-A2C2-349CE3DB8D28-d2425e2653"/><meta name="wh-source-relpath" content="GUID-52B64398-5DCC-4128-A2C2-349CE3DB8D28.xml"/><meta name="wh-out-relpath" content="GUID-52B64398-5DCC-4128-A2C2-349CE3DB8D28.html"/>
+    <!-- Latest compiled and minified Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="./oxygen-webhelp/lib/bootstrap/css/bootstrap.min.css"/>
+    
+    <link rel="stylesheet" href="./oxygen-webhelp/lib/jquery-ui/jquery-ui.min.css"/>
+    
+    <!-- Template default styles  -->
+    <link rel="stylesheet" type="text/css" href="./oxygen-webhelp/app/topic-page.css?buildId=2022062014"/>
+    
+    
+    <script src="./oxygen-webhelp/lib/jquery/jquery-3.5.1.min.js"></script>
+    
+    <script data-main="./oxygen-webhelp/app/topic-page.js" src="./oxygen-webhelp/lib/requirejs/require.js"></script>
+<link rel="stylesheet" type="text/css" href="oxygen-webhelp/template/microchip.css?buildId=2022062014"/><link rel="stylesheet" type="text/css" href="oxygen-webhelp/template/notes.css?buildId=2022062014"/>
+<script src="mchp-context-help.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300" rel="stylesheet" type="text/css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async="" type="text/javascript"></script>
+    <script src="https://assets.adobedtm.com/6a72a357eb48/a636c708c7fe/launch-0b0023397020.min.js"></script><!-- Adobe Analytics -->
+</head>
+
+    <body id="GUID-52B64398-5DCC-4128-A2C2-349CE3DB8D28" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+        <header class="navbar navbar-default wh_header">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container navbar-nav navbar-expand-md navbar-dark">
+            <div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    
+                    <a href="index.html" class=" wh_logo d-none d-sm-block "><img src="oxygen-webhelp\template\resources/images/microchip.png" alt="MPLAB® Harmony Wireless Zigbee &#xA;    "/></a>
+                    <div class=" wh_publication_title "><a href="index.html">MPLAB® Harmony Wireless Zigbee 
+    </a></div>
+                    
+                </div>
+                
+                
+            </div>
+
+            <div class="wh_top_menu_and_indexterms_link collapse navbar-collapse" id="wh_top_menu_and_indexterms_link">
+                
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</header>
+        
+        
+         
+        
+        <div class=" wh_search_input navbar-form wh_topic_page_search search " role="form">
+            
+            
+            
+            <form id="searchForm" method="get" role="search" action="search.html"><div class="d-flex justify-contents-around"><div class="flex-grow-1"></div><div class="position-relative flex-grow-1"><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div><div class="align-self-center flex-grow-1 ml-2"></div></div></form>
+            
+            <div class="mchp-color-stripe-grid-container">
+  <div class="mchp-main-bar mchp-orange-bar"></div>
+  <div class="mchp-main-bar mchp-blue-bar"></div>
+  <div class="mchp-main-bar mchp-green-bar"></div>
+</div>
+            
+        </div>
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108"><div class="title"><a href="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5</ph>
+References</a></div></div></li><li><div class="topicref" data-id="GUID-747CBB24-84B4-451A-A43E-6114D8F4A565"><div class="title"><a href="GUID-747CBB24-84B4-451A-A43E-6114D8F4A565.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2</ph>
+Components Data Structures</a></div></div></li><li><div class="topicref" data-id="GUID-C6389489-E662-4BF0-B217-88199976A2D0"><div class="title"><a href="GUID-C6389489-E662-4BF0-B217-88199976A2D0.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9</ph>
+Zigbee Green Power (ZGP) Data Structures</a></div></div></li><li class="active"><div class="topicref" data-id="GUID-52B64398-5DCC-4128-A2C2-349CE3DB8D28"><div class="title"><a href="GUID-52B64398-5DCC-4128-A2C2-349CE3DB8D28.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9.13</ph>
+ZGP_Status_t Enumeration</a></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <button type="button" id="wh_toc_button" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            <div class="row" style="margin-top: -1em;"><div class="col-lg-9 col-md-9 col-sm-12 offset-lg-3 offset-md-3 text-right border-bottom mb-1"><h2 class="text-dark header_title">
+    </h2></div></div>
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        <nav id="wh_publication_toc" class="col-lg-3 col-md-3 col-sm-12 d-md-block d-none d-print-none" aria-label="Table of Contents Container">
+                            <div id="wh_publication_toc_content">
+		                        
+                            	<div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem"><div data-tocid="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801-d2425e11" class="topicref introduction" data-id="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801.html" id="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801-d2425e11-link">Introduction</a></div></div></li><li role="treeitem"><div data-tocid="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207-d2425e19" class="topicref introduction" data-id="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207.html" id="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207-d2425e19-link">Features</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5-d2425e27" class="topicref" data-id="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5-d2425e27-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5.html" id="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5-d2425e27-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1</ph>
+Quick References</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38-d2425e51" class="topicref" data-id="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38-d2425e51-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38.html" id="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38-d2425e51-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">2</ph>
+BitCloud Zigbee Stack Architecture and API Overview</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686-d2425e84" class="topicref" data-id="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686-d2425e84-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686.html" id="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686-d2425e84-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">3</ph>
+Programming Basics</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-1599DD35-8680-4FD4-867D-938D77A52B57-d2425e141" class="topicref" data-id="GUID-1599DD35-8680-4FD4-867D-938D77A52B57" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-1599DD35-8680-4FD4-867D-938D77A52B57-d2425e141-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-1599DD35-8680-4FD4-867D-938D77A52B57.html" id="GUID-1599DD35-8680-4FD4-867D-938D77A52B57-d2425e141-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4</ph>
+Zigbee Stack Layer Usage</a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108-d2425e391" class="topicref" data-id="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108-d2425e391-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108.html" id="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108-d2425e391-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5</ph>
+References</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC-d2425e399" class="topicref" data-id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC-d2425e399-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC.html" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC-d2425e399-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1</ph>
+MPLAB Harmony Wireless Zigbee Framework APIs</a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="GUID-747CBB24-84B4-451A-A43E-6114D8F4A565-d2425e1736" class="topicref" data-id="GUID-747CBB24-84B4-451A-A43E-6114D8F4A565" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action GUID-747CBB24-84B4-451A-A43E-6114D8F4A565-d2425e1736-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-747CBB24-84B4-451A-A43E-6114D8F4A565.html" id="GUID-747CBB24-84B4-451A-A43E-6114D8F4A565-d2425e1736-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2</ph>
+Components Data Structures</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-15E7011D-066B-489E-9D52-13654016EDD5-d2425e1744" class="topicref" data-id="GUID-15E7011D-066B-489E-9D52-13654016EDD5" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-15E7011D-066B-489E-9D52-13654016EDD5-d2425e1744-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-15E7011D-066B-489E-9D52-13654016EDD5.html" id="GUID-15E7011D-066B-489E-9D52-13654016EDD5-d2425e1744-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.1</ph>
+Application Support Sub-layer (APS) Data Structures</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-08DD94DA-3518-4148-9B51-66AD17921CEE-d2425e1913" class="topicref" data-id="GUID-08DD94DA-3518-4148-9B51-66AD17921CEE" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-08DD94DA-3518-4148-9B51-66AD17921CEE-d2425e1913-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-08DD94DA-3518-4148-9B51-66AD17921CEE.html" id="GUID-08DD94DA-3518-4148-9B51-66AD17921CEE-d2425e1913-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.2</ph>
+Base Device Behavior (BDB) Data Structures</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-10D9DB3C-446B-4F88-96BD-28848D277B22-d2425e1993" class="topicref" data-id="GUID-10D9DB3C-446B-4F88-96BD-28848D277B22" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-10D9DB3C-446B-4F88-96BD-28848D277B22-d2425e1993-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-10D9DB3C-446B-4F88-96BD-28848D277B22.html" id="GUID-10D9DB3C-446B-4F88-96BD-28848D277B22-d2425e1993-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.3</ph>
+Zigbee Device Objects (ZDO) Data Structures</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-EF181CAA-786D-4EE9-B00D-5CD28090D3D8-d2425e2179" class="topicref" data-id="GUID-EF181CAA-786D-4EE9-B00D-5CD28090D3D8" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-EF181CAA-786D-4EE9-B00D-5CD28090D3D8-d2425e2179-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-EF181CAA-786D-4EE9-B00D-5CD28090D3D8.html" id="GUID-EF181CAA-786D-4EE9-B00D-5CD28090D3D8-d2425e2179-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.4</ph>
+Network (NWK) Data Structures</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-DEF88872-CEB6-4FE8-AFDD-9351FEFE38CA-d2425e2259" class="topicref" data-id="GUID-DEF88872-CEB6-4FE8-AFDD-9351FEFE38CA" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-DEF88872-CEB6-4FE8-AFDD-9351FEFE38CA-d2425e2259-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-DEF88872-CEB6-4FE8-AFDD-9351FEFE38CA.html" id="GUID-DEF88872-CEB6-4FE8-AFDD-9351FEFE38CA-d2425e2259-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.5</ph>
+System Environment Data Structures</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-029F91B4-6A26-4AD4-8D00-7E4609162D15-d2425e2339" class="topicref" data-id="GUID-029F91B4-6A26-4AD4-8D00-7E4609162D15" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-029F91B4-6A26-4AD4-8D00-7E4609162D15-d2425e2339-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-029F91B4-6A26-4AD4-8D00-7E4609162D15.html" id="GUID-029F91B4-6A26-4AD4-8D00-7E4609162D15-d2425e2339-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.6</ph>
+Configuration Server (CS) Data Structures</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-64D796CD-8CE5-445B-961E-4229D2A8BC99-d2425e2355" class="topicref" data-id="GUID-64D796CD-8CE5-445B-961E-4229D2A8BC99" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-64D796CD-8CE5-445B-961E-4229D2A8BC99-d2425e2355-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-64D796CD-8CE5-445B-961E-4229D2A8BC99.html" id="GUID-64D796CD-8CE5-445B-961E-4229D2A8BC99-d2425e2355-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.7</ph>
+Hardware Abstraction Layer (HAL) Data Structures</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-47A8B8A3-5099-4DA5-A791-5F3BAE29BF00-d2425e2371" class="topicref" data-id="GUID-47A8B8A3-5099-4DA5-A791-5F3BAE29BF00" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-47A8B8A3-5099-4DA5-A791-5F3BAE29BF00-d2425e2371-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-47A8B8A3-5099-4DA5-A791-5F3BAE29BF00.html" id="GUID-47A8B8A3-5099-4DA5-A791-5F3BAE29BF00-d2425e2371-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.8</ph>
+Zigbee Cluster Library (ZCL) Data Structures</a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="GUID-C6389489-E662-4BF0-B217-88199976A2D0-d2425e2548" class="topicref" data-id="GUID-C6389489-E662-4BF0-B217-88199976A2D0" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action GUID-C6389489-E662-4BF0-B217-88199976A2D0-d2425e2548-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-C6389489-E662-4BF0-B217-88199976A2D0.html" id="GUID-C6389489-E662-4BF0-B217-88199976A2D0-d2425e2548-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9</ph>
+Zigbee Green Power (ZGP) Data Structures</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="GUID-2C7BED16-9B81-46EF-B930-4DAE56ECBCC4-d2425e2556" class="topicref" data-id="GUID-2C7BED16-9B81-46EF-B930-4DAE56ECBCC4" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-2C7BED16-9B81-46EF-B930-4DAE56ECBCC4.html" id="GUID-2C7BED16-9B81-46EF-B930-4DAE56ECBCC4-d2425e2556-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9.1</ph>
+ZGP_DataReq_t Structure</a></div></div></li><li role="treeitem"><div data-tocid="GUID-CE890B54-D683-41FB-ABA2-C0E399EBE1AC-d2425e2564" class="topicref" data-id="GUID-CE890B54-D683-41FB-ABA2-C0E399EBE1AC" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-CE890B54-D683-41FB-ABA2-C0E399EBE1AC.html" id="GUID-CE890B54-D683-41FB-ABA2-C0E399EBE1AC-d2425e2564-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9.2</ph>
+ZGP_FrameType_t Enumeration</a></div></div></li><li role="treeitem"><div data-tocid="GUID-8FFB1F4A-C972-4CBC-9A84-FF4FD213155F-d2425e2572" class="topicref" data-id="GUID-8FFB1F4A-C972-4CBC-9A84-FF4FD213155F" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-8FFB1F4A-C972-4CBC-9A84-FF4FD213155F.html" id="GUID-8FFB1F4A-C972-4CBC-9A84-FF4FD213155F-d2425e2572-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9.3</ph>
+ZGP_GpdfDataReq_t Structure</a></div></div></li><li role="treeitem"><div data-tocid="GUID-30D65454-559F-4A92-A0A1-A504AF6E4BAD-d2425e2580" class="topicref" data-id="GUID-30D65454-559F-4A92-A0A1-A504AF6E4BAD" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-30D65454-559F-4A92-A0A1-A504AF6E4BAD.html" id="GUID-30D65454-559F-4A92-A0A1-A504AF6E4BAD-d2425e2580-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9.4</ph>
+ZGP_PairingConfigCmdInfo_t Structure</a></div></div></li><li role="treeitem"><div data-tocid="GUID-029F27F3-F404-43EF-BAF5-5FFB385A8A5A-d2425e2588" class="topicref" data-id="GUID-029F27F3-F404-43EF-BAF5-5FFB385A8A5A" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-029F27F3-F404-43EF-BAF5-5FFB385A8A5A.html" id="GUID-029F27F3-F404-43EF-BAF5-5FFB385A8A5A-d2425e2588-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9.5</ph>
+ZGP_ResetReq_t Structure</a></div></div></li><li role="treeitem"><div data-tocid="GUID-97CD054F-0000-4712-BF18-A5D04EF34C7B-d2425e2596" class="topicref" data-id="GUID-97CD054F-0000-4712-BF18-A5D04EF34C7B" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-97CD054F-0000-4712-BF18-A5D04EF34C7B.html" id="GUID-97CD054F-0000-4712-BF18-A5D04EF34C7B-d2425e2596-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9.6</ph>
+ZGP_SinkGroup_t Structure</a></div></div></li><li role="treeitem"><div data-tocid="GUID-8312C7A0-D12F-4F74-B076-4A903F8204A3-d2425e2604" class="topicref" data-id="GUID-8312C7A0-D12F-4F74-B076-4A903F8204A3" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-8312C7A0-D12F-4F74-B076-4A903F8204A3.html" id="GUID-8312C7A0-D12F-4F74-B076-4A903F8204A3-d2425e2604-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9.7</ph>
+ZGP_SinkTableEntry_t Structure</a></div></div></li><li role="treeitem"><div data-tocid="GUID-3E46CB8C-CBD1-4FA2-90AF-9693F77E0D2D-d2425e2612" class="topicref" data-id="GUID-3E46CB8C-CBD1-4FA2-90AF-9693F77E0D2D" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-3E46CB8C-CBD1-4FA2-90AF-9693F77E0D2D.html" id="GUID-3E46CB8C-CBD1-4FA2-90AF-9693F77E0D2D-d2425e2612-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9.8</ph>
+ZGP_CommissionConf_t Structure</a></div></div></li><li role="treeitem"><div data-tocid="GUID-AAC213A0-AAC6-4374-B7FA-8A91AE0B9562-d2425e2620" class="topicref" data-id="GUID-AAC213A0-AAC6-4374-B7FA-8A91AE0B9562" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-AAC213A0-AAC6-4374-B7FA-8A91AE0B9562.html" id="GUID-AAC213A0-AAC6-4374-B7FA-8A91AE0B9562-d2425e2620-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9.9</ph>
+ZGP_TableOperationField_t Structure</a></div></div></li><li role="treeitem"><div data-tocid="GUID-F051CBA0-70F5-4D0D-B2CB-CCC3B43C47EC-d2425e2628" class="topicref" data-id="GUID-F051CBA0-70F5-4D0D-B2CB-CCC3B43C47EC" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-F051CBA0-70F5-4D0D-B2CB-CCC3B43C47EC.html" id="GUID-F051CBA0-70F5-4D0D-B2CB-CCC3B43C47EC-d2425e2628-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9.10</ph>
+ZGP_InfraDeviceStatus_t Enumeration</a></div></div></li><li role="treeitem"><div data-tocid="GUID-39F5364B-CB68-411B-A70D-66E5FFF21992-d2425e2637" class="topicref" data-id="GUID-39F5364B-CB68-411B-A70D-66E5FFF21992" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-39F5364B-CB68-411B-A70D-66E5FFF21992.html" id="GUID-39F5364B-CB68-411B-A70D-66E5FFF21992-d2425e2637-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9.11</ph>
+ZGP_EntryType_t Enumeration</a></div></div></li><li role="treeitem"><div data-tocid="GUID-F0F6A165-DFFA-43DA-818A-0CAE9140B932-d2425e2645" class="topicref" data-id="GUID-F0F6A165-DFFA-43DA-818A-0CAE9140B932" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-F0F6A165-DFFA-43DA-818A-0CAE9140B932.html" id="GUID-F0F6A165-DFFA-43DA-818A-0CAE9140B932-d2425e2645-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9.12</ph>
+ZGP_TableUpdateAction_t Structure</a></div></div></li><li role="treeitem" class="active"><div data-tocid="GUID-52B64398-5DCC-4128-A2C2-349CE3DB8D28-d2425e2653" class="topicref" data-id="GUID-52B64398-5DCC-4128-A2C2-349CE3DB8D28" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-52B64398-5DCC-4128-A2C2-349CE3DB8D28.html" id="GUID-52B64398-5DCC-4128-A2C2-349CE3DB8D28-d2425e2653-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9.13</ph>
+ZGP_Status_t Enumeration</a></div></div></li><li role="treeitem"><div data-tocid="GUID-10CF6667-7433-4F18-9250-CB56DE52FF76-d2425e2661" class="topicref" data-id="GUID-10CF6667-7433-4F18-9250-CB56DE52FF76" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-10CF6667-7433-4F18-9250-CB56DE52FF76.html" id="GUID-10CF6667-7433-4F18-9250-CB56DE52FF76-d2425e2661-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9.14</ph>
+ZGP_ReadOperationStatus_t Structure</a></div></div></li><li role="treeitem"><div data-tocid="GUID-D4ED356E-C1C2-4E45-BD48-EF6D238306A5-d2425e2669" class="topicref" data-id="GUID-D4ED356E-C1C2-4E45-BD48-EF6D238306A5" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-D4ED356E-C1C2-4E45-BD48-EF6D238306A5.html" id="GUID-D4ED356E-C1C2-4E45-BD48-EF6D238306A5-d2425e2669-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9.15</ph>
+ZGP_SinkTableActions_t Enumeration</a></div></div></li><li role="treeitem"><div data-tocid="GUID-80AB40F7-833F-41E3-B31B-48006FECD344-d2425e2677" class="topicref" data-id="GUID-80AB40F7-833F-41E3-B31B-48006FECD344" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-80AB40F7-833F-41E3-B31B-48006FECD344.html" id="GUID-80AB40F7-833F-41E3-B31B-48006FECD344-d2425e2677-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2.9.16</ph>
+zgpGpProxyCommModeOptions_t Structure</a></div></div></li></ul></li></ul></li></ul></li><li role="treeitem"><div data-tocid="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6-d2425e2685" class="topicref" data-id="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6.html" id="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6-d2425e2685-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">6</ph>
+Document Revision History</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2425e2693" class="topicref backmatter backmatter_parent" data-id="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2425e2693-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B.html" id="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2425e2693-link">Microchip Information</a></div></div></li></ul></div>
+		                        
+                            </div>
+                        </nav>
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        <button id="wh_close_publication_toc_button" class="close-toc-button d-none" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc" aria-expanded="true">
+                            <span class="close-toc-icon-container">
+                                <span class="close-toc-icon"></span>     
+                            </span>
+                        </button>
+                        
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article role="article" aria-labelledby="GUID-52B64398-5DCC-4128-A2C2-349CE3DB8D28__GUID-A61DCF03-12F7-46EB-B428-1667A2E40629">
+<h1 class="- topic/title title topictitle1" id="GUID-52B64398-5DCC-4128-A2C2-349CE3DB8D28__GUID-A61DCF03-12F7-46EB-B428-1667A2E40629" style="">5.2.9.13 ZGP_Status_t Enumeration</h1>
+<div class="- topic/body body">
+<div class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Syntax</strong><pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="GUID-52B64398-5DCC-4128-A2C2-349CE3DB8D28__CODEBLOCK_JBR_KX4_TBC" data-ofbid="GUID-52B64398-5DCC-4128-A2C2-349CE3DB8D28__CODEBLOCK_JBR_KX4_TBC"><strong class="hl-keyword">typedef</strong> <strong class="hl-keyword">enum</strong>
+{
+ ZGP_SUCCESS_STATUS = <span class="hl-number">0x00</span>,
+ <span class="hl-tag-doctype-comment">/** ZGP Data request queue is full */</span>
+ ZGP_TX_QUEUE_FULL = <span class="hl-number">0x70</span>,
+ <em class="hl-comment">/* previous GPDF is overwritten */</em>
+ ZGP_ENTRY_REPLACED = <span class="hl-number">0x71</span>,
+ <em class="hl-comment">/* GPDF is added to the zgp TxQueue */</em>
+ ZGP_ENTRY_ADDED = <span class="hl-number">0x72</span>,
+ <em class="hl-comment">/* zgpTxQueueEntryLifetime timeout */</em>
+ ZGP_ENTRY_EXPIRED = <span class="hl-number">0x73</span>,
+ ZGP_ENTRY_REMOVED = <span class="hl-number">0x74</span>,
+ ZGP_GPDF_SENDING_FINALIZED = <span class="hl-number">0x75</span>,
+ <em class="hl-comment">/* No reply received for commissioning request */</em>
+ ZGP_NO_COMMISSIONING_REPLY = <span class="hl-number">0x76</span>,
+ <em class="hl-comment">/* No confirmation for commissioning request */</em>
+ ZGP_COMMISSIONING_TIMEOUT = <span class="hl-number">0x77</span>,
+ <em class="hl-comment">/* Commissioning reply has invalid parameter */</em>
+ ZGP_COMMISSIONING_REPLY_FAILURE = <span class="hl-number">0x78</span>,
+ <em class="hl-comment">/* Commissioning/Decommissioning invalid request */</em>
+ ZGP_COMMISSIONING_REQ_INVALID = <span class="hl-number">0x79</span>,
+ <em class="hl-comment">/* ZGP key unavailable*/</em>
+ ZGP_UNAVAILABLE_KEY_STATUS = <span class="hl-number">0x7A</span>,
+ <em class="hl-comment">/* ZGP bad state */</em>
+ ZGP_BAD_STATE = <span class="hl-number">0x7B</span>,
+ <em class="hl-comment">/* Invalid parameter */</em>
+ ZGP_INVALID_PARAMETER = <span class="hl-number">0x7C</span>,
+ <em class="hl-comment">/* Invalid parameter */</em>
+ ZGP_NO_CHANNEL_MASK = <span class="hl-number">0x7D</span>,
+ <em class="hl-comment">/* ZGP_SECURITY_LEVEL_NOT_MATCHED */</em>
+ ZGP_SECURITY_LEVEL_NOT_MATCHED = <span class="hl-number">0x7E</span>,
+ <em class="hl-comment">/* No reply received for channel request*/</em>
+ ZGP_NO_CHANNEL_CONFIG_REPLY = <span class="hl-number">0x7F</span>,
+ <span class="hl-tag-doctype-comment">/** IEEE 802.15.4-2006, Table 78 MAC enumerations description. */</span>
+ <span class="hl-tag-doctype-comment">/** The frame counter purportedly applied by the originator of the
+ * received frame is invalid. */</span>
+ ZGP_MAC_COUNTER_ERROR_STATUS = <span class="hl-number">0xDB</span>,
+ <span class="hl-tag-doctype-comment">/** The key purportedly applied by the originator of the received frame is
+ * not allowed to be used with that frame type according to the key usage
+ * policy of the recipient. */</span>
+ ZGP_MAC_IMPROPER_KEY_TYPE_STATUS = <span class="hl-number">0xDC</span>,
+ <span class="hl-tag-doctype-comment">/** The security level purportedly applied by the originator of the received
+ * frame does not meet the minimum security level required/expected by
+ * the recipient for that frame type. */</span>
+ ZGP_MAC_IMPROPER_SECURITY_LEVEL_STATUS = <span class="hl-number">0xDD</span>,
+ <span class="hl-tag-doctype-comment">/** The received frame was purportedly secured using security based on
+ * IEEE Std 802.15.4-2003, and such security is not supported by this standard.
+ **/</span>
+ ZGP_MAC_UNSUPPORTED_LEGACY_STATUS = <span class="hl-number">0xDE</span>,
+ <span class="hl-tag-doctype-comment">/** The security purportedly applied by the originator of the received frame
+ * is not supported. */</span>
+ ZGP_MAC_UNSUPPORTED_SECURITY_STATUS = <span class="hl-number">0xDF</span>,
+ <span class="hl-tag-doctype-comment">/** The beacon was lost following a synchronization request. */</span>
+ ZGP_MAC_BEACON_LOSS_STATUS = <span class="hl-number">0xE0</span>,
+ <span class="hl-tag-doctype-comment">/** A transmission could not take place due to activity on the channel,
+ * i.e., the CSMA-CA mechanism has failed. */</span>
+ ZGP_MAC_CHANNEL_ACCESS_FAILURE_STATUS = <span class="hl-number">0xE1</span>,
+ <span class="hl-tag-doctype-comment">/** The GTS request has been denied by the PAN coordinator. */</span>
+ ZGP_MAC_DENIED_STATUS = <span class="hl-number">0xE2</span>,
+ <span class="hl-tag-doctype-comment">/** The attempt to disable the transceiver has failed. */</span>
+ ZGP_MAC_DISABLE_TRX_FAILURE_STATUS = <span class="hl-number">0xE3</span>,
+ <span class="hl-tag-doctype-comment">/** Either a frame resulting from processing has a length that is
+ * greater than aMaxPHYPacketSize or a requested transaction is
+ * too large to fit in the CAP or GTS. */</span>
+ ZGP_MAC_FRAME_TOO_LONG_STATUS = <span class="hl-number">0xE5</span>,
+ <span class="hl-tag-doctype-comment">/** The requested GTS transmission failed because the specified
+ * GTS either did not have a transmit GTS direction or was not defined. */</span>
+ ZGP_MAC_INVALID_GTS_STATUS = <span class="hl-number">0xE6</span>,
+ <span class="hl-tag-doctype-comment">/** A request to purge an MSDU from the transaction queue was made using
+ * an MSDU handle that was not found in the transaction table. */</span>
+ ZGP_MAC_INVALID_HANDLE_STATUS = <span class="hl-number">0xE7</span>,
+ <span class="hl-tag-doctype-comment">/** A parameter in the primitive is either not supported or is out of
+ * the valid range. */</span>
+ ZGP_MAC_INVALID_PARAMETER_STATUS = <span class="hl-number">0xE8</span>,
+ <span class="hl-tag-doctype-comment">/** No acknowledgment was received after macMaxFrameRetries. */</span>
+ ZGP_MAC_NO_ACK_STATUS = <span class="hl-number">0xE9</span>,
+ <span class="hl-tag-doctype-comment">/** A scan operation failed to find any network beacons. */</span>
+ ZGP_MAC_NO_BEACON_STATUS = <span class="hl-number">0xEA</span>,
+ <span class="hl-tag-doctype-comment">/** No response data were available following a request. */</span>
+ ZGP_MAC_NO_DATA_STATUS = <span class="hl-number">0xEB</span>,
+ <span class="hl-tag-doctype-comment">/** The operation failed because a 16-bit short address was not allocated. */</span>
+ ZGP_MAC_NO_SHORT_ADDRESS_STATUS = <span class="hl-number">0xEC</span>,
+ <span class="hl-tag-doctype-comment">/** A receiver enable request was unsuccessful because it could not be
+ * completed within the CAP. */</span>
+ ZGP_MAC_OUT_OF_CAP_STATUS = <span class="hl-number">0xED</span>,
+ <span class="hl-tag-doctype-comment">/** A PAN identifier conflict has been detected and communicated
+ * to the PAN coordinator. */</span>
+ ZGP_MAC_PAN_ID_CONFLICT_STATUS = <span class="hl-number">0xEE</span>,
+ <span class="hl-tag-doctype-comment">/** A coordinator realignment command has been received. */</span>
+ ZGP_MAC_REALIGNMENT_STATUS = <span class="hl-number">0xEF</span>,
+ <span class="hl-tag-doctype-comment">/** The transaction has expired and its information was discarded. */</span>
+ ZGP_MAC_TRANSACTION_EXPIRED_STATUS = <span class="hl-number">0xF0</span>,
+ <span class="hl-tag-doctype-comment">/** There is no capacity to store the transaction. */</span>
+ ZGP_MAC_TRANSACTION_OVERFLOW_STATUS = <span class="hl-number">0xF1</span>,
+ <span class="hl-tag-doctype-comment">/** The transceiver was in the transmitter enabled state when the receiver
+ * was requested to be enabled. */</span>
+ ZGP_MAC_TX_ACTIVE_STATUS = <span class="hl-number">0xF2</span>,
+ <span class="hl-tag-doctype-comment">/** The key purportedly used by the originator of the received frame is
+ * not available or, if available, the originating device is not known
+ * or is blacklisted with that particular key. */</span>
+ ZGP_MAC_UNAVAILABLE_KEY_STATUS = <span class="hl-number">0xF3</span>,
+ <span class="hl-tag-doctype-comment">/** A SET/GET request was issued with the identifier of a PIB
+ * attribute that is not supported. */</span>
+ ZGP_MAC_UNSUPPORTED_ATTRIBUTE_STATUS = <span class="hl-number">0xF4</span>,
+ <span class="hl-tag-doctype-comment">/** A request to send data was unsuccessful because neither the source address
+ * parameters nor the destination address parameters were present. */</span>
+ ZGP_MAC_INVALID_ADDRESS_STATUS = <span class="hl-number">0xF5</span>,
+ <span class="hl-tag-doctype-comment">/** A receiver enable request was unsuccessful because it specified a number
+ * of symbols that was longer than the beacon interval. */</span>
+ ZGP_MAC_ON_TIME_TOO_LONG_STATUS = <span class="hl-number">0xF6</span>,
+ <span class="hl-tag-doctype-comment">/** A receiver enable request was unsuccessful because it could not be
+ * completed within the current superframe and was not permitted to be
+ * deferred until the next superframe. */</span>
+ ZGP_MAC_PAST_TIME_STATUS = <span class="hl-number">0xF7</span>,
+ <span class="hl-tag-doctype-comment">/** The device was instructed to start sending beacons based on the
+ * timing of the beacon transmissions of its coordinator, but the device
+ * is not currently tracking the beacon of its coordinator. */</span>
+ ZGP_MAC_TRACKING_OFF_STATUS = <span class="hl-number">0xF8</span>,
+ <span class="hl-tag-doctype-comment">/** An attempt to write to a MAC PIB attribute that is in a table failed
+ * because the specified table index was out of range. */</span>
+ ZGP_MAC_INVALID_INDEX_STATUS = <span class="hl-number">0xF9</span>,
+ <span class="hl-tag-doctype-comment">/** There are some unscanned channels yet, but there is no memory */</span>
+ ZGP_MAC_LIMIT_REACHED_STATUS = <span class="hl-number">0xFA</span>,
+ <span class="hl-tag-doctype-comment">/** A SET/GET request was issued with the identifier of an attribute
+ * that is read only. */</span>
+ ZGP_MAC_READ_ONLY_STATUS = <span class="hl-number">0xFB</span>,
+ <span class="hl-tag-doctype-comment">/** A request to perform a scan operation failed because the MLME was
+ * in the process of performing a previously initiated scan operation. */</span>
+ ZGP_MAC_SCAN_IN_PROGRESS_STATUS = <span class="hl-number">0xFC</span>,
+ <span class="hl-tag-doctype-comment">/** The device was instructed to start sending beacons based on the timing of
+ * the beacon transmissions of its coordinator, but the instructed start time
+ * overlapped the transmission time of the beacon of its coordinator. */</span>
+ ZGP_MAC_SUPERFRAME_OVERLAP_STATUS = <span class="hl-number">0xFD</span>
+}ZGP_Status_t;</pre></div>
+    <p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Description</strong></p>
+        <p class="- topic/p p">The <code class="+ topic/ph pr-d/codeph ph codeph">ZGP_Status_t</code> enumeration represents the return codes for ZGP
+            primitives, indicating the success or failure of an operation.</p>
+</div>
+</article></main></div>
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <div class="mchp_disclaimer"><p class="mchp_disclaimer_text">The online versions of the documents are provided as a courtesy. Verify all content and data in the device’s PDF documentation found on the device product page.</p></div><footer class="navbar navbar-default wh_footer">
+  <div class=" footer-container mx-auto ">
+    <div class="footer">
+  <div class="mchp-wh-footer">
+    <div class="mchp-footer">
+      <div class="mchp-footer-tier1">
+        <div class="spacer"></div>
+        <div class="mchp-footer-container">
+          <div class="mchp-footer-links mchp-social-media-links">
+            <div class="mchp-component-items">
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.facebook.com/pages/Microchip-Technology-Inc/20320981741" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Facebook" src="oxygen-webhelp/template/resources/images/201016-corp-facebook.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.linkedin.com/company/microchip-technology" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip LinkedIn" src="oxygen-webhelp/template/resources/images/201016-corp-linkedin.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://twitter.com/MicrochipTech" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Twitter" src="oxygen-webhelp/template/resources/images/201016-corp-twitter.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.youtube.com/user/MicrochipTechnology" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip YouTube" src="oxygen-webhelp/template/resources/images/201016-corp-youtube.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.instagram.com/microchiptechnologyinc/" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Instagram" src="oxygen-webhelp/template/resources/images/201016-corp-instagram.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.weibo.com/microchiptech" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Weibo" src="oxygen-webhelp/template/resources/images/201016-corp-weibo.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.microchip.com/en-us/about/blog" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Blog" src="oxygen-webhelp/template/resources/images/201016-corp-blog.png"/>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="mchp-footer-links">
+            <div class="mchp-component-items">
+              <div class="mchp-component-item">
+                <div class="link">
+                  <a href="https://www.microchip.com/about-us/contact-us" class="mchp-link__link">Contact</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information" class="mchp-link__link">Legal</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information/privacy-policy" class="mchp-link__link">Privacy Policy</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information/microchip-cookie-statement" class="mchp-link__link">Cookies</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item">
+                <div class="link">
+                  <a href="https://careers.microchip.com/" class="mchp-link__link">Careers</a>
+                  <span class="mchp-link__separator"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mchp-footer-newsletter">
+            <div class="cmp-text">
+              <p>Stay on the leading edge with our blog</p>
+            </div>
+            <div class="mchp-button-wrapper">
+              <a role="button" href="https://www.microchip.com/en-us/about/blog" class="mchp-button mchp-button-regular solid">
+                <span class="mchp-button__span">MicroSolutions</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="graphic">
+          <img src="oxygen-webhelp/template/resources/images/footer-graphic.png"/>
+        </div>
+      </div>
+      <div class="mchp-footer-tier2">
+        <p class="mchp-copyright">© Copyright 1998-2022 Microchip Technology Inc. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async="true" src="https://www.googletagmanager.com/gtag/js?id=UA-2724382-19"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];  
+    function gtag(){dataLayer.push(arguments);}  
+    gtag('js', new Date());   
+    gtag('config', 'UA-2724382-19');
+  </script>
+  
+  <script type="text/javascript">_satellite.pageBottom();</script><!-- Adobe Analytics -->
+  <script type="text/javascript" src="mchp-js/prepend.js"></script><!-- Package for viewing PDFs on mobile devices -->
+  
+</div>
+  </div>
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <div id="modal_img_container"></div>
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+       
+        </body>
+</html>

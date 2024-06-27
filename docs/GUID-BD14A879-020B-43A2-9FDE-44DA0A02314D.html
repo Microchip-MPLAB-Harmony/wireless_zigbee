@@ -1,362 +1,418 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
-<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
-<meta name="DC.rights.owner" content="(C) Copyright 2023" />
-<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
-<meta name="DC.title" content="Read or write a Remote Attribute" />
-<meta name="DC.relation" scheme="URI" content="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF.html" />
-<meta name="DC.format" content="XHTML" />
-<meta name="DC.identifier" content="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D" />
-<meta name="DC.language" content="en-US" />
-<link rel="stylesheet" type="text/css" href="stylesheets/atmel.css" />
-<title>Read or write a Remote Attribute</title>
-<meta name="Microsoft.Help.Id" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D" />
-<meta name="Microsoft.Help.TocParent" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF" />
-<meta name="Microsoft.Help.TocOrder" content="1" />
-<meta name="Microsoft.Help.Locale" content="en-US" />
-<meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
-<script language="javascript">
-       
-       if (window.parent.location.protocol != 'file:') {
-				document.addEventListener('click', function(e) {
-				    if (e.target) {
-               if (e.target.nodeName == "A" ) {
-                    if (!e.target.target) {
-                      e.preventDefault();
-                      e.stopPropagation();
-                              
-                      var origUrl = window.parent.location.href.substr(0, window.parent.location.href.indexOf("?"));
-                      if (origUrl.length === 0) {
-                          origUrl = window.parent.location.href;
-                      }
-                      var href= e.target.getAttribute("href");
-                      var parts = href.split("#");
-          
-                      var url = "";
-                      if (parts.length == 2 ) {
-                        if (!parts[0].length) {
-                            url = window.parent.location.search.replace('?','')
-                        } else {
-                            url = parts[0].replace('.html','');
-                        }
-                      } else {
-                        url = parts[0].replace('.html','');
-                      }
-
-                      if (parts.length == 2) {
-                          url += "#" + parts[1];
-                      }
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="24.1">
+    <head><link rel="shortcut icon" href="oxygen-webhelp\template\resources/images/favicon.ico"/><link rel="icon" href="oxygen-webhelp\template\resources/images/favicon.ico"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="description" content="To read or write an attribute on a remote device, use the ZCL_AttributeReq() function. A single request can access values of several attributes from the same cluster. The argument is of ZCL_Request_t ..."/><meta name="copyright" content="(C) Copyright 2024"/><meta name="generator" content="DITA-OT"/><title>4.5.2 Read or Write a Remote Attribute</title><!--  Generated with Oxygen version 24.1, build number 2022062014.  --><meta name="wh-path2root" content=""/><meta name="wh-toc-id" content="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D-d2425e317"/><meta name="wh-source-relpath" content="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D.xml"/><meta name="wh-out-relpath" content="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D.html"/>
+    <!-- Latest compiled and minified Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="./oxygen-webhelp/lib/bootstrap/css/bootstrap.min.css"/>
     
-                      window.parent.location.href = origUrl + "?" + url;
+    <link rel="stylesheet" href="./oxygen-webhelp/lib/jquery-ui/jquery-ui.min.css"/>
+    
+    <!-- Template default styles  -->
+    <link rel="stylesheet" type="text/css" href="./oxygen-webhelp/app/topic-page.css?buildId=2022062014"/>
+    
+    
+    <script src="./oxygen-webhelp/lib/jquery/jquery-3.5.1.min.js"></script>
+    
+    <script data-main="./oxygen-webhelp/app/topic-page.js" src="./oxygen-webhelp/lib/requirejs/require.js"></script>
+<link rel="stylesheet" type="text/css" href="oxygen-webhelp/template/microchip.css?buildId=2022062014"/><link rel="stylesheet" type="text/css" href="oxygen-webhelp/template/notes.css?buildId=2022062014"/>
+<script src="mchp-context-help.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300" rel="stylesheet" type="text/css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async="" type="text/javascript"></script>
+    <script src="https://assets.adobedtm.com/6a72a357eb48/a636c708c7fe/launch-0b0023397020.min.js"></script><!-- Adobe Analytics -->
+</head>
 
-                      return false;
-                    }
-               }
-            }
-				});
-			}
-
-		</script><script language="javascript">
-         
-         function copyContent(content, button) {
-         
-            var textArea = document.createElement("textarea");
-            
-            // Place in the top-left corner of screen regardless of scroll position.
-            textArea.style.position = 'fixed';
-            textArea.style.top = 0;
-            textArea.style.left = 0;
-            
-            // Ensure it has a small width and height. Setting to 1px / 1em
-            // doesn't work as this gives a negative w/h on some browsers.
-            textArea.style.width = '2em';
-            textArea.style.height = '2em';
-            
-            // We don't need padding, reducing the size if it does flash render.
-            textArea.style.padding = 0;
-            
-            // Clean up any borders.
-            textArea.style.border = 'none';
-            textArea.style.outline = 'none';
-            textArea.style.boxShadow = 'none';
-            
-            // Avoid flash of the white box if rendered for any reason.
-            textArea.style.background = 'transparent';
-            
-            textArea.value = content;
-            
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            
-            try {
-               var successful = document.execCommand('copy');
-               var msg = successful ? 'successful' : 'unsuccessful';
-               if (!button.classList.contains("copied")){
-                  button.textContent = "Copied";
-                  button.classList.add("copied");
-                  setTimeout(function(){
-                     button.textContent = "Copy";
-                     button.classList.remove("copied");
-                  },1000);
-               }
-            } catch (err) {
-               console.log('Oops, unable to copy');
-            }
-            
-            document.body.removeChild(textArea);
-         }
-         
-         function cpy(id, button) {
-            var element = document.getElementById(id);
-            var content = element.getAttribute("content");
-            
-            copyContent(content, button);
-         }
-         
-         document.addEventListener("DOMContentLoaded", function(event) {
-            document.querySelectorAll(".codeblock").forEach(function(elem) {
-               elem.style.position = "relative";
-               var copy = document.createElement("button");
-               copy.textContent = "Copy";
-               copy.setAttribute("class", "copy-code");
-               
-               var content = elem.textContent;
-               
-               copy.addEventListener("click", function(){
-                  copyContent(content, copy);
-               });
-               
-               elem.addEventListener("mouseenter", function(evt){
-                  elem.prepend(copy);
-               });
-            });
-            
-            document.querySelectorAll(".codeblock").forEach(function(elem) {
-               elem.addEventListener("mouseleave", function(evt){
-                  document.querySelector(".copy-code").remove();
-               });
-            });
-         });
-         
-      </script><script language="javascript">
-          
-          // Add the MathML namespace to html
-          var html = document.getElementsByTagName("html")[0],
-          head = document.getElementsByTagName("head")[0];
-          
-          var mathJax = document.createElement("script");
-          mathJax.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML";
-          head.appendChild(mathJax);
-          
-          html.setAttribute("xmlns:m","http://www.w3.org/1998/Math/MathML");
-          
-          function inIframe() { try { return window.self !== window.top; } catch (e) { return true; } }
-          
-          if (!inIframe()) { 
-          
-          var Default = "index.html?GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D"; 
-          
-          var displaylocation = "value" + window.location.href;
-          
-          var GUIDS = displaylocation.split('GUID');          
-          
-          if (displaylocation.indexOf('#GUID') != -1) {            
-          var First = GUIDS[1].split('.html');  
-          if (GUIDS[3]){First = GUIDS[2].split('.html');}
-          if (GUIDS[4]){First = GUIDS[3].split('.html');}
-          if (GUIDS[5]){First = GUIDS[4].split('.html');}
-          
-          var Second = GUIDS[2].split('#');   
-          if (GUIDS[3]){Second = GUIDS[3].split('#');}
-          if (GUIDS[4]){Second = GUIDS[4].split('#');}
-          if (GUIDS[5]){Second = GUIDS[5].split('#');}
-          
-          Default = "index.html?" + "GUID" + First[0] + "GUID" + Second[0];     
-          }                    
-          window.top.location = Default;
-          }       
-          
-        </script><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /><style xml:space="">
-        
-          button.copy-code{
-            display:none;
-            padding:0.7em 1.4em;
-            margin:0 0.3em 0.3em 0;
-            border-radius:0.15em;
-            box-sizing: border-box;
-            text-decoration:none;
-            font-family:'Roboto',sans-serif;
-            text-transform:uppercase;
-            font-weight:400;
-            color:#FFFFFF;
-            background-color:#9c9c9c;
-            box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
-            text-align:center;
-            position:relative;
-            border: 0;
-            float: right;
-            border-radius: .5em;
-            cursor: pointer;
-          }
-          button.copy-code:active{
-            top:0.1em;
-          }
-          
-          pre:hover button.copy-code{
-            display: inline-block !important;
-          }
-          button.copy-code.copied {
-            cursor: default !important;
-          }
-          
-          
-          @media all and (max-width:30em){
-            button.copy-code{
-              display:block;
-              margin:0.4em auto;
-            }
-          }
+    <body id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
         
         
-      </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
-<body id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D">
+        
+        
+        <header class="navbar navbar-default wh_header">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container navbar-nav navbar-expand-md navbar-dark">
+            <div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    
+                    <a href="index.html" class=" wh_logo d-none d-sm-block "><img src="oxygen-webhelp\template\resources/images/microchip.png" alt="MPLAB® Harmony Wireless Zigbee &#xA;    "/></a>
+                    <div class=" wh_publication_title "><a href="index.html">MPLAB® Harmony Wireless Zigbee 
+    </a></div>
+                    
+                </div>
+                
+                
+            </div>
 
-<h1 class="title topictitle1" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-7A823D66-CDFC-4606-BC0E-30C6C07EF489" style="">Read or write a Remote Attribute</h1>
-<div class="body">
-        <p class="p">To read or write an attribute on a remote device, the <a class="xref" href="GUID-1C5C7916-AD83-4D15-8407-ACCA7CC86CD0.html">ZCL_AttribureReq()</a> function is used. A single request can access values of
-            several attributes from the same cluster.</p>
-
-        <p class="p">The argument is of <a class="xref" href="GUID-D668683F-F251-4340-973F-733DE28B6748.html">ZCL_Request_t</a>* type. The id field of the argument shall be set to
-            ZCL_READ_ATTRIBUTES_COMMAND_ID to read attributes’ values and to
-            ZCL_WRITE_ATTRIBUTES_COMMAND_ID to write attributes’ values. The requestPayload and
-            requestLength fields of the <a class="xref" href="GUID-D668683F-F251-4340-973F-733DE28B6748.html">ZCL_Request_t</a> instance shall be filled as described in following
-            sections.</p>
-
-        <div class="section" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__SECTION_V5F_H12_4TB"><h2 class="title sectiontitle">Payload for Read Attributes Command</h2>
+            <div class="wh_top_menu_and_indexterms_link collapse navbar-collapse" id="wh_top_menu_and_indexterms_link">
+                
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</header>
+        
+        
+         
+        
+        <div class=" wh_search_input navbar-form wh_topic_page_search search " role="form">
             
-            <p class="p">To form the payload for the read attributes command use the <a class="xref" href="GUID-97B49612-DAB8-4D81-8BDC-D38AD7628EC6.html">ZCL_PutNextElement()</a> function. With the help of this function attribute
-                IDs are written one by one to the buffer in a correct way and the overall payload
-                length is calculated. The buffer is then used as the payload for the read attribute
-                command. See instructions below:</p>
+            
+            
+            <form id="searchForm" method="get" role="search" action="search.html"><div class="d-flex justify-contents-around"><div class="flex-grow-1"></div><div class="position-relative flex-grow-1"><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div><div class="align-self-center flex-grow-1 ml-2"></div></div></form>
+            
+            <div class="mchp-color-stripe-grid-container">
+  <div class="mchp-main-bar mchp-orange-bar"></div>
+  <div class="mchp-main-bar mchp-blue-bar"></div>
+  <div class="mchp-main-bar mchp-green-bar"></div>
+</div>
+            
+        </div>
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
 
-            <ol class="ol" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__OL_W5F_H12_4TB">
-                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-8DE68C44-4C8E-4828-B196-1C9E1952EBA8"><span class="indent-level-default">1.</span>Define variables of <a class="xref" href="GUID-7DE8E39E-096F-4DB4-9094-BBC893F7EBEF.html">ZCL_NextElement_t</a> and <a class="xref" href="GUID-E0FBFA0B-5033-482D-872A-1E1F220B47FC.html">ZCL_ReadAttributeReq_t</a> types. For
-                    example:<pre class="pre"><a class="xref" href="GUID-7DE8E39E-096F-4DB4-9094-BBC893F7EBEF.html">ZCL_NextElement_t</a> element;
-<a class="xref" href="GUID-E0FBFA0B-5033-482D-872A-1E1F220B47FC.html">ZCL_ReadAttributeReq_t</a> readAttrReqElement;</pre>
-</li>
-
-                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-D8A13F7B-E87B-42B2-970D-8A164EC280EA"><span class="indent-level-default">2.</span>Define a sufficiently large buffer (but note that it should include only
-                    attribute IDs). The buffer must be defined globally and may be a variable of the
-                    uint8_t* type.</li>
-
-                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-CDC14307-2B7C-49F6-8284-C899ED922F83"><span class="indent-level-default">3.</span>Configure element in the following
-                    way:<pre class="pre">element.payloadLength = 0;
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="GUID-1599DD35-8680-4FD4-867D-938D77A52B57"><div class="title"><a href="GUID-1599DD35-8680-4FD4-867D-938D77A52B57.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4</ph>
+Zigbee Stack Layer Usage</a></div></div></li><li><div class="topicref" data-id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF"><div class="title"><a href="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.5</ph>
+Zigbee Cluster Library (ZCL) Components Usage</a></div></div></li><li class="active"><div class="topicref" data-id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D"><div class="title"><a href="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.5.2</ph>
+Read or Write a Remote Attribute</a></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <button type="button" id="wh_toc_button" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            <div class="row" style="margin-top: -1em;"><div class="col-lg-7 col-md-7 col-sm-12 offset-lg-3 offset-md-3 text-right border-bottom mb-1"><h2 class="text-dark header_title">
+    </h2></div></div>
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        <nav id="wh_publication_toc" class="col-lg-3 col-md-3 col-sm-12 d-md-block d-none d-print-none" aria-label="Table of Contents Container">
+                            <div id="wh_publication_toc_content">
+		                        
+                            	<div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem"><div data-tocid="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801-d2425e11" class="topicref introduction" data-id="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801.html" id="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801-d2425e11-link">Introduction</a></div></div></li><li role="treeitem"><div data-tocid="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207-d2425e19" class="topicref introduction" data-id="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207.html" id="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207-d2425e19-link">Features</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5-d2425e27" class="topicref" data-id="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5-d2425e27-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5.html" id="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5-d2425e27-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1</ph>
+Quick References</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38-d2425e51" class="topicref" data-id="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38-d2425e51-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38.html" id="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38-d2425e51-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">2</ph>
+BitCloud Zigbee Stack Architecture and API Overview</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686-d2425e84" class="topicref" data-id="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686-d2425e84-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686.html" id="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686-d2425e84-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">3</ph>
+Programming Basics</a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="GUID-1599DD35-8680-4FD4-867D-938D77A52B57-d2425e141" class="topicref" data-id="GUID-1599DD35-8680-4FD4-867D-938D77A52B57" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action GUID-1599DD35-8680-4FD4-867D-938D77A52B57-d2425e141-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-1599DD35-8680-4FD4-867D-938D77A52B57.html" id="GUID-1599DD35-8680-4FD4-867D-938D77A52B57-d2425e141-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4</ph>
+Zigbee Stack Layer Usage</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B-d2425e149" class="topicref" data-id="GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B-d2425e149-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B.html" id="GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B-d2425e149-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.1</ph>
+BDB Component Usage</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-C306947F-F175-4699-B119-75961F5CDE21-d2425e197" class="topicref" data-id="GUID-C306947F-F175-4699-B119-75961F5CDE21" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-C306947F-F175-4699-B119-75961F5CDE21-d2425e197-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-C306947F-F175-4699-B119-75961F5CDE21.html" id="GUID-C306947F-F175-4699-B119-75961F5CDE21-d2425e197-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.2</ph>
+Configuration Server Component Usage</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-39CF18F8-E921-45B0-BA0B-B39CCD326B44-d2425e253" class="topicref" data-id="GUID-39CF18F8-E921-45B0-BA0B-B39CCD326B44" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-39CF18F8-E921-45B0-BA0B-B39CCD326B44-d2425e253-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-39CF18F8-E921-45B0-BA0B-B39CCD326B44.html" id="GUID-39CF18F8-E921-45B0-BA0B-B39CCD326B44-d2425e253-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.3</ph>
+HAL Component Usage</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-9EA8133D-53DD-415E-8E08-CBC0969FFCA5-d2425e277" class="topicref" data-id="GUID-9EA8133D-53DD-415E-8E08-CBC0969FFCA5" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-9EA8133D-53DD-415E-8E08-CBC0969FFCA5-d2425e277-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-9EA8133D-53DD-415E-8E08-CBC0969FFCA5.html" id="GUID-9EA8133D-53DD-415E-8E08-CBC0969FFCA5-d2425e277-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.4</ph>
+System Environment Components Usage</a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF-d2425e301" class="topicref" data-id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF-d2425e301-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF.html" id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF-d2425e301-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.5</ph>
+Zigbee Cluster Library (ZCL) Components Usage</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="GUID-524ACEE2-A392-4353-8AD1-1EF70EE05579-d2425e309" class="topicref" data-id="GUID-524ACEE2-A392-4353-8AD1-1EF70EE05579" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-524ACEE2-A392-4353-8AD1-1EF70EE05579.html" id="GUID-524ACEE2-A392-4353-8AD1-1EF70EE05579-d2425e309-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.5.1</ph>
+Sending a General Cluster Command</a></div></div></li><li role="treeitem" class="active"><div data-tocid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D-d2425e317" class="topicref" data-id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D.html" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D-d2425e317-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.5.2</ph>
+Read or Write a Remote Attribute</a></div></div></li><li role="treeitem"><div data-tocid="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40-d2425e325" class="topicref" data-id="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40.html" id="GUID-A3352E57-26BB-4F2A-9BFA-A68B84110B40-d2425e325-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.5.3</ph>
+Parsing the Response Payload</a></div></div></li><li role="treeitem"><div data-tocid="GUID-CDA2A98F-5409-4E41-A200-70F6A72CC7D2-d2425e333" class="topicref" data-id="GUID-CDA2A98F-5409-4E41-A200-70F6A72CC7D2" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-CDA2A98F-5409-4E41-A200-70F6A72CC7D2.html" id="GUID-CDA2A98F-5409-4E41-A200-70F6A72CC7D2-d2425e333-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.5.4</ph>
+Sending a Cluster-specific Command</a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3-d2425e341" class="topicref" data-id="GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3-d2425e341-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3.html" id="GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3-d2425e341-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.6</ph>
+Zigbee Device Objects (ZDO) Component Usage</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C-d2425e373" class="topicref" data-id="GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C-d2425e373-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C.html" id="GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C-d2425e373-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.7</ph>
+Zigbee Green Power (ZGP) Component Usage</a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108-d2425e391" class="topicref" data-id="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108-d2425e391-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108.html" id="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108-d2425e391-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5</ph>
+References</a></div></div></li><li role="treeitem"><div data-tocid="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6-d2425e2685" class="topicref" data-id="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6.html" id="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6-d2425e2685-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">6</ph>
+Document Revision History</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2425e2693" class="topicref backmatter backmatter_parent" data-id="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2425e2693-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B.html" id="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2425e2693-link">Microchip Information</a></div></div></li></ul></div>
+		                        
+                            </div>
+                        </nav>
+                    
+                    
+                    <div class="col-lg-7 col-md-9 col-sm-12" id="wh_topic_body">
+                        <button id="wh_close_publication_toc_button" class="close-toc-button d-none" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc" aria-expanded="true">
+                            <span class="close-toc-icon-container">
+                                <span class="close-toc-icon"></span>     
+                            </span>
+                        </button>
+                        <button id="wh_close_topic_toc_button" class="close-toc-button d-none" aria-label="Toggle topic table of content" aria-controls="wh_topic_toc" aria-expanded="true">
+                            <span class="close-toc-icon-container">
+                                <span class="close-toc-icon"></span>     
+                            </span>
+                        </button>
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article role="article" aria-labelledby="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-7A823D66-CDFC-4606-BC0E-30C6C07EF489">
+<h1 class="- topic/title title topictitle1" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-7A823D66-CDFC-4606-BC0E-30C6C07EF489" style="">4.5.2 Read or Write a Remote Attribute</h1>
+<div class="- topic/body body">
+        <p class="- topic/p p">To read or write an attribute on a remote device, use the <a class="- topic/xref xref" href="GUID-D4526A41-1075-4543-A96C-44373FACD161.html">ZCL_AttributeReq()</a> function. A single request can access values of several
+            attributes from the same cluster.</p>
+        <div class="- topic/p p">The argument is of <a class="- topic/xref xref" href="GUID-0A2599C1-51C0-42CB-AD64-0E954E10C1CD.html">ZCL_Request_t</a>* type. <ul class="- topic/ul ul">
+                <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-0D618998-6961-4AFF-8F93-6289E20B7363" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-0D618998-6961-4AFF-8F93-6289E20B7363">To read the attribute’s value -
+                    Se the ID field of the argument to
+                        <code class="+ topic/ph pr-d/codeph ph codeph">ZCL_READ_ATTRIBUTES_COMMAND_ID</code></li>
+                <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-C7F4652A-6C13-4348-AE9F-35095CC8810C" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-C7F4652A-6C13-4348-AE9F-35095CC8810C">To write the attribute’s value –
+                    Set the ID field of the argument to
+                        <code class="+ topic/ph pr-d/codeph ph codeph">ZCL_WRITE_ATTRIBUTES_COMMAND_ID</code></li>
+            </ul>The user can fill the <code class="+ topic/ph pr-d/codeph ph codeph">requestPayload</code> and
+                <code class="+ topic/ph pr-d/codeph ph codeph">requestLength</code> fields of the <a class="- topic/xref xref" href="GUID-0A2599C1-51C0-42CB-AD64-0E954E10C1CD.html">ZCL_Request_t</a>
+            instance as described in following sections.</div>
+        <section class="- topic/section section" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__SECTION_V5F_H12_4TB" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__SECTION_V5F_H12_4TB"><h2 class="- topic/title title sectiontitle">Payload for Read Attributes Command</h2>
+            
+            <p class="- topic/p p">To form the payload for the read attributes command, use the <a class="- topic/xref xref" href="GUID-A063C129-5B17-4968-8221-F1ACC8F13C35.html">ZCL_PutNextElement()</a> function. This function attribute allows the user
+                to write the attribute IDs to the buffer one by one correctly and calculates the
+                overall payload length. The user can then use the buffer as the payload for the read
+                attribute command. The following the are the instructions:</p>
+            <ol class="- topic/ol ol" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__OL_W5F_H12_4TB" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__OL_W5F_H12_4TB">
+                <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-8DE68C44-4C8E-4828-B196-1C9E1952EBA8" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-8DE68C44-4C8E-4828-B196-1C9E1952EBA8">Define variables of <a class="- topic/xref xref" href="GUID-7102454F-9438-4CCF-B2EE-2A0B704688A1.html">ZCL_NextElement_t</a> and <a class="- topic/xref xref" href="GUID-447C72C0-EB38-4A78-9F1A-EC70284CA39E.html">ZCL_ReadAttributeReq_t</a> types. For
+                    example:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c"><a class="- topic/xref xref" href="GUID-7102454F-9438-4CCF-B2EE-2A0B704688A1.html">ZCL_NextElement_t</a> element;
+<a class="- topic/xref xref" href="GUID-447C72C0-EB38-4A78-9F1A-EC70284CA39E.html">ZCL_ReadAttributeReq_t</a> readAttrReqElement;</pre></li>
+                <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-D8A13F7B-E87B-42B2-970D-8A164EC280EA" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-D8A13F7B-E87B-42B2-970D-8A164EC280EA">Define a sufficiently large
+                    buffer. The user must ensure to define the buffer globally and can be a variable
+                    of the <code class="+ topic/ph pr-d/codeph ph codeph">uint8_t*</code> type.<div class="- topic/note note notype note_notype" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-57D77BEF-E084-4972-9651-8F8831BF76AE" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-57D77BEF-E084-4972-9651-8F8831BF76AE"><span class="note__title">Note:</span> It must only include attribute
+                        IDs</div></li>
+                <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-CDC14307-2B7C-49F6-8284-C899ED922F83" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-CDC14307-2B7C-49F6-8284-C899ED922F83">The user can configure element in
+                    the following way:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c">element.payloadLength = <span class="hl-number">0</span>;
 element.payload = buffer;
 element.id = ZCL_READ_ATTRIBUTES_COMMAND_ID;
-element.content = &amp;readAttrReqElement;</pre>
-The
-                    buffer variable is assumed to be defined somewhere in the application to be used
-                    as the buffer.</li>
-
-                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-C7453477-A022-4390-AE71-E256DF68E0AF"><span class="indent-level-default">4.</span>For each requested attribute repeat the following steps:<ol class="ol" type="a" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__OL_Z5F_H12_4TB">
-                        <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-BB1317F9-9B72-40B2-8E57-5CFFFB3BEB81"><span class="indent-level-default">a.</span>Set readAttrReqElement.id to the target attributes identifier.</li>
-
-                        <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-8BD49670-CCDA-4890-93F2-E7DF0FD482AE"><span class="indent-level-default">b.</span>Call <a class="xref" href="GUID-97B49612-DAB8-4D81-8BDC-D38AD7628EC6.html">ZCL_PutNextElement()</a>(&amp;element).</li>
-
-                    </ol>
-</li>
-
-                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-14C7D6BF-609B-4D55-A066-0151155D139E"><span class="indent-level-default">5.</span>Set the requestLength field of
-                    the <a class="xref" href="GUID-D668683F-F251-4340-973F-733DE28B6748.html">ZCL_Request_t</a> instance to element.payloadLength.</li>
-
-                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-C5A91495-D5E5-4A54-995F-E24D50252C0B"><span class="indent-level-default">6.</span>Set the requestPayload field of
-                    the <a class="xref" href="GUID-D668683F-F251-4340-973F-733DE28B6748.html">ZCL_Request_t</a> instance in the request to buffer.</li>
-
+element.content = &amp;readAttrReqElement;</pre><div class="- topic/note note notype note_notype" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-E2D16E22-A9C1-4F67-891A-9E9DA6C4048C" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-E2D16E22-A9C1-4F67-891A-9E9DA6C4048C"><span class="note__title">Note:</span> Assume that the
+                        application defines the buffer variable elsewhere to use as the
+                        buffer.</div></li>
+                <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-C7453477-A022-4390-AE71-E256DF68E0AF" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-C7453477-A022-4390-AE71-E256DF68E0AF">The user must repeat the
+                    following steps for each requested attribute:<ol class="- topic/ol ol" type="a" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__OL_Z5F_H12_4TB" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__OL_Z5F_H12_4TB">
+                        <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-BB1317F9-9B72-40B2-8E57-5CFFFB3BEB81" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-BB1317F9-9B72-40B2-8E57-5CFFFB3BEB81">Set the
+                                <code class="+ topic/ph pr-d/codeph ph codeph">readAttrReqElement.id</code> to the target attributes
+                            identifier.</li>
+                        <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-8BD49670-CCDA-4890-93F2-E7DF0FD482AE" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-8BD49670-CCDA-4890-93F2-E7DF0FD482AE">Call the <a class="- topic/xref xref" href="GUID-A063C129-5B17-4968-8221-F1ACC8F13C35.html">ZCL_PutNextElement()</a>(&amp;element).</li>
+                    </ol></li>
+                <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-14C7D6BF-609B-4D55-A066-0151155D139E" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-14C7D6BF-609B-4D55-A066-0151155D139E">Set the
+                        <code class="+ topic/ph pr-d/codeph ph codeph">requestLength</code> field of the <a class="- topic/xref xref" href="GUID-0A2599C1-51C0-42CB-AD64-0E954E10C1CD.html">ZCL_Request_t</a> instance to
+                    <code class="+ topic/ph pr-d/codeph ph codeph">element.payloadLength</code>.</li>
+                <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-C5A91495-D5E5-4A54-995F-E24D50252C0B" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-C5A91495-D5E5-4A54-995F-E24D50252C0B">Set the
+                        <code class="+ topic/ph pr-d/codeph ph codeph">requestPayload</code> field of the <a class="- topic/xref xref" href="GUID-0A2599C1-51C0-42CB-AD64-0E954E10C1CD.html">ZCL_Request_t</a> instance in the request to buffer.</li>
             </ol>
-
-        </div>
-
-        <div class="section" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__SECTION_EPL_J12_4TB"><h2 class="title sectiontitle">Payload for Write Attributes Command</h2>
+        </section>
+        <section class="- topic/section section" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__SECTION_EPL_J12_4TB" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__SECTION_EPL_J12_4TB"><h2 class="- topic/title title sectiontitle">Payload for Write Attributes Command</h2>
             
-            <p class="p">Forming the payload for a write attributes command involves almost the same steps as
-                for the read attributes command:</p>
-
-            <ol class="ol" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__OL_FPL_J12_4TB">
-                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-CE4379D4-EFB5-434E-A8EF-031DFAC51546"><span class="indent-level-default">1.</span>Define a variable of
-                    ZCL_NextElement_t type and a request element. The latter may have the <a class="xref" href="GUID-A4CFA5D4-5AE3-4FDA-87FD-078D0322DA5A.html">ZCL_WriteAttributeReq_t</a> type. For
-                    example:<pre class="pre"><a class="xref" href="GUID-7DE8E39E-096F-4DB4-9094-BBC893F7EBEF.html">ZCL_NextElement_t</a> element;
-<a class="xref" href="GUID-A4CFA5D4-5AE3-4FDA-87FD-078D0322DA5A.html">ZCL_WriteAttributeReq_t</a> writeAttrReqElement;</pre>
-In
-                    this case the type field of the <a class="xref" href="GUID-A4CFA5D4-5AE3-4FDA-87FD-078D0322DA5A.html">ZCL_WriteAttributeReq_t</a> instance should be set to the constant
-                    specifying the attribute’s data type; for example, ZCL_U64BIT_DATA_TYPE_ID. The
-                    data type for a given attribute is defined by the ZCL specification and should
-                    coincide with the data type assigned to the attribute on the destination
-                    devices. The attribute’s value should be written to the value field. However,
-                    this field in fact has the unit8_t[1] type. A one-byte value may be assigned to
-                    value[0]. But values occupying more than one byte in memory cannot be written
-                    directly. A possible workaround is to allocate sufficiently long buffer and cast
-                    it to the <a class="xref" href="GUID-A4CFA5D4-5AE3-4FDA-87FD-078D0322DA5A.html">ZCL_WriteAttributeReq_t</a>* type. Another solution is to define a
-                    custom structure containing subsequent ID, type, and value fields, with the
-                    value field of the actual attribute’s size. For example, for 64-bit unsigned
-                    type the structure may be defined in the following
-                    way:<pre class="pre">typedef struct PACK
+            <p class="- topic/p p">Forming the payload for a write attributes command involves nearly the same steps as
+                those for the<code class="+ topic/ph pr-d/codeph ph codeph"> read attributes</code> command:</p>
+            <ol class="- topic/ol ol" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__OL_FPL_J12_4TB" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__OL_FPL_J12_4TB">
+                <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-CE4379D4-EFB5-434E-A8EF-031DFAC51546" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-CE4379D4-EFB5-434E-A8EF-031DFAC51546">Define a variable of the
+                        <code class="+ topic/ph pr-d/codeph ph codeph">ZCL_NextElement_t</code> type and a request element. Which can be
+                    of the <a class="- topic/xref xref" href="GUID-CA7CB772-AE94-488D-ADE9-256CA9EC871C.html">ZCL_WriteAttributeReq_t</a> type. For
+                        example:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c"><a class="- topic/xref xref" href="GUID-7102454F-9438-4CCF-B2EE-2A0B704688A1.html">ZCL_NextElement_t</a> element;
+<a class="- topic/xref xref" href="GUID-CA7CB772-AE94-488D-ADE9-256CA9EC871C.html">ZCL_WriteAttributeReq_t</a> writeAttrReqElement;</pre><div class="- topic/p p">To
+                        set the type field of the <a class="- topic/xref xref" href="GUID-CA7CB772-AE94-488D-ADE9-256CA9EC871C.html">ZCL_WriteAttributeReq_t</a> instance, the user must assign it to the
+                        constant that specifies the attribute’s data type, such as
+                            <code class="+ topic/ph pr-d/codeph ph codeph">ZCL_U64BIT_DATA_TYPE_ID</code>. The ZCL specification
+                        determines the data type for each attribute, and the user must ensure that
+                        it matches the data type assigned to the attribute on the destination
+                        devices. The user must also write the attribute’s value to the value field.
+                        However, this field is actually of the <code class="+ topic/ph pr-d/codeph ph codeph">uint8_t[1]</code> type. The
+                        user can assign a 1-byte value to <code class="+ topic/ph pr-d/codeph ph codeph">value[0]</code>, but the user
+                        cannot directly write values that occupy more than one byte in memory. To
+                        work around this, the user can allocate a sufficiently long buffer and cast
+                        it to the <a class="- topic/xref xref" href="GUID-CA7CB772-AE94-488D-ADE9-256CA9EC871C.html">ZCL_WriteAttributeReq_t</a> type. As an alternative,
+                        the user can define a custom structure that includes subsequent ID, type,
+                        and value fields, with the value field being the actual size of the
+                        attribute. <ul class="- topic/ul ul">
+                            <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-55E9618A-617A-4EBC-9E64-8C17CBF6664E" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-55E9618A-617A-4EBC-9E64-8C17CBF6664E">For instance, for a
+                                64-bit unsigned type, the user can define the structure in the
+                                following
+                                way:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c"><strong class="hl-keyword">typedef</strong> <strong class="hl-keyword">struct</strong> PACK
 {
- <a class="xref" href="GUID-0F877622-9EBB-46FE-8953-7A1C8DB6DEE2.html">ZCL_AttributeId_t</a> id;
+ <a class="- topic/xref xref" href="GUID-FB97FE68-E855-4451-8726-195DC0503BB9.html">ZCL_AttributeId_t</a> id;
  uint8_t type;
  uint64_t value;
-} APP_Write64BitAttributeReq_t;</pre>
-And
-                    the request element will be defined in this
-                    way:<pre class="pre">APP_Write64BitAttributeReq_t writeAttrReqElement;</pre>
-</li>
-
-                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-B5D9660F-2CC2-4433-A2A1-F42C1DF82B9C"><span class="indent-level-default">2.</span> Configure element in the following
-                    way:<pre class="pre">element.payloadLength = 0;
+} APP_Write64BitAttributeReq_t;</pre></li>
+                        </ul><ul class="- topic/ul ul">
+                            <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-3F51C88A-7B06-4F06-B547-E81434965743" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-3F51C88A-7B06-4F06-B547-E81434965743">For instance, for a
+                                64-bit unsigned type, the user can define the request element in the
+                                following
+                                way:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c">APP_Write64BitAttributeReq_t writeAttrReqElement;</pre></li>
+                        </ul></div></li>
+                <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-B5D9660F-2CC2-4433-A2A1-F42C1DF82B9C" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-B5D9660F-2CC2-4433-A2A1-F42C1DF82B9C">The uset can configure element in
+                    the following way:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c">element.payloadLength = <span class="hl-number">0</span>;
 element.payload = buffer;
 element.id = ZCL_WRITE_ATTRIBUTES_COMMAND_ID;
-element.content = &amp;writeAttrReqElement;
-</pre>
-The
-                    buffer variable is assumed to be defined somewhere in the application to be used
-                    as the buffer.</li>
-
-                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-2AE60028-35F9-418E-98BA-6A7857D68C78"><span class="indent-level-default">3.</span>For each requested attribute repeat the following steps:<ol class="ol" type="a" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__OL_X4N_GC2_4TB">
-                        <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-DCB93A2E-C804-4D4A-8F70-20A1AAB1A693"><span class="indent-level-default">a.</span>Set writeAttrReqElement.id to the target attribute’s ID.</li>
-
-                        <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-7468C1C6-3BF6-4E6A-9F52-36844C4C3FD7"><span class="indent-level-default">b.</span>Write the attribute’s
-                            value to the writeAttrReqElement.value field. For a <a class="xref" href="GUID-A4CFA5D4-5AE3-4FDA-87FD-078D0322DA5A.html">ZCL_WriteAttributeReq_t</a> instance, cast this field to a
-                            pointer to the attribute’s data type and dereference it, for
-                            example:<pre class="pre">*(uint64_t*)writeAttrReqElement-&gt;value = VALUE;</pre>
-</li>
-
-                        <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-14D30E38-1B0F-45A2-845B-14C38C9B968B"><span class="indent-level-default">c.</span>Call <a class="xref" href="GUID-97B49612-DAB8-4D81-8BDC-D38AD7628EC6.html">ZCL_PutNextElement()</a>(&amp;element). Check the returned
-                            value: ZCL_END_PAYLOAD_REACHED_STATUS will be returned when the last
-                            element fitting into the payload is written.</li>
-
-                    </ol>
-</li>
-
-                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-3A511D08-0E3D-4A13-80FB-949BA627AEE6"><span class="indent-level-default">4.</span>Set the requestLength field of
-                    the <a class="xref" href="GUID-D668683F-F251-4340-973F-733DE28B6748.html">ZCL_Request_t</a> instance to element.payloadLength.</li>
-
-                <li class="li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-82951BBF-6EB8-441A-82E2-78ED9159A037"><span class="indent-level-default">5.</span>Set the requestPayload field of
-                    the <a class="xref" href="GUID-D668683F-F251-4340-973F-733DE28B6748.html">ZCL_Request_t</a> instance in the request to buffer.</li>
-
+element.content = &amp;writeAttrReqElement;</pre><div class="- topic/note note notype note_notype" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-BC0CC544-89BC-4387-A2C5-A81E63AC98EE" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-BC0CC544-89BC-4387-A2C5-A81E63AC98EE"><span class="note__title">Note:</span> Assume that the
+                        application defines the buffer variable elsewhere to use as the
+                        buffer.</div></li>
+                <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-2AE60028-35F9-418E-98BA-6A7857D68C78" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-2AE60028-35F9-418E-98BA-6A7857D68C78">For each requested attribute repeat the following steps:<ol class="- topic/ol ol" type="a" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__OL_X4N_GC2_4TB" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__OL_X4N_GC2_4TB">
+                        <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-DCB93A2E-C804-4D4A-8F70-20A1AAB1A693" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-DCB93A2E-C804-4D4A-8F70-20A1AAB1A693">Set
+                                <code class="+ topic/ph pr-d/codeph ph codeph">writeAttrReqElement.id</code> to the target attribute’s
+                            ID.</li>
+                        <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-7468C1C6-3BF6-4E6A-9F52-36844C4C3FD7" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-7468C1C6-3BF6-4E6A-9F52-36844C4C3FD7">Write the attribute’s
+                            value to the <code class="+ topic/ph pr-d/codeph ph codeph">writeAttrReqElement.value</code> field. For a
+                                <a class="- topic/xref xref" href="GUID-CA7CB772-AE94-488D-ADE9-256CA9EC871C.html">ZCL_WriteAttributeReq_t</a> instance, cast this field to a
+                            pointer to the attribute’s data type and dereference it. For
+                            example:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c">*(uint64_t*)writeAttrReqElement-&gt;value = VALUE;</pre></li>
+                        <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-14D30E38-1B0F-45A2-845B-14C38C9B968B" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-14D30E38-1B0F-45A2-845B-14C38C9B968B">Call <a class="- topic/xref xref" href="GUID-A063C129-5B17-4968-8221-F1ACC8F13C35.html">ZCL_PutNextElement()</a>(&amp;element) and check the returned
+                            value. The function returns
+                                <code class="+ topic/ph pr-d/codeph ph codeph">ZCL_END_PAYLOAD_REACHED_STATUS</code> when the last
+                            element that fits into the payload has been written.</li>
+                    </ol></li>
+                <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-3A511D08-0E3D-4A13-80FB-949BA627AEE6" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-3A511D08-0E3D-4A13-80FB-949BA627AEE6">Set the
+                        <code class="+ topic/ph pr-d/codeph ph codeph">requestLength</code> field of the <a class="- topic/xref xref" href="GUID-0A2599C1-51C0-42CB-AD64-0E954E10C1CD.html">ZCL_Request_t</a> instance to
+                    <code class="+ topic/ph pr-d/codeph ph codeph">element.payloadLength</code>.</li>
+                <li class="- topic/li li" id="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-82951BBF-6EB8-441A-82E2-78ED9159A037" data-ofbid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__GUID-82951BBF-6EB8-441A-82E2-78ED9159A037">Set the
+                        <code class="+ topic/ph pr-d/codeph ph codeph">requestPayload</code> field of the <a class="- topic/xref xref" href="GUID-0A2599C1-51C0-42CB-AD64-0E954E10C1CD.html">ZCL_Request_t</a> instance in the request to buffer.</li>
             </ol>
-
-        </div>
-
+        </section>
     </div>
-
-<div class="related-links">
-<div class="familylinks">
-<div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF.html">ZCL Components Usage</a></div>
+</article></main></div>
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                    
+                        <nav role="navigation" id="wh_topic_toc" aria-label="On this page" class="col-lg-2 d-none d-lg-block navbar d-print-none"> 
+                            <div id="wh_topic_toc_content">
+		                        
+	                            <div class=" wh_topic_toc "><div class="wh_topic_label">On this page</div><ul><li class="section-item"><div class="section-title"><a href="#GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__SECTION_V5F_H12_4TB" data-tocid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__SECTION_V5F_H12_4TB">Payload for Read Attributes Command</a></div></li><li class="section-item"><div class="section-title"><a href="#GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__SECTION_EPL_J12_4TB" data-tocid="GUID-BD14A879-020B-43A2-9FDE-44DA0A02314D__SECTION_EPL_J12_4TB">Payload for Write Attributes Command</a></div></li></ul></div>
+	                        	
+                        	</div>
+                        </nav>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <div class="mchp_disclaimer"><p class="mchp_disclaimer_text">The online versions of the documents are provided as a courtesy. Verify all content and data in the device’s PDF documentation found on the device product page.</p></div><footer class="navbar navbar-default wh_footer">
+  <div class=" footer-container mx-auto ">
+    <div class="footer">
+  <div class="mchp-wh-footer">
+    <div class="mchp-footer">
+      <div class="mchp-footer-tier1">
+        <div class="spacer"></div>
+        <div class="mchp-footer-container">
+          <div class="mchp-footer-links mchp-social-media-links">
+            <div class="mchp-component-items">
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.facebook.com/pages/Microchip-Technology-Inc/20320981741" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Facebook" src="oxygen-webhelp/template/resources/images/201016-corp-facebook.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.linkedin.com/company/microchip-technology" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip LinkedIn" src="oxygen-webhelp/template/resources/images/201016-corp-linkedin.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://twitter.com/MicrochipTech" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Twitter" src="oxygen-webhelp/template/resources/images/201016-corp-twitter.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.youtube.com/user/MicrochipTechnology" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip YouTube" src="oxygen-webhelp/template/resources/images/201016-corp-youtube.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.instagram.com/microchiptechnologyinc/" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Instagram" src="oxygen-webhelp/template/resources/images/201016-corp-instagram.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.weibo.com/microchiptech" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Weibo" src="oxygen-webhelp/template/resources/images/201016-corp-weibo.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.microchip.com/en-us/about/blog" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Blog" src="oxygen-webhelp/template/resources/images/201016-corp-blog.png"/>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="mchp-footer-links">
+            <div class="mchp-component-items">
+              <div class="mchp-component-item">
+                <div class="link">
+                  <a href="https://www.microchip.com/about-us/contact-us" class="mchp-link__link">Contact</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information" class="mchp-link__link">Legal</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information/privacy-policy" class="mchp-link__link">Privacy Policy</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information/microchip-cookie-statement" class="mchp-link__link">Cookies</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item">
+                <div class="link">
+                  <a href="https://careers.microchip.com/" class="mchp-link__link">Careers</a>
+                  <span class="mchp-link__separator"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mchp-footer-newsletter">
+            <div class="cmp-text">
+              <p>Stay on the leading edge with our blog</p>
+            </div>
+            <div class="mchp-button-wrapper">
+              <a role="button" href="https://www.microchip.com/en-us/about/blog" class="mchp-button mchp-button-regular solid">
+                <span class="mchp-button__span">MicroSolutions</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="graphic">
+          <img src="oxygen-webhelp/template/resources/images/footer-graphic.png"/>
+        </div>
+      </div>
+      <div class="mchp-footer-tier2">
+        <p class="mchp-copyright">© Copyright 1998-2022 Microchip Technology Inc. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async="true" src="https://www.googletagmanager.com/gtag/js?id=UA-2724382-19"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];  
+    function gtag(){dataLayer.push(arguments);}  
+    gtag('js', new Date());   
+    gtag('config', 'UA-2724382-19');
+  </script>
+  
+  <script type="text/javascript">_satellite.pageBottom();</script><!-- Adobe Analytics -->
+  <script type="text/javascript" src="mchp-js/prepend.js"></script><!-- Package for viewing PDFs on mobile devices -->
+  
 </div>
-</div></body>
+  </div>
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <div id="modal_img_container"></div>
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+       
+        </body>
 </html>

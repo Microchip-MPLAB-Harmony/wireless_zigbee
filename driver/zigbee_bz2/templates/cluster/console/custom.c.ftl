@@ -462,7 +462,7 @@ static void customFindingBindingFinishedForACluster(Endpoint_t ResponentEp, Clus
 <#if (ONOFF_CLUSTER_ENABLE == true) || (LEVELCONTROL_CLUSTER_ENABLE == true) ||
       (ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE == true) || (THERMOSTAT_CLUSTER_ENABLE == true) ||
       (TEMPERATUREMEASUREMENT_CLUSTER_ENABLE == true) || 	(WATERCONTENTMEASUREMENT_CLUSTER_ENABLE == true)||
-      (OCCUPANCYSENSING_CLUSTER_ENABLE == true) || (COLORCONTROL_CLUSTER_ENABLE == true) >
+      (OCCUPANCYSENSING_CLUSTER_ENABLE == true) || (COLORCONTROL_CLUSTER_ENABLE == true) || (hasReportableServerCluster()) >
 
   ZCL_Cluster_t *serverCluster;
   switch(clusterId)
@@ -592,11 +592,12 @@ static void customFindingBindingFinishedForACluster(Endpoint_t ResponentEp, Clus
 #endif
       break;
 </#if>
-    <#if (hasReportableServerCluster())>
     default:
+<#if (hasReportableServerCluster())>
        ZCL_StartReporting();
+</#if>
       break;
-    </#if>
+
   }
 </#if>
 

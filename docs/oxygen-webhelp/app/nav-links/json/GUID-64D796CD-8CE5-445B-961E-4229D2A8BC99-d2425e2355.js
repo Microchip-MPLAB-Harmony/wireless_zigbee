@@ -1,0 +1,1 @@
+define({"topics":[{"title":"<ph>5.2.7.1<\/ph>\nHAL_AppTimer_t Type Definition","href":"GUID-F056452C-E5C1-4111-91AB-FADE12A1EA9B.html","attributes":{"data-id":"GUID-F056452C-E5C1-4111-91AB-FADE12A1EA9B"},"menu":{"hasChildren":false},"tocID":"GUID-F056452C-E5C1-4111-91AB-FADE12A1EA9B-d2425e2363","topics":[]}]});

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<publication>
+   <title>MPLAB® Harmony Wireless Zigbee</title>
+   <urls>
+      <url>
+         <loc>GUID-221B4CC9-4C60-4770-BBD4-843543C6F801.html</loc>
+         <lastmod>2024-06-26T15:01:58</lastmod>
+         <title> Introduction</title>
+         <description>The Microchip Zigbee stack, widely known as BitCloud, is a full-featured, next-generation embedded software stack. The stack provides a software development platform for reliable and scalable ...</description>
+         <urls/>
+      </url>
+      <url>
+         <loc>GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207.html</loc>
+         <lastmod>2024-06-26T12:17:12</lastmod>
+         <title> Features</title>
+         <description>Zigbee Pro R22 (2017) CertifiedZigbee 3.0Zigbee Green Power (ZGP)Zigbee Light Link (ZLL)Bootloader SupportFirmware Over-The Air-Upgrade (OTAU) with Secured ImageLow Power Sleepy DevicesInstall Code ...</description>
+         <urls/>
+      </url>
+      <url>
+         <loc>GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5.html</loc>
+         <lastmod>2024-06-06T09:43:15</lastmod>
+         <title>1 Quick References</title>
+         <description/>
+         <urls>
+            <url>
+               <loc>GUID-4EC58238-EB93-489F-B9BC-A237F17AE18E.html</loc>
+               <lastmod>2024-06-26T12:17:13</lastmod>
+               <title>1.1 Reference Documentation</title>
+               <description>For further details, refer to the following:Zigbee Cluster Library Specification (07-5123)Zigbee Pro Base Device Behavior Specification (v3.0.1)Zigbee Specification Revision 22 1.0 ...</description>
+               <urls/>
+            </url>
+            <url>
+               <loc>GUID-E058DC5E-4D30-4AF6-B4E1-E90A2ACAB8E2.html</loc>
+               <lastmod>2024-06-26T14:48:45</lastmod>
+               <title>1.2 Acronyms and Abbreviations</title>
+               <description>Acronyms and AbbreviationsAcronyms and AbbreviationsDescriptionAESAdvanced Encryption StandardAPSApplication Support SublayerBDBBase Device BehaviorCBCCipher Block ChainingCSConfiguration ...</description>
+               <urls/>
+            </url>
+         </urls>
+      </url>
+      <url>
+         <loc>GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38.html</loc>
+         <lastmod>2024-06-26T07:17:07</lastmod>
+         <title>2 BitCloud Zigbee Stack Architecture and API Overview</title>
+         <description>The BitCloud internal architecture adheres to the IEEE 802.15.4 Standard and the Zigbee-defined separation of the networking stack into logical layers. The architecture encompasses a core stack ...</description>
+         <urls>
+            <url>
+               <loc>GUID-98806DB1-0C0C-4446-9310-897A7198C078.html</loc>
+               <lastmod>2024-06-26T12:17:19</lastmod>
+               <title>2.1 Software Stack Architecture</title>
+               <description>The Base Device Behaviour (BDB) layer, positioned at the top of the core stack, offers APIs for initialization, commissioning, and operation, which are readily accessible to the application. It also ...</description>
+               <urls/>
+            </url>
+            <url>
+               <loc>GUID-A957AC73-ED37-41AC-99B0-DD8F1D1BF4B6.html</loc>
+               <lastmod>2024-06-26T12:17:20</lastmod>
+               <title>2.2 Network Topology</title>
+               <description>BitCloud supports a Zigbee mesh topology. In general, a coordinator initiates the network and selects key network parameters in a mesh network. Routers can extend the network. The coordinator also ...</description>
+               <urls/>
+            </url>
+            <url>
+               <loc>GUID-9C75AAB9-DEF1-4F13-9EB8-2E1C99834EF0.html</loc>
+               <lastmod>2024-06-26T07:16:43</lastmod>
+               <title>2.3 BitCloud Stack APIs</title>
+               <description>The stack API functions fall into the categories related to the following layers:Base Device Behavior (BDB)Configuration Server (CS) functionsHardware Abstraction Layer (HAL) (functions dealing with ...</description>
+               <urls/>
+            </url>
+         </urls>
+      </url>
+      <url>
+         <loc>GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686.html</loc>
+         <lastmod>2024-06-07T10:27:20</lastmod>
+         <title>3 Programming Basics</title>
+         <description>This API reference manual provides detailed information about all public APIs, describes the stack components in general, and explains how to perform typical tasks, while offering multiple sample ...</description>
+         <urls>
+            <url>
+               <loc>GUID-768F65E7-9E39-4BD4-9F8B-42788C9CDDD2.html</loc>
+               <lastmod>2024-06-24T14:56:30</lastmod>
+               <title>3.1 API Documentation Structure</title>
+               <description>Each main stack component’s corresponding chapter is accessible from the root of the left navigation tree. These pages highlight typical tasks that the user can perform using the component’s API. ...</description>
+               <urls/>
+            </url>
+            <url>
+               <loc>GUID-50BAC389-580B-41FF-9568-F232A37AECE3.html</loc>
+               <lastmod>2024-06-07T10:27:23</lastmod>
+               <title>3.2 Task Handlers</title>
+               <description>In an RTOS environment, the user’s applications and the Zigbee stack function as two separate tasks. The FreeRTOS scheduler controls the allocation of execution time, assigning priorities to the ...</description>
+               <urls/>
+            </url>
+            <url>
+               <loc>GUID-8884835A-E4B5-440F-95E8-C58E51B73C5E.html</loc>
+               <lastmod>2024-06-07T10:27:25</lastmod>
+               <title>3.3 The main() Function</title>
+               <description>The main() function serves as the starting point for a user application. The user’s application defines the body of the main() function to increase development flexibility. The main() function must ...</description>
+               <urls/>
+            </url>
+            <url>
+               <loc>GUID-33F4B1D2-11CF-41E0-8F6D-767D9A2156D8.html</loc>
+               <lastmod>2024-06-19T09:56:29</lastmod>
+               <title>3.4 FreeRTOS in Zigbee Applications</title>
+               <description>For more details on queues, semaphore APIs, and their usage, go to FreeRTOS.RTOS TasksThere are two tasks created in the RTOS during system initialization:Application Task (APP_Tasks) – This task ...</description>
+               <urls/>
+            </url>
+            <url>
+               <loc>GUID-1F8843B7-F0AB-4802-9DDB-1F7C1A61BADB.html</loc>
+               <lastmod>2024-06-07T10:27:29</lastmod>
+               <title>3.5 Synchronous and Asynchronous APIs</title>
+               <description>Several API calls operate synchronously due to their minimal execution time requirements, including:Reading from internal stack structuresWriting to internal stack structures For instance, the ...</description>
+               <urls/>
+            </url>
+            <url>
+               <loc>GUID-4B11E416-2460-4B98-8A36-0C6BCAA60F1B.html</loc>
+               <lastmod>2024-06-26T12:17:22</lastmod>
+               <title>3.6 Requests and Confirmations</title>
+               <description>In general, a function that performs an asynchronous request to a stack component has a name ending with Req. The argument for such a function is a pointer to a structure, the name of which comes ...</description>
+               <urls/>
+            </url>
+         </urls>
+      </url>
+      <url>
+         <loc>GUID-1599DD35-8680-4FD4-867D-938D77A52B57.html</loc>
+         <lastmod>2022-04-27T10:23:27</lastmod>
+         <title>4 Zigbee Stack Layer Usage</title>
+         <description/>
+         <urls>
+            <url>
+               <loc>GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B.html</loc>
+               <lastmod>2024-06-26T12:17:24</lastmod>
+               <title>4.1 BDB Component Usage</title>
+               <description>The BDB provides an interface for initialization, commissioning and operating procedures of a base device operating on the Zigbee-PRO stack to ensure profile interoperability.For more details on ...</description>
+               <urls>
+                  <url>
+                     <loc>GUID-4E1A2E1B-742A-4E77-BA9C-2113C476E480.html</loc>
+                     <lastmod>2024-06-26T12:17:26</lastmod>
+                     <title>4.1.1 BDB Initialization</title>
+                     <description>BDB initialization procedure defines the behavior of a device on initialization/Reset. As a first step, the device restores all its persistent data. Then, the further steps can vary depending on the ...</description>
+                     <urls/>
+                  </url>
+                  <url>
+                     <loc>GUID-E048204C-1D49-45BD-B22A-AB073BD4DBC3.html</loc>
+                     <lastmod>2024-06-26T13:35:49</lastmod>
+                     <title>4.1.2 BDB Commissioning</title>
+                     <description>The system executes BDB commissioning based on the specified mode in the parameter. When calling this API, the user must set only one of the following commissioning modes to start the corresponding ...</description>
+                     <urls/>
+                  </url>
+                  <url>
+                     <loc>GUID-36F8A430-5242-4D62-8F6F-717289A4FDA2.html</loc>
+                     <lastmod>2024-06-26T14:20:15</lastmod>
+                     <title>4.1.3 BDB Security</title>
+                     <description>In a centralized network, the user needs an installation code and two types of keys to verify devices and safely connect them to the network. The two types of keys are as follows:Global trust center ...</description>
+                     <urls/>
+                  </url>
+                  <url>
+                     <loc>GUID-9C6193BB-A947-4EA5-ADD5-AA03B5209B5A.html</loc>
+                     <lastmod>2024-06-26T14:20:17</lastmod>
+                     <title>4.1.4 BDB Reset</title>
+                     <description>The user can reset the BDB in the following ways:Reset via Touchlink commissioning clusterReset via local action Reset via Touchlink Commissioning Cluster To reset a target to its factory new state ...</description>
+                     <urls/>
+                  </url>
+                  <url>
+                     <loc>GUID-DA18F7A9-ED49-45A5-A94F-B9B5ECE48790.html</loc>
+                     <lastmod>2024-06-26T14:20:20</lastmod>
+                     <title>4.1.5 BDB Generic</title>
+                     <description>This set of functions consists of generic operations that set or retrieve the BDB device properties.The user can set the channel mask for either the bdbPrimaryChannelSet or bdbSecondaryChannelSet ...</description>
+                     <urls/>
+                  </url>
+               </urls>
+            </url>
+            <url>
+               <loc>GUID-C306947F-F175-4699-B119-75961F5CDE21.html</loc>
+               <lastmod>2024-06-26T14:20:23</lastmod>
+               <title>4.2 Configuration Server Component Usage</title>
+               <description>BitCloud provides an extensive set of configuration parameters that determine different aspects of network and node behavior. These parameters are accessible to an application via the Configuration ...</description>
+               <urls>
+                  <url>
+                     <loc>GUID-1CC2DCEF-B3D3-427B-BF09-05C2662012D0.html</loc>
+                     <lastmod>2024-06-26T14:48:50</lastmod>
+                     <title>4.2.1 Get or Set a CS Parameter</title>
+                     <description>There are two options to assign a value to the CS parameter. One is to specify the value at compilation time by adding a line or changing an existing one in the config file. The user must use an ...</description>
+                     <urls/>
+                  </url>
+                  <url>
+                     <loc>GUID-70B9455F-A11E-46B9-B53A-7450BC565C6E.html</loc>
+           

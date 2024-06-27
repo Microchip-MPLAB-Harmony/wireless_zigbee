@@ -1,532 +1,704 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
-<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2023" />
-<meta name="DC.rights.owner" content="(C) Copyright 2023" />
-<meta name="generator" content="DITA-OT" /><meta name="DC.type" content="topic" />
-<meta name="DC.title" content="GP Infrastructure devices" />
-<meta name="DC.relation" scheme="URI" content="GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C.html" />
-<meta name="DC.format" content="XHTML" />
-<meta name="DC.identifier" content="GUID-C3B630B1-A4CC-427B-B956-BBE243030804" />
-<meta name="DC.language" content="en-US" />
-<link rel="stylesheet" type="text/css" href="stylesheets/atmel.css" />
-<title>GP Infrastructure devices</title>
-<meta name="Microsoft.Help.Id" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-C3B630B1-A4CC-427B-B956-BBE243030804" />
-<meta name="Microsoft.Help.TocParent" content="GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C" />
-<meta name="Microsoft.Help.TocOrder" content="0" />
-<meta name="Microsoft.Help.Locale" content="en-US" />
-<meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless Zigbee Reference 3 08/2023" />
-<script language="javascript">
-       
-       if (window.parent.location.protocol != 'file:') {
-				document.addEventListener('click', function(e) {
-				    if (e.target) {
-               if (e.target.nodeName == "A" ) {
-                    if (!e.target.target) {
-                      e.preventDefault();
-                      e.stopPropagation();
-                              
-                      var origUrl = window.parent.location.href.substr(0, window.parent.location.href.indexOf("?"));
-                      if (origUrl.length === 0) {
-                          origUrl = window.parent.location.href;
-                      }
-                      var href= e.target.getAttribute("href");
-                      var parts = href.split("#");
-          
-                      var url = "";
-                      if (parts.length == 2 ) {
-                        if (!parts[0].length) {
-                            url = window.parent.location.search.replace('?','')
-                        } else {
-                            url = parts[0].replace('.html','');
-                        }
-                      } else {
-                        url = parts[0].replace('.html','');
-                      }
-
-                      if (parts.length == 2) {
-                          url += "#" + parts[1];
-                      }
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="24.1">
+    <head><link rel="shortcut icon" href="oxygen-webhelp\template\resources/images/favicon.ico"/><link rel="icon" href="oxygen-webhelp\template\resources/images/favicon.ico"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="description" content="Use the following public API to initialize the ZGP high proxy, which manages the communication between the GPDs and the Zigbee network: Retrieving the green power cluster information and adding the ..."/><meta name="copyright" content="(C) Copyright 2024"/><meta name="generator" content="DITA-OT"/><title>4.7.1 GP Infrastructure Devices</title><!--  Generated with Oxygen version 24.1, build number 2022062014.  --><meta name="wh-path2root" content=""/><meta name="wh-toc-id" content="GUID-C3B630B1-A4CC-427B-B956-BBE243030804-d2425e381"/><meta name="wh-source-relpath" content="GUID-C3B630B1-A4CC-427B-B956-BBE243030804.xml"/><meta name="wh-out-relpath" content="GUID-C3B630B1-A4CC-427B-B956-BBE243030804.html"/>
+    <!-- Latest compiled and minified Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="./oxygen-webhelp/lib/bootstrap/css/bootstrap.min.css"/>
     
-                      window.parent.location.href = origUrl + "?" + url;
+    <link rel="stylesheet" href="./oxygen-webhelp/lib/jquery-ui/jquery-ui.min.css"/>
+    
+    <!-- Template default styles  -->
+    <link rel="stylesheet" type="text/css" href="./oxygen-webhelp/app/topic-page.css?buildId=2022062014"/>
+    
+    
+    <script src="./oxygen-webhelp/lib/jquery/jquery-3.5.1.min.js"></script>
+    
+    <script data-main="./oxygen-webhelp/app/topic-page.js" src="./oxygen-webhelp/lib/requirejs/require.js"></script>
+<link rel="stylesheet" type="text/css" href="oxygen-webhelp/template/microchip.css?buildId=2022062014"/><link rel="stylesheet" type="text/css" href="oxygen-webhelp/template/notes.css?buildId=2022062014"/>
+<script src="mchp-context-help.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300" rel="stylesheet" type="text/css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async="" type="text/javascript"></script>
+    <script src="https://assets.adobedtm.com/6a72a357eb48/a636c708c7fe/launch-0b0023397020.min.js"></script><!-- Adobe Analytics -->
+</head>
 
-                      return false;
-                    }
-               }
-            }
-				});
-			}
+    <body id="GUID-C3B630B1-A4CC-427B-B956-BBE243030804" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+        <header class="navbar navbar-default wh_header">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container navbar-nav navbar-expand-md navbar-dark">
+            <div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    
+                    <a href="index.html" class=" wh_logo d-none d-sm-block "><img src="oxygen-webhelp\template\resources/images/microchip.png" alt="MPLAB® Harmony Wireless Zigbee &#xA;    "/></a>
+                    <div class=" wh_publication_title "><a href="index.html">MPLAB® Harmony Wireless Zigbee 
+    </a></div>
+                    
+                </div>
+                
+                
+            </div>
 
-		</script><script language="javascript">
-         
-         function copyContent(content, button) {
-         
-            var textArea = document.createElement("textarea");
-            
-            // Place in the top-left corner of screen regardless of scroll position.
-            textArea.style.position = 'fixed';
-            textArea.style.top = 0;
-            textArea.style.left = 0;
-            
-            // Ensure it has a small width and height. Setting to 1px / 1em
-            // doesn't work as this gives a negative w/h on some browsers.
-            textArea.style.width = '2em';
-            textArea.style.height = '2em';
-            
-            // We don't need padding, reducing the size if it does flash render.
-            textArea.style.padding = 0;
-            
-            // Clean up any borders.
-            textArea.style.border = 'none';
-            textArea.style.outline = 'none';
-            textArea.style.boxShadow = 'none';
-            
-            // Avoid flash of the white box if rendered for any reason.
-            textArea.style.background = 'transparent';
-            
-            textArea.value = content;
-            
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            
-            try {
-               var successful = document.execCommand('copy');
-               var msg = successful ? 'successful' : 'unsuccessful';
-               if (!button.classList.contains("copied")){
-                  button.textContent = "Copied";
-                  button.classList.add("copied");
-                  setTimeout(function(){
-                     button.textContent = "Copy";
-                     button.classList.remove("copied");
-                  },1000);
-               }
-            } catch (err) {
-               console.log('Oops, unable to copy');
-            }
-            
-            document.body.removeChild(textArea);
-         }
-         
-         function cpy(id, button) {
-            var element = document.getElementById(id);
-            var content = element.getAttribute("content");
-            
-            copyContent(content, button);
-         }
-         
-         document.addEventListener("DOMContentLoaded", function(event) {
-            document.querySelectorAll(".codeblock").forEach(function(elem) {
-               elem.style.position = "relative";
-               var copy = document.createElement("button");
-               copy.textContent = "Copy";
-               copy.setAttribute("class", "copy-code");
-               
-               var content = elem.textContent;
-               
-               copy.addEventListener("click", function(){
-                  copyContent(content, copy);
-               });
-               
-               elem.addEventListener("mouseenter", function(evt){
-                  elem.prepend(copy);
-               });
-            });
-            
-            document.querySelectorAll(".codeblock").forEach(function(elem) {
-               elem.addEventListener("mouseleave", function(evt){
-                  document.querySelector(".copy-code").remove();
-               });
-            });
-         });
-         
-      </script><script language="javascript">
-          
-          // Add the MathML namespace to html
-          var html = document.getElementsByTagName("html")[0],
-          head = document.getElementsByTagName("head")[0];
-          
-          var mathJax = document.createElement("script");
-          mathJax.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML";
-          head.appendChild(mathJax);
-          
-          html.setAttribute("xmlns:m","http://www.w3.org/1998/Math/MathML");
-          
-          function inIframe() { try { return window.self !== window.top; } catch (e) { return true; } }
-          
-          if (!inIframe()) { 
-          
-          var Default = "index.html?GUID-C3B630B1-A4CC-427B-B956-BBE243030804"; 
-          
-          var displaylocation = "value" + window.location.href;
-          
-          var GUIDS = displaylocation.split('GUID');          
-          
-          if (displaylocation.indexOf('#GUID') != -1) {            
-          var First = GUIDS[1].split('.html');  
-          if (GUIDS[3]){First = GUIDS[2].split('.html');}
-          if (GUIDS[4]){First = GUIDS[3].split('.html');}
-          if (GUIDS[5]){First = GUIDS[4].split('.html');}
-          
-          var Second = GUIDS[2].split('#');   
-          if (GUIDS[3]){Second = GUIDS[3].split('#');}
-          if (GUIDS[4]){Second = GUIDS[4].split('#');}
-          if (GUIDS[5]){Second = GUIDS[5].split('#');}
-          
-          Default = "index.html?" + "GUID" + First[0] + "GUID" + Second[0];     
-          }                    
-          window.top.location = Default;
-          }       
-          
-        </script><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /><style xml:space="">
-        
-          button.copy-code{
-            display:none;
-            padding:0.7em 1.4em;
-            margin:0 0.3em 0.3em 0;
-            border-radius:0.15em;
-            box-sizing: border-box;
-            text-decoration:none;
-            font-family:'Roboto',sans-serif;
-            text-transform:uppercase;
-            font-weight:400;
-            color:#FFFFFF;
-            background-color:#9c9c9c;
-            box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
-            text-align:center;
-            position:relative;
-            border: 0;
-            float: right;
-            border-radius: .5em;
-            cursor: pointer;
-          }
-          button.copy-code:active{
-            top:0.1em;
-          }
-          
-          pre:hover button.copy-code{
-            display: inline-block !important;
-          }
-          button.copy-code.copied {
-            cursor: default !important;
-          }
-          
-          
-          @media all and (max-width:30em){
-            button.copy-code{
-              display:block;
-              margin:0.4em auto;
-            }
-          }
+            <div class="wh_top_menu_and_indexterms_link collapse navbar-collapse" id="wh_top_menu_and_indexterms_link">
+                
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</header>
         
         
-      </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
-<body id="GUID-C3B630B1-A4CC-427B-B956-BBE243030804">
-<h1 class="title topictitle1" id="GUID-C3B630B1-A4CC-427B-B956-BBE243030804__GUID-24D3B4C5-4EC0-48F4-ABBF-3713900330BF" style="">GP Infrastructure devices</h1><div class="related-links">
-<div class="familylinks">
-<div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C.html">ZGP Component Usage</a></div>
+         
+        
+        <div class=" wh_search_input navbar-form wh_topic_page_search search " role="form">
+            
+            
+            
+            <form id="searchForm" method="get" role="search" action="search.html"><div class="d-flex justify-contents-around"><div class="flex-grow-1"></div><div class="position-relative flex-grow-1"><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div><div class="align-self-center flex-grow-1 ml-2"></div></div></form>
+            
+            <div class="mchp-color-stripe-grid-container">
+  <div class="mchp-main-bar mchp-orange-bar"></div>
+  <div class="mchp-main-bar mchp-blue-bar"></div>
+  <div class="mchp-main-bar mchp-green-bar"></div>
 </div>
-</div><div class="topic nested1" aria-labelledby="TOPIC_V4C_LTY_J5B__GUID-470DC172-4548-4061-B309-B4F258AA493E" id="TOPIC_V4C_LTY_J5B"><h2 class="title topictitle2" id="TOPIC_V4C_LTY_J5B__GUID-470DC172-4548-4061-B309-B4F258AA493E" style="">Initialization</h2><div class="body"><p class="p">1. Following public API is used to initialize the zgp high proxy which will do </p>
-<ul class="ul" id="TOPIC_V4C_LTY_J5B__UL_PVG_VT2_KTB"><li class="li" id="TOPIC_V4C_LTY_J5B__GUID-67ABB66C-147A-493A-9E70-45CD9641FCB3">Getting the green power cluster information and adding the event handler for the zgp proxy attribute event </li>
-<li class="li" id="TOPIC_V4C_LTY_J5B__GUID-8BEB0782-36FF-44B7-80CD-A80BEDB5FE0E">Initializing zgp high generic and cluster generic feature </li>
-<li class="li" id="TOPIC_V4C_LTY_J5B__GUID-CCA0811F-BC8F-4118-B147-C3D29D9432F4">Initializing the zgp NVM table which contains the ID of GPD, security keys, frame counters and sink address list, commissioned id, endpoint etc </li>
-<li class="li" id="TOPIC_V4C_LTY_J5B__GUID-0509460D-99A9-4022-8CE2-51942E73E4FA">Initializing the zgp client cluster </li>
-</ul>
-<pre class="pre">void <a class="xref" href="GUID-2143A2D7-3EFD-48BF-B3F0-3BC9C7D34B06.html">ZGPH_ProxyBasicInit</a>(void);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_V4C_LTY_J5B__UL_QVG_VT2_KTB"><li class="li" id="TOPIC_V4C_LTY_J5B__GUID-4A123DC4-E825-44AA-A47D-14B678347835">None </li>
-</ul>
-<p class="p">2. Following public API is used to initialize the zgp high sink, which will do </p>
-<ul class="ul" id="TOPIC_V4C_LTY_J5B__UL_RVG_VT2_KTB"><li class="li" id="TOPIC_V4C_LTY_J5B__GUID-8ED94DCC-F799-4E49-9D18-3852A92DD422">Initializing the zgp server cluster </li>
-</ul>
-<pre class="pre">void <a class="xref" href="GUID-7998E0A4-9334-4963-89D9-9FA5EB7CA71A.html">ZGPH_SinkBasicInit</a>(void);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_V4C_LTY_J5B__UL_SVG_VT2_KTB"><li class="li" id="TOPIC_V4C_LTY_J5B__GUID-40B65F83-4A0A-4B53-AEDF-959D2D600644">None </li>
-</ul>
-<p class="p">3. Following public API is used to initialize the lowzgp(mainly dStub/cStub) </p>
-<pre class="pre">void <a class="xref" href="GUID-464C07AA-1FF5-4C3C-85C9-9D7B4E6ABC8A.html">ZGPL_Init</a>(void);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_V4C_LTY_J5B__UL_TVG_VT2_KTB"><li class="li" id="TOPIC_V4C_LTY_J5B__GUID-00E1AF7E-F3CD-4861-9055-6B8600931D45">None </li>
-</ul>
-</div>
-</div>
-<div class="topic nested1" aria-labelledby="TOPIC_FJQ_GTY_J5B__GUID-426DB120-A248-420D-887B-1C9A2F2A5DC4" id="TOPIC_FJQ_GTY_J5B"><h2 class="title topictitle2" id="TOPIC_FJQ_GTY_J5B__GUID-426DB120-A248-420D-887B-1C9A2F2A5DC4" style="">Commissioning</h2><div class="body"><p class="p">1. Following public API is used to put sink in commissioning mode. </p>
-<pre class="pre">void <a class="xref" href="GUID-EBE88ADF-31D9-4DC7-8E0A-D9888D34DD9E.html">ZGPH_PutLocalSinkInCommissioningMode</a>(uint8_t options, uint8_t endPoint, bool unicastComm);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_FJQ_GTY_J5B__UL_VVG_VT2_KTB"><li class="li" id="TOPIC_FJQ_GTY_J5B__GUID-4D9F91D4-EA56-4055-8714-D21A19898515">options - commissioning mode options (bit fields according to the set bit fields) <ul class="ul" id="TOPIC_FJQ_GTY_J5B__UL_WVG_VT2_KTB"><li class="li" id="TOPIC_FJQ_GTY_J5B__GUID-9205EF93-1A92-4A69-9120-98AAD96163C4">uint8_t action : 1; </li>
-<li class="li" id="TOPIC_FJQ_GTY_J5B__GUID-D222D4E3-8388-4C54-80E6-9B7E631B8E1C">uint8_t involveGPMinSecurity : 1; </li>
-<li class="li" id="TOPIC_FJQ_GTY_J5B__GUID-1A87B767-299D-42B0-B50A-E1D6945CB93E">uint8_t involveGPMinPairing : 1; </li>
-<li class="li" id="TOPIC_FJQ_GTY_J5B__GUID-57D56163-D8A4-4259-BEDB-35DED171973F">uint8_t involveProxies : 1; </li>
-<li class="li" id="TOPIC_FJQ_GTY_J5B__GUID-1D363A48-5090-47B2-83C2-96E780769F24">uint8_t reserved : 4; </li>
-</ul>
-</li>
-<li class="li" id="TOPIC_FJQ_GTY_J5B__GUID-B6774AA4-EAE2-410D-A4A4-709B5D9FD0A6">endPoint - value of communicating endpoint </li>
-<li class="li" id="TOPIC_FJQ_GTY_J5B__GUID-8718AD30-081F-418C-9252-2930D48B3023">unicastComm - true or false </li>
-</ul>
-<p class="p">2. Following public API is used to send the zgp proxy commissioning mode command. </p>
-<pre class="pre"><a class="xref" href="GUID-F6C388EF-B816-45F2-A117-4035EFDD2CA3.html">ZCL_Status_t</a> <a class="xref" href="GUID-8C232068-06AE-4338-B639-B076904E3407.html">ZGPH_SendProxyCommissioningModeCommand</a>(uint8_t options, uint16_t commissioningWindow, uint8_t channel);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_FJQ_GTY_J5B__UL_XVG_VT2_KTB"><li class="li" id="TOPIC_FJQ_GTY_J5B__GUID-7873698A-5107-42E8-84A1-1C4313F58255">options - proxy options field </li>
-<li class="li" id="TOPIC_FJQ_GTY_J5B__GUID-C10B5091-374C-4402-94E4-1BDDBCFB5DBE">commissioningWindow - commissioning window value </li>
-<li class="li" id="TOPIC_FJQ_GTY_J5B__GUID-248D506D-B70B-4B24-AFC0-52F0B2EE53BB">channel - channel value </li>
-</ul>
-<p class="p"><strong class="ph b">Usage</strong></p>
-<pre class="pre">//If involveProxies is enabled from the options in <a class="xref" href="GUID-EBE88ADF-31D9-4DC7-8E0A-D9888D34DD9E.html">ZGPH_PutLocalSinkInCommissioningMode</a>(uint8_t sinkCommModeOptions, uint8_t endPoint, bool unicastComm) API
+            
+        </div>
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="GUID-1599DD35-8680-4FD4-867D-938D77A52B57"><div class="title"><a href="GUID-1599DD35-8680-4FD4-867D-938D77A52B57.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4</ph>
+Zigbee Stack Layer Usage</a></div></div></li><li><div class="topicref" data-id="GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C"><div class="title"><a href="GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.7</ph>
+Zigbee Green Power (ZGP) Component Usage</a></div></div></li><li class="active"><div class="topicref" data-id="GUID-C3B630B1-A4CC-427B-B956-BBE243030804"><div class="title"><a href="GUID-C3B630B1-A4CC-427B-B956-BBE243030804.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.7.1</ph>
+GP Infrastructure Devices</a></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <button type="button" id="wh_toc_button" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            <div class="row" style="margin-top: -1em;"><div class="col-lg-7 col-md-7 col-sm-12 offset-lg-3 offset-md-3 text-right border-bottom mb-1"><h2 class="text-dark header_title">
+    </h2></div></div>
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        <nav id="wh_publication_toc" class="col-lg-3 col-md-3 col-sm-12 d-md-block d-none d-print-none" aria-label="Table of Contents Container">
+                            <div id="wh_publication_toc_content">
+		                        
+                            	<div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem"><div data-tocid="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801-d2425e11" class="topicref introduction" data-id="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801.html" id="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801-d2425e11-link">Introduction</a></div></div></li><li role="treeitem"><div data-tocid="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207-d2425e19" class="topicref introduction" data-id="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207.html" id="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207-d2425e19-link">Features</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5-d2425e27" class="topicref" data-id="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5-d2425e27-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5.html" id="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5-d2425e27-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1</ph>
+Quick References</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38-d2425e51" class="topicref" data-id="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38-d2425e51-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38.html" id="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38-d2425e51-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">2</ph>
+BitCloud Zigbee Stack Architecture and API Overview</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686-d2425e84" class="topicref" data-id="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686-d2425e84-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686.html" id="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686-d2425e84-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">3</ph>
+Programming Basics</a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="GUID-1599DD35-8680-4FD4-867D-938D77A52B57-d2425e141" class="topicref" data-id="GUID-1599DD35-8680-4FD4-867D-938D77A52B57" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action GUID-1599DD35-8680-4FD4-867D-938D77A52B57-d2425e141-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-1599DD35-8680-4FD4-867D-938D77A52B57.html" id="GUID-1599DD35-8680-4FD4-867D-938D77A52B57-d2425e141-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4</ph>
+Zigbee Stack Layer Usage</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B-d2425e149" class="topicref" data-id="GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B-d2425e149-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B.html" id="GUID-FC956B9D-553C-4CEF-B7C2-73CCE741705B-d2425e149-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.1</ph>
+BDB Component Usage</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-C306947F-F175-4699-B119-75961F5CDE21-d2425e197" class="topicref" data-id="GUID-C306947F-F175-4699-B119-75961F5CDE21" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-C306947F-F175-4699-B119-75961F5CDE21-d2425e197-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-C306947F-F175-4699-B119-75961F5CDE21.html" id="GUID-C306947F-F175-4699-B119-75961F5CDE21-d2425e197-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.2</ph>
+Configuration Server Component Usage</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-39CF18F8-E921-45B0-BA0B-B39CCD326B44-d2425e253" class="topicref" data-id="GUID-39CF18F8-E921-45B0-BA0B-B39CCD326B44" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-39CF18F8-E921-45B0-BA0B-B39CCD326B44-d2425e253-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-39CF18F8-E921-45B0-BA0B-B39CCD326B44.html" id="GUID-39CF18F8-E921-45B0-BA0B-B39CCD326B44-d2425e253-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.3</ph>
+HAL Component Usage</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-9EA8133D-53DD-415E-8E08-CBC0969FFCA5-d2425e277" class="topicref" data-id="GUID-9EA8133D-53DD-415E-8E08-CBC0969FFCA5" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-9EA8133D-53DD-415E-8E08-CBC0969FFCA5-d2425e277-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-9EA8133D-53DD-415E-8E08-CBC0969FFCA5.html" id="GUID-9EA8133D-53DD-415E-8E08-CBC0969FFCA5-d2425e277-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.4</ph>
+System Environment Components Usage</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF-d2425e301" class="topicref" data-id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF-d2425e301-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF.html" id="GUID-0685D527-995B-4A5C-AFB9-036CF801ADCF-d2425e301-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.5</ph>
+Zigbee Cluster Library (ZCL) Components Usage</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3-d2425e341" class="topicref" data-id="GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3-d2425e341-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3.html" id="GUID-72AB5A6D-8A28-4640-A202-8B23B24F01F3-d2425e341-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.6</ph>
+Zigbee Device Objects (ZDO) Component Usage</a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C-d2425e373" class="topicref" data-id="GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C-d2425e373-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C.html" id="GUID-B10D2E54-2455-4C1C-ACA0-3F48DFA9033C-d2425e373-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.7</ph>
+Zigbee Green Power (ZGP) Component Usage</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" class="active"><div data-tocid="GUID-C3B630B1-A4CC-427B-B956-BBE243030804-d2425e381" class="topicref" data-id="GUID-C3B630B1-A4CC-427B-B956-BBE243030804" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-C3B630B1-A4CC-427B-B956-BBE243030804.html" id="GUID-C3B630B1-A4CC-427B-B956-BBE243030804-d2425e381-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4.7.1</ph>
+GP Infrastructure Devices</a></div></div></li></ul></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108-d2425e391" class="topicref" data-id="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108-d2425e391-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108.html" id="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108-d2425e391-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5</ph>
+References</a></div></div></li><li role="treeitem"><div data-tocid="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6-d2425e2685" class="topicref" data-id="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6.html" id="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6-d2425e2685-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">6</ph>
+Document Revision History</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2425e2693" class="topicref backmatter backmatter_parent" data-id="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2425e2693-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B.html" id="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2425e2693-link">Microchip Information</a></div></div></li></ul></div>
+		                        
+                            </div>
+                        </nav>
+                    
+                    
+                    <div class="col-lg-7 col-md-9 col-sm-12" id="wh_topic_body">
+                        <button id="wh_close_publication_toc_button" class="close-toc-button d-none" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc" aria-expanded="true">
+                            <span class="close-toc-icon-container">
+                                <span class="close-toc-icon"></span>     
+                            </span>
+                        </button>
+                        <button id="wh_close_topic_toc_button" class="close-toc-button d-none" aria-label="Toggle topic table of content" aria-controls="wh_topic_toc" aria-expanded="true">
+                            <span class="close-toc-icon-container">
+                                <span class="close-toc-icon"></span>     
+                            </span>
+                        </button>
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article role="article" aria-labelledby="GUID-C3B630B1-A4CC-427B-B956-BBE243030804__GUID-24D3B4C5-4EC0-48F4-ABBF-3713900330BF"><h1 class="- topic/title title topictitle1" id="GUID-C3B630B1-A4CC-427B-B956-BBE243030804__GUID-24D3B4C5-4EC0-48F4-ABBF-3713900330BF" style="">4.7.1 GP Infrastructure Devices</h1><article class="- topic/topic topic nested1" aria-labelledby="TOPIC_V4C_LTY_J5B__GUID-470DC172-4548-4061-B309-B4F258AA493E" id="TOPIC_V4C_LTY_J5B"><h2 class="- topic/title title topictitle2" id="TOPIC_V4C_LTY_J5B__GUID-470DC172-4548-4061-B309-B4F258AA493E" style=""> Initialization</h2><div class="- topic/body body"><div class="- topic/p p">
+                <ul class="- topic/ul ul" id="TOPIC_V4C_LTY_J5B__UL_STF_TCD_SBC" data-ofbid="TOPIC_V4C_LTY_J5B__UL_STF_TCD_SBC">
+                    <li class="- topic/li li" id="TOPIC_V4C_LTY_J5B__GUID-AB76B6C4-D43E-4360-A8BC-87EE2C95D20E" data-ofbid="TOPIC_V4C_LTY_J5B__GUID-AB76B6C4-D43E-4360-A8BC-87EE2C95D20E">
+                        <p class="- topic/p p">Use the following public API to initialize the ZGP high proxy, which
+                            manages the communication between the GPDs and the Zigbee network:</p>
+                        <ul class="- topic/ul ul" id="TOPIC_V4C_LTY_J5B__UL_PVG_VT2_KTB" data-ofbid="TOPIC_V4C_LTY_J5B__UL_PVG_VT2_KTB">
+                            <li class="- topic/li li" id="TOPIC_V4C_LTY_J5B__GUID-67ABB66C-147A-493A-9E70-45CD9641FCB3" data-ofbid="TOPIC_V4C_LTY_J5B__GUID-67ABB66C-147A-493A-9E70-45CD9641FCB3">Retrieving the green
+                                power cluster information and adding the event handler for the ZGP
+                                proxy attribute event.</li>
+                            <li class="- topic/li li" id="TOPIC_V4C_LTY_J5B__GUID-8BEB0782-36FF-44B7-80CD-A80BEDB5FE0E" data-ofbid="TOPIC_V4C_LTY_J5B__GUID-8BEB0782-36FF-44B7-80CD-A80BEDB5FE0E">Initializing ZGP high
+                                generic and cluster generic features.</li>
+                            <li class="- topic/li li" id="TOPIC_V4C_LTY_J5B__GUID-CCA0811F-BC8F-4118-B147-C3D29D9432F4" data-ofbid="TOPIC_V4C_LTY_J5B__GUID-CCA0811F-BC8F-4118-B147-C3D29D9432F4">Initializing the ZGP
+                                NVM table which contains the ID of GPD, security keys, frame
+                                counters and sink address list, commissioned id, endpoint and more. </li>
+                            <li class="- topic/li li" id="TOPIC_V4C_LTY_J5B__GUID-0509460D-99A9-4022-8CE2-51942E73E4FA" data-ofbid="TOPIC_V4C_LTY_J5B__GUID-0509460D-99A9-4022-8CE2-51942E73E4FA">Initializing the ZGP
+                                client cluster.</li>
+                        </ul>
+                        <pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_V4C_LTY_J5B__CODEBLOCK_BSG_1CD_SBC" data-ofbid="TOPIC_V4C_LTY_J5B__CODEBLOCK_BSG_1CD_SBC"><strong class="hl-keyword">void</strong> <a class="- topic/xref xref" href="GUID-3A100439-A6A8-4B05-B451-BADE632D36C3.html">ZGPH_ProxyBasicInit</a>(<strong class="hl-keyword">void</strong>);</pre>
+                        <p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p>
+                        <ul class="- topic/ul ul" id="TOPIC_V4C_LTY_J5B__UL_QVG_VT2_KTB" data-ofbid="TOPIC_V4C_LTY_J5B__UL_QVG_VT2_KTB">
+                            <li class="- topic/li li" id="TOPIC_V4C_LTY_J5B__GUID-4A123DC4-E825-44AA-A47D-14B678347835" data-ofbid="TOPIC_V4C_LTY_J5B__GUID-4A123DC4-E825-44AA-A47D-14B678347835">None </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><div class="- topic/p p">
+                <ul class="- topic/ul ul" id="TOPIC_V4C_LTY_J5B__UL_BNK_SCD_SBC" data-ofbid="TOPIC_V4C_LTY_J5B__UL_BNK_SCD_SBC">
+                    <li class="- topic/li li" id="TOPIC_V4C_LTY_J5B__GUID-72535B9A-C680-40CC-AA62-587607CE628F" data-ofbid="TOPIC_V4C_LTY_J5B__GUID-72535B9A-C680-40CC-AA62-587607CE628F">
+                        <p class="- topic/p p">Use the following public API to initialize the ZGP high sink, which
+                            manages the communication between the GPDs and the Zigbee network:</p>
+                        <ul class="- topic/ul ul" id="TOPIC_V4C_LTY_J5B__UL_RVG_VT2_KTB" data-ofbid="TOPIC_V4C_LTY_J5B__UL_RVG_VT2_KTB">
+                            <li class="- topic/li li" id="TOPIC_V4C_LTY_J5B__GUID-8ED94DCC-F799-4E49-9D18-3852A92DD422" data-ofbid="TOPIC_V4C_LTY_J5B__GUID-8ED94DCC-F799-4E49-9D18-3852A92DD422">Initializing the ZGP
+                                server cluster </li>
+                        </ul>
+                        <pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_V4C_LTY_J5B__CODEBLOCK_AF5_LCD_SBC" data-ofbid="TOPIC_V4C_LTY_J5B__CODEBLOCK_AF5_LCD_SBC"><strong class="hl-keyword">void</strong> <a class="- topic/xref xref" href="GUID-81BFD4E4-26A8-4000-B603-F383F8C21814.html">ZGPH_SinkBasicInit</a>(<strong class="hl-keyword">void</strong>);</pre>
+                        <p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p>
+                        <ul class="- topic/ul ul" id="TOPIC_V4C_LTY_J5B__UL_SVG_VT2_KTB" data-ofbid="TOPIC_V4C_LTY_J5B__UL_SVG_VT2_KTB">
+                            <li class="- topic/li li" id="TOPIC_V4C_LTY_J5B__GUID-40B65F83-4A0A-4B53-AEDF-959D2D600644" data-ofbid="TOPIC_V4C_LTY_J5B__GUID-40B65F83-4A0A-4B53-AEDF-959D2D600644">None </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><div class="- topic/p p">
+                <ul class="- topic/ul ul" id="TOPIC_V4C_LTY_J5B__UL_O4G_RCD_SBC" data-ofbid="TOPIC_V4C_LTY_J5B__UL_O4G_RCD_SBC">
+                    <li class="- topic/li li" id="TOPIC_V4C_LTY_J5B__GUID-25B541BC-1651-47A8-B45B-12AFEBE20CE7" data-ofbid="TOPIC_V4C_LTY_J5B__GUID-25B541BC-1651-47A8-B45B-12AFEBE20CE7">
+                        <p class="- topic/p p">Use the following public API to initialize the low ZGP, mainly the dStub
+                            and cStub components: </p>
+                        <pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_V4C_LTY_J5B__CODEBLOCK_U3G_QCD_SBC" data-ofbid="TOPIC_V4C_LTY_J5B__CODEBLOCK_U3G_QCD_SBC"><strong class="hl-keyword">void</strong> <a class="- topic/xref xref" href="GUID-AE88C228-2B31-4A29-B631-15D819D88B84.html">ZGPL_Init</a>(<strong class="hl-keyword">void</strong>);</pre>
+                        <p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p>
+                        <ul class="- topic/ul ul" id="TOPIC_V4C_LTY_J5B__UL_TVG_VT2_KTB" data-ofbid="TOPIC_V4C_LTY_J5B__UL_TVG_VT2_KTB">
+                            <li class="- topic/li li" id="TOPIC_V4C_LTY_J5B__GUID-00E1AF7E-F3CD-4861-9055-6B8600931D45" data-ofbid="TOPIC_V4C_LTY_J5B__GUID-00E1AF7E-F3CD-4861-9055-6B8600931D45">None </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div></div></article><article class="- topic/topic topic nested1" aria-labelledby="TOPIC_FJQ_GTY_J5B__GUID-426DB120-A248-420D-887B-1C9A2F2A5DC4" id="TOPIC_FJQ_GTY_J5B">
+        <h2 class="- topic/title title topictitle2" id="TOPIC_FJQ_GTY_J5B__GUID-426DB120-A248-420D-887B-1C9A2F2A5DC4" style=""> Commissioning</h2>
+        <div class="- topic/body body">
+            <ul class="- topic/ul ul" id="TOPIC_FJQ_GTY_J5B__UL_JFL_5CD_SBC" data-ofbid="TOPIC_FJQ_GTY_J5B__UL_JFL_5CD_SBC">
+                <li class="- topic/li li" id="TOPIC_FJQ_GTY_J5B__GUID-34C484DA-8F9A-4CA3-BDF4-9009A6285273" data-ofbid="TOPIC_FJQ_GTY_J5B__GUID-34C484DA-8F9A-4CA3-BDF4-9009A6285273">
+                    <div class="- topic/p p">Use the following public API to put the sink in Commissioning
+                        mode:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_FJQ_GTY_J5B__CODEBLOCK_XNB_DDD_SBC" data-ofbid="TOPIC_FJQ_GTY_J5B__CODEBLOCK_XNB_DDD_SBC"><strong class="hl-keyword">void</strong> <a class="- topic/xref xref" href="GUID-93B07ED2-D015-49EF-AF59-A18970466275.html">ZGPH_PutLocalSinkInCommissioningMode</a>(uint8_t options, uint8_t endPoint, bool unicastComm);</pre></div>
+                    <p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p>
+                    <ul class="- topic/ul ul" id="TOPIC_FJQ_GTY_J5B__UL_VVG_VT2_KTB" data-ofbid="TOPIC_FJQ_GTY_J5B__UL_VVG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_FJQ_GTY_J5B__GUID-4D9F91D4-EA56-4055-8714-D21A19898515" data-ofbid="TOPIC_FJQ_GTY_J5B__GUID-4D9F91D4-EA56-4055-8714-D21A19898515"><code class="+ topic/ph pr-d/codeph ph codeph">options</code>
+                            – Commissioning mode options (bit fields according to the set bit
+                            fields) <ul class="- topic/ul ul" id="TOPIC_FJQ_GTY_J5B__UL_WVG_VT2_KTB" data-ofbid="TOPIC_FJQ_GTY_J5B__UL_WVG_VT2_KTB">
+                                <li class="- topic/li li" id="TOPIC_FJQ_GTY_J5B__GUID-9205EF93-1A92-4A69-9120-98AAD96163C4" data-ofbid="TOPIC_FJQ_GTY_J5B__GUID-9205EF93-1A92-4A69-9120-98AAD96163C4"><code class="+ topic/ph pr-d/codeph ph codeph">uint8_t
+                                        action : 1;</code></li>
+                                <li class="- topic/li li" id="TOPIC_FJQ_GTY_J5B__GUID-D222D4E3-8388-4C54-80E6-9B7E631B8E1C" data-ofbid="TOPIC_FJQ_GTY_J5B__GUID-D222D4E3-8388-4C54-80E6-9B7E631B8E1C"><code class="+ topic/ph pr-d/codeph ph codeph">uint8_t
+                                        involveGPMinSecurity : 1;</code>
+                                </li>
+                                <li class="- topic/li li" id="TOPIC_FJQ_GTY_J5B__GUID-1A87B767-299D-42B0-B50A-E1D6945CB93E" data-ofbid="TOPIC_FJQ_GTY_J5B__GUID-1A87B767-299D-42B0-B50A-E1D6945CB93E"><code class="+ topic/ph pr-d/codeph ph codeph">uint8_t
+                                        involveGPMinPairing : 1;</code>
+                                </li>
+                                <li class="- topic/li li" id="TOPIC_FJQ_GTY_J5B__GUID-57D56163-D8A4-4259-BEDB-35DED171973F" data-ofbid="TOPIC_FJQ_GTY_J5B__GUID-57D56163-D8A4-4259-BEDB-35DED171973F"><code class="+ topic/ph pr-d/codeph ph codeph">uint8_t
+                                        involveProxies : 1;</code></li>
+                                <li class="- topic/li li" id="TOPIC_FJQ_GTY_J5B__GUID-1D363A48-5090-47B2-83C2-96E780769F24" data-ofbid="TOPIC_FJQ_GTY_J5B__GUID-1D363A48-5090-47B2-83C2-96E780769F24"><code class="+ topic/ph pr-d/codeph ph codeph">uint8_t
+                                        reserved : 4;</code></li>
+                            </ul></li>
+                        <li class="- topic/li li" id="TOPIC_FJQ_GTY_J5B__GUID-B6774AA4-EAE2-410D-A4A4-709B5D9FD0A6" data-ofbid="TOPIC_FJQ_GTY_J5B__GUID-B6774AA4-EAE2-410D-A4A4-709B5D9FD0A6"><code class="+ topic/ph pr-d/codeph ph codeph">endPoint</code>
+                            – Value of communicating endpoint </li>
+                        <li class="- topic/li li" id="TOPIC_FJQ_GTY_J5B__GUID-8718AD30-081F-418C-9252-2930D48B3023" data-ofbid="TOPIC_FJQ_GTY_J5B__GUID-8718AD30-081F-418C-9252-2930D48B3023"><code class="+ topic/ph pr-d/codeph ph codeph">unicastComm</code> – True or false </li>
+                    </ul>
+                </li>
+                <li class="- topic/li li" id="TOPIC_FJQ_GTY_J5B__GUID-93B1E2C6-3BCA-46AD-A660-BCEF19068BEA" data-ofbid="TOPIC_FJQ_GTY_J5B__GUID-93B1E2C6-3BCA-46AD-A660-BCEF19068BEA">
+                    <div class="- topic/p p">Use the following public API to send the ZGP proxy commissioning mode
+                        command:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_FJQ_GTY_J5B__CODEBLOCK_UDN_XCD_SBC" data-ofbid="TOPIC_FJQ_GTY_J5B__CODEBLOCK_UDN_XCD_SBC"><a class="- topic/xref xref" href="GUID-5749C7B1-8E63-4FAF-9F0D-EBFD8A9D0F34.html">ZCL_Status_t</a> <a class="- topic/xref xref" href="GUID-9895C525-9CEF-46EC-A9FE-48C4FD19CE32.html">ZGPH_SendProxyCommissioningModeCommand</a>(uint8_t options, uint16_t commissioningWindow, uint8_t channel);</pre></div>
+                    <p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p>
+                    <ul class="- topic/ul ul" id="TOPIC_FJQ_GTY_J5B__UL_XVG_VT2_KTB" data-ofbid="TOPIC_FJQ_GTY_J5B__UL_XVG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_FJQ_GTY_J5B__GUID-7873698A-5107-42E8-84A1-1C4313F58255" data-ofbid="TOPIC_FJQ_GTY_J5B__GUID-7873698A-5107-42E8-84A1-1C4313F58255"><code class="+ topic/ph pr-d/codeph ph codeph">options</code>
+                            – Proxy options field </li>
+                        <li class="- topic/li li" id="TOPIC_FJQ_GTY_J5B__GUID-C10B5091-374C-4402-94E4-1BDDBCFB5DBE" data-ofbid="TOPIC_FJQ_GTY_J5B__GUID-C10B5091-374C-4402-94E4-1BDDBCFB5DBE"><code class="+ topic/ph pr-d/codeph ph codeph">commissioningWindow</code> – Commissioning window value </li>
+                        <li class="- topic/li li" id="TOPIC_FJQ_GTY_J5B__GUID-248D506D-B70B-4B24-AFC0-52F0B2EE53BB" data-ofbid="TOPIC_FJQ_GTY_J5B__GUID-248D506D-B70B-4B24-AFC0-52F0B2EE53BB"><code class="+ topic/ph pr-d/codeph ph codeph">channel</code>
+                            – Channel value </li>
+                    </ul>
+                    <div class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Usage:</strong><pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_FJQ_GTY_J5B__CODEBLOCK_HTT_WCD_SBC" data-ofbid="TOPIC_FJQ_GTY_J5B__CODEBLOCK_HTT_WCD_SBC"><em class="hl-comment">//If involveProxies is enabled from the options in </em><a class="- topic/xref xref" href="GUID-93B07ED2-D015-49EF-AF59-A18970466275.html">ZGPH_PutLocalSinkInCommissioningMode</a>(uint8_t sinkCommModeOptions, uint8_t endPoint, bool unicastComm) API
 
 uint8_t options;
-<a class="xref" href="GUID-A92E1AB0-A302-49FC-AC63-E857D4D20BB5.html">zgpGpProxyCommModeOptions_t</a> *proxyOptions = (<a class="xref" href="GUID-A92E1AB0-A302-49FC-AC63-E857D4D20BB5.html">zgpGpProxyCommModeOptions_t</a> *)&amp;options;
+<a class="- topic/xref xref" href="GUID-80AB40F7-833F-41E3-B31B-48006FECD344.html">zgpGpProxyCommModeOptions_t</a> *proxyOptions = (<a class="- topic/xref xref" href="GUID-80AB40F7-833F-41E3-B31B-48006FECD344.html">zgpGpProxyCommModeOptions_t</a> *)&amp;options;
 
 proxyOptions-&gt;action = sinkCommModeOptions-&gt;action;
-proxyOptions-&gt;channelPresent = false; // As per the current spec., this is set to 0 always
+proxyOptions-&gt;channelPresent = false; <em class="hl-comment">// As per the current spec., this is set to 0 always</em>
 proxyOptions-&gt;exitMode = ON_FIRST_PAIRING_SUCCESS;
 proxyOptions-&gt;unicastCommunication = unicastComm;
 
-<a class="xref" href="GUID-8C232068-06AE-4338-B639-B076904E3407.html">ZGPH_SendProxyCommissioningModeCommand</a>(proxyOptions, COMMISSIONING_WINDOW_DEFAULT_VALUE_IN_MSEC , ZGP_PROXY_COMM_MODE_CHANNEL);
-</pre>
+<a class="- topic/xref xref" href="GUID-9895C525-9CEF-46EC-A9FE-48C4FD19CE32.html">ZGPH_SendProxyCommissioningModeCommand</a>(proxyOptions, COMMISSIONING_WINDOW_DEFAULT_VALUE_IN_MSEC , ZGP_PROXY_COMM_MODE_CHANNEL);</pre></div>
+                </li>
+            </ul>
+        </div>
+    </article><article class="- topic/topic topic nested1" aria-labelledby="TOPIC_OLQ_BTY_J5B__GUID-3FD56969-5485-4D45-B6C3-5D9307F3E80E" id="TOPIC_OLQ_BTY_J5B"><h2 class="- topic/title title topictitle2" id="TOPIC_OLQ_BTY_J5B__GUID-3FD56969-5485-4D45-B6C3-5D9307F3E80E" style=""> Generic ZGP Infrastructure APIs</h2><div class="- topic/body body">
+            <ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_KCD_TDD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_KCD_TDD_SBC">
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-1F546CA5-4EA9-4640-B735-61A8DF5BD126" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-1F546CA5-4EA9-4640-B735-61A8DF5BD126">
+                    <div class="- topic/p p">The following public API enables or disables the Direct mode of GPDF and is
+                        applicable to COMBO basic devices (proxy + sink). Based on this setting, it
+                        forwards the c-stub indication to the d-stub
+                        block:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_HFF_5JD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_HFF_5JD_SBC"><strong class="hl-keyword">void</strong> <a class="- topic/xref xref" href="GUID-778B1B6A-55F9-4A48-8C80-750A7600286B.html">ZGPL_EnableDisableDirectMode</a>(bool enabled);</pre></div>
+                    <p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p>
+                    <ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_ZVG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_ZVG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-BEB4B543-ADB9-4EA6-9970-9362E5D34FA9" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-BEB4B543-ADB9-4EA6-9970-9362E5D34FA9"><code class="+ topic/ph pr-d/codeph ph codeph">enabled</code>
+                            – Enable/Disable flag </li>
+                    </ul>
+                </li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-31D69D31-055A-4D53-AA62-E8EB1B6FE477" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-31D69D31-055A-4D53-AA62-E8EB1B6FE477">
+                    <div class="- topic/p p">The following public API requests the ZGP simple descriptor to retrieve
+                        information such as cluster IDs, profile ID, device ID, and more for the
+                        specified network address and
+                        endpoint:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_LNC_PJD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_LNC_PJD_SBC"><strong class="hl-keyword">void</strong> <a class="- topic/xref xref" href="GUID-24F99E11-C61C-491E-BFDB-9B9CC15FE461.html">ZGPL_SendSimpleDescReq</a>(ShortAddr_t addr,uint8_t ep);</pre></div>
+                    <p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p>
+                    <ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_AWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_AWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-D02D5BAB-71A2-476E-A2A0-036C89AA6B88" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-D02D5BAB-71A2-476E-A2A0-036C89AA6B88"><code class="+ topic/ph pr-d/codeph ph codeph">addr</code> –
+                            Network address of the node </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-507A0A9D-0039-4567-B5DE-5E48E5DAAF5E" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-507A0A9D-0039-4567-B5DE-5E48E5DAAF5E"><code class="+ topic/ph pr-d/codeph ph codeph">ep</code> –
+                            Endpoint value </li>
+                    </ul>
+                </li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-016E84EC-373A-4E0B-82CC-266E0B79AB66" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-016E84EC-373A-4E0B-82CC-266E0B79AB66">
+                    <div class="- topic/p p">The following public API broadcasts the device announce of ZGP to the
+                        network, typically called after successful ZGP
+                        commissioning:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_JWN_FJD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_JWN_FJD_SBC"><strong class="hl-keyword">void</strong> <a class="- topic/xref xref" href="GUID-258A100F-7669-406B-BF3A-365F82C1E1B1.html">ZGPL_SendDeviceAnnounceCmd</a>(uint16_t nwkAddr, uint64_t extAddr);</pre></div>
+                    <p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p>
+                    <ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_BWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_BWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-86532447-4E70-4E62-AC6B-5BD511CF3CF2" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-86532447-4E70-4E62-AC6B-5BD511CF3CF2"><code class="+ topic/ph pr-d/codeph ph codeph">nwkAddr</code>
+                            – NWK address to be placed in the device announce </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-184E26F6-4F08-493D-8EE1-8AE5DE65A95B" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-184E26F6-4F08-493D-8EE1-8AE5DE65A95B"><code class="+ topic/ph pr-d/codeph ph codeph">extAddr</code>
+                            – External address to be placed in the device announce </li>
+                    </ul>
+                </li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-53BC3F02-50A1-4C7A-B8B5-5BC50B4A4497" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-53BC3F02-50A1-4C7A-B8B5-5BC50B4A4497">
+                    <div class="- topic/p p">Use the following public API to send the ZGP read attribute command with
+                        green power profile ID, cluster ID for the respective attribute ID to the
+                        Zigbee
+                        network:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_H4Y_BJD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_H4Y_BJD_SBC"><a class="- topic/xref xref" href="GUID-5749C7B1-8E63-4FAF-9F0D-EBFD8A9D0F34.html">ZCL_Status_t</a> <a class="- topic/xref xref" href="GUID-5714AB03-C12C-42D1-AF54-B71C851D07E3.html">ZGPH_SendReadAttribute</a>(uint16_t addr, uint8_t dir, uint16_t attrId);</pre></div>
+                    <p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p>
+                    <ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_CWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_CWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-03449817-D2FF-416F-9344-451A44F6F0DA" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-03449817-D2FF-416F-9344-451A44F6F0DA"><code class="+ topic/ph pr-d/codeph ph codeph">addr</code> –
+                            Destination address </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-EB61004C-08DB-4B20-B405-7D9D9AC0DB99" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-EB61004C-08DB-4B20-B405-7D9D9AC0DB99"><code class="+ topic/ph pr-d/codeph ph codeph">dir</code> –
+                            Server to client or client to server </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-5D9A940B-C2FC-4F8A-AC92-C36D6BE7C795" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-5D9A940B-C2FC-4F8A-AC92-C36D6BE7C795"><code class="+ topic/ph pr-d/codeph ph codeph">attrId</code> –
+                            Attribute ID </li>
+                    </ul>
+                </li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-81952ADB-6C8B-4B7F-81B1-634ABAF49C9A" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-81952ADB-6C8B-4B7F-81B1-634ABAF49C9A">
+                    <div class="- topic/p p">Use the following public API to send the ZGP commands in the Raw mode with
+                        the
+                        payload:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_KGS_V3D_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_KGS_V3D_SBC"><a class="- topic/xref xref" href="GUID-5749C7B1-8E63-4FAF-9F0D-EBFD8A9D0F34.html">ZCL_Status_t</a> <a class="- topic/xref xref" href="GUID-14E6A8B2-1D53-4CAA-8CA2-0D9B27E848D8.html">ZGPH_SendCmdInRawMode</a>(uint16_t dstAddr, bool dir, uint16_t cmdId, uint8_t payLoadLength, uint8_t  *payLoad);</pre></div>
+                    <p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p>
+                    <ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_DWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_DWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-4CCA9289-E37A-46CA-B8A5-F06A188B1FF2" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-4CCA9289-E37A-46CA-B8A5-F06A188B1FF2"><code class="+ topic/ph pr-d/codeph ph codeph">dstAddr</code>
+                            – Destination address </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-626E5B71-6023-4B34-BA87-35949CDA2DD7" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-626E5B71-6023-4B34-BA87-35949CDA2DD7"><code class="+ topic/ph pr-d/codeph ph codeph">dir</code> –
+                            Server to client or client to server </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-DD9A203E-AED0-4BD5-9DDC-5778B8947496" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-DD9A203E-AED0-4BD5-9DDC-5778B8947496"><code class="+ topic/ph pr-d/codeph ph codeph">cmdId</code> –
+                            Cluster command ID </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-CC428120-506E-40BE-8F73-901A394A8DE5" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-CC428120-506E-40BE-8F73-901A394A8DE5"><code class="+ topic/ph pr-d/codeph ph codeph">payLoadLength</code> – Sending specific length of payload </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-B79BF73C-4BB8-4B3F-98C4-D2560FF6B0BF" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-B79BF73C-4BB8-4B3F-98C4-D2560FF6B0BF"><code class="+ topic/ph pr-d/codeph ph codeph">payLoad</code>
+                            – Send the payload</li>
+                    </ul>
+                </li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-BD45011A-C062-4960-90B8-8EF7FDB7C4B3" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-BD45011A-C062-4960-90B8-8EF7FDB7C4B3">
+                    <p class="- topic/p p">A proxy node maintains information about the GP source nodes for which it
+                        serves as a proxy. The system stores this information in a local proxy table
+                        that includes an entry for each source node within direct range. Each proxy
+                        table entry holds pairing information about the source node and the
+                        associated sink node, including security requirements and the Communication
+                        mode. The GP cluster constructs the proxy table automatically during the
+                        commissioning process.</p>
+                    <div class="- topic/p p">Use the following public API to send request for ZGP proxy table to the
+                        specific network
+                        address:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_QYP_L3D_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_QYP_L3D_SBC"><a class="- topic/xref xref" href="GUID-5749C7B1-8E63-4FAF-9F0D-EBFD8A9D0F34.html">ZCL_Status_t</a> <a class="- topic/xref xref" href="GUID-F00FB02C-D835-44F3-8738-0D5F1FE6DAE4.html">ZGPH_SendProxyTableRequest</a>(uint16_t addr, uint8_t options, uint64_t gpdId_Ieee, uint8_t ep, uint8_t index);</pre></div>
+                    <p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p>
+                    <ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_EWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_EWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-3C14A884-9435-4725-916F-8249B6EB34D7" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-3C14A884-9435-4725-916F-8249B6EB34D7"><code class="+ topic/ph pr-d/codeph ph codeph">addr</code> –
+                            Destination address </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-FFD192A2-846D-47BD-A3E8-6998B83A0489" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-FFD192A2-846D-47BD-A3E8-6998B83A0489"><code class="+ topic/ph pr-d/codeph ph codeph">options</code>
+                            – Options field </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-6939243F-453F-4F41-A9A3-61F6AF973456" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-6939243F-453F-4F41-A9A3-61F6AF973456"><code class="+ topic/ph pr-d/codeph ph codeph">gpdId_Ieee</code> – GPD ID or <span class="- topic/tm tm">IEEE<span class="- topic/tmmark tmmark ">®</span></span>
+                            address </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-A6324FCB-4E58-4E1D-A382-9675811AD124" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-A6324FCB-4E58-4E1D-A382-9675811AD124"><code class="+ topic/ph pr-d/codeph ph codeph">ep</code> –
+                            Endpoint for IEEE address GPD </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-A50A611A-2C84-4E0E-B265-DB284C59E5BD" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-A50A611A-2C84-4E0E-B265-DB284C59E5BD"><code class="+ topic/ph pr-d/codeph ph codeph">index</code> –
+                            Index field </li>
+                    </ul>
+                </li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-E12D11FE-AC06-453D-8770-D2F4C2A6A1B4" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-E12D11FE-AC06-453D-8770-D2F4C2A6A1B4">
+                    <p class="- topic/p p">A sink node must keep a record of the source nodes with which it pairs. The
+                        system stores this information in a local sink table that includes an entry
+                        for each paired source node. The sink table enables the sink node to verify
+                        if it is the intended recipient of a GP frame received from a source node,
+                        whether directly or through a proxy node. The GP cluster constructs the sink
+                        table automatically during the commissioning process.</p>
+                    <div class="- topic/p p">Use the following public API to send request for ZGP sink table information
+                        for the respective network address and end
+                        point:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_NQW_THD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_NQW_THD_SBC"><a class="- topic/xref xref" href="GUID-5749C7B1-8E63-4FAF-9F0D-EBFD8A9D0F34.html">ZCL_Status_t</a> <a class="- topic/xref xref" href="GUID-EF8E9FC2-9AB2-43E3-98AD-C616BF907893.html">ZGPH_SendSinkTableRequest</a>(uint16_t addr, uint8_t options, uint64_t gpdId_Ieee, uint8_t ep, uint8_t index);</pre></div>
+                    <p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p>
+                    <ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_FWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_FWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-4836858B-AAFD-4D0E-9191-4B87778FCE3C" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-4836858B-AAFD-4D0E-9191-4B87778FCE3C"><code class="+ topic/ph pr-d/codeph ph codeph">addr</code> –
+                            Destination address </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-E3BDE8E2-DE4A-4AC5-980C-2B4B7D1C1D41" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-E3BDE8E2-DE4A-4AC5-980C-2B4B7D1C1D41"><code class="+ topic/ph pr-d/codeph ph codeph">options</code>
+                            – Options field </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-B29986C8-1339-4C1D-9FEC-A967F45243C9" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-B29986C8-1339-4C1D-9FEC-A967F45243C9"><code class="+ topic/ph pr-d/codeph ph codeph">gpdId_Ieee</code> – GPD ID or IEEE address </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-3C532795-15FE-4B5D-99FB-381813F43F14" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-3C532795-15FE-4B5D-99FB-381813F43F14"><code class="+ topic/ph pr-d/codeph ph codeph">ep</code> –
+                            Endpoint for IEEE address GPD </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-5FFDC8D4-8B8B-411A-A6AD-4CC786BF3683" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-5FFDC8D4-8B8B-411A-A6AD-4CC786BF3683"><code class="+ topic/ph pr-d/codeph ph codeph">index</code> –
+                            Index field </li>
+                    </ul>
+                </li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-C44CF2C3-E859-4474-BE92-2454DF9E533A" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-C44CF2C3-E859-4474-BE92-2454DF9E533A">Use the following public API to
+                    update sink entry locally on NVM based on the given
+                            action:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_OPD_PHD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_OPD_PHD_SBC"><a class="- topic/xref xref" href="GUID-F051CBA0-70F5-4D0D-B2CB-CCC3B43C47EC.html">ZGP_InfraDeviceStatus_t</a> <a class="- topic/xref xref" href="GUID-D080B46A-FEBC-4415-9029-7CD963D5EAFF.html">ZGPH_UpdateLocalSinkEntry</a>(<a class="- topic/xref xref" href="GUID-8312C7A0-D12F-4F74-B076-4A903F8204A3.html">zgpSinkTableEntry_t</a> *sinkEntry, <a class="- topic/xref xref" href="GUID-D4ED356E-C1C2-4E45-BD48-EF6D238306A5.html">zgpSinkTableActions_t</a> action);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_GWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_GWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-300C808F-9717-4202-BF01-C57A66B14E6D" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-300C808F-9717-4202-BF01-C57A66B14E6D"><code class="+ topic/ph pr-d/codeph ph codeph">sinkEntry</code> – Pointer to the
+                                <code class="+ topic/ph pr-d/codeph ph codeph">sinkEntry</code> to be updated </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-CEEA9EBD-A166-46C0-BAE4-187104B97A16" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-CEEA9EBD-A166-46C0-BAE4-187104B97A16"><code class="+ topic/ph pr-d/codeph ph codeph">action</code> –
+                            Add/replace/remove </li>
+                    </ul></li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-3F7129AB-D9D9-4D0F-8809-E712982DBF01" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-3F7129AB-D9D9-4D0F-8809-E712982DBF01">Use the following public API to
+                    set the sink group ID for commissioning the
+                            GPD<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_VMT_KHD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_VMT_KHD_SBC"><a class="- topic/xref xref" href="GUID-F051CBA0-70F5-4D0D-B2CB-CCC3B43C47EC.html">ZGP_InfraDeviceStatus_t</a>  <a class="- topic/xref xref" href="GUID-DC25D261-3F49-4611-83CC-F3A08C7F93E6.html">ZGPH_SetSinkGroupEntry</a>(GroupAddr_t sinkGroupId);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_HWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_HWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-08C7B0C5-D247-40E2-B613-4A68A9EE5AA8" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-08C7B0C5-D247-40E2-B613-4A68A9EE5AA8"><code class="+ topic/ph pr-d/codeph ph codeph">sinkGroupId</code> – sink group Id to be set </li>
+                    </ul></li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-EEF9BB26-EBDB-4C4E-BD3C-06C27B04D380" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-EEF9BB26-EBDB-4C4E-BD3C-06C27B04D380">
+                    <div class="- topic/p p">Use the following public API to set the assigned alias for the GPD to be
+                        commissioned:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_TPG_3HD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_TPG_3HD_SBC"><a class="- topic/xref xref" href="GUID-F051CBA0-70F5-4D0D-B2CB-CCC3B43C47EC.html">ZGP_InfraDeviceStatus_t</a> <a class="- topic/xref xref" href="GUID-F0129C2D-4E2A-4E7E-9317-D0354F45F406.html">ZGPH_SetGPDAssignedAlias</a>(ShortAddr_t gpdAssignedAlias);</pre></div>
+                    <p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p>
+                    <ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_IWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_IWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-66181D99-8E75-43F6-B430-6B73325F6C59" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-66181D99-8E75-43F6-B430-6B73325F6C59"><code class="+ topic/ph pr-d/codeph ph codeph">gpdAssignedAlias</code> – The commissioned 16-bit ID to
+                            be used as alias for this GPD</li>
+                    </ul>
+                </li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-6A15DB08-A3D5-4C9A-AFFE-D6BC19044849" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-6A15DB08-A3D5-4C9A-AFFE-D6BC19044849">Use the following public API to
+                    read the sink entry based on the
+                            index:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_EKX_CHD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_EKX_CHD_SBC">bool <a class="- topic/xref xref" href="GUID-58530E96-6DB1-4B67-974C-7CC98E4FDA96.html">ZGPH_GetSinkTableEntryByIndex</a>(<a class="- topic/xref xref" href="GUID-8312C7A0-D12F-4F74-B076-4A903F8204A3.html">zgpSinkTableEntry_t</a> *entry, uint8_t index);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_JWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_JWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-118D64FF-D6EC-4671-A4D3-5A057B2E8B3D" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-118D64FF-D6EC-4671-A4D3-5A057B2E8B3D"><code class="+ topic/ph pr-d/codeph ph codeph">entry</code> –
+                            Entry to be populated </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-25342512-2364-4DFB-8193-E7FA9369F7E4" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-25342512-2364-4DFB-8193-E7FA9369F7E4"><code class="+ topic/ph pr-d/codeph ph codeph">index</code> –
+                            Entry index</li>
+                    </ul></li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-26E342F6-3646-4F2F-9112-9CCF25DF4E09" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-26E342F6-3646-4F2F-9112-9CCF25DF4E09">Use the following public API to
+                    send <code class="+ topic/ph pr-d/codeph ph codeph">gpPairingConfiguration</code> command
+                            OTA:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_YHT_VGD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_YHT_VGD_SBC"><a class="- topic/xref xref" href="GUID-F051CBA0-70F5-4D0D-B2CB-CCC3B43C47EC.html">ZGP_InfraDeviceStatus_t</a> <a class="- topic/xref xref" href="GUID-C5D25CC9-4A56-46F4-A621-C4796526329E.html">ZGPH_SendGpPairingConfigCmd</a>(APS_AddrMode_t addrMode, APS_Address_t *dstAddr, ZGP_PairingConfigCmdInfo_t pairingConfigCmdInfo, zgpCommReqAppInfo_t *commReqAppInfo, zgpEndpointInfo_t endPointInfo);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_KWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_KWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-8716732E-DC9B-462D-9ED2-D5A2D4B7348C" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-8716732E-DC9B-462D-9ED2-D5A2D4B7348C"><code class="+ topic/ph pr-d/codeph ph codeph">addrMode</code>
+                            – Address mode to be used over the air </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-0EF79524-CFDC-4DBF-959E-717B461EA6FD" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-0EF79524-CFDC-4DBF-959E-717B461EA6FD"><code class="+ topic/ph pr-d/codeph ph codeph">dstAddr</code>
+                            – Destination address of the remote device </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-052BDA44-450C-4810-BF7B-881143C971B7" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-052BDA44-450C-4810-BF7B-881143C971B7"><code class="+ topic/ph pr-d/codeph ph codeph">pairingConfigCmdInfo</code> – Pairing configuration
+                            command inputs </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-7034C80D-9815-4C7C-AD4C-D28B47A7FE66" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-7034C80D-9815-4C7C-AD4C-D28B47A7FE66"><code class="+ topic/ph pr-d/codeph ph codeph">commReqAppInfo</code> – Application information </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-468C21A5-E3B5-433E-9B7B-3F7F9B7DF9FE" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-468C21A5-E3B5-433E-9B7B-3F7F9B7DF9FE"><code class="+ topic/ph pr-d/codeph ph codeph">endpointInfo</code> – Paired Endpoints information</li>
+                    </ul></li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-5D891432-8517-49C1-94B1-79F763C7F345" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-5D891432-8517-49C1-94B1-79F763C7F345">Use the following public API to
+                    flush out the Tx request queued in Tx
+                            queue:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_DV5_TGD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_DV5_TGD_SBC"><strong class="hl-keyword">void</strong> <a class="- topic/xref xref" href="GUID-E5AA5913-C4DF-4A6A-8C98-ACF8A6AE4585.html">ZGPL_FlushTxQueue</a> (<strong class="hl-keyword">void</strong>);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_LWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_LWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-C7D53255-C771-4EBF-A1DA-C0CE9FAF8C97" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-C7D53255-C771-4EBF-A1DA-C0CE9FAF8C97">None </li>
+                    </ul></li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-3192DFCE-2521-4182-B09F-B3FE47A4F3AA" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-3192DFCE-2521-4182-B09F-B3FE47A4F3AA">Use the following public API to
+                    initiate <code class="+ topic/ph pr-d/codeph ph codeph">gpd</code> data request from high
+                            sink/proxy:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_GNW_NGD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_GNW_NGD_SBC"><strong class="hl-keyword">void</strong> <a class="- topic/xref xref" href="GUID-09A4048F-9AEA-4BC4-AFF2-6EE75BFDBF59.html">ZGPL_GpdfDataRequest</a>(<a class="- topic/xref xref" href="GUID-8FFB1F4A-C972-4CBC-9A84-FF4FD213155F.html">ZGP_GpdfDataReq_t</a> *zgpGpdfDataReq);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_MWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_MWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-72FE5355-164F-4A3D-B287-C768C453257A" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-72FE5355-164F-4A3D-B287-C768C453257A"><code class="+ topic/ph pr-d/codeph ph codeph">zgpGpdfDataReq</code> – Data request parameters that need
+                            to be filled in queue </li>
+                    </ul></li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-6A0A050A-A787-43D3-95C6-B59E2807A0F7" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-6A0A050A-A787-43D3-95C6-B59E2807A0F7">Use the following public API to
+                    check the <code class="+ topic/ph pr-d/codeph ph codeph">gpdf</code> for duplicate
+                            packets:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_H4G_KGD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_H4G_KGD_SBC">bool <a class="- topic/xref xref" href="GUID-770F4186-2798-41ED-B389-1B503955B99C.html">ZGPL_CheckForDuplicate</a>(ZGPL_DataInd_t *dStubDataInd);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_NWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_NWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-AD4724DC-CCFF-4261-82BF-E7BEFEFCFDFE" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-AD4724DC-CCFF-4261-82BF-E7BEFEFCFDFE"><code class="+ topic/ph pr-d/codeph ph codeph">dstubDataInd</code> – dstub data indication parameters
+                        </li>
+                    </ul></li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-C567FACF-831F-4664-A1F9-C0AB6D363CB8" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-C567FACF-831F-4664-A1F9-C0AB6D363CB8">Use the following public API to
+                    derive the GPD security key from the network/group key. This high sink mainly
+                    uses this
+                            API:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_FMR_CGD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_FMR_CGD_SBC"><strong class="hl-keyword">void</strong> <a class="- topic/xref xref" href="GUID-08990024-C949-42D1-A0C3-52371DB6C4A9.html">ZGPL_KeyDerivationHmac</a>(<a class="- topic/xref xref" href="GUID-8312C7A0-D12F-4F74-B076-4A903F8204A3.html">zgpSinkTableEntry_t</a>* sinkTableEntry, uint8_t *derivedKey, <strong class="hl-keyword">void</strong> (*keyedHashMacCb)(<strong class="hl-keyword">void</strong>));</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_OWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_OWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-0D7886F3-C3A9-4E77-9377-D641E2C7519C" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-0D7886F3-C3A9-4E77-9377-D641E2C7519C"><code class="+ topic/ph pr-d/codeph ph codeph">sinkTableEntry</code> – Pointer to the
+                                <code class="+ topic/ph pr-d/codeph ph codeph">sinkTableEntry</code> structure</li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-4E958DBE-6B2E-4CC1-BAFF-CD551D1DC0ED" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-4E958DBE-6B2E-4CC1-BAFF-CD551D1DC0ED"><code class="+ topic/ph pr-d/codeph ph codeph">derivedKey</code> – Key to be derived </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-4EC80286-363F-4F9F-824D-8ED5E5033DB1" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-4EC80286-363F-4F9F-824D-8ED5E5033DB1"><code class="+ topic/ph pr-d/codeph ph codeph">sinkTableEntry</code> – Callback function</li>
+                    </ul></li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-BE001204-4A8B-478D-99EF-134EE3120456" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-BE001204-4A8B-478D-99EF-134EE3120456">Use the following public API to
+                    set the Proxy/Sink mode
+                            (commissioning/operational):<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_FGK_VFD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_FGK_VFD_SBC"><strong class="hl-keyword">void</strong> <a class="- topic/xref xref" href="GUID-EA3A70DA-FEBF-4D3A-BC1C-57E37895B201.html">ZGPL_SetDeviceMode</a>(bool isProxy, zgpMode_t mode);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_PWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_PWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-1B8CC93F-4678-4E38-869E-E35D481A0483" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-1B8CC93F-4678-4E38-869E-E35D481A0483"><code class="+ topic/ph pr-d/codeph ph codeph">isProxy</code>
+                            – True for proxy, false for sink </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-CEB2C2C4-BBFA-44F0-B0B4-5DF38056965B" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-CEB2C2C4-BBFA-44F0-B0B4-5DF38056965B"><code class="+ topic/ph pr-d/codeph ph codeph">mode</code> –
+                            Commissioning/operational </li>
+                    </ul></li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-06618DE5-3927-46F7-9EF6-057D79637D12" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-06618DE5-3927-46F7-9EF6-057D79637D12">Use the following public API to
+                    get the Proxy/Sink mode
+                            (commissioning/operational):<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_SGX_RFD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_SGX_RFD_SBC"><strong class="hl-keyword">void</strong> <a class="- topic/xref xref" href="GUID-8BD8072A-0367-4964-A0B0-A3FFBC66159E.html">ZGPL_GetDeviceMode</a>(bool isProxy, zgpMode_t mode);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_QWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_QWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-F1F5CA70-8047-43D7-BCB0-1F29B2813E82" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-F1F5CA70-8047-43D7-BCB0-1F29B2813E82"><code class="+ topic/ph pr-d/codeph ph codeph">isProxy</code>
+                            – True for proxy, false for sink </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-A30DAAD5-C9DF-4FCA-9E8F-53890FCD5274" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-A30DAAD5-C9DF-4FCA-9E8F-53890FCD5274"><code class="+ topic/ph pr-d/codeph ph codeph">mode</code> –
+                            Commissioning/operational </li>
+                    </ul></li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-3B77BE97-68FC-40CF-9D8D-05B960AD2B9D" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-3B77BE97-68FC-40CF-9D8D-05B960AD2B9D">Use the following public API to
+                    check whether the given <code class="+ topic/ph pr-d/codeph ph codeph">srcId</code> is valid, considering the frame
+                            type:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_CNG_MFD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_CNG_MFD_SBC">bool <a class="- topic/xref xref" href="GUID-FE37BE2A-191F-45AD-84A8-A29559A33247.html">ZGPL_IsValidSrcId</a>(uint32_t srcId, <a class="- topic/xref xref" href="GUID-CE890B54-D683-41FB-ABA2-C0E399EBE1AC.html">ZGP_FrameType_t</a> frameType, bool isPairingReq);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_RWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_RWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-2C5ED895-34AC-497A-BDB9-E79AF3F4FD6F" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-2C5ED895-34AC-497A-BDB9-E79AF3F4FD6F"><code class="+ topic/ph pr-d/codeph ph codeph">srcId</code> –
+                            GPD <code class="+ topic/ph pr-d/codeph ph codeph">srcId</code>
+                        </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-788B21D2-18AC-4ACC-8402-45131DEE201A" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-788B21D2-18AC-4ACC-8402-45131DEE201A"><code class="+ topic/ph pr-d/codeph ph codeph">frameType</code> – Maintenance frame/data frame </li>
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-B2C0FBBA-2870-40AC-BD91-5C137BFBDC7E" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-B2C0FBBA-2870-40AC-BD91-5C137BFBDC7E"><code class="+ topic/ph pr-d/codeph ph codeph">isPairingReq</code> – <code class="+ topic/ph pr-d/codeph ph codeph">rcId</code> received in
+                            pairing configuration/commissioning</li>
+                    </ul></li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-0629E85A-241E-4CD0-9E08-88E4777B1781" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-0629E85A-241E-4CD0-9E08-88E4777B1781">Use the following public API to
+                    check whether the given key is
+                            valid:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_LBN_GFD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_LBN_GFD_SBC">bool <a class="- topic/xref xref" href="GUID-091E611A-3824-403E-98D8-41CBB2AB5EE9.html">ZGPL_IskeyValid</a>(uint8_t *key);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_SWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_SWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-C9D9CE8E-1B29-47C8-B7BA-3A36413B9847" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-C9D9CE8E-1B29-47C8-B7BA-3A36413B9847"><code class="+ topic/ph pr-d/codeph ph codeph">key</code> –
+                            Key to be validated</li>
+                    </ul></li>
+                <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-2EFC449D-6CD0-47CB-AC76-E0369E14B9CD" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-2EFC449D-6CD0-47CB-AC76-E0369E14B9CD">
+                    <div class="- topic/p p">Use the following public API to derive the alias from the provided
+                            <code class="+ topic/ph pr-d/codeph ph codeph">gpdId</code>:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_OLQ_BTY_J5B__CODEBLOCK_N5D_BFD_SBC" data-ofbid="TOPIC_OLQ_BTY_J5B__CODEBLOCK_N5D_BFD_SBC">uint16_t <a class="- topic/xref xref" href="GUID-C299DFFC-9B9F-434D-84A9-7D06A23C7BC4.html">ZGPL_GetAliasSourceAddr</a>(gpdId_t *gpdId);</pre></div>
+                    <p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p>
+                    <ul class="- topic/ul ul" id="TOPIC_OLQ_BTY_J5B__UL_TWG_VT2_KTB" data-ofbid="TOPIC_OLQ_BTY_J5B__UL_TWG_VT2_KTB">
+                        <li class="- topic/li li" id="TOPIC_OLQ_BTY_J5B__GUID-07A6705F-5D08-461F-8D33-1F02E58B0C05" data-ofbid="TOPIC_OLQ_BTY_J5B__GUID-07A6705F-5D08-461F-8D33-1F02E58B0C05"><code class="+ topic/ph pr-d/codeph ph codeph">gpdId</code> –
+                                <code class="+ topic/ph pr-d/codeph ph codeph">gpdId</code> from which to derive the alias</li>
+                    </ul>
+                </li>
+            </ul></div></article><article class="- topic/topic topic nested1" aria-labelledby="TOPIC_ETJ_5SY_J5B__GUID-B5F43692-1AB5-4C16-97E4-B0CAF8AB4972" id="TOPIC_ETJ_5SY_J5B"><h2 class="- topic/title title topictitle2" id="TOPIC_ETJ_5SY_J5B__GUID-B5F43692-1AB5-4C16-97E4-B0CAF8AB4972" style=""> NVM Table APIs</h2><div class="- topic/body body">
+            <div class="- topic/p p">The following sections explain the API’s usage with respect to the NVM table.<ul class="- topic/ul ul" id="TOPIC_ETJ_5SY_J5B__UL_ULZ_QKD_SBC" data-ofbid="TOPIC_ETJ_5SY_J5B__UL_ULZ_QKD_SBC">
+                    <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-1C85DC92-417A-462D-8966-15D35CA69F60" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-1C85DC92-417A-462D-8966-15D35CA69F60">Use the following public API
+                        to initialize the NVM
+                                Table:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_ETJ_5SY_J5B__CODEBLOCK_LCR_ZSD_SBC" data-ofbid="TOPIC_ETJ_5SY_J5B__CODEBLOCK_LCR_ZSD_SBC"><strong class="hl-keyword">void</strong> <a class="- topic/xref xref" href="GUID-F9F7FC99-1C57-4A35-A88B-9EEED342C52E.html">ZGPL_NvmTableInit</a> (<strong class="hl-keyword">void</strong>);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_ETJ_5SY_J5B__UL_VWG_VT2_KTB" data-ofbid="TOPIC_ETJ_5SY_J5B__UL_VWG_VT2_KTB">
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-366A7E33-D2FB-4A62-896F-5ACA1E14443E" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-366A7E33-D2FB-4A62-896F-5ACA1E14443E">None </li>
+                        </ul></li>
+                    <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-536268C1-2EF0-4752-86FA-8D69E4B24FEE" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-536268C1-2EF0-4752-86FA-8D69E4B24FEE">Use the following public API
+                        to reset all parameters of the specified entry to their initial
+                                value:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_ETJ_5SY_J5B__CODEBLOCK_MJV_55D_SBC" data-ofbid="TOPIC_ETJ_5SY_J5B__CODEBLOCK_MJV_55D_SBC"><strong class="hl-keyword">void</strong> <a class="- topic/xref xref" href="GUID-635E77F5-C6D1-49A8-A9FD-68F43F470599.html">ZGPL_ResetTableEntry</a> (<strong class="hl-keyword">void</strong> *entry, ZGP_TableType_t tableType);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_ETJ_5SY_J5B__UL_WWG_VT2_KTB" data-ofbid="TOPIC_ETJ_5SY_J5B__UL_WWG_VT2_KTB">
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-4AE59EB1-A903-4E54-A1CC-A65FC33C2F8D" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-4AE59EB1-A903-4E54-A1CC-A65FC33C2F8D"><code class="+ topic/ph pr-d/codeph ph codeph">entry</code> – Entry to be reset </li>
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-06E9A6B0-1278-44FA-8B08-D78253E29A5A" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-06E9A6B0-1278-44FA-8B08-D78253E29A5A"><code class="+ topic/ph pr-d/codeph ph codeph">tableType</code> – Sink/proxy entry </li>
+                        </ul></li>
+                    <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-5B8E6F21-E958-426F-9C42-D9B19A87E542" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-5B8E6F21-E958-426F-9C42-D9B19A87E542">Use the following public API
+                        to fetch the total number of non empty entries. The high proxy/sink mainly
+                        uses this while sending sink/proxy table
+                                responses:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_ETJ_5SY_J5B__CODEBLOCK_EXS_Y5D_SBC" data-ofbid="TOPIC_ETJ_5SY_J5B__CODEBLOCK_EXS_Y5D_SBC">uint8_t <a class="- topic/xref xref" href="GUID-2203FBF9-F0A1-434E-95B3-6C30B045B172.html">ZGPL_TotalNonEmptyEntries</a>(bool isProxyTable);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_ETJ_5SY_J5B__UL_XWG_VT2_KTB" data-ofbid="TOPIC_ETJ_5SY_J5B__UL_XWG_VT2_KTB">
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-3632D5A6-D5BD-41D4-9A5A-2765FFCEB23A" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-3632D5A6-D5BD-41D4-9A5A-2765FFCEB23A"><code class="+ topic/ph pr-d/codeph ph codeph">isProxyTable</code> – Proxy/sink entry </li>
+                        </ul></li>
+                    <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-F8F84C60-4F8E-4B2B-AFD2-59623AECF184" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-F8F84C60-4F8E-4B2B-AFD2-59623AECF184">Use the following public API
+                        to add/update the proxy/sink entry on
+                                NVM:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_ETJ_5SY_J5B__CODEBLOCK_N2G_BVD_SBC" data-ofbid="TOPIC_ETJ_5SY_J5B__CODEBLOCK_N2G_BVD_SBC">bool <a class="- topic/xref xref" href="GUID-54CF2924-A675-4794-B50C-2A1D78DFC788.html">ZGPL_AddOrUpdateTableEntryOnNvm</a>(<strong class="hl-keyword">void</strong> *entryPtr, <a class="- topic/xref xref" href="GUID-F0F6A165-DFFA-43DA-818A-0CAE9140B932.html">ZGP_TableUpdateAction_t</a> action, <a class="- topic/xref xref" href="GUID-39F5364B-CB68-411B-A70D-66E5FFF21992.html">ZGP_EntryType_t</a> tableType);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_ETJ_5SY_J5B__UL_YWG_VT2_KTB" data-ofbid="TOPIC_ETJ_5SY_J5B__UL_YWG_VT2_KTB">
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-D6FB6608-540A-47B7-AE56-CCD9D9D78FB5" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-D6FB6608-540A-47B7-AE56-CCD9D9D78FB5"><code class="+ topic/ph pr-d/codeph ph codeph">entryPtr</code> – Pointer to the entry </li>
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-153B6BFE-B13B-485C-B55A-95AEAD5FFAF3" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-153B6BFE-B13B-485C-B55A-95AEAD5FFAF3"><code class="+ topic/ph pr-d/codeph ph codeph">action</code> – To be performed on the entry </li>
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-A68ADFDB-C6CE-4A12-A64A-28FD44EC6E9A" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-A68ADFDB-C6CE-4A12-A64A-28FD44EC6E9A"><code class="+ topic/ph pr-d/codeph ph codeph">tableType</code> – Proxy or sink entry </li>
+                        </ul></li>
+                    <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-E14A4DCD-3F38-4546-A7B0-A04608FF7733" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-E14A4DCD-3F38-4546-A7B0-A04608FF7733">Use the following public API
+                        to read the proxy/sink entry from
+                                NVM:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_ETJ_5SY_J5B__CODEBLOCK_FFF_DVD_SBC" data-ofbid="TOPIC_ETJ_5SY_J5B__CODEBLOCK_FFF_DVD_SBC"><a class="- topic/xref xref" href="GUID-10CF6667-7433-4F18-9250-CB56DE52FF76.html">ZGP_ReadOperationStatus_t</a> <a class="- topic/xref xref" href="GUID-88940F0F-1069-4C27-92B6-E604FF4245F6.html">ZGPL_ReadTableEntryFromNvm</a>(<strong class="hl-keyword">void</strong> *entryPtr,<a class="- topic/xref xref" href="GUID-AAC213A0-AAC6-4374-B7FA-8A91AE0B9562.html">ZGP_TableOperationField_t</a> tableOperationField , gpdId_t *gpdId, uint8_t endPoint);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_ETJ_5SY_J5B__UL_ZWG_VT2_KTB" data-ofbid="TOPIC_ETJ_5SY_J5B__UL_ZWG_VT2_KTB">
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-ED496A3A-0B3B-4CB5-A47C-262DF17A5EF2" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-ED496A3A-0B3B-4CB5-A47C-262DF17A5EF2"><code class="+ topic/ph pr-d/codeph ph codeph">entryPtr</code> – Fill the entry</li>
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-E32D1BB0-C27E-4156-87A0-7C8355DCEBC2" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-E32D1BB0-C27E-4156-87A0-7C8355DCEBC2"><code class="+ topic/ph pr-d/codeph ph codeph">tableOperationField</code> – Filter fields for read
+                                operation </li>
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-C74765A0-024D-4542-ADB7-0A8D0928DE93" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-C74765A0-024D-4542-ADB7-0A8D0928DE93"><code class="+ topic/ph pr-d/codeph ph codeph">gpdId</code> – Pointer to the address
+                                information</li>
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-AE0F5396-367D-4151-8E3E-8988FA6401F1" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-AE0F5396-367D-4151-8E3E-8988FA6401F1"><code class="+ topic/ph pr-d/codeph ph codeph">endPoint</code> – GPD end point </li>
+                        </ul></li>
+                </ul><ul class="- topic/ul ul" id="TOPIC_ETJ_5SY_J5B__UL_FHT_QKD_SBC" data-ofbid="TOPIC_ETJ_5SY_J5B__UL_FHT_QKD_SBC">
+                    <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-84643109-0D12-45AA-B886-FB78C1C7542B" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-84643109-0D12-45AA-B886-FB78C1C7542B">Use the following public API
+                        to delete the sink/proxy entry from
+                                NVM:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_ETJ_5SY_J5B__CODEBLOCK_ZY5_FVD_SBC" data-ofbid="TOPIC_ETJ_5SY_J5B__CODEBLOCK_ZY5_FVD_SBC">bool <a class="- topic/xref xref" href="GUID-38C9C8F8-FC03-4EFC-A187-81E9ADF18820.html">ZGPL_DeleteTableEntryFromNvm</a>(<a class="- topic/xref xref" href="GUID-AAC213A0-AAC6-4374-B7FA-8A91AE0B9562.html">ZGP_TableOperationField_t</a> filterField, gpdId_t *gpdId, uint8_t endPoint);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_ETJ_5SY_J5B__UL_AXG_VT2_KTB" data-ofbid="TOPIC_ETJ_5SY_J5B__UL_AXG_VT2_KTB">
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-CF862877-EB64-42AA-B40D-CACAC553F2A5" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-CF862877-EB64-42AA-B40D-CACAC553F2A5"><code class="+ topic/ph pr-d/codeph ph codeph">tableOperationField</code> – Filter fields for read
+                                operation </li>
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-74181057-ACB8-451E-9EA8-5E4B17DCD3C5" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-74181057-ACB8-451E-9EA8-5E4B17DCD3C5"><code class="+ topic/ph pr-d/codeph ph codeph">gpdId</code> – Pointer to the address info </li>
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-5ABF27C9-6F7A-4777-BEFC-61C6FF2D3D5D" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-5ABF27C9-6F7A-4777-BEFC-61C6FF2D3D5D"><code class="+ topic/ph pr-d/codeph ph codeph">endPoint</code> – GPD end point </li>
+                        </ul></li>
+                    <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-CD1A807F-C3B9-4089-9D5A-7A6317CA882E" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-CD1A807F-C3B9-4089-9D5A-7A6317CA882E">Use the following public API
+                        to read/update frame counter on
+                                NVM:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_ETJ_5SY_J5B__CODEBLOCK_EHR_HVD_SBC" data-ofbid="TOPIC_ETJ_5SY_J5B__CODEBLOCK_EHR_HVD_SBC">bool <a class="- topic/xref xref" href="GUID-6F2F4B7D-B73B-4060-969A-CDB3B1DBA843.html">ZGPL_FrameCounterReadorUpdateOnNvm</a>(uint32_t *frameCounter,<a class="- topic/xref xref" href="GUID-AAC213A0-AAC6-4374-B7FA-8A91AE0B9562.html">ZGP_TableOperationField_t</a> tableOperationField , gpdId_t *gpdId, uint8_t endPoint, bool isUpdateOperation);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_ETJ_5SY_J5B__UL_BXG_VT2_KTB" data-ofbid="TOPIC_ETJ_5SY_J5B__UL_BXG_VT2_KTB">
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-1E16B95F-FA8E-41C6-985D-A069CCAD64D6" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-1E16B95F-FA8E-41C6-985D-A069CCAD64D6"><code class="+ topic/ph pr-d/codeph ph codeph">frameCounter</code> – Frame counter to be
+                                updated/read </li>
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-7A86D0C7-5F8B-45CE-8DB9-A380E4B7441A" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-7A86D0C7-5F8B-45CE-8DB9-A380E4B7441A"><code class="+ topic/ph pr-d/codeph ph codeph">tableOperationField</code> – Filter fields for read
+                                operation </li>
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-1CA1FED5-5FC6-4FD3-A4F2-1B3C0099C8E0" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-1CA1FED5-5FC6-4FD3-A4F2-1B3C0099C8E0"><code class="+ topic/ph pr-d/codeph ph codeph">gpdId</code> – Pointer to the address info </li>
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-5955CE64-4615-4574-8DB8-D8B578B5DE08" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-5955CE64-4615-4574-8DB8-D8B578B5DE08"><code class="+ topic/ph pr-d/codeph ph codeph">isUpdateOperation</code> – True for update,false for
+                                read </li>
+                        </ul></li>
+                    <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-B94C23BF-D25E-4668-8EE2-9A8941A93F13" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-B94C23BF-D25E-4668-8EE2-9A8941A93F13">Use the following public API
+                        to check whether the pairing info in the sink entry is empty or not. The
+                        high/low ZGP uses this while processing sink
+                                entry:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_ETJ_5SY_J5B__CODEBLOCK_YHL_NVD_SBC" data-ofbid="TOPIC_ETJ_5SY_J5B__CODEBLOCK_YHL_NVD_SBC">bool <a class="- topic/xref xref" href="GUID-DC708B34-A746-4F80-9FC7-498585B38EEB.html">ZGPL_SinkEntryIsPairingInfoEmpty</a>(<a class="- topic/xref xref" href="GUID-8312C7A0-D12F-4F74-B076-4A903F8204A3.html">zgpSinkTableEntry_t</a> *currEntry);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_ETJ_5SY_J5B__UL_CXG_VT2_KTB" data-ofbid="TOPIC_ETJ_5SY_J5B__UL_CXG_VT2_KTB">
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-D0050389-23D1-452B-B863-EDB08DDB4115" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-D0050389-23D1-452B-B863-EDB08DDB4115"><code class="+ topic/ph pr-d/codeph ph codeph">currEntry</code> – Entry address</li>
+                        </ul></li>
+                    <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-AE47DB7C-D0F2-476E-8711-3A5248281DBA" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-AE47DB7C-D0F2-476E-8711-3A5248281DBA">Use the following public API
+                        to add the group entry to the given sink
+                                entry:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_ETJ_5SY_J5B__CODEBLOCK_GYD_PVD_SBC" data-ofbid="TOPIC_ETJ_5SY_J5B__CODEBLOCK_GYD_PVD_SBC">bool <a class="- topic/xref xref" href="GUID-C31ADD8C-74E0-461E-B3F4-05B5B9F14B34.html">ZGPL_AddSinkGroupEntry</a>(<a class="- topic/xref xref" href="GUID-8312C7A0-D12F-4F74-B076-4A903F8204A3.html">zgpSinkTableEntry_t</a> *currEntry, <a class="- topic/xref xref" href="GUID-97CD054F-0000-4712-BF18-A5D04EF34C7B.html">zgpSinkGroup_t</a> *groupEntry);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_ETJ_5SY_J5B__UL_DXG_VT2_KTB" data-ofbid="TOPIC_ETJ_5SY_J5B__UL_DXG_VT2_KTB">
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-C89BAA97-3687-4908-95BA-798FAF91C48A" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-C89BAA97-3687-4908-95BA-798FAF91C48A"><code class="+ topic/ph pr-d/codeph ph codeph">currEntry</code> – Entry address </li>
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-984437BE-9BC4-4047-AA5E-444C26FA923C" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-984437BE-9BC4-4047-AA5E-444C26FA923C"><code class="+ topic/ph pr-d/codeph ph codeph">groupEntry</code> – Add group entry ID</li>
+                        </ul></li>
+                    <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-F3741FF7-E8AE-40FC-832F-FCCDDBFC298A" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-F3741FF7-E8AE-40FC-832F-FCCDDBFC298A">Use the following public API
+                        to delete all the table
+                                entries:<pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="TOPIC_ETJ_5SY_J5B__CODEBLOCK_J3S_QVD_SBC" data-ofbid="TOPIC_ETJ_5SY_J5B__CODEBLOCK_J3S_QVD_SBC"><strong class="hl-keyword">void</strong> <a class="- topic/xref xref" href="GUID-33ED03BD-6D11-4BE5-ABAE-ED932498EA46.html">ZGP_ResetTableToFN</a>(<strong class="hl-keyword">void</strong>);</pre><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Parameters:</strong></p><ul class="- topic/ul ul" id="TOPIC_ETJ_5SY_J5B__UL_EXG_VT2_KTB" data-ofbid="TOPIC_ETJ_5SY_J5B__UL_EXG_VT2_KTB">
+                            <li class="- topic/li li" id="TOPIC_ETJ_5SY_J5B__GUID-479A6F34-75DF-4771-A621-EEE3E0CDB998" data-ofbid="TOPIC_ETJ_5SY_J5B__GUID-479A6F34-75DF-4771-A621-EEE3E0CDB998">None </li>
+                        </ul></li>
+                </ul></div></div></article></article></main></div>
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                    
+                        <nav role="navigation" id="wh_topic_toc" aria-label="On this page" class="col-lg-2 d-none d-lg-block navbar d-print-none"> 
+                            <div id="wh_topic_toc_content">
+		                        
+	                            <div class=" wh_topic_toc "><div class="wh_topic_label">On this page</div><ul><li class="topic-item"><a href="#TOPIC_V4C_LTY_J5B" data-tocid="TOPIC_V4C_LTY_J5B"> Initialization</a></li><li class="topic-item"><a href="#TOPIC_FJQ_GTY_J5B" data-tocid="TOPIC_FJQ_GTY_J5B"> Commissioning</a></li><li class="topic-item"><a href="#TOPIC_OLQ_BTY_J5B" data-tocid="TOPIC_OLQ_BTY_J5B"> Generic ZGP Infrastructure APIs</a></li><li class="topic-item"><a href="#TOPIC_ETJ_5SY_J5B" data-tocid="TOPIC_ETJ_5SY_J5B"> NVM Table APIs</a></li></ul></div>
+	                        	
+                        	</div>
+                        </nav>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <div class="mchp_disclaimer"><p class="mchp_disclaimer_text">The online versions of the documents are provided as a courtesy. Verify all content and data in the device’s PDF documentation found on the device product page.</p></div><footer class="navbar navbar-default wh_footer">
+  <div class=" footer-container mx-auto ">
+    <div class="footer">
+  <div class="mchp-wh-footer">
+    <div class="mchp-footer">
+      <div class="mchp-footer-tier1">
+        <div class="spacer"></div>
+        <div class="mchp-footer-container">
+          <div class="mchp-footer-links mchp-social-media-links">
+            <div class="mchp-component-items">
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.facebook.com/pages/Microchip-Technology-Inc/20320981741" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Facebook" src="oxygen-webhelp/template/resources/images/201016-corp-facebook.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.linkedin.com/company/microchip-technology" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip LinkedIn" src="oxygen-webhelp/template/resources/images/201016-corp-linkedin.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://twitter.com/MicrochipTech" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Twitter" src="oxygen-webhelp/template/resources/images/201016-corp-twitter.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.youtube.com/user/MicrochipTechnology" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip YouTube" src="oxygen-webhelp/template/resources/images/201016-corp-youtube.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.instagram.com/microchiptechnologyinc/" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Instagram" src="oxygen-webhelp/template/resources/images/201016-corp-instagram.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.weibo.com/microchiptech" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Weibo" src="oxygen-webhelp/template/resources/images/201016-corp-weibo.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.microchip.com/en-us/about/blog" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Blog" src="oxygen-webhelp/template/resources/images/201016-corp-blog.png"/>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="mchp-footer-links">
+            <div class="mchp-component-items">
+              <div class="mchp-component-item">
+                <div class="link">
+                  <a href="https://www.microchip.com/about-us/contact-us" class="mchp-link__link">Contact</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information" class="mchp-link__link">Legal</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information/privacy-policy" class="mchp-link__link">Privacy Policy</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information/microchip-cookie-statement" class="mchp-link__link">Cookies</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item">
+                <div class="link">
+                  <a href="https://careers.microchip.com/" class="mchp-link__link">Careers</a>
+                  <span class="mchp-link__separator"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mchp-footer-newsletter">
+            <div class="cmp-text">
+              <p>Stay on the leading edge with our blog</p>
+            </div>
+            <div class="mchp-button-wrapper">
+              <a role="button" href="https://www.microchip.com/en-us/about/blog" class="mchp-button mchp-button-regular solid">
+                <span class="mchp-button__span">MicroSolutions</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="graphic">
+          <img src="oxygen-webhelp/template/resources/images/footer-graphic.png"/>
+        </div>
+      </div>
+      <div class="mchp-footer-tier2">
+        <p class="mchp-copyright">© Copyright 1998-2022 Microchip Technology Inc. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async="true" src="https://www.googletagmanager.com/gtag/js?id=UA-2724382-19"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];  
+    function gtag(){dataLayer.push(arguments);}  
+    gtag('js', new Date());   
+    gtag('config', 'UA-2724382-19');
+  </script>
+  
+  <script type="text/javascript">_satellite.pageBottom();</script><!-- Adobe Analytics -->
+  <script type="text/javascript" src="mchp-js/prepend.js"></script><!-- Package for viewing PDFs on mobile devices -->
+  
 </div>
-</div>
-<div class="topic nested1" aria-labelledby="TOPIC_OLQ_BTY_J5B__GUID-3FD56969-5485-4D45-B6C3-5D9307F3E80E" id="TOPIC_OLQ_BTY_J5B"><h2 class="title topictitle2" id="TOPIC_OLQ_BTY_J5B__GUID-3FD56969-5485-4D45-B6C3-5D9307F3E80E" style="">Generic ZGP infrastructure APIs</h2><div class="body"><p class="p">1. Following public API is used to enable or disable the direct mode of GPDF, and it is applicable for the COMBO basic devices(proxy + sink). Depending upon this it will forward c-stub indication to d-stub block. </p>
-<pre class="pre">void <a class="xref" href="GUID-9A7A37E2-C14B-404E-8D8E-BBB1C649CE39.html">ZGPL_EnableDisableDirectMode</a>(bool enabled);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_ZVG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-BEB4B543-ADB9-4EA6-9970-9362E5D34FA9">enabled - enable/disable flag </li>
-</ul>
-<p class="p">2. Following public API is used to request the zgp simple descriptor to get the information like cluster ids, profile id and device id etc for the requested network address and end point. </p>
-<pre class="pre">void <a class="xref" href="GUID-41A9E734-71AB-45F3-825C-652B4E1930C0.html">ZGPL_SendSimpleDescReq</a>(ShortAddr_t addr,uint8_t ep);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_AWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-D02D5BAB-71A2-476E-A2A0-036C89AA6B88">addr - Network address of the node </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-507A0A9D-0039-4567-B5DE-5E48E5DAAF5E">ep - endpoint value </li>
-</ul>
-<p class="p">3. Following public API Is used to broadcast the device announce of zgp to the network which will be called generally after successful zgp commissioning. </p>
-<pre class="pre">void <a class="xref" href="GUID-CF91256F-9FBC-482A-9983-B1FE32F710E2.html">ZGPL_SendDeviceAnnounceCmd</a>(uint16_t nwkAddr, uint64_t extAddr);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_BWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-86532447-4E70-4E62-AC6B-5BD511CF3CF2">nwkAddr - nwk addr to be placed in the device announce </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-184E26F6-4F08-493D-8EE1-8AE5DE65A95B">extAddr - ext addr to be placed in the device announce </li>
-</ul>
-<p class="p">4. Following public API is used to send the zgp read attribute command with green power profile id, cluster id for the respective attribute id to the Zigbee network.</p>
-<pre class="pre"><a class="xref" href="GUID-F6C388EF-B816-45F2-A117-4035EFDD2CA3.html">ZCL_Status_t</a> <a class="xref" href="GUID-0F326672-6BFD-402B-A90A-9839F5DADA53.html">ZGPH_SendReadAttribute</a>(uint16_t addr, uint8_t dir, uint16_t attrId);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_CWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-03449817-D2FF-416F-9344-451A44F6F0DA">addr - Destination address </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-EB61004C-08DB-4B20-B405-7D9D9AC0DB99">dir - server to client or client to server </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-5D9A940B-C2FC-4F8A-AC92-C36D6BE7C795">attrId - Attribute id </li>
-</ul>
-<p class="p">5. Following public API is used to send the zgp commands in raw mode with the payload </p>
-<pre class="pre"><a class="xref" href="GUID-F6C388EF-B816-45F2-A117-4035EFDD2CA3.html">ZCL_Status_t</a> <a class="xref" href="GUID-7F23FD59-307B-4FEF-A923-0C775FA3E779.html">ZGPH_SendCmdInRawMode</a>(uint16_t dstAddr, bool dir, uint16_t cmdId, uint8_t payLoadLength, uint8_t  *payLoad);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_DWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-4CCA9289-E37A-46CA-B8A5-F06A188B1FF2">dstAddr - Destination address </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-626E5B71-6023-4B34-BA87-35949CDA2DD7">dir - server to client or client to server </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-DD9A203E-AED0-4BD5-9DDC-5778B8947496">cmdId - cluster command id </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-CC428120-506E-40BE-8F73-901A394A8DE5">payLoadLength - length of payload to be sent </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-B79BF73C-4BB8-4B3F-98C4-D2560FF6B0BF">payLoad - payload to be sent </li>
-</ul>
-<p class="p">6. A proxy node must keep information about the GP source nodes for which it acts as a proxy. This information is stored in a local 'proxy table', which contains an entry for each source node which is in direct range. A proxy table entry stores pairing information about the source node and the paired sink node, including the security requirements and communication mode. The proxy table is automatically built up by the Green Power cluster as a part of the commissioning process</p>
-<p class="p">Following public API is used to send request for zgp proxy table to the specific network address</p>
-<pre class="pre"><a class="xref" href="GUID-F6C388EF-B816-45F2-A117-4035EFDD2CA3.html">ZCL_Status_t</a> <a class="xref" href="GUID-CD32C8EA-1C7C-488C-88B1-8EDA42AF5AD9.html">ZGPH_SendProxyTableRequest</a>(uint16_t addr, uint8_t options, uint64_t gpdId_Ieee, uint8_t ep, uint8_t index);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_EWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-3C14A884-9435-4725-916F-8249B6EB34D7">addr - Destination address </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-FFD192A2-846D-47BD-A3E8-6998B83A0489">options - options field </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-6939243F-453F-4F41-A9A3-61F6AF973456">gpdId_Ieee - gpd id or IEEE address </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-A6324FCB-4E58-4E1D-A382-9675811AD124">ep - endpoint for IEEE address gpd </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-A50A611A-2C84-4E0E-B265-DB284C59E5BD">index - index field </li>
-</ul>
-<p class="p">7. A sink node must keep a record of the source nodes with which it is paired. This information is stored in a local ‘sink table’, which contains an entry for each paired source node. This table allows the sink node to determine whether a GP frame received from a source node (directly or via a proxy node) is intended for itself. The sink table is automatically built up by the Green Power cluster as a part of the commissioning process</p>
-<p class="p">Following public API is used to send request for zgp sink table information for the respective network address and end point. </p>
-<pre class="pre"><a class="xref" href="GUID-F6C388EF-B816-45F2-A117-4035EFDD2CA3.html">ZCL_Status_t</a> <a class="xref" href="GUID-4D8A6259-3EC8-4641-A731-19126140A641.html">ZGPH_SendSinkTableRequest</a>(uint16_t addr, uint8_t options, uint64_t gpdId_Ieee, uint8_t ep, uint8_t index);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_FWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-4836858B-AAFD-4D0E-9191-4B87778FCE3C">addr - Destination address </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-E3BDE8E2-DE4A-4AC5-980C-2B4B7D1C1D41">options - options field </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-B29986C8-1339-4C1D-9FEC-A967F45243C9">gpdId_Ieee - gpd id or IEEE address </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-3C532795-15FE-4B5D-99FB-381813F43F14">ep - endpoint for IEEE address gpd </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-5FFDC8D4-8B8B-411A-A6AD-4CC786BF3683">index - index field </li>
-</ul>
-<p class="p">8. Following public API is used to update sink entry locally on NVM based on the given action </p>
-<pre class="pre"><a class="xref" href="GUID-E1131B84-73C2-4785-8D8C-2FF2C13AD739.html">ZGP_InfraDeviceStatus_t</a> <a class="xref" href="GUID-AB5C79F0-0419-4CF1-BE26-7ADAED16BB72.html">ZGPH_UpdateLocalSinkEntry</a>(<a class="xref" href="GUID-5CBF4D69-8BB9-4CB0-A22D-502F67A27D53.html">zgpSinkTableEntry_t</a> *sinkEntry, <a class="xref" href="GUID-88E24E48-A417-43CC-8650-DD86A6F52A41.html">zgpSinkTableActions_t</a> action);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_GWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-300C808F-9717-4202-BF01-C57A66B14E6D">sinkEntry - pointer to the sinkEntry to be updated </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-CEEA9EBD-A166-46C0-BAE4-187104B97A16">action - Add/Replace/Remove </li>
-</ul>
-<p class="p">9. Following public API is used to set the sink group id used for the GPD to be commissioned. </p>
-<pre class="pre"><a class="xref" href="GUID-E1131B84-73C2-4785-8D8C-2FF2C13AD739.html">ZGP_InfraDeviceStatus_t</a><a class="xref" href="GUID-8B25EDA8-4615-4864-A346-BE1B562750FD.html">ZGPH_SetSinkGroupEntry</a>(GroupAddr_t sinkGroupId);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_HWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-08C7B0C5-D247-40E2-B613-4A68A9EE5AA8">sinkGroupId - sink group Id to be set </li>
-</ul>
-<p class="p">10. Following public API is used to set the assigned alias for the GPD to be commissioned. </p>
-<pre class="pre"><a class="xref" href="GUID-E1131B84-73C2-4785-8D8C-2FF2C13AD739.html">ZGP_InfraDeviceStatus_t</a> <a class="xref" href="GUID-54D3D96D-2B62-4D06-BAB4-658479B77AF3.html">ZGPH_SetGPDAssignedAlias</a>(ShortAddr_t gpdAssignedAlias);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_IWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-66181D99-8E75-43F6-B430-6B73325F6C59">gpdAssignedAlias - The commissioned 16-bit ID to be used as alias for this GPD </li>
-</ul>
-<p class="p">11. Following public API is used to read the sink entry based on the index </p>
-<pre class="pre">bool <a class="xref" href="GUID-B91EBB43-88F1-4602-A2DB-E3E624CFCC1F.html">ZGPH_GetSinkTableEntryByIndex</a>(<a class="xref" href="GUID-5CBF4D69-8BB9-4CB0-A22D-502F67A27D53.html">zgpSinkTableEntry_t</a> *entry, uint8_t index);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_JWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-118D64FF-D6EC-4671-A4D3-5A057B2E8B3D">entry - entry to be populated </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-25342512-2364-4DFB-8193-E7FA9369F7E4">index - entry index </li>
-</ul>
-<p class="p">12. Following public API is used to send gpPairingConfiguration command over the air </p>
-<pre class="pre"><a class="xref" href="GUID-E1131B84-73C2-4785-8D8C-2FF2C13AD739.html">ZGP_InfraDeviceStatus_t</a> <a class="xref" href="GUID-C2E236B6-39DA-468F-A78E-B90498308218.html">ZGPH_SendGpPairingConfigCmd</a>(APS_AddrMode_t addrMode, APS_Address_t *dstAddr, ZGP_PairingConfigCmdInfo_t pairingConfigCmdInfo, zgpCommReqAppInfo_t *commReqAppInfo, zgpEndpointInfo_t endPointInfo);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_KWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-8716732E-DC9B-462D-9ED2-D5A2D4B7348C">addrMode - address mode to be used over the air </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-0EF79524-CFDC-4DBF-959E-717B461EA6FD">dstAddr - destination address of the remote device </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-052BDA44-450C-4810-BF7B-881143C971B7">pairingConfigCmdInfo - pairingConfig command inputs </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-7034C80D-9815-4C7C-AD4C-D28B47A7FE66">commReqAppInfo - Application information </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-468C21A5-E3B5-433E-9B7B-3F7F9B7DF9FE">endpointInfo - paired Endpoints information </li>
-</ul>
-<p class="p">13. Following public API is used to flush out the tx request queued in tx queue. </p>
-<pre class="pre">void <a class="xref" href="GUID-94132FE9-766B-4A73-A5E1-904DA8BB08E1.html">ZGPL_FlushTxQueue</a> (void);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_LWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-C7D53255-C771-4EBF-A1DA-C0CE9FAF8C97">None </li>
-</ul>
-<p class="p">14. Following public API is used to initiate gpd data request from high sink/proxy. </p>
-<pre class="pre">void <a class="xref" href="GUID-0FDD3A8D-A16A-4A0A-B878-B8BBD036EFAF.html">ZGPL_GpdfDataRequest</a>(<a class="xref" href="GUID-D56D193F-5089-4B60-A2D7-2934126973E2.html">ZGP_GpdfDataReq_t</a> *zgpGpdfDataReq);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_MWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-72FE5355-164F-4A3D-B287-C768C453257A">zgpGpdfDataReq - data request paramters to be filled in queue </li>
-</ul>
-<p class="p">15. Following public API is used to check the gpdf for duplicate packets. </p>
-<pre class="pre">bool <a class="xref" href="GUID-DF5A36BD-DA60-4E19-8AA7-185F9EECED22.html">ZGPL_CheckForDuplicate</a>(ZGPL_DataInd_t *dStubDataInd);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_NWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-AD4724DC-CCFF-4261-82BF-E7BEFEFCFDFE">dstubDataInd - dstub data indication paramters </li>
-</ul>
-<p class="p">16. Following public API is used to derive the GPD security key from the network/group key.This API is mainly used by high Sink. </p>
-<pre class="pre">void <a class="xref" href="GUID-7B46799C-762F-4250-9CEA-E21E023802EF.html">ZGPL_KeyDerivationHmac</a>(<a class="xref" href="GUID-5CBF4D69-8BB9-4CB0-A22D-502F67A27D53.html">zgpSinkTableEntry_t</a>* sinkTableEntry, uint8_t *derivedKey, void (*keyedHashMacCb)(void));
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_OWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-0D7886F3-C3A9-4E77-9377-D641E2C7519C">sinkTableEntry - pointer to the sinkTableEntry </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-4E958DBE-6B2E-4CC1-BAFF-CD551D1DC0ED">derivedKey - key to be derived </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-4EC80286-363F-4F9F-824D-8ED5E5033DB1">sinkTableEntry - callback function </li>
-</ul>
-<p class="p">17. Following public API is used to set the proxy/sink mode(commissioning/operational) </p>
-<pre class="pre">void <a class="xref" href="GUID-061F16D2-2CAE-4035-8BB3-E52E3D787EB4.html">ZGPL_SetDeviceMode</a>(bool isProxy, zgpMode_t mode);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_PWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-1B8CC93F-4678-4E38-869E-E35D481A0483">isProxy - true for proxy, false for sink </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-CEB2C2C4-BBFA-44F0-B0B4-5DF38056965B">mode - commissioning/operational </li>
-</ul>
-<p class="p">18. Following public API is used to get the proxy/sink mode(commissioning/operational) </p>
-<pre class="pre">void <a class="xref" href="GUID-081A5563-337A-44A4-921F-B2F41BBF12F2.html">ZGPL_GetDeviceMode</a>(bool isProxy, zgpMode_t mode);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_QWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-F1F5CA70-8047-43D7-BCB0-1F29B2813E82">isProxy - true for proxy, false for sink </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-A30DAAD5-C9DF-4FCA-9E8F-53890FCD5274">mode - commissioning/operational </li>
-</ul>
-<p class="p">19. Following public API is used to check whether the given srcId is valid or not considering frame type </p>
-<pre class="pre">bool <a class="xref" href="GUID-FEDC84EC-4CE3-4698-91F7-2AEAE3FB4199.html">ZGPL_IsValidSrcId</a>(uint32_t srcId, <a class="xref" href="GUID-5A965228-70EB-4A8B-BD87-57E9AC8C778B.html">ZGP_FrameType_t</a> frameType, bool isPairingReq);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_RWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-2C5ED895-34AC-497A-BDB9-E79AF3F4FD6F">srcId - GPD srcId </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-788B21D2-18AC-4ACC-8402-45131DEE201A">frameType - Maintanence Frame/Data Frame </li>
-<li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-B2C0FBBA-2870-40AC-BD91-5C137BFBDC7E">isPairingReq - rcId received in PairingConfig/Commissioning </li>
-</ul>
-<p class="p">20. Following public API is used to check whether the given key is valid or not </p>
-<pre class="pre">bool <a class="xref" href="GUID-677ED949-89C0-4564-9DFB-614E8E399F5C.html">ZGPL_IskeyValid</a>(uint8_t *key);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_SWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-C9D9CE8E-1B29-47C8-B7BA-3A36413B9847">key - key to be validated </li>
-</ul>
-<p class="p">21. Following public API is used to derive the alias from the given gpdId </p>
-<pre class="pre">uint16_t <a class="xref" href="GUID-BC26E1BD-5336-4FAD-AFF7-4E4683B8422D.html">ZGPL_GetAliasSourceAddr</a>(gpdId_t *gpdId);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_OLQ_BTY_J5B__UL_TWG_VT2_KTB"><li class="li" id="TOPIC_OLQ_BTY_J5B__GUID-07A6705F-5D08-461F-8D33-1F02E58B0C05">gpdId - gpdId from which the alias has to be derived </li>
-</ul>
-</div>
-</div>
-<div class="topic nested1" aria-labelledby="TOPIC_ETJ_5SY_J5B__GUID-B5F43692-1AB5-4C16-97E4-B0CAF8AB4972" id="TOPIC_ETJ_5SY_J5B"><h2 class="title topictitle2" id="TOPIC_ETJ_5SY_J5B__GUID-B5F43692-1AB5-4C16-97E4-B0CAF8AB4972" style="">NVM_Table API's</h2><div class="body"><div class="section" id="TOPIC_ETJ_5SY_J5B__SECTION_UWG_VT2_KTB"><p class="p">Following sections explains about the API's usage with respect to NVM table</p>
-<p class="p">1. Following public API is used to initilaize the NVM Table </p>
-<pre class="pre">void <a class="xref" href="GUID-98E3BF39-EA6A-4426-A73F-92BF42F4F5D5.html">ZGPL_NvmTableInit</a> (void);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_ETJ_5SY_J5B__UL_VWG_VT2_KTB"><li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-366A7E33-D2FB-4A62-896F-5ACA1E14443E">none </li>
-</ul>
-<p class="p">2. Following public API is used to reset all parameters of the given entry to init value. </p>
-<pre class="pre">void <a class="xref" href="GUID-81B739E0-B011-4DF0-B252-FABE1991EE49.html">ZGPL_ResetTableEntry</a> (void *entry, ZGP_TableType_t tableType);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_ETJ_5SY_J5B__UL_WWG_VT2_KTB"><li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-4AE59EB1-A903-4E54-A1CC-A65FC33C2F8D">entry - entry to be reset </li>
-<li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-06E9A6B0-1278-44FA-8B08-D78253E29A5A">tableType - sink/proxy entry </li>
-</ul>
-<p class="p">3. Following public API is used to fetch the total no.of non empty entries. This is mainly used by high proxy/sink while sending sink/proxy table responses </p>
-<pre class="pre">uint8_t <a class="xref" href="GUID-7EA49504-B32B-4A78-91B7-A05C1674B5B0.html">ZGPL_TotalNonEmptyEntries</a>(bool isProxyTable);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_ETJ_5SY_J5B__UL_XWG_VT2_KTB"><li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-3632D5A6-D5BD-41D4-9A5A-2765FFCEB23A">isProxyTable - proxy/sink entry </li>
-</ul>
-<p class="p">4. Following public API is used to add/update the proxy/sink entry on NVM. </p>
-<pre class="pre">bool <a class="xref" href="GUID-518408E4-C42B-4A95-A596-C5991781FE78.html">ZGPL_AddOrUpdateTableEntryOnNvm</a>(void *entryPtr, <a class="xref" href="GUID-B63489D2-C74B-4BFA-8973-87A71CE0F342.html">ZGP_TableUpdateAction_t</a> action, <a class="xref" href="GUID-8346E889-029A-4705-9042-C6092E92E323.html">ZGP_TableType_t</a> tableType);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_ETJ_5SY_J5B__UL_YWG_VT2_KTB"><li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-D6FB6608-540A-47B7-AE56-CCD9D9D78FB5">entryPtr - pointer to the entry </li>
-<li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-153B6BFE-B13B-485C-B55A-95AEAD5FFAF3">action - to be performed on the entry </li>
-<li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-A68ADFDB-C6CE-4A12-A64A-28FD44EC6E9A">tableType - proxy or sink entry </li>
-</ul>
-<p class="p">5. Following public API is used to read the proxy/sink entry from NVM. </p>
-<pre class="pre"><a class="xref" href="GUID-51B1EB4E-1F3A-4AC2-BD26-3BCED4281AD9.html">ZGP_ReadOperationStatus_t</a> <a class="xref" href="GUID-44303E4F-007B-4E93-AAE0-9DCDC1546C92.html">ZGPL_ReadTableEntryFromNvm</a>(void *entryPtr,<a class="xref" href="GUID-0803D6D1-0532-47E7-93F9-611ADEC91B95.html">ZGP_TableOperationField_t</a> tableOperationField , gpdId_t *gpdId, uint8_t endPoint);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_ETJ_5SY_J5B__UL_ZWG_VT2_KTB"><li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-ED496A3A-0B3B-4CB5-A47C-262DF17A5EF2">entryPtr - entry to be filled </li>
-<li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-E32D1BB0-C27E-4156-87A0-7C8355DCEBC2">tableOperationField - filter fields for read operation </li>
-<li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-C74765A0-024D-4542-ADB7-0A8D0928DE93">gpdId - pointer to the addr info </li>
-<li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-AE0F5396-367D-4151-8E3E-8988FA6401F1">endPoint - GPD end point </li>
-</ul>
-<p class="p">6. Following public API is used to delete the sink/proxy entry from NVM. </p>
-<pre class="pre">bool <a class="xref" href="GUID-9E6E728C-E3A6-47FF-B4F1-6CEA3E1971A8.html">ZGPL_DeleteTableEntryFromNvm</a>(<a class="xref" href="GUID-0803D6D1-0532-47E7-93F9-611ADEC91B95.html">ZGP_TableOperationField_t</a> filterField, gpdId_t *gpdId, uint8_t endPoint);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_ETJ_5SY_J5B__UL_AXG_VT2_KTB"><li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-CF862877-EB64-42AA-B40D-CACAC553F2A5">tableOperationField - filter fields for read operation </li>
-<li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-74181057-ACB8-451E-9EA8-5E4B17DCD3C5">gpdId - pointer to the addr info </li>
-<li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-5ABF27C9-6F7A-4777-BEFC-61C6FF2D3D5D">endPoint - GPD end point </li>
-</ul>
-<p class="p">7. Following public API is used to read/update frame counter on NVM. </p>
-<pre class="pre">bool <a class="xref" href="GUID-43B90AC6-F3D8-4BD6-81BE-F01C2DEDF18B.html">ZGPL_FrameCounterReadorUpdateOnNvm</a>(uint32_t *frameCounter,<a class="xref" href="GUID-0803D6D1-0532-47E7-93F9-611ADEC91B95.html">ZGP_TableOperationField_t</a> tableOperationField , gpdId_t *gpdId, uint8_t endPoint, bool isUpdateOperation);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_ETJ_5SY_J5B__UL_BXG_VT2_KTB"><li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-1E16B95F-FA8E-41C6-985D-A069CCAD64D6">frameCounter - frameCounter to be updated/read </li>
-<li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-7A86D0C7-5F8B-45CE-8DB9-A380E4B7441A">tableOperationField - filter fields for read operation </li>
-<li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-1CA1FED5-5FC6-4FD3-A4F2-1B3C0099C8E0">gpdId - pointer to the addr info </li>
-<li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-5955CE64-4615-4574-8DB8-D8B578B5DE08">isUpdateOperation - true for update,false for read </li>
-</ul>
-<p class="p">8. Following public API is used to check whether the pairing info in the sink entry is empty or not. This is used by high/low zgp while processing sink entry. </p>
-<pre class="pre">bool <a class="xref" href="GUID-C69A95F0-9E00-4896-ACF1-2E23140C3F37.html">ZGPL_SinkEntryIsPairingInfoEmpty</a>(<a class="xref" href="GUID-5CBF4D69-8BB9-4CB0-A22D-502F67A27D53.html">zgpSinkTableEntry_t</a> *currEntry);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_ETJ_5SY_J5B__UL_CXG_VT2_KTB"><li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-D0050389-23D1-452B-B863-EDB08DDB4115">currEntry - entry address </li>
-</ul>
-<p class="p">9. Following public API is used to add the group entry to the given sink entry. </p>
-<pre class="pre">bool <a class="xref" href="GUID-A74F2FFE-CDD9-4436-91CE-DA620F90F6AD.html">ZGPL_AddSinkGroupEntry</a>(<a class="xref" href="GUID-5CBF4D69-8BB9-4CB0-A22D-502F67A27D53.html">zgpSinkTableEntry_t</a> *currEntry,<a class="xref" href="GUID-CD92A2DD-2220-42F1-81AE-0FD1E656FE01.html">zgpSinkGroup_t</a> *groupEntry);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_ETJ_5SY_J5B__UL_DXG_VT2_KTB"><li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-C89BAA97-3687-4908-95BA-798FAF91C48A">currEntry - entry address </li>
-<li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-984437BE-9BC4-4047-AA5E-444C26FA923C">groupEntry - group entry id to be added </li>
-</ul>
-<p class="p">10. Following public API is used to delete all the table entries </p>
-<pre class="pre">void <a class="xref" href="GUID-AB61F6E6-3508-4240-9795-727C03E7E52D.html">ZGP_ResetTableToFN</a>(void);
-</pre>
-<p class="p"><strong class="ph b">Parameters:</strong></p>
-<ul class="ul" id="TOPIC_ETJ_5SY_J5B__UL_EXG_VT2_KTB"><li class="li" id="TOPIC_ETJ_5SY_J5B__GUID-479A6F34-75DF-4771-A621-EEE3E0CDB998">none </li>
-</ul>
-</div>
-</div>
-</div>
-</body>
+  </div>
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <div id="modal_img_container"></div>
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+       
+        </body>
 </html>

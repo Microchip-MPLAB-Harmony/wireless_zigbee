@@ -1,0 +1,333 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="24.1">
+    <head><link rel="shortcut icon" href="oxygen-webhelp\template\resources/images/favicon.ico"/><link rel="icon" href="oxygen-webhelp\template\resources/images/favicon.ico"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="description" content="Syntax void BDB_SetInstallCodeUsage (bool useInstallCode); Description Sets the install code usage at the trust center. Input Parameters Parameter Name Description useInstallCode true – TC allows only ..."/><meta name="copyright" content="(C) Copyright 2024"/><meta name="generator" content="DITA-OT"/><title>5.1.1.1.6 BDB_SetInstallCodeUsage Function</title><!--  Generated with Oxygen version 24.1, build number 2022062014.  --><meta name="wh-path2root" content=""/><meta name="wh-toc-id" content="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62-d2425e463"/><meta name="wh-source-relpath" content="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62.xml"/><meta name="wh-out-relpath" content="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62.html"/>
+    <!-- Latest compiled and minified Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="./oxygen-webhelp/lib/bootstrap/css/bootstrap.min.css"/>
+    
+    <link rel="stylesheet" href="./oxygen-webhelp/lib/jquery-ui/jquery-ui.min.css"/>
+    
+    <!-- Template default styles  -->
+    <link rel="stylesheet" type="text/css" href="./oxygen-webhelp/app/topic-page.css?buildId=2022062014"/>
+    
+    
+    <script src="./oxygen-webhelp/lib/jquery/jquery-3.5.1.min.js"></script>
+    
+    <script data-main="./oxygen-webhelp/app/topic-page.js" src="./oxygen-webhelp/lib/requirejs/require.js"></script>
+<link rel="stylesheet" type="text/css" href="oxygen-webhelp/template/microchip.css?buildId=2022062014"/><link rel="stylesheet" type="text/css" href="oxygen-webhelp/template/notes.css?buildId=2022062014"/>
+<script src="mchp-context-help.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300" rel="stylesheet" type="text/css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async="" type="text/javascript"></script>
+    <script src="https://assets.adobedtm.com/6a72a357eb48/a636c708c7fe/launch-0b0023397020.min.js"></script><!-- Adobe Analytics -->
+</head>
+
+    <body id="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+        <header class="navbar navbar-default wh_header">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container navbar-nav navbar-expand-md navbar-dark">
+            <div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    
+                    <a href="index.html" class=" wh_logo d-none d-sm-block "><img src="oxygen-webhelp\template\resources/images/microchip.png" alt="MPLAB® Harmony Wireless Zigbee &#xA;    "/></a>
+                    <div class=" wh_publication_title "><a href="index.html">MPLAB® Harmony Wireless Zigbee 
+    </a></div>
+                    
+                </div>
+                
+                
+            </div>
+
+            <div class="wh_top_menu_and_indexterms_link collapse navbar-collapse" id="wh_top_menu_and_indexterms_link">
+                
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</header>
+        
+        
+         
+        
+        <div class=" wh_search_input navbar-form wh_topic_page_search search " role="form">
+            
+            
+            
+            <form id="searchForm" method="get" role="search" action="search.html"><div class="d-flex justify-contents-around"><div class="flex-grow-1"></div><div class="position-relative flex-grow-1"><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div><div class="align-self-center flex-grow-1 ml-2"></div></div></form>
+            
+            <div class="mchp-color-stripe-grid-container">
+  <div class="mchp-main-bar mchp-orange-bar"></div>
+  <div class="mchp-main-bar mchp-blue-bar"></div>
+  <div class="mchp-main-bar mchp-green-bar"></div>
+</div>
+            
+        </div>
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108"><div class="title"><a href="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5</ph>
+References</a></div></div></li><li><div class="topicref" data-id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC"><div class="title"><a href="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1</ph>
+MPLAB Harmony Wireless Zigbee Framework APIs</a></div></div></li><li><div class="topicref" data-id="GUID-30FDFF33-1536-44CF-BC7C-57139F215ED4"><div class="title"><a href="GUID-30FDFF33-1536-44CF-BC7C-57139F215ED4.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.1</ph>
+Base Device Behavior (BDB) APIs</a></div></div></li><li><div class="topicref" data-id="GUID-A10ACB70-BB43-4614-853C-AE0CCEB796A5"><div class="title"><a href="GUID-A10ACB70-BB43-4614-853C-AE0CCEB796A5.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.1.1</ph>
+BDB Commissioning APIs</a></div></div></li><li class="active"><div class="topicref" data-id="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62"><div class="title"><a href="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.1.1.6</ph>
+BDB_SetInstallCodeUsage Function</a></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <button type="button" id="wh_toc_button" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            <div class="row" style="margin-top: -1em;"><div class="col-lg-9 col-md-9 col-sm-12 offset-lg-3 offset-md-3 text-right border-bottom mb-1"><h2 class="text-dark header_title">
+    </h2></div></div>
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        <nav id="wh_publication_toc" class="col-lg-3 col-md-3 col-sm-12 d-md-block d-none d-print-none" aria-label="Table of Contents Container">
+                            <div id="wh_publication_toc_content">
+		                        
+                            	<div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem"><div data-tocid="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801-d2425e11" class="topicref introduction" data-id="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801.html" id="GUID-221B4CC9-4C60-4770-BBD4-843543C6F801-d2425e11-link">Introduction</a></div></div></li><li role="treeitem"><div data-tocid="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207-d2425e19" class="topicref introduction" data-id="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207.html" id="GUID-1FD22A1C-E685-4C71-A9E5-B9A5505E9207-d2425e19-link">Features</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5-d2425e27" class="topicref" data-id="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5-d2425e27-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5.html" id="GUID-4BC995C4-3896-485C-BACF-9BE6865BBBC5-d2425e27-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1</ph>
+Quick References</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38-d2425e51" class="topicref" data-id="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38-d2425e51-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38.html" id="GUID-CC00474A-018F-4772-8C7F-5C64FA7F7E38-d2425e51-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">2</ph>
+BitCloud Zigbee Stack Architecture and API Overview</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686-d2425e84" class="topicref" data-id="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686-d2425e84-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686.html" id="GUID-3FD09F76-6492-4AA5-8F98-0995FEAD2686-d2425e84-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">3</ph>
+Programming Basics</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-1599DD35-8680-4FD4-867D-938D77A52B57-d2425e141" class="topicref" data-id="GUID-1599DD35-8680-4FD4-867D-938D77A52B57" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-1599DD35-8680-4FD4-867D-938D77A52B57-d2425e141-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-1599DD35-8680-4FD4-867D-938D77A52B57.html" id="GUID-1599DD35-8680-4FD4-867D-938D77A52B57-d2425e141-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">4</ph>
+Zigbee Stack Layer Usage</a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108-d2425e391" class="topicref" data-id="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108-d2425e391-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108.html" id="GUID-397BF2A8-C30D-41CD-AF5A-48074AB7E108-d2425e391-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5</ph>
+References</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="true"><div data-tocid="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC-d2425e399" class="topicref" data-id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC-d2425e399-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC.html" id="GUID-6FD6A58A-FB65-4351-B201-FB3F09CBBDEC-d2425e399-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1</ph>
+MPLAB Harmony Wireless Zigbee Framework APIs</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="true"><div data-tocid="GUID-30FDFF33-1536-44CF-BC7C-57139F215ED4-d2425e407" class="topicref" data-id="GUID-30FDFF33-1536-44CF-BC7C-57139F215ED4" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action GUID-30FDFF33-1536-44CF-BC7C-57139F215ED4-d2425e407-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-30FDFF33-1536-44CF-BC7C-57139F215ED4.html" id="GUID-30FDFF33-1536-44CF-BC7C-57139F215ED4-d2425e407-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.1</ph>
+Base Device Behavior (BDB) APIs</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="true"><div data-tocid="GUID-A10ACB70-BB43-4614-853C-AE0CCEB796A5-d2425e415" class="topicref" data-id="GUID-A10ACB70-BB43-4614-853C-AE0CCEB796A5" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action GUID-A10ACB70-BB43-4614-853C-AE0CCEB796A5-d2425e415-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-A10ACB70-BB43-4614-853C-AE0CCEB796A5.html" id="GUID-A10ACB70-BB43-4614-853C-AE0CCEB796A5-d2425e415-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.1.1</ph>
+BDB Commissioning APIs</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="GUID-F182F1CE-24D1-4BDA-9BBA-35F6134E5341-d2425e423" class="topicref" data-id="GUID-F182F1CE-24D1-4BDA-9BBA-35F6134E5341" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-F182F1CE-24D1-4BDA-9BBA-35F6134E5341.html" id="GUID-F182F1CE-24D1-4BDA-9BBA-35F6134E5341-d2425e423-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.1.1.1</ph>
+BDB_SetBdbNodeIsOnANetwork Function</a></div></div></li><li role="treeitem"><div data-tocid="GUID-36CD67FA-F340-4628-AD3C-FE60A4A254B9-d2425e431" class="topicref" data-id="GUID-36CD67FA-F340-4628-AD3C-FE60A4A254B9" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-36CD67FA-F340-4628-AD3C-FE60A4A254B9.html" id="GUID-36CD67FA-F340-4628-AD3C-FE60A4A254B9-d2425e431-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.1.1.2</ph>
+BDB_GetBdbNodeIsOnANetwork Function</a></div></div></li><li role="treeitem"><div data-tocid="GUID-A7725E01-5ADE-49F7-A742-258ECBA4FD86-d2425e439" class="topicref" data-id="GUID-A7725E01-5ADE-49F7-A742-258ECBA4FD86" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-A7725E01-5ADE-49F7-A742-258ECBA4FD86.html" id="GUID-A7725E01-5ADE-49F7-A742-258ECBA4FD86-d2425e439-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.1.1.3</ph>
+BDB_ConfigureInstallCode Function</a></div></div></li><li role="treeitem"><div data-tocid="GUID-E4C0BD14-8E42-4E45-9E55-0F21C782F4DA-d2425e447" class="topicref" data-id="GUID-E4C0BD14-8E42-4E45-9E55-0F21C782F4DA" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-E4C0BD14-8E42-4E45-9E55-0F21C782F4DA.html" id="GUID-E4C0BD14-8E42-4E45-9E55-0F21C782F4DA-d2425e447-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.1.1.4</ph>
+BDB_InvokeCommissioning Function</a></div></div></li><li role="treeitem"><div data-tocid="GUID-05B00A07-F0FF-4AEA-9103-744366CE5806-d2425e455" class="topicref" data-id="GUID-05B00A07-F0FF-4AEA-9103-744366CE5806" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-05B00A07-F0FF-4AEA-9103-744366CE5806.html" id="GUID-05B00A07-F0FF-4AEA-9103-744366CE5806-d2425e455-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.1.1.5</ph>
+BDB_ResetVia_TouchlinkCluster Function</a></div></div></li><li role="treeitem" class="active"><div data-tocid="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62-d2425e463" class="topicref" data-id="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62.html" id="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62-d2425e463-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.1.1.6</ph>
+BDB_SetInstallCodeUsage Function</a></div></div></li><li role="treeitem"><div data-tocid="GUID-94325A93-A96B-4FA2-B74B-2CE9F9A350F5-d2425e471" class="topicref" data-id="GUID-94325A93-A96B-4FA2-B74B-2CE9F9A350F5" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-94325A93-A96B-4FA2-B74B-2CE9F9A350F5.html" id="GUID-94325A93-A96B-4FA2-B74B-2CE9F9A350F5-d2425e471-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.1.1.7</ph>
+BDB_SetNodeJoinTimeout Function</a></div></div></li><li role="treeitem"><div data-tocid="GUID-E0041CBA-EF8D-4D82-AA1A-F07F444D6E65-d2425e479" class="topicref" data-id="GUID-E0041CBA-EF8D-4D82-AA1A-F07F444D6E65" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-E0041CBA-EF8D-4D82-AA1A-F07F444D6E65.html" id="GUID-E0041CBA-EF8D-4D82-AA1A-F07F444D6E65-d2425e479-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.1.1.8</ph>
+BDB_SetTCLKExchangeMethod Function</a></div></div></li><li role="treeitem"><div data-tocid="GUID-85BD1D65-4452-4CD4-A716-DD238E16F197-d2425e487" class="topicref" data-id="GUID-85BD1D65-4452-4CD4-A716-DD238E16F197" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-85BD1D65-4452-4CD4-A716-DD238E16F197.html" id="GUID-85BD1D65-4452-4CD4-A716-DD238E16F197-d2425e487-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.1.1.9</ph>
+BDB_SetTCLKRetryMaxAttempts Function</a></div></div></li><li role="treeitem"><div data-tocid="GUID-140A5C15-1F33-449A-B3F3-DEE5FCFA056A-d2425e495" class="topicref" data-id="GUID-140A5C15-1F33-449A-B3F3-DEE5FCFA056A" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-140A5C15-1F33-449A-B3F3-DEE5FCFA056A.html" id="GUID-140A5C15-1F33-449A-B3F3-DEE5FCFA056A-d2425e495-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.1.1.10</ph>
+BDB_SetTCRequireKeyExchange Function</a></div></div></li><li role="treeitem"><div data-tocid="GUID-F5C068CA-7632-4BAE-A8F9-6A76CC87D7C2-d2425e504" class="topicref" data-id="GUID-F5C068CA-7632-4BAE-A8F9-6A76CC87D7C2" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-F5C068CA-7632-4BAE-A8F9-6A76CC87D7C2.html" id="GUID-F5C068CA-7632-4BAE-A8F9-6A76CC87D7C2-d2425e504-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.1.1.11</ph>
+BDB_SetToulinkRole Function</a></div></div></li><li role="treeitem"><div data-tocid="GUID-39028AC1-C644-4B78-B7EF-6B20F02FFCF9-d2425e512" class="topicref" data-id="GUID-39028AC1-C644-4B78-B7EF-6B20F02FFCF9" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-39028AC1-C644-4B78-B7EF-6B20F02FFCF9.html" id="GUID-39028AC1-C644-4B78-B7EF-6B20F02FFCF9-d2425e512-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.1.1.12</ph>
+BDB_ResetIB Function</a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-CC073ECD-ECA7-4E54-9B83-7D53F4BA0217-d2425e520" class="topicref" data-id="GUID-CC073ECD-ECA7-4E54-9B83-7D53F4BA0217" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-CC073ECD-ECA7-4E54-9B83-7D53F4BA0217-d2425e520-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-CC073ECD-ECA7-4E54-9B83-7D53F4BA0217.html" id="GUID-CC073ECD-ECA7-4E54-9B83-7D53F4BA0217-d2425e520-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.1.2</ph>
+BDB Generic APIs</a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-5578CE1F-C01F-4ECE-AF4E-7B9AED1FCBFA-d2425e576" class="topicref" data-id="GUID-5578CE1F-C01F-4ECE-AF4E-7B9AED1FCBFA" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-5578CE1F-C01F-4ECE-AF4E-7B9AED1FCBFA-d2425e576-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-5578CE1F-C01F-4ECE-AF4E-7B9AED1FCBFA.html" id="GUID-5578CE1F-C01F-4ECE-AF4E-7B9AED1FCBFA-d2425e576-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.2</ph>
+Zigbee Device Object (ZDO) APIs</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-C6DABBBF-E26E-43F6-9815-2E30E9DEC1A0-d2425e786" class="topicref" data-id="GUID-C6DABBBF-E26E-43F6-9815-2E30E9DEC1A0" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-C6DABBBF-E26E-43F6-9815-2E30E9DEC1A0-d2425e786-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-C6DABBBF-E26E-43F6-9815-2E30E9DEC1A0.html" id="GUID-C6DABBBF-E26E-43F6-9815-2E30E9DEC1A0-d2425e786-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.3</ph>
+Network (NWK) APIs</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-8AA085AA-BA13-4729-80C9-6224832A7555-d2425e907" class="topicref" data-id="GUID-8AA085AA-BA13-4729-80C9-6224832A7555" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-8AA085AA-BA13-4729-80C9-6224832A7555-d2425e907-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-8AA085AA-BA13-4729-80C9-6224832A7555.html" id="GUID-8AA085AA-BA13-4729-80C9-6224832A7555-d2425e907-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.4</ph>
+Configuration Server (CS) APIs</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-89AB3319-F2B0-4DA4-BB5C-73361A7F30BE-d2425e939" class="topicref" data-id="GUID-89AB3319-F2B0-4DA4-BB5C-73361A7F30BE" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-89AB3319-F2B0-4DA4-BB5C-73361A7F30BE-d2425e939-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-89AB3319-F2B0-4DA4-BB5C-73361A7F30BE.html" id="GUID-89AB3319-F2B0-4DA4-BB5C-73361A7F30BE-d2425e939-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.5</ph>
+System Environment APIs</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-BD68D16B-283C-40B6-9CF8-CEC2C27DCD4A-d2425e1108" class="topicref" data-id="GUID-BD68D16B-283C-40B6-9CF8-CEC2C27DCD4A" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-BD68D16B-283C-40B6-9CF8-CEC2C27DCD4A-d2425e1108-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-BD68D16B-283C-40B6-9CF8-CEC2C27DCD4A.html" id="GUID-BD68D16B-283C-40B6-9CF8-CEC2C27DCD4A-d2425e1108-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.6</ph>
+Hardware Abstraction Layer (HAL) APIs</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-CB581974-A48C-4B47-B201-74BCD210E740-d2425e1164" class="topicref" data-id="GUID-CB581974-A48C-4B47-B201-74BCD210E740" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-CB581974-A48C-4B47-B201-74BCD210E740-d2425e1164-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-CB581974-A48C-4B47-B201-74BCD210E740.html" id="GUID-CB581974-A48C-4B47-B201-74BCD210E740-d2425e1164-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.7</ph>
+Zigbee Cluster Library (ZCL) APIs</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-905C1BF7-AD06-4DB3-B232-5997E91C8397-d2425e1405" class="topicref" data-id="GUID-905C1BF7-AD06-4DB3-B232-5997E91C8397" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-905C1BF7-AD06-4DB3-B232-5997E91C8397-d2425e1405-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-905C1BF7-AD06-4DB3-B232-5997E91C8397.html" id="GUID-905C1BF7-AD06-4DB3-B232-5997E91C8397-d2425e1405-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.1.8</ph>
+Zigbee Green Power (ZGP) APIs</a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-747CBB24-84B4-451A-A43E-6114D8F4A565-d2425e1736" class="topicref" data-id="GUID-747CBB24-84B4-451A-A43E-6114D8F4A565" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-747CBB24-84B4-451A-A43E-6114D8F4A565-d2425e1736-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-747CBB24-84B4-451A-A43E-6114D8F4A565.html" id="GUID-747CBB24-84B4-451A-A43E-6114D8F4A565-d2425e1736-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">5.2</ph>
+Components Data Structures</a></div></div></li></ul></li><li role="treeitem"><div data-tocid="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6-d2425e2685" class="topicref" data-id="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6.html" id="GUID-CC779138-9BBE-42F3-B4B6-6436C75291E6-d2425e2685-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">6</ph>
+Document Revision History</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2425e2693" class="topicref backmatter backmatter_parent" data-id="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2425e2693-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B.html" id="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2425e2693-link">Microchip Information</a></div></div></li></ul></div>
+		                        
+                            </div>
+                        </nav>
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        <button id="wh_close_publication_toc_button" class="close-toc-button d-none" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc" aria-expanded="true">
+                            <span class="close-toc-icon-container">
+                                <span class="close-toc-icon"></span>     
+                            </span>
+                        </button>
+                        
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article role="article" aria-labelledby="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62__GUID-39FCCE49-EBBD-479B-9C78-DE35FA262983">
+<h1 class="- topic/title title topictitle1" id="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62__GUID-39FCCE49-EBBD-479B-9C78-DE35FA262983" style="">5.1.1.1.6 BDB_SetInstallCodeUsage Function</h1>
+    <div class="- topic/body body">
+        <p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Syntax</strong></p>
+        <div class="- topic/p p">
+            <pre class="+ topic/pre pr-d/codeblock pre codeblock language-c" id="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62__CODEBLOCK_NYL_F12_SBC" data-ofbid="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62__CODEBLOCK_NYL_F12_SBC"><strong class="hl-keyword">void</strong> <span class="hl-functions">BDB_SetInstallCodeUsage</span>(bool useInstallCode);</pre>
+        </div>
+        <p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Description</strong></p>
+        <p class="- topic/p p"> Sets the install code usage at the trust center.</p>
+        <div class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Input Parameters</strong><div class="table-container"><table class="- topic/table table frame-all" id="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62__TABLE_NXW_DRH_KBC" data-ofbid="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62__TABLE_NXW_DRH_KBC" data-cols="2"><caption></caption><colgroup><col style="width:30.959752321981426%"/><col style="width:69.04024767801857%"/></colgroup><thead class="- topic/thead thead">
+                        <tr class="- topic/row">
+                            <th class="- topic/entry entry colsep-1 rowsep-1" id="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62__TABLE_NXW_DRH_KBC__entry__1">Parameter Name</th>
+                            <th class="- topic/entry entry colsep-0 rowsep-1" id="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62__TABLE_NXW_DRH_KBC__entry__2">Description</th>
+                        </tr>
+                    </thead><tbody class="- topic/tbody tbody">
+                        <tr class="- topic/row">
+                            <td class="- topic/entry entry colsep-1 rowsep-0" headers="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62__TABLE_NXW_DRH_KBC__entry__1"><code class="+ topic/ph pr-d/codeph ph codeph">useInstallCode</code></td>
+                            <td class="- topic/entry entry colsep-0 rowsep-0" headers="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62__TABLE_NXW_DRH_KBC__entry__2">
+                                <ul class="- topic/ul ul">
+                                    <li class="- topic/li li" id="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62__GUID-11D052EB-E82E-45E4-99B9-D20E1F563CBD" data-ofbid="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62__GUID-11D052EB-E82E-45E4-99B9-D20E1F563CBD"><code class="+ topic/ph pr-d/codeph ph codeph">true</code> – TC allows only install code devices
+                                        to join</li>
+                                    <li class="- topic/li li" id="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62__GUID-5ECA88E0-849F-41DD-9C04-390B5936B7E5" data-ofbid="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62__GUID-5ECA88E0-849F-41DD-9C04-390B5936B7E5"><code class="+ topic/ph pr-d/codeph ph codeph">false</code> – Otherwise</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody></table></div></div>
+        <div class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Return Type and Values</strong><ul class="- topic/ul ul" id="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62__UL_R3X_312_SBC" data-ofbid="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62__UL_R3X_312_SBC">
+                <li class="- topic/li li" id="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62__GUID-798C6BA8-C8D7-47F5-8C6A-5F319D892ABF" data-ofbid="GUID-E4353CAE-CD1F-466C-BD34-C078E88EFE62__GUID-798C6BA8-C8D7-47F5-8C6A-5F319D892ABF">None</li>
+            </ul></div>
+    </div>
+</article></main></div>
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <div class="mchp_disclaimer"><p class="mchp_disclaimer_text">The online versions of the documents are provided as a courtesy. Verify all content and data in the device’s PDF documentation found on the device product page.</p></div><footer class="navbar navbar-default wh_footer">
+  <div class=" footer-container mx-auto ">
+    <div class="footer">
+  <div class="mchp-wh-footer">
+    <div class="mchp-footer">
+      <div class="mchp-footer-tier1">
+        <div class="spacer"></div>
+        <div class="mchp-footer-container">
+          <div class="mchp-footer-links mchp-social-media-links">
+            <div class="mchp-component-items">
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.facebook.com/pages/Microchip-Technology-Inc/20320981741" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Facebook" src="oxygen-webhelp/template/resources/images/201016-corp-facebook.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.linkedin.com/company/microchip-technology" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip LinkedIn" src="oxygen-webhelp/template/resources/images/201016-corp-linkedin.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://twitter.com/MicrochipTech" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Twitter" src="oxygen-webhelp/template/resources/images/201016-corp-twitter.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.youtube.com/user/MicrochipTechnology" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip YouTube" src="oxygen-webhelp/template/resources/images/201016-corp-youtube.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.instagram.com/microchiptechnologyinc/" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Instagram" src="oxygen-webhelp/template/resources/images/201016-corp-instagram.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.weibo.com/microchiptech" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Weibo" src="oxygen-webhelp/template/resources/images/201016-corp-weibo.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.microchip.com/en-us/about/blog" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Blog" src="oxygen-webhelp/template/resources/images/201016-corp-blog.png"/>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="mchp-footer-links">
+            <div class="mchp-component-items">
+              <div class="mchp-component-item">
+                <div class="link">
+                  <a href="https://www.microchip.com/about-us/contact-us" class="mchp-link__link">Contact</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information" class="mchp-link__link">Legal</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information/privacy-policy" class="mchp-link__link">Privacy Policy</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information/microchip-cookie-statement" class="mchp-link__link">Cookies</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item">
+                <div class="link">
+                  <a href="https://careers.microchip.com/" class="mchp-link__link">Careers</a>
+                  <span class="mchp-link__separator"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mchp-footer-newsletter">
+            <div class="cmp-text">
+              <p>Stay on the leading edge with our blog</p>
+            </div>
+            <div class="mchp-button-wrapper">
+              <a role="button" href="https://www.microchip.com/en-us/about/blog" class="mchp-button mchp-button-regular solid">
+                <span class="mchp-button__span">MicroSolutions</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="graphic">
+          <img src="oxygen-webhelp/template/resources/images/footer-graphic.png"/>
+        </div>
+      </div>
+      <div class="mchp-footer-tier2">
+        <p class="mchp-copyright">© Copyright 1998-2022 Microchip Technology Inc. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async="true" src="https://www.googletagmanager.com/gtag/js?id=UA-2724382-19"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];  
+    function gtag(){dataLayer.push(arguments);}  
+    gtag('js', new Date());   
+    gtag('config', 'UA-2724382-19');
+  </script>
+  
+  <script type="text/javascript">_satellite.pageBottom();</script><!-- Adobe Analytics -->
+  <script type="text/javascript" src="mchp-js/prepend.js"></script><!-- Package for viewing PDFs on mobile devices -->
+  
+</div>
+  </div>
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <div id="modal_img_container"></div>
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+       
+        </body>
+</html>
