@@ -39,6 +39,19 @@ def loadModule():
                           'WBZ351',
                           'WBZ350',
                           }
+
+    pic32cx_bz6_family = {  'PIC32CX2051BZ62132',
+                            'PIC32CX2051BZ62064',
+                            'PIC32CX2051BZ66048',
+                            'WBZ653',
+                            'WBZ652',
+                            'WBZ651',
+                            'PIC32WM_BZ6204',
+                            'PIC32WM_BZ6203',
+                            'PIC32WM_BZ6602',                            
+                            'PIC32CX2051BZ62132_FPGA',
+                        }
+    
     processor = Variables.get('__PROCESSOR')
     print('processor={}'.format(processor))
 
@@ -47,3 +60,5 @@ def loadModule():
         execfile(Module.getPath() + '/config/module_zigbee_bz2.py')
     elif( processor in pic32cx_bz3_family):
         execfile(Module.getPath() + '/config/module_zigbee_bz3.py')
+    elif( processor in pic32cx_bz6_family):
+        execfile(Module.getPath() + '/config/module_zigbee_bz6.py')
