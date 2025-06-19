@@ -69,6 +69,23 @@
 #include <zcl/clusters/include/identifyCluster.h>
 #include <z3device/clusters/include/onOffCluster.h>
 #include <z3device/clusters/include/commissioningCluster.h>
+#include <bdb/include/bdbInternal.h>
+
+<#compress>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+
+  <#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
+
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  <#assign devicetype = DEVICE_TYPE_FILE_PATH >
+#include <z3device/${devicetype}/include/${deviceTypeFunctionPrefix + clusterName}Cluster.h>
+  </#if>
+
+  </#list>
+  
+</#compress>
 
 <#compress>
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
@@ -119,6 +136,11 @@ static void processIdentifyQueryCmd(const ScanValue_t *args);
 static void processTriggerEffectCmd(const ScanValue_t *args);
 static void processReadOnOffAttrVal(const ScanValue_t *args);
 static void processSendEndpointInfoCmd(const ScanValue_t *args);
+
+#if defined _ZIGBEE_REV_23_SUPPORT_
+static void processRequestAppKeyCmd(const ScanValue_t *args);
+static void processSetInstallCodePassphraseCmd(const ScanValue_t *args);
+#endif //_ZIGBEE_REV_23_SUPPORT_
 
 <#-- All ftl functions used inside the FTL file are defined here  -->
 <#-- Helper functions ---------------------------------------------->
@@ -311,6 +333,10 @@ PROGMEM_DECLARE(ConsoleCommand_t commissioningHelpCmds)[]=
   {"setTCLKMaxRetryAttempts", "d", processSetTCLKMaxRetryAttemptsCmd, "[attempt]\r\n"},
   {"setGlobalKey", "d", processsetGlobalKeyCmd, "[Option]\r\n"},
   {"setPermitJoin", "d", processSetPermitJoinCmd, "[dur]\r\n"},
+#endif
+#if defined _ZIGBEE_REV_23_SUPPORT_
+  {"requestAppKey","d",processRequestAppKeyCmd,"[partnerExtAddr] \r\n"},
+  {"SetInstallCodePassphrase", "s", processSetInstallCodePassphraseCmd, "-> Sets IC [code]\r\n"},
 #endif
 #endif
    {0,0,0,0},
@@ -616,6 +642,47 @@ static void processSendEndpointInfoCmd(const ScanValue_t *args)
 {
   commissioningSendEndpointInformation(args[0].uint16, args[1].uint8, srcEp);
 }
+
+#if defined _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+\brief Aps Request Key Done callback
+
+\param[in] conf - pointer to confirmation structure
+******************************************************************************/
+static void requestKeySent(APS_RequestKeyConf_t *conf)
+{
+  (void)appSnprintf("RequestKeySentStatus = %d\r\n", conf->status);
+}
+
+/**************************************************************************//**
+\brief Processes Send request App Key command
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processRequestAppKeyCmd(const ScanValue_t *args)
+{
+  memcpy(&bdbMem.stackReq.apsReqKeyReq.destAddress, APS_GetTrustCenterAddress(), sizeof(ExtAddr_t));
+  bdbMem.stackReq.apsReqKeyReq.keyType = APS_APP_KEY_TYPE;
+
+  memcpy(&bdbMem.stackReq.apsReqKeyReq.partnerAddress, &args[0].uint64, sizeof(ExtAddr_t));
+  bdbMem.stackReq.apsReqKeyReq.APS_RequestKeyConf = requestKeySent;
+
+  APS_RequestKeyReq(&bdbMem.stackReq.apsReqKeyReq);
+}
+
+/**************************************************************************//**
+\brief Processes InstallCode Passphrase command
+
+\param[in] args - array of command arguments
+******************************************************************************/;
+static void processSetInstallCodePassphraseCmd(const ScanValue_t *args)
+{
+  uint8_t icode[18];
+  hexStrTouint8array(args[0].str, icode, 18U);
+  APS_SetInstallCodePassphrase(icode);
+  (void)args;
+}
+#endif //_ZIGBEE_REV_23_SUPPORT_
 
 <@loopClientCommands ;customClusterIndex> <#-- We pass customClusterIndex from the loopClientCommands macro to addPrototype Macro -->
   <@addDefinition customClusterIndex=customClusterIndex/>

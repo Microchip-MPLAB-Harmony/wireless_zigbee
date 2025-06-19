@@ -572,6 +572,18 @@ void Zigbee_Event_Handler(APP_Zigbee_Event_t event)
         }
         break;
 
+        case EVENT_SECURITY_GET_CONFIG_RESPONSE:
+        {
+            appSnprintf( "->SecurityGetConfigResponse, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
+        }
+        break;
+
+        case EVENT_SECURITY_SET_CONFIG_RESPONSE:
+        {
+            appSnprintf( "->SecSetCfgResp, status = %d \r\n", event.eventData.ParentChildInfo.status);
+        }
+        break;
+
         case EVENT_MATCH_DESCRIPTOR_RESPONSE:
         {
             if(event.eventData.ParentChildInfo.status == (uint8_t) ZCL_SUCCESS_STATUS)
@@ -613,6 +625,11 @@ void Zigbee_Event_Handler(APP_Zigbee_Event_t event)
             (void) appSnprintf( "->MgmtLqiRsp, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
         }
         break;
+
+        case EVENT_SURVEY_BEACON_RESPONSE:
+        {
+            appSnprintf( "->SurveyBeaconRsp, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
+        }
 
         case EVENT_BIND_RESPONSE:
         {

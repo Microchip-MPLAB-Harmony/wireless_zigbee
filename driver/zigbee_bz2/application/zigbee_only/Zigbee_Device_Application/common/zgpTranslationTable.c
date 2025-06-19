@@ -113,6 +113,8 @@
 #define ZGP_UNKNOWN_SWITCH_TYPE 0x00
 #define ZGP_BUTTON_SWITCH_TYPE 0x01
 #define ZGP_ROCKER_SWITCH_TYPE 0x02
+
+bool isOneStateCommInProgress = false;
 /**************************************************************************//**
    Type Definitions
 ******************************************************************************/
@@ -842,6 +844,39 @@ static bool getDeviceIdFromCmdIndex(uint8_t *deviceId, uint8_t cmdIndex)
     retValue = true;
   }
 #endif
+#ifdef ZGP_GENERIC_SIMPLE_1_STATE_SWITCH_ENABLED
+  if ((cmdIndex >= ZGP_SIMPLE_GENERIC_1_STATE_SWITCH_START_INDEX) && \
+      (cmdIndex < (ZGP_SIMPLE_GENERIC_1_STATE_SWITCH_START_INDEX + ZGP_SIMPLE_GENERIC_1_STATE_SWITCH_CMD_LIST_SIZE)))
+  {
+    deviceIdValue = ZGP_SIMPLE_GENERIC_1_STATE_SWITCH;
+    retValue = true;
+    return retValue;
+  }
+#endif
+#ifdef ZGP_GENERIC_ADVANCED_1_STATE_SWITCH_ENABLED
+  if ((cmdIndex >= ZGP_SIMPLE_GENERIC_1_STATE_SWITCH_START_INDEX) && \
+      (cmdIndex < (ZGP_SIMPLE_GENERIC_1_STATE_SWITCH_START_INDEX + ZGP_ADVANCED_GENERIC_1_STATE_SWITCH_CMD_LIST_SIZE)))
+  {
+    deviceIdValue = ZGP_ADVANCED_GENERIC_1_STATE_SWITCH;
+    retValue = true;
+  }
+#endif
+#ifdef ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_ENABLED
+  if ((cmdIndex >= ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_START_INDEX) && \
+      (cmdIndex < (ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_START_INDEX + ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_CMD_LIST_SIZE)))
+  {
+    deviceIdValue = ZGP_SIMPLE_GENERIC_2_STATE_SWITCH;
+    retValue = true;
+  }
+#endif
+#ifdef ZGP_ADVANCED_GENERIC_2_STATE_SWITCH_ENABLED
+  if ((cmdIndex >= ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_START_INDEX) && \
+      (cmdIndex < (ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_START_INDEX + ZGP_ADVANCED_GENERIC_2_STATE_SWITCH_CMD_LIST_SIZE)))
+  {
+    deviceIdValue = ZGP_ADVANCED_GENERIC_2_STATE_SWITCH;
+    retValue = true;
+  }
+#endif
   if(deviceId != NULL)
     *deviceId = deviceIdValue;
   return retValue;
@@ -883,6 +918,30 @@ static bool getCmdListFromDeviceId(uint8_t deviceId, uint8_t *cmdIndex, uint8_t 
   case ZGP_LIGHT_SENSOR:
     *cmdIndex = ZGP_ATTR_REPORT_START_INDEX;
     *cmdCount = ZGP_ATTR_REPORT_CMD_LIST_SIZE + ZGP_ZCL_TUNNELING_CMD_LIST_SIZE;
+  return true;
+#endif
+#ifdef ZGP_GENERIC_SIMPLE_1_STATE_SWITCH_ENABLED
+  case ZGP_SIMPLE_GENERIC_1_STATE_SWITCH:
+    *cmdIndex = ZGP_SIMPLE_GENERIC_1_STATE_SWITCH_START_INDEX;
+    *cmdCount = ZGP_SIMPLE_GENERIC_1_STATE_SWITCH_CMD_LIST_SIZE;
+  return true;
+#endif
+#ifdef ZGP_GENERIC_ADVANCED_1_STATE_SWITCH_ENABLED
+  case ZGP_ADVANCED_GENERIC_1_STATE_SWITCH:
+    *cmdIndex = ZGP_SIMPLE_GENERIC_1_STATE_SWITCH_START_INDEX;
+    *cmdCount = ZGP_ADVANCED_GENERIC_1_STATE_SWITCH_CMD_LIST_SIZE;
+  return true;
+#endif
+#ifdef ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_ENABLED
+  case ZGP_SIMPLE_GENERIC_2_STATE_SWITCH:
+    *cmdIndex = ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_START_INDEX;
+    *cmdCount = ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_CMD_LIST_SIZE;
+  return true;
+#endif
+#ifdef ZGP_ADVANCED_GENERIC_2_STATE_SWITCH_ENABLED
+  case ZGP_ADVANCED_GENERIC_2_STATE_SWITCH:
+    *cmdIndex = ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_START_INDEX;
+    *cmdCount = ZGP_ADVANCED_GENERIC_2_STATE_SWITCH_CMD_LIST_SIZE;
   return true;
 #endif
   default:
@@ -1402,7 +1461,7 @@ static bool zgpTransTableAddEntry(zgpTranslationEntryUpdateOperation_t *updatePa
     }
 
     // no addition to gpd zcl cmd mapping table
-    if (updateParam->deviceId)
+    if (updateParam->deviceId || isOneStateCommInProgress)
     {
       bool matching = false;
       bool includeDefaultTranslations = true;
@@ -1757,7 +1816,7 @@ static bool validateAppEndPoint(uint8_t newAppEndPoint, uint8_t *entryAppEndPoin
   // so return true
   if (ALL_END_POINT == newAppEndPoint)
     *entryAppEndPoint = newAppEndPoint;
-  else if ((newAppEndPoint != *entryAppEndPoint) && (ALL_END_POINT != *entryAppEndPoint))
+  else if ((newAppEndPoint != *entryAppEndPoint) ) //&& (ALL_END_POINT != *entryAppEndPoint))
     valid = true;
 
   return valid;
@@ -2054,6 +2113,7 @@ static void zgpTransTableCmdIndHandler(SYS_EventId_t eventId, SYS_EventData_t da
 #endif
   if (GPD_COMMAND_RECEIVED == indicationInfo->indicationType)
   {
+    uint8_t cmdForwardedToApp = 0;
     ZGP_GpdCommand_t *gpdCmdInd = (ZGP_GpdCommand_t *)&indicationInfo->indicationData.gpdCommand;
     zgpTranslationEntryReadOperation_t transTableReadParam = {.ignoreAppId = false, .ignoreGpdId = false, .transLookupTableIndex = 0, \
                                                               .appId = gpdCmdInd->appId, .gpdId = &gpdCmdInd->gpdId, .gpdEndPoint = gpdCmdInd->endPoint, .gpdCmdId = gpdCmdInd->cmdId,
@@ -2072,7 +2132,7 @@ static void zgpTransTableCmdIndHandler(SYS_EventId_t eventId, SYS_EventData_t da
           return; // Release - contact status of last press cannot be retreived, press - can still execute
     }
 #endif
-    while(ZGP_TRANS_TABLE_ENTRY_INVALID_INDEX != (transTableReadParam.transLookupTableIndex = zgpTransTableGetZgpZclMappingInfo(&transTableReadParam, &zgpZclMappingInfo)))
+    while(ZGP_TRANS_TABLE_ENTRY_INVALID_INDEX != (transTableReadParam.transLookupTableIndex = zgpTransTableGetZgpZclMappingInfo(&transTableReadParam, &zgpZclMappingInfo)) && !cmdForwardedToApp)
     {
       // By default we have only one paired endpoint
       // will be overridden when ALL_END_POINT is set
@@ -2187,6 +2247,7 @@ static void zgpTransTableCmdIndHandler(SYS_EventId_t eventId, SYS_EventData_t da
         {
           zgpZclMappingInfo.appEndPoint = pairedEps[noOfPairedEps - 1];
           // forward to the endpoint and scan the next end point
+          cmdForwardedToApp = true;
           forwardGpdCmdToAppEndPoint(&zgpZclMappingInfo, &addressing, gpdCmdInd, index);
           index += zgpZclMappingInfo.cmdMapInfo.payloadLength;
           noOfPairedEps--;
@@ -2276,7 +2337,10 @@ static void zgpTransTableIndHandler(SYS_EventId_t eventId, SYS_EventData_t data)
 #endif
                                                                };
       // TBD need to handle when no free entry available in translation table
+      if(sinkTableEntry->deviceId == ZGP_SIMPLE_GENERIC_1_STATE_SWITCH)
+        {isOneStateCommInProgress = true;}
       zgpTransTableAddEntry(&entryUpdateParam, NULL, NULL);
+      isOneStateCommInProgress = false;
       noOfPairedEndPoints--;
     }
   }

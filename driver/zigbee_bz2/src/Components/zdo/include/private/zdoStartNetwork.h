@@ -91,6 +91,10 @@ typedef struct _ZdoStartNetwork_t
   uint8_t                  joinAttempts;
 #endif
   ZdoStartNetworkState_t   state;
+  ZDO_ZdpReq_t zdpReq;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  BcDeviceInterviewReq_t deviceInterviewReq;
+#endif
 } ZdoStartNetwork_t;
 
 /** ########### TOdo by unithra. */
@@ -169,6 +173,17 @@ ZDO_PRIVATE void zdoRejoinNetwork(void);
   \brief Start Intra-PAN portability procedure. Stop activity and try to rejoin.
  ******************************************************************************/
 ZDO_PRIVATE void zdoPerformIntraPanPortability(void);
+
+/**************************************************************************/ /**
+ \brief Sends ZDP Node Descriptor Request Command to Trust Center 0x0000
+
+  \param[in] destAddr             - Destination device address
+  \param[in] nwkAddrofInterest    - NWK address for the request
+  \param[in] pDeviceInterviewReq  - pointer device interview request parameters.
+
+  \return None
+******************************************************************************/
+ZDO_PRIVATE void zdoSendNodeDescriptorRequest(ShortAddr_t destAddr, ShortAddr_t nwkAddrofInterest, BcDeviceInterviewReq_t *pDeviceInterviewReq);
 
 #else
 #define zdoPerformIntraPanPortability() (void)0

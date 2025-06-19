@@ -47,11 +47,34 @@ pic32cx_bz3_family = {'PIC32CX5109BZ31048',
                       'WBZ351',
                       'WBZ350',
                       }
+
+
+pic32cx_bz6_family = {'PIC32CX2051BZ62132',
+                    'PIC32CX2051BZ62064',
+                    'PIC32CX2051BZ66048',
+                    'WBZ653',
+                    'WBZ652',
+                    'WBZ651',
+                    'PIC32WM_BZ6204',
+                    'PIC32WM_BZ6203',
+                    'PIC32WM_BZ6602',                    
+                    'PIC32CX2051BZ62132_FPGA',
+                    }
                       
 TXPowerFamily1  = { 'PIC32CX1012BZ25048',
                     'PIC32CX5109BZ31048',
                     'WBZ451',
                     'WBZ351',
+                    'WBZ651',
+                    'WBZ652',
+                    'WBZ653',
+                    'PIC32WM_BZ6204',
+                    'PIC32WM_BZ6203',
+                    'PIC32WM_BZ6602',                    
+                    'PIC32CX2051BZ60048',
+                    'PIC32CX2051BZ62064',
+                    'PIC32CX2051BZ62132',
+                    'PIC32CX2051BZ62132_FPGA',
                     }
                     
 TXPowerFamily2 = { 'PIC32CX1012BZ25032',
@@ -108,6 +131,20 @@ def finalizeComponent(zigbeeComponent):
              print("require component '{}' - activating it".format(r))
              res = Database.activateComponents([r])
 
+    if (deviceName in pic32cx_bz6_family):
+      activeComponents = Database.getActiveComponentIDs()
+      requiredComponents = ["pic32cx_bz6_devsupport", "rtc"]
+      for r in requiredComponents:
+          if r in activeComponents:
+              print("require component '{}' - deactivating it".format(r))
+              res = Database.deactivateComponents([r])
+      activeComponents = Database.getActiveComponentIDs()
+      requiredComponents = ["pic32cx_bz6_devsupport"]
+      for r in requiredComponents:
+          if r not in activeComponents:
+             print("require component '{}' - activating it".format(r))
+             res = Database.activateComponents([r])
+
     print("Finalized COmponenet Deactivation / activation Process - completed **********************")
 
     if (deviceName in pic32cx_bz2_family):
@@ -116,6 +153,8 @@ def finalizeComponent(zigbeeComponent):
         result = Database.connectDependencies([['lib_crypto', 'LIB_CRYPTO_WOLFCRYPT_Dependency', 'lib_wolfcrypt', 'lib_wolfcrypt']])
         result = Database.connectDependencies([[zigbeeDeviceType.getValue(), 'TC0_TMR_Zigbee', 'tc0', 'TC0_TMR']])
     elif (deviceName in pic32cx_bz3_family):
+        result = Database.connectDependencies([[zigbeeDeviceType.getValue(), 'TC0_TMR_Zigbee', 'tc0', 'TC0_TMR']])
+    elif (deviceName in pic32cx_bz6_family):
         result = Database.connectDependencies([[zigbeeDeviceType.getValue(), 'TC0_TMR_Zigbee', 'tc0', 'TC0_TMR']])
 
 	#Deep Sleep added
@@ -128,22 +167,33 @@ def finalizeComponent(zigbeeComponent):
         deviceDeepSleepEnabled.setDependencies(zigbeeDevTypeEventDeepSleepConfigCheck, ["DEVICE_DEEP_SLEEP_ENABLED"])
         if( deviceName in pic32cx_bz2_family):
            Database.sendMessage("pic32cx_bz2_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz2_devsupport","source": "ZB_STACK_LIB","isEnabled":True})           
-           Database.sendMessage("pic32cx_bz2_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz2_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
-           
-        else:
+           Database.sendMessage("pic32cx_bz2_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz2_devsupport","source": "ZB_STACK_LIB","isEnabled":False})      
+        elif( deviceName in pic32cx_bz3_family):
            Database.sendMessage("pic32cx_bz3_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz3_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
            Database.sendMessage("pic32cx_bz3_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz3_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
+        elif( deviceName in pic32cx_bz6_family):
+           Database.sendMessage("pic32cx_bz6_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz6_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
+           Database.sendMessage("pic32cx_bz6_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz6_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
            
 
         symIDListS = Database.getComponentSymbolIDs("rtc")
         print(symIDListS)
-        symIDListS = Database.getComponentByID('rtc')
-        DeepAyDeepSleepA = symIDListS.getSymbolByID('RTC_SYS_INIT')
-        DeepAyDeepSleepA.setEnabled(False)
+        if symIDListS is not None:
+            symIDListS = Database.getComponentByID('rtc')
+            DeepAyDeepSleepA = symIDListS.getSymbolByID('RTC_SYS_INIT')
+            DeepAyDeepSleepA.setEnabled(False)
         
     else:
         deviceDeepSleepEnabled.setDefaultValue((False))
         deviceDeepSleepEnabled.setValue(False)
+
+    if(tcSwapoutEnabled.getValue() == True):
+        tcSwapoutHeaderFile.setEnabled(True)
+        tcSwapoutSourceFile.setEnabled(True)
+    
+    dependenciesInitialization.setValue(True)
+    dependenciesInitialization.setDependencies(dependenciesInitializationCall, ["INITIAL_DEPENDENT_CALL"])
+
 
 def handleMessage(messageID, args):
     # Log.writeInfoMessage('drv_zigbee_lib:handleMessage ID={} argLen={}'.format(messageID, len(args)))
@@ -217,6 +267,13 @@ def instantiateComponent(drvZigbeeComponent):
       #Database.setSymbolValue("trng", "TRNG_STANDBY", True)
       Database.setSymbolValue("core", "AES_CLOCK_ENABLE", True)
     if (deviceName in pic32cx_bz3_family):
+          activeComponents = Database.getActiveComponentIDs()
+          requiredComponents = ["tc0"]
+          for r in requiredComponents:
+              if r not in activeComponents:
+                  print("require component '{}' - activating it".format(r))
+                  res = Database.activateComponents([r])
+    elif (deviceName in pic32cx_bz6_family):
           activeComponents = Database.getActiveComponentIDs()
           requiredComponents = ["tc0"]
           for r in requiredComponents:
@@ -320,13 +377,22 @@ def instantiateComponent(drvZigbeeComponent):
     bridgeSelectionSym.setDefaultValue(False)
     bridgeSelectionSym.setDescription("Act like Bridge or not")
     
+    # note: dependenciesInitialization will/ can be used in 
+    # future for initializing instead of using Finalized Component Dependencies call
+
+    global dependenciesInitialization
+    dependenciesInitialization = drvZigbeeComponent.createBooleanSymbol("INITIAL_DEPENDENT_CALL", None)
+    dependenciesInitialization.setLabel("Initialize the Required Basic Symbols")
+    dependenciesInitialization.setVisible(False)
+    dependenciesInitialization.setDependencies(dependenciesInitializationCall, ['INITIAL_DEPENDENT_CALL'])
+
+
     #Deep Sleep added
     deviceDeepSleepEnabledList = [ #List of device types which have deep sleep supported 
                                 "ZIGBEE_MULTI_SENSOR", 
                                 "ZIGBEE_COLOR_SCENE_CONTROLLER",         
                                 "ZIGBEE_IAS_ACE"         
                              ]
-    
     global deviceDeepSleepEnabled
     deviceDeepSleepEnabled = drvZigbeeComponent.createBooleanSymbol("DEVICE_DEEP_SLEEP_ENABLED", None)
     deviceDeepSleepEnabled.setLabel("Enable Deep Sleep")
@@ -334,7 +400,14 @@ def instantiateComponent(drvZigbeeComponent):
     if ((zigbeeDeviceType.getValue() in deviceDeepSleepEnabledList) or (zigbeeDeviceType.getValue() == "ZIGBEE_CUSTOM")) : 
        deviceDeepSleepEnabled.setDependencies(zigbeeDevTypeEventDeepSleepConfigCheck, ["DEVICE_DEEP_SLEEP_ENABLED"])
     
- 
+
+    global tcSwapoutEnabled
+    tcSwapoutEnabled = drvZigbeeComponent.createBooleanSymbol("TC_SWAPOUT_ENABLED", None)
+    tcSwapoutEnabled.setLabel("Enable Trust center backup")
+    tcSwapoutEnabled.setVisible(zigbeeDeviceType.getValue() == "ZIGBEE_COMBINED_INTERFACE")
+    tcSwapoutEnabled.setDefaultValue(False)
+    tcSwapoutEnabled.setDependencies(tcSwapoutConfigCheck, ["TC_SWAPOUT_ENABLED"])
+
        
     global StackEndDevDpSp
     StackEndDevDpSp = drvZigbeeComponent.createIntegerSymbol("STAC_DEV_CHECK_DEEPSLEEP", None)
@@ -364,6 +437,11 @@ def instantiateComponent(drvZigbeeComponent):
     BZ2HPASymbol = drvZigbeeComponent.createBooleanSymbol("PIC32CXBZ2_HPA", None)
     BZ2HPASymbol.setDefaultValue(False)
     BZ2HPASymbol.setVisible(False)
+    global BZ6Symbol
+    BZ6Symbol = drvZigbeeComponent.createBooleanSymbol("PIC32CXBZ6", None)
+    BZ6Symbol.setDefaultValue(False)
+    BZ6Symbol.setVisible(False)   
+
 
     if (deviceName in pic32cx_bz3_family):
         BZ3Symbol.setDefaultValue(True)
@@ -371,6 +449,8 @@ def instantiateComponent(drvZigbeeComponent):
         BZ2Symbol.setDefaultValue(True)
     if (deviceName in pic32cx_bz2_hpa_family):
         BZ2HPASymbol.setDefaultValue(True)
+    if (deviceName in pic32cx_bz6_family):
+        BZ6Symbol.setDefaultValue(True)
 
     # Auto Configuration Option
     global zigbeeDevsym_autoConfig
@@ -446,6 +526,8 @@ def instantiateComponent(drvZigbeeComponent):
     if( deviceName in pic32cx_bz2_family):
         drvZigbeeComponent.setDependencyEnabled('TCC2_PWM_Zigbee', False) #If bz2, disable TCC2 by default
     elif( deviceName in pic32cx_bz3_family):
+        drvZigbeeComponent.setDependencyEnabled('TCC2_PWM_Zigbee', False)
+    elif( deviceName in pic32cx_bz6_family):
         drvZigbeeComponent.setDependencyEnabled('TCC2_PWM_Zigbee', False)
 
     global drvComponent # used to pass component to timerconfig.py
@@ -539,7 +621,15 @@ def instantiateComponent(drvZigbeeComponent):
             appDevicePASelect.setValue('CS_DEVICE_POWER_LPA')
         else:
             appDevicePASelect.setValue('CS_DEVICE_POWER_MPA')        
-        
+    if (deviceName in pic32cx_bz6_family):                        
+        if(deviceName == 'WBZ651'):
+            appDevicePASelect.setValue('CS_DEVICE_POWER_MPA')
+        elif(deviceName == 'WBZ652'):
+            appDevicePASelect.setValue('CS_DEVICE_POWER_LPA')
+        else:
+            appDevicePASelect.setValue('CS_DEVICE_POWER_MPA')  
+
+
     # Responsible for auto activation of SST26
     if(deviceName in pic32cx_bz3_family):    
         enableSST = drvZigbeeComponent.createBooleanSymbol(None, None)
@@ -583,6 +673,10 @@ def instantiateComponent(drvZigbeeComponent):
         appPowerRegion.setMin(-13)
         appPowerRegion.setMax(6)
     elif(deviceName == "WBZ450"):
+        appPowerRegion.setDefaultValue(3)
+        appPowerRegion.setMin(-11)
+        appPowerRegion.setMax(6)
+    elif(deviceName in pic32cx_bz6_family):  #BX6 - Big buck device type 
         appPowerRegion.setDefaultValue(3)
         appPowerRegion.setMin(-11)
         appPowerRegion.setMax(6)
@@ -744,15 +838,13 @@ def instantiateComponent(drvZigbeeComponent):
     ptcSystemDefFile.setSourcePath("driver/zigbee" + suffix + "/templates/system/definitions.h.ftl")
     ptcSystemDefFile.setMarkup(True)
 
-    # Configuration what OSAL Creates - Temporary - Need to find in the Systems
-    #sys_configHeaderFile = drvZigbeeComponent.createFileSymbol(None, None)
-    #sys_configHeaderFile.setSourcePath('driver/zigbee' + suffix + '/templates/system/configuration.h.ftl')
-    #sys_configHeaderFile.setOutputName('configuration.h')
-    #sys_configHeaderFile.setOverwrite(True)
-    #sys_configHeaderFile.setDestPath('../../')
-    #sys_configHeaderFile.setProjectPath('')
-    #sys_configHeaderFile.setType('HEADER')
-    #sys_configHeaderFile.setEnabled(True)
+    if (deviceName in pic32cx_bz2_family):
+      # Configuration what OSAL Creates - Temporary - Need to find in the Systems
+      sys_configHeaderFile = drvZigbeeComponent.createFileSymbol("ZIGBEE_CRYPTO_DEFS", None)
+      sys_configHeaderFile.setType("STRING")
+      sys_configHeaderFile.setOutputName("core.LIST_SYSTEM_CONFIG_H_APPLICATION_CONFIGURATION")
+      sys_configHeaderFile.setSourcePath('driver/zigbee' + suffix + '/templates/system/configuration.h.ftl')
+      sys_configHeaderFile.setMarkup(True)
 
     #################################################################
     ###############  System Initialization Settings   ###############
@@ -852,6 +944,31 @@ def instantiateComponent(drvZigbeeComponent):
     app_zgbSourceFile.setEnabled(True)
     app_zgbSourceFile.setMarkup(True)
 
+    if (deviceName in pic32cx_bz2_family):
+      try:
+        app_zgbSourceFile = drvZigbeeComponent.createFileSymbol("cryptowsg", None)
+        app_zgbSourceFile.setSourcePath('driver/zigbee' + suffix + '/templates/crypto.c.ftl')
+        app_zgbSourceFile.setOutputName('crypto.c')
+        app_zgbSourceFile.setDestPath('/crypto/src')
+        app_zgbSourceFile.setProjectPath('config/' + configName + '/crypto/src')
+        app_zgbSourceFile.setType('SOURCE')
+        app_zgbSourceFile.setOverwrite(True)
+        app_zgbSourceFile.setMarkup(True)
+        app_zgbSourceFile.setEnabled(True)
+
+        app_zgbSourceFile = drvZigbeeComponent.createFileSymbol("cryptowsg2", None)
+        app_zgbSourceFile.setSourcePath('driver/zigbee' + suffix + '/templates/crypto.h.ftl')
+        app_zgbSourceFile.setOutputName('crypto.h')
+        app_zgbSourceFile.setDestPath('/crypto')
+        app_zgbSourceFile.setProjectPath('config/' + configName + '/crypto' )
+        app_zgbSourceFile.setType('HEADER')
+        app_zgbSourceFile.setOverwrite(True)
+        app_zgbSourceFile.setMarkup(True)
+        app_zgbSourceFile.setEnabled(True)
+      except Exception as e:
+        print("Exception is debug : ", e)
+      
+    
     # Add app_uart.c - generated file
     app_uartSourceFile = drvZigbeeComponent.createFileSymbol(None, None)
     app_uartSourceFile.setSourcePath('driver/zigbee' + suffix + '/templates/app_uart.c.ftl')
@@ -898,6 +1015,7 @@ def instantiateComponent(drvZigbeeComponent):
     app_consolecommonSrcFile2.setOverwrite(True)
     app_consolecommonSrcFile2.setDestPath('../../app_zigbee/zigbee_console/')
     app_consolecommonSrcFile2.setProjectPath('app_zigbee/zigbee_console/')
+    app_consolecommonSrcFile2.setMarkup(True)
     app_consolecommonSrcFile2.setType('SOURCE')
     app_consolecommonSrcFile2.setEnabled(True)
 
@@ -938,6 +1056,7 @@ def instantiateComponent(drvZigbeeComponent):
         ['aps/include/aps.h',                        condAlways],
         ['aps/include/apsAIB.h',                     condAlways],
         ['aps/include/apsCommandReq.h',              condAlways],
+        ['aps/include/apsRelayCommandReq.h',         condAlways],
         ['aps/include/apsCommon.h',                  condAlways],
         ['aps/include/apsConfigServer.h',            condAlways],
         ['aps/include/apsCryptoKeys.h',              condAlways],
@@ -955,9 +1074,12 @@ def instantiateComponent(drvZigbeeComponent):
         ['aps/include/apsmeUpdateDevice.h',          condAlways],
         ['aps/include/apsmeVerifyKey.h',             condAlways],
         ['aps/include/intrpData.h',                  condAlways],
+        ['aps/include/apsmeKeyNegotiate.h',          condAlways],
         ['aps/include/private/apsFrames.h',          condAlways],
         ['aps/include/private/apsKeyPairSet.h',      condAlways],
+        ['aps/include/apsFragmentationCache.h',      condAlways],
         ['aps/include/private/apsMemoryManager.h',   condAlways],
+        ['aps/include/private/apsCommand.h',         condAlways],
     ]
 
     zdrvStackBDBIncFiles = [
@@ -971,6 +1093,10 @@ def instantiateComponent(drvZigbeeComponent):
         ['bdb/include/bdbSecurity.h',                condAlways],
         ['bdb/include/bdbTouchlink.h',               condAlways],
         ['bdb/include/bdbZllBindings.h',             condAlways],
+    ]
+    
+    zdrvStackTLVIncFiles = [
+        ['tlv/include/tlv.h',                        condAlways],
     ]
 
     zdrvStackConfigServerIncFiles = [
@@ -1013,6 +1139,7 @@ def instantiateComponent(drvZigbeeComponent):
         ['nwk/include/nlmeSetGet.h',                   condAlways],
         ['nwk/include/nwkAttributes.h',                condAlways],
         ['nwk/include/nwkProfiler.h',                  condAlways],
+        ['nwk/include/nwkDiscoveryTable.h',                  condAlways],
         ['nwk/include/private/nwkAddressMap.h',               condAlways],
         ['nwk/include/private/nwkBTT.h',                      condAlways],
         ['nwk/include/private/nwkConfig.h',                   condAlways],
@@ -1033,6 +1160,7 @@ def instantiateComponent(drvZigbeeComponent):
         ['nwk/include/private/nwkTx.h',                       condAlways],
         ['nwk/include/private/nwkTxDelay.h',                  condAlways],
         ['nwk/include/private/nwkUpdateCommand.h',            condAlways],
+        ['nwk/include/private/nwkDiscEntry.h',            condAlways],
     ]
 
     zdrvStackMACIncFiles = [
@@ -1141,7 +1269,9 @@ def instantiateComponent(drvZigbeeComponent):
         ['security/TrustCentre/include/tcAuthentic.h',                      condAlways],
         ['security/TrustCentre/include/tcKeyEstablish.h',                   condAlways],
         ['security/TrustCentre/include/tcPermissions.h',                    condAlways],
-        ['security/serviceprovider/include/private/sspHashHandler.h',           condAlways],
+        ['security/serviceprovider/include/private/sspHashHandler.h',       condAlways],
+        ['security/serviceprovider/include/sspCurve25519Handler.h',         condAlways],
+        ['security/serviceprovider/include/sspSha256Handler.h',             condAlways],
     ]
 
     zdrvStackZDOIncFiles = [
@@ -1174,6 +1304,12 @@ def instantiateComponent(drvZigbeeComponent):
         ['zdo/include/private/zdoTaskManager.h',       condAlways],
         ['zdo/include/private/zdoZdpReq.h',            condAlways],
         ['zdo/include/private/zdoZib.h',               condAlways],
+        ['zdo/include/zdoSecurityStartKeyUpdate.h',         condAlways],
+        ['zdo/include/zdoSecurityStartKeyNegotiation.h',         condAlways],
+        ['zdo/include/zdoRetrieveAuthenticationToken.h',         condAlways],
+        ['zdo/include/private/zdoSecurityServiceManager.h',     condAlways],
+        ['zdo/include/zdoSecurityChallenge.h',     condAlways],
+        ['zdo/include/zdoSecurityGetAuthLevel.h',     condAlways],
     ]
 
     zdrvStackHALIncFiles = [
@@ -1193,6 +1329,8 @@ def instantiateComponent(drvZigbeeComponent):
         #['hal/cortexm4/pic32cx_bz2/include/hpl_aes_sync.h',          condAlways],
         #['hal/cortexm4/pic32cx_bz2/include/hri_aes_e54.h',           condAlways],
         ['hal/cortexm4/pic32cx_bz2/include/halAes.h',                condAlways],
+        ['hal/cortexm4/pic32cx_bz2/include/halCurve25519.h',          condAlways],
+        ['hal/cortexm4/pic32cx_bz2/include/halSha256.h',              condAlways],
         # ['hal/cortexm4/pic32cx_bz2/include/Pic32cx_Miscellaneous.h', condAlways],
     ]
 
@@ -1221,9 +1359,31 @@ def instantiateComponent(drvZigbeeComponent):
         ['hal/cortexm4/pic32cx_bz3/include/halTrng.h',               condAlways],
         #['hal/cortexm4/pic32cx_bz3/include/hri_aes_e54.h',           condAlways],
         ['hal/cortexm4/pic32cx_bz3/include/halAes.h',                condAlways],
+        ['hal/cortexm4/pic32cx_bz3/include/halCurve25519.h',          condAlways],
+        ['hal/cortexm4/pic32cx_bz3/include/halSha256.h',              condAlways],
         # ['hal/cortexm4/pic32cx_bz3/include/Pic32cx_Miscellaneous.h', condAlways],
     ]
-    
+
+    zdrvStackBZ6HALIncFiles = [
+        #['hal/cortexm4/pic32cx_bz6/include/hal_aes_sync.h',          condAlways],
+        ['hal/cortexm4/pic32cx_bz6/include/halAppClock.h',           condAlways],
+        ['hal/cortexm4/pic32cx_bz6/include/halAssert.h',             condAlways],
+        ['hal/cortexm4/pic32cx_bz6/include/halDbg.h',                condAlways],
+        ['hal/cortexm4/pic32cx_bz6/include/halDiagnostic.h',         condAlways],
+        #['hal/cortexm4/pic32cx_bz6/include/halFlash.h',              condAlways],
+        ['hal/cortexm4/pic32cx_bz6/include/halMacIsr.h',             condAlways],
+        ['hal/cortexm4/pic32cx_bz6/include/halRfCtrl.h',             condAlways],
+        #['hal/cortexm4/pic32cx_bz6/include/halSleep.h',              condAlways],
+        #['hal/cortexm4/pic32cx_bz6/include/halSleepTimerClock.h',    condAlways],
+        #['hal/cortexm4/pic32cx_bz6/include/hpl_aes.h',               condAlways],
+        ['hal/cortexm4/pic32cx_bz6/include/halTrng.h',               condAlways],
+        #['hal/cortexm4/pic32cx_bz6/include/hri_aes_e54.h',           condAlways],
+        ['hal/cortexm4/pic32cx_bz6/include/halAes.h',                condAlways],
+        ['hal/cortexm4/pic32cx_bz6/include/halCurve25519.h',          condAlways],
+        ['hal/cortexm4/pic32cx_bz6/include/halSha256.h',              condAlways],
+        # ['hal/cortexm4/pic32cx_bz6/include/Pic32cx_Miscellaneous.h', condAlways],
+    ]
+
     zdrvStackBZ3HALCommonIncFiles = [
         ['hal/include/atomic.h',                                 condAlways],
         ['hal/include/bcTimer.h',                                condAlways],
@@ -1235,7 +1395,19 @@ def instantiateComponent(drvZigbeeComponent):
         #['hal/include/sleepTimer.h',                             condAlways],
         ['hal/include/statStack.h',                              condAlways],
     ]
-    
+
+    zdrvStackBZ6HALCommonIncFiles = [
+        ['hal/include/atomic.h',                                 condAlways],
+        ['hal/include/bcTimer.h',                                condAlways],
+        ['hal/include/appTimer.h',                               condAlways],
+        # ['hal/include/eeprom.h',                                 condAlways],
+        #['hal/include/flash.h',                                  condAlways],
+        ['hal/include/halTaskManager.h',                         condAlways],
+        ['hal/include/sleep.h',                                  condAlways],
+        #['hal/include/sleepTimer.h',                             condAlways],
+        ['hal/include/statStack.h',                              condAlways],
+    ]
+
     zdrvStackZCLIncFiles = [
         ['zcl/clusters/include/groupsCluster.h',         condAlways],
         ['zcl/clusters/include/identifyCluster.h',       condAlways],
@@ -1264,6 +1436,7 @@ def instantiateComponent(drvZigbeeComponent):
         ['zcl/include/zclInt.h',                            condAlways],
         # ['zcl/include/zclKeyEstablishmentCluster.h',        condAlways],
         ['zcl/include/zclLevelControlCluster.h',            condAlways],
+        ['zcl/include/zclWindowCoveringCluster.h',            condAlways],
         # ['zcl/include/zclLinkInfoCluster.h',                condAlways],
         ['zcl/include/zclMem.h',                            condAlways],
         ['zcl/include/zclMemoryManager.h',                  condAlways],
@@ -1420,6 +1593,14 @@ def instantiateComponent(drvZigbeeComponent):
         ['zgp/include/zgpDbg.h',                                                 condDevGPNotNone],
     ]
 
+    global tcSwapoutHeaderFile
+    tcSwapoutHeaderFile = drvZigbeeComponent.createFileSymbol("TC_SWAPOUT_HEADER", None)
+    tcSwapoutHeaderFile.setSourcePath("/driver/zigbee" + suffix + "/application/zigbee_only/Zigbee_Device_Application/common/include/app_tcSwapout.h")
+    tcSwapoutHeaderFile.setDestPath("/zigbee/z3device/common/include")
+    tcSwapoutHeaderFile.setProjectPath("config/" + configName + "/zigbee/z3device/common/include")
+    tcSwapoutHeaderFile.setType('HEADER')
+    tcSwapoutHeaderFile.setEnabled(False)
+    
     for incFileEntry in zdrvStackPdsServerIncFiles:
         importIncFile(drvZigbeeComponent, configName, incFileEntry)
 
@@ -1427,6 +1608,9 @@ def instantiateComponent(drvZigbeeComponent):
         importIncFile(drvZigbeeComponent, configName, incFileEntry)
 
     for incFileEntry in zdrvStackBDBIncFiles:
+        importIncFile(drvZigbeeComponent, configName, incFileEntry)
+    
+    for incFileEntry in zdrvStackTLVIncFiles:
         importIncFile(drvZigbeeComponent, configName, incFileEntry)
 
     for incFileEntry in zdrvStackConfigServerIncFiles:
@@ -1448,6 +1632,17 @@ def instantiateComponent(drvZigbeeComponent):
       incPathSym.setKey('extra-include-directories')
       incPathSym.setAppend(True, ';')
       incPathSym.setEnabled(True)
+    elif (deviceName in pic32cx_bz6_family):
+        # added for BZ6
+        for incFileEntry in zdrvStackBZ6HALCommonIncFiles:
+            importIncFile(drvZigbeeComponent, configName, incFileEntry)
+
+        incPathSym = drvZigbeeComponent.createSettingSymbol('SILEX_PATH_INCLUDE_PATH', None)
+        incPathSym.setValue('../src/config/default/driver/security' + ';')
+        incPathSym.setCategory('C32')
+        incPathSym.setKey('extra-include-directories')
+        incPathSym.setAppend(True, ';')
+        incPathSym.setEnabled(True)
     else:
       for incFileEntry in zdrvStackHALCommonIncFiles:
         importIncFile(drvZigbeeComponent, configName, incFileEntry)
@@ -1455,6 +1650,9 @@ def instantiateComponent(drvZigbeeComponent):
     if (deviceName in pic32cx_bz3_family):
       for incFileEntry in zdrvStackBZ3HALIncFiles:
         importHalIncFile(drvZigbeeComponent, configName, incFileEntry)
+    elif (deviceName in pic32cx_bz6_family):
+        for incFileEntry in zdrvStackBZ6HALIncFiles:     # Added BZ3 Hal Inc Files, In Future Bz6 files need to be added
+            importHalIncFile(drvZigbeeComponent, configName, incFileEntry)
     else:
       for incFileEntry in zdrvStackHALIncFiles:
         importHalIncFile(drvZigbeeComponent, configName, incFileEntry)
@@ -1749,6 +1947,9 @@ def instantiateComponent(drvZigbeeComponent):
 
     zdrvStackBDBSrcFiles = [
     ]
+    
+    zdrvStackTLVSrcFiles = [
+    ]
 
     zdrvStackConfigServerSrcFiles = [
         ['configserver/src/configserver.c',      condAlways],
@@ -1808,7 +2009,9 @@ def instantiateComponent(drvZigbeeComponent):
        # ['hal/cortexm4/pic32cx_bz2/src/halSleep.c',               condAlways],
        # ['hal/cortexm4/pic32cx_bz2/src/halSleepTimerClock.c',     condAlways],
         #['hal/cortexm4/pic32cx_bz2/src/hpl_aes.c',                condAlways],
-        ['hal/cortexm4/pic32cx_bz2/src/halAes.c',                 condAlways],
+        ['hal/cortexm4/pic32cx_bz2/src/halAes.c',                  condAlways],
+        ['hal/cortexm4/pic32cx_bz2/src/halCurve25519.c',           condAlways],
+        ['hal/cortexm4/pic32cx_bz2/src/halSha256.c',               condAlways],
     ]
 
     zdrvStackHALCommonSrcFiles = [
@@ -1832,6 +2035,23 @@ def instantiateComponent(drvZigbeeComponent):
         #['hal/cortexm4/pic32cx_bz3/src/halSleepTimerClock.c',     condAlways],
         ['hal/cortexm4/pic32cx_bz3/src/halTrng.c',                condAlways],
         ['hal/cortexm4/pic32cx_bz3/src/halAes.c',                 condAlways],
+        ['hal/cortexm4/pic32cx_bz3/src/halCurve25519.c',           condAlways],
+        ['hal/cortexm4/pic32cx_bz3/src/halSha256.c',               condAlways],
+    ]
+
+    zdrvStackBZ6HALSrcFiles = [
+        ['hal/cortexm4/pic32cx_bz6/src/atomic.c',                 condAlways],
+        #['hal/cortexm4/pic32cx_bz6/src/hal_aes_sync.c',           condAlways],
+        ['hal/cortexm4/pic32cx_bz6/src/halAppClock.c',            condAlways],
+        #['hal/cortexm4/pic32cx_bz6/src/halFlash.c',               condAlways],
+        ['hal/cortexm4/pic32cx_bz6/src/halMacIsr.c',              condAlways],
+        ['hal/cortexm4/pic32cx_bz6/src/halRfCtrl.c',              condAlways],
+        #['hal/cortexm4/pic32cx_bz6/src/halSleep.c',               condAlways],
+        #['hal/cortexm4/pic32cx_bz6/src/halSleepTimerClock.c',     condAlways],
+        ['hal/cortexm4/pic32cx_bz6/src/halTrng.c',                condAlways],
+        ['hal/cortexm4/pic32cx_bz6/src/halAes.c',                 condAlways],
+        ['hal/cortexm4/pic32cx_bz6/src/halCurve25519.c',           condAlways],
+        ['hal/cortexm4/pic32cx_bz6/src/halSha256.c',               condAlways],
     ]
 
     zdrvStackBZ3HALCommonSrcFiles = [
@@ -1844,6 +2064,15 @@ def instantiateComponent(drvZigbeeComponent):
         ['hal/cortexm4/common/src/timer.c',                   condAlways],
     ]
 
+    zdrvStackBZ6HALCommonSrcFiles = [
+        ['hal/cortexm4/common/src/appTimer.c',                condAlways],
+        ##['hal/cortexm4/common/src/flash.c',                   condAlways],
+        ['hal/cortexm4/common/src/halTaskManager.c',          condAlways],
+        #['hal/cortexm4/common/src/sleep.c',                   condAlways],
+        #['hal/cortexm4/common/src/sleepTimer.c',              condAlways],
+        ['hal/cortexm4/common/src/statStack.c',               condAlways],
+        ['hal/cortexm4/common/src/timer.c',                   condAlways],
+    ]
     zdrvStackZLLSrcFiles = [
        ['zllplatform/infrastructure/N_Util/src/N_Util.c',          condAlways],
     ]
@@ -1885,11 +2114,21 @@ def instantiateComponent(drvZigbeeComponent):
         ['zgp/GPInfrastructure/src/zgpGeneric.c',                        condDevGPNotNone],
     ]
      
-
+    global tcSwapoutSourceFile
+    tcSwapoutSourceFile = drvZigbeeComponent.createFileSymbol("TC_SWAPOUT_SOURCE", None)
+    tcSwapoutSourceFile.setSourcePath("/driver/zigbee" + suffix + "/application/zigbee_only/Zigbee_Device_Application/common/app_tcSwapout.c")
+    tcSwapoutSourceFile.setDestPath("/zigbee/z3device/common")
+    tcSwapoutSourceFile.setProjectPath('/config/default/zigbee/z3device/common')
+    tcSwapoutSourceFile.setType('SOURCE')
+    tcSwapoutSourceFile.setEnabled(False)
+    
     for srcFileEntry in zdrvStackAPSSrcFiles:
         importSrcFile(drvZigbeeComponent, configName, srcFileEntry)
 
     for srcFileEntry in zdrvStackBDBSrcFiles:
+        importSrcFile(drvZigbeeComponent, configName, srcFileEntry)
+        
+    for srcFileEntry in zdrvStackTLVSrcFiles:
         importSrcFile(drvZigbeeComponent, configName, srcFileEntry)
 
     for srcFileEntry in zdrvStackConfigServerSrcFiles:
@@ -1916,6 +2155,9 @@ def instantiateComponent(drvZigbeeComponent):
     if (deviceName in pic32cx_bz3_family):
       for srcFileEntry in zdrvStackBZ3HALSrcFiles:
         importSrcHalFile(drvZigbeeComponent, configName, srcFileEntry)
+    elif (deviceName in pic32cx_bz6_family): # Added BZ6 Hal Inc Files, In Future Bz6 files need to be added
+        for srcFileEntry in zdrvStackBZ6HALSrcFiles:
+            importSrcHalFile(drvZigbeeComponent, configName, srcFileEntry)
     else:
       for srcFileEntry in zdrvStackHALSrcFiles:
         importSrcHalFile(drvZigbeeComponent, configName, srcFileEntry)
@@ -1923,6 +2165,9 @@ def instantiateComponent(drvZigbeeComponent):
     if (deviceName in pic32cx_bz3_family):
       for srcFileEntry in zdrvStackBZ3HALCommonSrcFiles:
         importSrcFile(drvZigbeeComponent, configName, srcFileEntry)
+    elif (deviceName in pic32cx_bz6_family): # Added BZ6 Hal Inc Files, In Future Bz6 files need to be added
+        for srcFileEntry in zdrvStackBZ6HALCommonSrcFiles:
+            importSrcFile(drvZigbeeComponent, configName, srcFileEntry)
     else:
       for srcFileEntry in zdrvStackHALCommonSrcFiles:
         importSrcFile(drvZigbeeComponent, configName, srcFileEntry)
@@ -2313,7 +2558,14 @@ def instantiateComponent(drvZigbeeComponent):
     preprocessormac.setEnabled(True)
 
     # Disable Default linker script
-    Database.setSymbolValue("core", "ADD_LINKER_FILE", False)
+    #Database.setSymbolValue("core", "ADD_LINKER_FILE", False)
+    
+    #print("[DEBUG] Attempting to clear ADD_LINKER_FILE")
+    Database.clearSymbolValue("core", "ADD_LINKER_FILE")
+    
+
+    value_after_clear = Database.getSymbolValue("core", "ADD_LINKER_FILE")
+    print("[DEBUG] Value of ADD_LINKER_FILE after clear: " + str(value_after_clear))
 
     # Use Custom linker script
     #zigbeeLinkerFile = drvZigbeeComponent.createFileSymbol("ZB_LINKER_FILE", None)
@@ -2337,6 +2589,9 @@ def instantiateComponent(drvZigbeeComponent):
         preprocessorAS.setValue('PIC32CX_CHIP_SOC;_PIC32CX_;_USE_LIB_;_SUPER_SET_LIB_;HAL_USE_FLASH_ACCESS;Z3DEVICE_APP')
     elif (deviceName in pic32cx_bz3_family):
         preprocessorAS.setValue('PIC32CX_CHIP_SOC;_PIC32CX_;_USE_LIB_;_SUPER_SET_LIB_;HAL_USE_FLASH_ACCESS;Z3DEVICE_APP;PLATFORM_PIC32CXBZ3') 
+    elif (deviceName in pic32cx_bz6_family):
+       preprocessorAS.setValue('PIC32CX_CHIP_SOC;_PIC32CX_;_USE_LIB_;_SUPER_SET_LIB_;HAL_USE_FLASH_ACCESS;Z3DEVICE_APP;PLATFORM_PIC32CXBZ6') # Added BZ6 platform, In Future Bz6 Platform 
+        
     preprocessorAS.setCategory('C32')
     preprocessorAS.setKey('preprocessor-macros')
     preprocessorAS.setAppend(True, ';')
@@ -2364,11 +2619,14 @@ def instantiateComponent(drvZigbeeComponent):
 
 ################################### Library File ####################################################
     # Makerule
+    global zigbeeMakeRulesFile
     zigbeeMakeRulesFile = drvZigbeeComponent.createFileSymbol("ZIGBEE_MAKERULE_HEADER", None)
     if (deviceName in pic32cx_bz2_family):
       zigbeeMakeRulesFile.setSourcePath("/driver/zigbee" + suffix + "/templates/Zigbee_AllDevice_Makerules.h.ftl")
     elif (deviceName in pic32cx_bz3_family):
       zigbeeMakeRulesFile.setSourcePath("/driver/zigbee" + suffix + "/templates/Zigbee_AllDevice_Makerules_Bz3.h.ftl")
+    elif (deviceName in pic32cx_bz6_family):    # Added BZ3 ftl Files, In Future Bz6 files need to be added
+      zigbeeMakeRulesFile.setSourcePath("/driver/zigbee" + suffix + "/templates/Zigbee_AllDevice_Makerules_bz6.h.ftl")
     zigbeeMakeRulesFile.setOutputName("Zigbee_AllDevice_Makerules.h")
     zigbeeMakeRulesFile.setDestPath("/zigbee/lib/")
     zigbeeMakeRulesFile.setProjectPath("config/" + configName + "/zigbee/lib/")
@@ -2381,12 +2639,15 @@ def instantiateComponent(drvZigbeeComponent):
     setAdditionaloptionXC32GCC.setCategory('C32')
     setAdditionaloptionXC32GCC.setKey('appendMe')
 
+    global zigbeeLibFile
     zigbeeLibFile = drvZigbeeComponent.createLibrarySymbol("ZB_LIB_FILE", None)
     zigbeeLibFile.setDestPath('/zigbee/lib/')
     if (deviceName in pic32cx_bz2_family):
       zigbeeLibFile.setSourcePath("/driver/zigbee" + suffix + "/src/lib/Zigbee_AllDevice_bz2_Lib.a")
     elif (deviceName in pic32cx_bz3_family):
       zigbeeLibFile.setSourcePath("/driver/zigbee" + suffix + "/src/lib/Zigbee_AllDevice_Bz3_Lib.a")
+    elif (deviceName in pic32cx_bz6_family):  # Added BZ3 lib Files, In Future Bz6 files need to be added
+        zigbeeLibFile.setSourcePath("/driver/zigbee" + suffix + "/src/lib/Zigbee_AllDevice_bz6_Lib.a")
     zigbeeLibFile.setOutputName("zigbee_alldevice_lib.a")
 ################################### SOURCE FILES ####################################################
 
@@ -2399,6 +2660,9 @@ def powerRegionCheck(symbol, event):
     elif(deviceName in "WBZ450"):
         minBoundaries  = -16
     elif(deviceName in pic32cx_bz2_hpa_family):
+        minBoundaries  = -26
+    elif (deviceName in pic32cx_bz6_family):    #Srinath 
+        # added for BZ6
         minBoundaries  = -26
     customGainValue1=customAntennaGain.getValue()
     TxMinPwr =  minBoundaries + customGainValue1
@@ -2437,6 +2701,15 @@ def powerRegionCheckFCC(symbol, event):
         KoreamValue=Database.getSymbolValue("pic32cx_bz3_devsupport", "KOREA_REGION")
         ChinamValue=Database.getSymbolValue("pic32cx_bz3_devsupport", "CHINA_REGION")
         TaiwanmValue=Database.getSymbolValue("pic32cx_bz3_devsupport", "TAIWAN_REGION")
+    elif (deviceName in pic32cx_bz6_family):
+        ETSImValue=Database.getSymbolValue("pic32cx_bz6_devsupport", "ETSI_REGION")
+        FCCmValue=Database.getSymbolValue("pic32cx_bz6_devsupport", "FCC_REGION")
+        JapanmValue=Database.getSymbolValue("pic32cx_bz6_devsupport", "JAPAN_REGION")
+        KoreamValue=Database.getSymbolValue("pic32cx_bz6_devsupport", "KOREA_REGION")
+        ChinamValue=Database.getSymbolValue("pic32cx_bz6_devsupport", "CHINA_REGION")
+        TaiwanmValue=Database.getSymbolValue("pic32cx_bz6_devsupport", "TAIWAN_REGION")
+
+
     if ((ETSImValue == True) or (FCCmValue == True) or (JapanmValue== True) or (KoreamValue == True) or (ChinamValue == True) or (TaiwanmValue == True)):  
         symbol.setVisible(True)
     else:
@@ -2912,6 +3185,29 @@ def setIncPath(component, configName, incPathEntry):
 
 #####################################################################################################
 #####################################################################################################
+def dependenciesInitializationCall(symbol, event):
+  if (deviceName in pic32cx_bz2_family):
+    if ((event["value"] == True)):
+        try:
+            a = Database.getComponentByID("lib_crypto")
+            b = a.getSymbolByID("include_filename")
+            b.setEnabled(False)
+            b = a.getSymbolByID("src_filename")
+            b.setEnabled(False)
+            print("Disabling crypto.h and crypto.c from crypto")
+        except Exception as e:
+            print("An exception occurred while disabling crypto.h and crypto.c from crypto ",e )
+
+        if (deviceName in pic32cx_bz2_family):
+            activeComponents = Database.getActiveComponentIDs()
+            requiredComponents = ['rtc', 'sys_time']
+            for r in requiredComponents:
+                if r not in activeComponents:
+                    print("require component '{}' - activating it".format(r))
+                    res = Database.activateComponents([r])
+        result = Database.connectDependencies([['lib_wolfcrypt', 'LIB_WOLFCRYPT_Dependency', 'sys_time', 'sys_time']])
+        result = Database.connectDependencies([['sys_time', 'sys_time_TMR_dependency', 'rtc', 'RTC_TMR']])
+
 def eicDeepSleepConfig():
     try:
         component = Database.getComponentByID("eic")
@@ -2928,6 +3224,12 @@ def eicDeepSleepConfig():
             #In the form of keyValueSymbolID to select and the Key to set
             selectKeyValueSymbols = [ ("EIC_CONFIG_SENSE_1", "BOTH"), ("EIC_ASYNCH_1","ASYNC"),]
 
+        if (deviceName in pic32cx_bz6_family):
+        # added for BZ6
+            enableBooleanSymbols = ["EIC_CHAN_1", "EIC_INT_1", "EIC_EXTINTEO_1", "EIC_CONFIG_FILTEN_1"]
+            #The boolean symbols (tick boxes) to enable in the EIC configuration menu
+            #In the form of keyValueSymbolID to select and the Key to set
+            selectKeyValueSymbols = [ ("EIC_CONFIG_SENSE_1", "BOTH"), ("EIC_ASYNCH_1","ASYNC"),]
         for booleanSymbolID in enableBooleanSymbols:
             booleanSymbol = component.getSymbolByID(booleanSymbolID)
             result = booleanSymbol.setValue(True) 
@@ -2945,16 +3247,21 @@ def zigbeeDevTypeEventDeepSleepConfigCheck(symbol, event):
         if( deviceName in pic32cx_bz2_family):
            Database.sendMessage("pic32cx_bz2_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz2_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
            Database.sendMessage("pic32cx_bz2_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz2_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
-        else:
+        elif( deviceName in pic32cx_bz3_family):
             Database.sendMessage("pic32cx_bz3_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz3_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
             Database.sendMessage("pic32cx_bz3_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz3_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
+        elif (deviceName in pic32cx_bz6_family):
+            #added for BZ6
+            Database.sendMessage("pic32cx_bz6_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz6_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
+            Database.sendMessage("pic32cx_bz6_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz6_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
             
 
         
         symIDListS = Database.getComponentByID('rtc')
-        DeepAyDeepSleepA = symIDListS.getSymbolByID('RTC_SYS_INIT')
-        DeepAyDeepSleepA.setEnabled(False)   
-        print("Disabling RTC SYS")
+        if symIDListS is not None:
+            DeepAyDeepSleepA = symIDListS.getSymbolByID('RTC_SYS_INIT')
+            DeepAyDeepSleepA.setEnabled(False)   
+            print("Disabling RTC SYS")
     else:
 
         symbol.setValue(False)
@@ -2963,20 +3270,42 @@ def zigbeeDevTypeEventDeepSleepConfigCheck(symbol, event):
         if( deviceName in pic32cx_bz2_family):
             Database.sendMessage("pic32cx_bz2_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz2_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
             Database.sendMessage("pic32cx_bz2_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz2_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
-            
-
-        else:
+        elif( deviceName in pic32cx_bz3_family):
             Database.sendMessage("pic32cx_bz3_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz3_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
             Database.sendMessage("pic32cx_bz3_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz3_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
-            
-        
+        elif( deviceName in pic32cx_bz6_family):
+            Database.sendMessage("pic32cx_bz6_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz6_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
+            Database.sendMessage("pic32cx_bz6_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz6_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
+                   
         symIDListS = Database.getComponentByID('rtc')
-        DeepAyDeepSleepA = symIDListS.getSymbolByID('RTC_SYS_INIT')
-        DeepAyDeepSleepA.setEnabled(True)
-        print("Enabling RTC SYS")
+        if symIDListS is not None:
+            DeepAyDeepSleepA = symIDListS.getSymbolByID('RTC_SYS_INIT')
+            DeepAyDeepSleepA.setEnabled(True)
+            print("Enabling RTC SYS")
         
 
-        
+def tcSwapoutConfigCheck(symbol, event):
+    if ((event["value"] == True)):
+        tcSwapoutHeaderFile.setEnabled(True)
+        tcSwapoutSourceFile.setEnabled(True)
+    else:
+        tcSwapoutHeaderFile.setEnabled(False)
+        tcSwapoutSourceFile.setEnabled(False)
+
+
+def CustomDevTypeEventDeepSleepConfigCheck(symbol, event):
+    if (event["value"] == 2):
+        symbol.setVisible(False)
+        deviceDeepSleepEnabled.setVisible(True)
+        deviceDeepSleepEnabled.setValue(True)
+        ResetTOFnEnabling.setVisible(True)        
+        sleepSupportedDevice.setValue(True)        
+    else:
+        symbol.setVisible(False)
+        deviceDeepSleepEnabled.setVisible(False)
+        deviceDeepSleepEnabled.setValue(False)
+        ResetTOFnEnabling.setVisible(False) 
+        sleepSupportedDevice.setValue(False)
 
 def CustomDevTypeEventDeepSleepConfigCheck(symbol, event):
     if (event["value"] == 2):
@@ -3529,8 +3858,9 @@ def onAttachmentConnected(source, target):
         commsnzdoconsolecommandEnable.setValue(True)
         #appConfigZloExtraClusters.setValue(True)
         #appConfigZloClustersEnhancements.setValue(True)
-        appConfigCertificationExtension.setValue(True)
-        Database.setSymbolValue("drv_usart", "DRV_USART_COMMON_MODE", "Asynchronous")
+        appConfigCertificationExtension.setValue(True)        
+        Database.clearSymbolValue("drv_usart", "DRV_USART_COMMON_MODE")
+        Database.sendMessage("drv_usart", "DRV_USART_OPERATING_MODE_CONFIG", {"mode": "Asynchronous" ,"isReadOnly" : True ,"isLocked":True})
         Database.sendMessage("pic32cx_bz2_devsupport", "CONSOLE_ENABLE", {"isEnabled":True})
         print("setting ENABLE CONSOLE in application Configuration as True Since DRV_USART is connected")
     elif (connectID == "Zigbee_WolfCrypt_Dependency"):

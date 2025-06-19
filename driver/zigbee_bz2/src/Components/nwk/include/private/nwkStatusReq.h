@@ -58,8 +58,9 @@
 /** Size of NWK status command payload:
  * - command id - 1 octet
  * - status code - 1 octet
- * - destination address - 2 octet */
-#define NWK_STATUS_CMD_PAYLOAD_SIZE 4U
+ * - destination address - 2 octets */
+#define NWK_STATUS_CMD_PAYLOAD_SIZE 4U  /* The TLVs are not taken into account in this payload size. */
+
 /** Constant parameters of network status transmission. */
 #define NWK_UNICAST_STATUS_TX_PARAMETERS \
   {NWK_TX_DELAY_UNICAST_COMMAND, nwkPrepareNetworkStatusTx,\

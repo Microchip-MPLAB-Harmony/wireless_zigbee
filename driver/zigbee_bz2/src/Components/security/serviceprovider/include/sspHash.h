@@ -93,8 +93,7 @@ typedef struct
   // Confirm handler pointer
   void (*SSP_KeyedHashMacConf)(SSP_KeyedHashMacConf_t *conf);
 
-  SSP_KeyedHashMacConf_t confirm;
-
+  SSP_KeyedHashMacConf_t confirm; 
 } SSP_KeyedHashMacReq_t;
 
 

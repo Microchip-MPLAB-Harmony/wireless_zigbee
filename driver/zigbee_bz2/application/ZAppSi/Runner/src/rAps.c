@@ -384,6 +384,12 @@ void rApsDataRequestProcess(ZS_CommandBuffer_t *commandBuffer)
   //radius
   req->radius = *ptr;
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  ptr++;
+  SYS_BYTE_MEMCPY(&req->nwkBroadcastAddress, ptr, sizeof (uint16_t));
+  ptr += sizeof (uint16_t);
+#endif
+  
   APS_DataReq(req);
 
 }

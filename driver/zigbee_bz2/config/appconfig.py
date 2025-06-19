@@ -44,8 +44,10 @@ def appChannelTypeCheckMask(symbol, event):
 def zigbeeDevResetToFN(symbol, event):
     if( deviceName in pic32cx_bz2_family):
         wbzSymbols = Database.getComponentByID('pic32cx_bz2_devsupport')
-    else:
+    elif(deviceName in pic32cx_bz3_family):
         wbzSymbols = Database.getComponentByID('pic32cx_bz3_devsupport')
+    elif( deviceName in pic32cx_bz6_family):
+        wbzSymbols = Database.getComponentByID('pic32cx_bz6_devsupport')
         
     resetToFNSymbol = wbzSymbols.getSymbolByID('ENABLE_RESET_TO_FN')
     if((event["value"] == True)):

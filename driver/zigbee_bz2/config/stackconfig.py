@@ -31,6 +31,32 @@ def customDeviceTypeCheckForBindingTable():
     else:
         return(14)
 
+
+def zigbeeR23CheckboxCallback(symbol, event):
+    revisionSuffix = ''
+    if(enableZigbeeR23.getValue()):
+        revisionSuffix = '_r23'
+
+    # Picking the corresponding Makerules based on Zigbee Revision
+    if (deviceName in pic32cx_bz2_family):
+        zigbeeMakeRulesFile.setSourcePath("/driver/zigbee" + suffix + "/templates/Zigbee_AllDevice_Makerules" + revisionSuffix + ".h.ftl")
+    zigbeeMakeRulesFile.setOutputName("Zigbee_AllDevice_Makerules.h")
+
+    # Picking the corresponding lib.a based on Zigbee Revision
+    if (deviceName in pic32cx_bz2_family):
+        zigbeeLibFile.setSourcePath("/driver/zigbee" + suffix + "/src/lib/Zigbee_AllDevice_bz2" + revisionSuffix + "_Lib.a")
+    zigbeeLibFile.setOutputName("zigbee_alldevice_lib.a")
+
+
+def joinProcedureDropdownCallback(symbol, event):
+    if (enableZigbeeR23.getValue() == False):
+        symbol.setVisible(False)
+        symbol.setEnabled(False)
+    else:
+        symbol.setVisible(True)
+        symbol.setEnabled(True)
+
+
 pic32cx_bz2_family = {'PIC32CX1012BZ25048',
                       'PIC32CX1012BZ25032',
                       'PIC32CX1012BZ24032',
@@ -45,8 +71,46 @@ pic32cx_bz3_family = {'PIC32CX5109BZ31048',
                       'WBZ350',
                       }
 
+
+pic32cx_bz6_family = {  'PIC32CX2051BZ62132',
+                        'PIC32CX2051BZ62064',
+                        'PIC32CX2051BZ66048',
+                        'WBZ653',
+                        'WBZ652',
+                        'WBZ651',
+                        'PIC32WM_BZ6204',
+                        'PIC32WM_BZ6203',
+                        'PIC32WM_BZ6602',                        
+                        'PIC32CX2051BZ62132_FPGA',
+                    }
+
 global deviceName
 deviceName = Variables.get("__PROCESSOR")
+
+# Check box - Enable Zigbee Revision 23
+global enableZigbeeR23
+enableZigbeeR23 = drvZigbeeComponent.createBooleanSymbol("ENABLE_ZIGBEE_REV_23", stackConfigMenu)
+enableZigbeeR23.setLabel("Enable Zigbee Revision 23")
+enableZigbeeR23.setEnabled(deviceName in pic32cx_bz2_family) # This checkbox can only be enabled in bz2 devices
+enableZigbeeR23.setVisible(deviceName in pic32cx_bz2_family)
+enableZigbeeR23.setDefaultValue(False)
+enableZigbeeR23.setDescription("ENABLE_ZIGBEE_REV_23 - check the box to enable")
+enableZigbeeR23.setDependencies(zigbeeR23CheckboxCallback, ["ENABLE_ZIGBEE_REV_23"])
+
+# Dropdown - Join Procedure (Visible only if Zigbee R23 is enabled)
+global joinProcedureSelect
+joinProcedureSelect = drvZigbeeComponent.createKeyValueSetSymbol("CS_R23_JOIN_FLAG", enableZigbeeR23)
+joinProcedureSelect.setLabel("Join procedure")
+joinProcedureSelect.addKey("R23_JOIN_DLK_OFFNWK", "1", "R23 Off-Nwk Join")
+joinProcedureSelect.addKey("R23_JOIN_DLK_ONNWK",  "2", "R23 On-Nwk Join")
+joinProcedureSelect.addKey("R22_JOIN_TCLK",       "0", "R22 TCLK Join")
+joinProcedureSelect.setDefaultValue(0) # R23 OFF NWK
+joinProcedureSelect.setOutputMode("Value")
+joinProcedureSelect.setDisplayMode("Description")
+joinProcedureSelect.setDescription("Select the network joining procedure")
+joinProcedureSelect.setVisible(False)
+joinProcedureSelect.setEnabled(False)
+joinProcedureSelect.setDependencies(joinProcedureDropdownCallback, ["ENABLE_ZIGBEE_REV_23", "CS_R23_JOIN_FLAG"])
 
 # Stack Device Type
 global stackConfigDeviceType

@@ -115,6 +115,8 @@
   (abs((a) - (b)) < (threshold) ? ((a) > (b) ? 1 : 0) : ((a) > (b) ? 0 : 1))
 
 #define CEIL(a, b) (((a) - 1U)/(b) + 1U)
+
+#define POLYNOMIAL                              (0x8408)
 /*************************************************************************
                         Inline functions' section.
  ************************************************************************/
@@ -252,6 +254,48 @@ INLINE void memcpy4ByteAligned(void* outbuf, void* inbuf, uint16_t length)
       src++;
       dst++;
   }
+}
+/**************************************************************************//**
+\brief Calculates CRC using CRC16CCITT procedure
+ This API calculates the CRC for the install code
+                                    16  12  5
+    The CCITT CRC 16 polynomial is X + X + X + 1.
+    In binary, this is the bit pattern 1 0001 0000 0010 0001, and in hex it
+    is 0x11021.A 17 bit register is simulated by testing the MSB before shifting
+    the data, which affords us the luxury of specifiy the polynomial as a
+    16 bit value, 0x1021. Due to the way in which we process the CRC, the bits
+    of the polynomial are stored in reverse order. This makes the polynomial 0x8408.
+
+\param[in] dataptr - pointer to the data used for crc calculation
+\param[in] length - length of the data for crc calculation
+******************************************************************************/
+INLINE uint16_t SYS_CalculateCRC16CCITT(uint8_t* dataptr, uint16_t length)
+{
+  uint8_t i;
+  uint16_t data;
+  uint16_t crc;
+
+  /* Initialize crc (-1) */
+  crc = 0xffff;
+
+  if (length == 0)
+    return (~crc);
+
+  do
+  {
+    for (i = 0, data = (uint16_t)0xff & *dataptr++; i < 8;
+                  i++, data >>= 1)
+    {
+      if ((crc & 0x0001) ^ (data & 0x0001))
+        crc = (crc >> 1) ^ POLYNOMIAL;
+      else
+        crc >>= 1;
+    }
+  } while (--length);
+
+  crc = ~crc;
+
+  return (crc);
 }
 
 /*******************************************************************//**

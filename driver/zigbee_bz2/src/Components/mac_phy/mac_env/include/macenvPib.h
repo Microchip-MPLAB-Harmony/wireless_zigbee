@@ -304,6 +304,18 @@ INLINE bool macenvGetAssociationPermit(void)
 {
   return csPIB.macAttr.associationPermit;
 }
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+  \brief Gets max frame transmission time attribute value.
+
+  \return Max frame transmission time attribute value.
+ ******************************************************************************/
+INLINE bool MAC_GetAssociationPermit(void)
+{
+  return macenvGetAssociationPermit();
+}
+#endif
 #endif
 
 /**************************************************************************//**

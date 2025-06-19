@@ -50,6 +50,21 @@
 #include <apsmeConfirmKey.h>
 
 /******************************************************************************
+                               Define(s) section
+ ******************************************************************************/
+#ifdef _ZIGBEE_REV_23_SUPPORT_ 
+/* Relay auxiliary header consists of:
+ * - security control field (1 octet),
+ * - frame counter field (4 octets),
+ * - source address (8 octets) */
+#define APS_RELAY_AUXILIARY_HEADER_LEN  13
+
+/* Tunneled APS MIC in a relay command*/
+#define APS_RELAY_TUNNELED_MIC_LEN  4
+
+#endif //_ZIGBEE_REV_23_SUPPORT_
+  
+/******************************************************************************
                                  Types section
  ******************************************************************************/
 BEGIN_PACK

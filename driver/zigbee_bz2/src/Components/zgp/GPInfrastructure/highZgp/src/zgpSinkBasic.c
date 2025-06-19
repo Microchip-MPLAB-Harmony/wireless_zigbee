@@ -659,6 +659,22 @@ static void processDecommissioningCmd(ZGP_LowDataInd_t *ind, ZGP_GpdId_t *gpdId)
       //to send GpPairingConfig only for PreCommissioned Groupcast
       if (PRECOMMISSIONED_GROUPCAST == sinkEntry->options.communicationMode)
       {
+        for (uint8_t i = 0; i < ZGP_SINK_GROUP_LIST_SIZE; i++)
+        {
+          if (ZGP_NWK_ADDRESS_GROUP_INIT != sinkEntry->tableGenericInfo.zgpSinkGrouplist[i].sinkGroup)
+          {
+            if (NWK_IsGroupMember(sinkEntry->tableGenericInfo.zgpSinkGrouplist[i].sinkGroup, GREEN_POWER_ENDPOINT))
+            {
+              if (NWK_RemoveGroup(sinkEntry->tableGenericInfo.zgpSinkGrouplist[i].sinkGroup, GREEN_POWER_ENDPOINT))
+              {
+               if(sinkEntry->tableGenericInfo.zgpSinkGrouplist[i].sinkGroup == zgpSinkGroupEntry.sinkGroup)
+                 zgpSinkGroupEntry.sinkGroup = ZGP_NWK_ADDRESS_GROUP_INIT;
+               sinkEntry->tableGenericInfo.zgpSinkGrouplist[i].sinkGroup = ZGP_NWK_ADDRESS_GROUP_INIT;
+              // To be decided on handling this negative scenario
+              }
+             }
+          }
+        }
         ZGP_PairingConfigCmdInfo_t pairingConfigCmdInfo;
         ZGP_EndpointInfo_t endPointInfo;
         ZGP_GpdAppInfo_t *commReqAppInfo = NULL;

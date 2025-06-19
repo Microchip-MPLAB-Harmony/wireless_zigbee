@@ -132,6 +132,9 @@ SIB_t csSIB;
 
 bool certificationFlag = CS_CERTIFICATION_FLAG;
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+uint8_t r23JoinFlag = CS_R23_JOIN_FLAG;
+#endif
 /* To store the deep sleep wakeup source. */
 uint8_t deviceDeepSleepWakeupSrc = CS_DEVICE_DEEP_SLEEP_WAKEUP_SRC;
 
@@ -175,7 +178,7 @@ NIB_t PROGMEM_DECLARE(defaultNIB) =
 #ifdef _CHILD_MANAGEMENT_
   /** For an RFD, this records the information received in an End Device
    * Timeout Response command indicating the parent information.
-   * For an FFD, this records the device‚??s local capabilities. */
+   * For an FFD, this records the device√¢??s local capabilities. */
   .parentInformation =  CS_DEFAULT_PARENT_INFORMATION,
   /** It indicates the default timeout in minutes for any end device
    * that does not negotiate a different timeout value. */
@@ -185,6 +188,11 @@ NIB_t PROGMEM_DECLARE(defaultNIB) =
   .maxEndDevices = CS_MAX_CHILDREN_AMOUNT - CS_MAX_CHILDREN_ROUTER_AMOUNT,
 
   //.csApsSecurityTimeoutPeriod = CS_APS_SECURITY_TIMEOUT_PERIOD
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  .nwkGoodParentLQA = NWK_GOOD_PARENT_LQA_DEFAULT_VAL,
+  .nwkPerformExtraMacDataPollRetries = CS_NWK_EXTRA_MAC_POLL_RETRIES,
+  .nwkHubConnectivity = CS_NWK_HUB_CONNECTIVITY,
+#endif
 };
 
 ZIB_t PROGMEM_DECLARE(defaultZIB) =
@@ -196,6 +204,14 @@ ZIB_t PROGMEM_DECLARE(defaultZIB) =
 
 AIB_t PROGMEM_DECLARE(defaultAIB) =
 {
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  .supportedPreSharedSecrets  = CS_SUPPORTED_PRE_SHARED_SECRETS,        /* Supported Pre-shared Secrets Bitmasks. See ZigBee spec r23, Table I-4. */
+  .suppKeyNegotiationProtocol = CS_SUPPORTED_KEY_NEGOTIATION_PROTOCOL,  /* Support Key Negotiation Protocols Indicator Bitmasks. See ZigBee spec r23, Table I-5. */
+  .apsMaxSizeASDU             = APS_MAX_ASDU_SIZE,                      /* Maximum Incoming Transfer Unit */
+  .apsJoinerTLVsUnfragmentedMaxSize = CS_APS_JOINER_TLVS_UNFRAGMENTED_MAX_SIZE, /* Unfragmented Joiner TLV maximum size */
+  .isJoinedInRev23Network = false,
+  .performDeviceInterviewProcedure = CS_APS_PERFORM_DEVICE_INTERVIEW,
+#endif
   .nonMemberRadius = APS_AIB_NONMEMBER_RADIUS_DEFAULT_VALUE, /* See ZigBee spec r19, Table 2.24. */
   .maxFrameRetries = CS_APS_MAX_FRAME_RETRIES,
 #ifdef _APS_FRAGMENTATION_
@@ -212,6 +228,11 @@ AIB_t PROGMEM_DECLARE(defaultAIB) =
   .tcSecurityPolicy.flags.allowRejoins = CS_TC_PERMISSIONS_ALLOWREJOINS,
 #endif
   .tcSecurityPolicy.flags.allowInstallCodes = CS_TC_PERMISSIONS_ALLOWINSTALLCODES,
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  .tcSecurityPolicy.requireInstallCodesOrPresetPassphrase = CS_TC_PERMISSIONS_REQUIREINSTALLCODESORPRESETPASSPHRASE,
+  .apsChallengePeriodTimeoutSec = CS_APS_CHALLENGE_PERIOD_TIMEOUT_SEC,
+  .apsChallengePeriodRemainingSec = 0,
+#endif
 #endif //#if defined _TRUST_CENTRE_
   .securityPolicy = {0x00, 0x07, 0x07, 0x07,
 #ifdef _LIGHT_LINK_PROFILE_
@@ -315,6 +336,9 @@ SIB_t PROGMEM_DECLARE(defaultSIB) =
 uint8_t defaultKey[SECURITY_KEY_SIZE] = CS_NETWORK_KEY;
 uint8_t distributedSecurityGlobalLinkKey[SECURITY_KEY_SIZE] = CS_DEFAULT_DISTRIBUTED_SECURITY_LINK_KEY;
 uint8_t touchlinkPreconfiguredLinkKey[SECURITY_KEY_SIZE] = CS_DEFAULT_TOUCHLINK_PRECONFIGURED_LINK_KEY;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+uint8_t variableLengthPasscode[SECURITY_KEY_SIZE] = CS_DEFAULT_VARIABLE_LENGTH_PASSCODE;
+#endif //#ifdef _ZIGBEE_REV_23_SUPPORT_
 #endif /* _SECURITY_ */
 
 CS_ReadOnlyItems_t PROGMEM_DECLARE(csReadOnlyItems) =
@@ -340,6 +364,9 @@ CS_ReadOnlyItems_t PROGMEM_DECLARE(csReadOnlyItems) =
   .csJoinIndObjAmount = CS_JOIN_IND_OBJ_AMOUNT,
   .csRouteTableSize = CS_ROUTE_TABLE_SIZE,
   .csAddressMapTableSize = CS_ADDRESS_MAP_TABLE_SIZE,
+#ifdef _ZIGBEE_REV_23_SUPPORT_  
+  .csNwkDiscoveryTableSize = CS_NWK_DISCOVERY_TABLE_SIZE,
+#endif //#ifdef _ZIGBEE_REV_23_SUPPORT_  
   .csRouteDiscoveryTableSize = CS_ROUTE_DISCOVERY_TABLE_SIZE,
   .csNwkBttSize = CS_NWK_BTT_SIZE,
   .csNwkMaxPermitJoinPeriodLogic = (NWK_MaxPermitJoiningPeriod_t)CS_NWK_MAX_PERMIT_JOIN_PERIOD_LOGIC,
@@ -361,6 +388,9 @@ CS_ReadOnlyItems_t PROGMEM_DECLARE(csReadOnlyItems) =
 
   /* APS parameters */
   .csApsDataReqBuffersAmount = CS_APS_DATA_REQ_BUFFERS_AMOUNT,
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  .csApsCmdReqBuffersAmount = CS_APS_CMD_REQ_BUFFERS_AMOUNT,
+#endif
   .csApsAckFrameBuffesAmount = CS_APS_ACK_FRAME_BUFFERS_AMOUNT,
   .csDuplicateRejectionTableSize = CS_DUPLICATE_REJECTION_TABLE_SIZE,
 #ifdef _DUPLICATE_REJECTION_TABLE_BIT_MASK_ENABLE_
@@ -375,6 +405,9 @@ CS_ReadOnlyItems_t PROGMEM_DECLARE(csReadOnlyItems) =
   .csApsBlockSize = CS_APS_BLOCK_SIZE,
   .csApsTxBlockSize = CS_APS_TX_BLOCK_SIZE,
   .csApsRxBlockSize = CS_APS_RX_BLOCK_SIZE,
+#ifdef _ZIGBEE_REV_23_SUPPORT_  
+  .csApsDataFragmentation = APS_DATA_FRAGMENTATION,
+#endif //#ifdef _ZIGBEE_REV_23_SUPPORT_  
 #endif /* _APS_FRAGMENTATION_ */
 
 #ifdef _ZCL_SUPPORT_
@@ -422,8 +455,13 @@ CS_ReadOnlyItems_t PROGMEM_DECLARE(csReadOnlyItems) =
 #ifdef BDB_SUPPORT
   .joinInfoEntriesAmount = CS_BDB_NODE_JOIN_INFO_ENTRIES_AMOUNT,            //BDB
   .distributedNetworkAddress = CS_DISTRIBUTED_NETWORK_ADDRESS,              //BDB
-  .touchlinkSupport = CS_TOUCHLINK_SUPPORT_FLAG                             //BDB
+  .touchlinkSupport = CS_TOUCHLINK_SUPPORT_FLAG,                            //BDB
 #endif   
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/* Spec: R23, Sec: 2.2.7.2.2 - ApsFragmentationCacheTable size will be the same
+  as that of the ApsDeviceKeyPairEntriesTable. */
+  .csApsFragmentationCacheAmount = CS_APS_KEY_PAIR_DESCRIPTORS_AMOUNT
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
 #endif /* !_MAC2_*/
 };
 
@@ -439,9 +477,16 @@ CS_ReadOnlyItems_t PROGMEM_DECLARE(csReadOnlyItems) =
 #define DUMMY_FLASH_PARAMETER(label, id) [id] = {{NULL}, 0},
 #define MEMORY_REGION(label, id, addr) [id] = {{(const void FLASH_PTR*)&(addr)}, 0},
 #define DUMMY_MEMORY_REGION(label, id) [id] = {{NULL}, 0},
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#define Max_csVarTable_csVarItems            156
+#define Max_csConstTable_csConstItems        60
+#define Max_csMemTable_csMemItems            41
+#else
 #define Max_csVarTable_csVarItems            148
 #define Max_csConstTable_csConstItems        56
 #define Max_csMemTable_csMemItems            38
+#endif
+
 CS_MemoryItem_t PROGMEM_DECLARE(csVarItems[Max_csVarTable_csVarItems]) =
 {
   #include "configserver/include/private/csVarTable.h"

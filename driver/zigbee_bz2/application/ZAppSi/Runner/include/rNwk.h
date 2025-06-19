@@ -64,6 +64,9 @@ void rNwkGetActiveKeySeqNum(ZS_CommandBuffer_t *commandBuffer);
 void rNwkSetInSecurityCounterRequestProcess(ZS_CommandBuffer_t *commandBuffer);
 void rNwkGetInSecurityCounterRequestProcess(ZS_CommandBuffer_t *commandBuffer);
 #endif /* _NWK_IN_FRAME_COUNTERS_ */
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+void rNwkCommandEncryptRequest(ZS_CommandBuffer_t *commandBuffer);
+#endif
 #if defined (_LINK_SECURITY_) && defined (_TRUST_CENTRE_)
 void rTCPolicySetRequestProcess(ZS_CommandBuffer_t *commandBuffer);
 #endif //#if defined (_LINK_SECURITY_) && defined (_TRUST_CENTRE_)

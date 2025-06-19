@@ -461,46 +461,6 @@ void ZS_ZdpActiveEPConf(ZS_ZdpActiveEPConf_t* conf)
   // Insert your code here
 }
 /***************************************************************************//**
-\brief Callback on ZS_ZdpComplexDescReq with request status.
-
-Notify of
-the complex descriptor of the remote device indicated in the original
-Complex_Desc_req command or notified of an error. If the Complex_Desc_rsp
-command is received with a Status of SUCCESS, the ComplexDescriptor field
-shall contain the requested complex descriptor. Otherwise, the Status field
-indicates the error and the ComplexDescriptor field shall not be included.
-ZigBee Specification r17, 2.4.4.1.8 Complex_Desc_rsp
-
-\param[in] conf - Response status.
-See description of ZS_ZdpComplexDescConf_t for details.
-
-\return
-*******************************************************************************/
-void ZS_ZdpComplexDescConf(ZS_ZdpComplexDescConf_t* conf)
-{
-  // Insert your code here
-}
-/***************************************************************************//**
-\brief Callback on ZS_ZdpUserDescReq with request status.
-
-Notify of the
-user descriptor of the remote device indicated in the original User_Desc_req
-command or notified of an error. If the User_Desc_rsp command is received with
-a Status of SUCCESS, the UserDescriptor field shall contain the requested user
-descriptor. Otherwise, the Status field indicates the error and the UserDescriptor
-field shall not be included.
-ZigBee Specification r17, 2.4.4.1.9 User_Desc_rsp
-
-\param[in] conf - Response status.
-See description of ZS_ZdpUserDescConf_t for details.
-
-\return
-*******************************************************************************/
-void ZS_ZdpUserDescConf(ZS_ZdpUserDescConf_t* conf)
-{
-  // Insert your code here
-}
-/***************************************************************************//**
 \brief Callback on ZS_ZdpEndDeviceAnnceReq with request status.
 
 The local device is notified of the results of its attempt to make Annce request.
@@ -527,22 +487,6 @@ See description of ZS_ZdpLqiConf_t for details.
 \return
 *******************************************************************************/
 void ZS_ZdpLqiConf(ZS_ZdpLqiConf_t* conf)
-{
-  // Insert your code here
-}
-/***************************************************************************//**
-\brief Callback on ZS_ZdpUserDescSetReq with request status.
-
-The local device is notified of the results of its attempt to configure the user
-descriptor on a remote device.
-ZigBee Specification r17, 2.4.4.1.11 User_Desc_conf
-
-\param[in] conf - Response status.
-See description of ZS_ZdpUserDescSetConf_t for details.
-
-\return
-*******************************************************************************/
-void ZS_ZdpUserDescSetConf(ZS_ZdpUserDescSetConf_t* conf)
 {
   // Insert your code here
 }

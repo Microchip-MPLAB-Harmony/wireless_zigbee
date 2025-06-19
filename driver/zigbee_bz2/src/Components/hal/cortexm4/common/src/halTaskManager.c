@@ -70,11 +70,16 @@
 #define HAL_SLEEP_HANDLER             halPowerOff
 #define HAL_ASYNC_TIMER_HANDLER       halAsyncTimerHandler
 #define HAL_SLEEP_TIME_SYNC_HANDLER   halSleepSystemTimeSynchronize
-
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#define HAL_CURVE25519_HANDLER        halCurve25519SmRequestHandler
+#define HAL_SHA256_HANDLER            halSha256SmRequestHandler
+#endif //_ZIGBEE_REV_23_SUPPORT_
 /******************************************************************************
                    Prototypes section
 *****************************************************************************/
 
+void halCurve25519SmRequestHandler (void);
+void halSha256SmRequestHandler (void);
 static void halEmptyHandler(void);
 
 
@@ -87,7 +92,11 @@ uint16_t halAcceptedTasks = HAL_ALL_TASKS_ACCEPTED_MASK; // HAL USART tasks' bit
 static HalTask_t PROGMEM_DECLARE(halHandlers[HAL_MAX_TASKS_ID]) =
 {
   HAL_APP_TIMER_HANDLER,
-  HAL_HW_AES_HANDLER
+  HAL_HW_AES_HANDLER,
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  HAL_CURVE25519_HANDLER,
+  HAL_SHA256_HANDLER
+#endif //_ZIGBEE_REV_23_SUPPORT_
 };
 
 /******************************************************************************

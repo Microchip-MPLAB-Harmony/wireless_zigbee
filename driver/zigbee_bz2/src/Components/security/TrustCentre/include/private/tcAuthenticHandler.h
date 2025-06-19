@@ -88,6 +88,17 @@ void tcUpdateDeviceIndToAuthenticHandler(APS_UpdateDeviceInd_t *indParam, const 
 ******************************************************************************/
 void tcResetAuthenticHandler(void);
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+\brief Send the Transport Network Key request
+
+\param[in] deviceAddress - Device address
+\param[in] parentAddress - parent address
+\return None
+******************************************************************************/
+void tcSendTransportNwkKeyReq(ExtAddr_t deviceAddress, ExtAddr_t parentAddress);
+#endif
+
 #endif //_TCAUTHENTICHANDLERH
 
 // eof tcAuthenticHandler.h

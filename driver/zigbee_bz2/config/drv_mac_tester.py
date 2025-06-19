@@ -43,6 +43,18 @@ pic32cx_bz3_family = {'PIC32CX5109BZ31048',
                       'WBZ350',
                       }
 
+
+pic32cx_bz6_family = {  'PIC32CX2051BZ62132',
+                        'PIC32CX2051BZ62064',
+                        'PIC32CX2051BZ66048',
+                        'WBZ653',
+                        'WBZ652',
+                        'WBZ651',
+                        'PIC32WM_BZ6204',
+                        'PIC32WM_BZ6203',
+                        'PIC32WM_BZ6602',                        
+                        'PIC32CX2051BZ62132_FPGA',
+                        }
 global deviceName
 deviceName = Variables.get("__PROCESSOR")
 
@@ -60,7 +72,10 @@ def finalizeComponent(drvMacTester):
         #result = Database.connectDependencies([[drvMacTester.getID(), 'TCC2_PWM_Zigbee', 'tcc2', 'TCC2_PWM']])
         res = Database.activateComponents(["tc0","pic32cx_bz3_devsupport"])
         result = Database.connectDependencies([[drvMacTester.getID(), 'TC0_TMR_Zigbee', 'tc0', 'TC0_TMR']])
-    
+    elif (deviceName in pic32cx_bz6_family):
+        res = Database.activateComponents(["tc0","pic32cx_bz6_devsupport"])
+        result = Database.connectDependencies([[drvMacTester.getID(), 'TC0_TMR_Zigbee', 'tc0', 'TC0_TMR']])
+     
     #responsible for adding custom app.c to project path instead of the app.c from device support
     try:
         if( deviceName in pic32cx_bz2_family):
@@ -73,7 +88,12 @@ def finalizeComponent(drvMacTester):
             devicecAppFile = disableDeviceApp.getSymbolByID("DEVICE_APP_C")
             devicecAppFile.setEnabled(False)
             print("DISABLED APP FILE GENERATION FROM DEVICE SUPPORT")
-        
+        elif( deviceName in pic32cx_bz6_family):
+            disableDeviceApp = Database.getComponentByID("pic32cx_bz6_devsupport")
+            devicecAppFile = disableDeviceApp.getSymbolByID("DEVICE_APP_C")
+            devicecAppFile.setEnabled(False)
+            print("DISABLED APP FILE GENERATION FROM DEVICE SUPPORT")
+                
     except Exception as e:
         print("EXCEPTION AT DRV_MAC_TESTER.py Custom App generation at finalizeComponent(), Exception: " ,e)
     
@@ -158,6 +178,9 @@ def instantiateComponent(drvMacTester):
     if( deviceName in pic32cx_bz2_family):
         drvMacTester.setDependencyEnabled('TCC2_PWM_Zigbee', False) #If bz2, disable TCC2 by default
     elif( deviceName in pic32cx_bz3_family):
+        #drvMacTester.setDependencyEnabled('TC0_TMR_Zigbee', False)
+        drvMacTester.setDependencyEnabled('TCC2_PWM_Zigbee', False)
+    elif( deviceName in pic32cx_bz6_family):
         #drvMacTester.setDependencyEnabled('TC0_TMR_Zigbee', False)
         drvMacTester.setDependencyEnabled('TCC2_PWM_Zigbee', False)
 
@@ -263,6 +286,11 @@ def instantiateComponent(drvMacTester):
     deviceDeepSleepenabled1 = drvMacTester.createBooleanSymbol('DEVICE_DEEP_SLEEP_ENABLED', None)
     deviceDeepSleepenabled1.setVisible(False)
     deviceDeepSleepenabled1.setDefaultValue(False)
+
+    global tcSwapoutEnabled1
+    tcSwapoutEnabled1 = drvMacTester.createBooleanSymbol("TC_SWAPOUT_ENABLED", None)
+    tcSwapoutEnabled1.setVisible(False)
+    tcSwapoutEnabled1.setDefaultValue(False)
     #################################################################
     ###############  System Initialization Settings   ###############
     #################################################################
@@ -313,6 +341,7 @@ def instantiateComponent(drvMacTester):
         ['aps/include/intrpData.h',                  condAlways],
         ['aps/include/private/apsFrames.h',          condAlways],
         ['aps/include/private/apsKeyPairSet.h',      condAlways],
+        ['aps/include/apsFragmentationCache.h',      condAlways],
         ['aps/include/private/apsMemoryManager.h',   condAlways],
     ]
 
@@ -344,6 +373,7 @@ def instantiateComponent(drvMacTester):
         ['nwk/include/nlmeSetGet.h',                   condAlways],
         ['nwk/include/nwkAttributes.h',                condAlways],
         ['nwk/include/nwkProfiler.h',                  condAlways],
+        ['nwk/include/nwkDiscoveryTable.h',            condAlways],
         ['nwk/include/private/nwkAddressMap.h',               condAlways],
         ['nwk/include/private/nwkBTT.h',                      condAlways],
         ['nwk/include/private/nwkConfig.h',                   condAlways],
@@ -364,6 +394,7 @@ def instantiateComponent(drvMacTester):
         ['nwk/include/private/nwkTx.h',                       condAlways],
         ['nwk/include/private/nwkTxDelay.h',                  condAlways],
         ['nwk/include/private/nwkUpdateCommand.h',            condAlways],
+        ['nwk/include/private/nwkDiscEntry.h',                condAlways],
     ]
 
     zdrvStackZDOIncFiles = [
@@ -583,6 +614,7 @@ def instantiateComponent(drvMacTester):
         #['hal/cortexm4/pic32cx_bz2/include/hpl_aes_sync.h',          condAlways],
         #['hal/cortexm4/pic32cx_bz2/include/hri_aes_e54.h',           condAlways],
         ['hal/cortexm4/pic32cx_bz2/include/halAes.h',                condAlways],
+        ['hal/cortexm4/pic32cx_bz2/include/halCurve25519.h',         condAlways],
         # ['hal/cortexm4/pic32cx_bz2/include/Pic32cx_Miscellaneous.h', condAlways],
     ]
     
@@ -613,6 +645,7 @@ def instantiateComponent(drvMacTester):
         ['hal/cortexm4/pic32cx_bz3/include/halTrng.h',               condAlways],
         #['hal/cortexm4/pic32cx_bz3/include/hri_aes_e54.h',           condAlways],
         ['hal/cortexm4/pic32cx_bz3/include/halAes.h',                condAlways],
+        ['hal/cortexm4/pic32cx_bz3/include/halCurve25519.h',          condAlways],
         # ['hal/cortexm4/pic32cx_bz3/include/Pic32cx_Miscellaneous.h', condAlways],
     ]
 
@@ -879,6 +912,7 @@ def instantiateComponent(drvMacTester):
         #['hal/cortexm4/pic32cx_bz2/src/halSleepTimerClock.c',     condAlways],
         #['hal/cortexm4/pic32cx_bz2/src/hpl_aes.c',                condAlways],
         ['hal/cortexm4/pic32cx_bz2/src/halAes.c',                 condAlways],
+        ['hal/cortexm4/pic32cx_bz2/src/halCurve25519.c',           condAlways],
     ]
     
     zdrvStackHALCommonSrcFiles = [
@@ -902,6 +936,7 @@ def instantiateComponent(drvMacTester):
         #['hal/cortexm4/pic32cx_bz3/src/halSleepTimerClock.c',     condAlways],
         ['hal/cortexm4/pic32cx_bz3/src/halTrng.c',                condAlways],
         ['hal/cortexm4/pic32cx_bz3/src/halAes.c',                 condAlways],
+        ['hal/cortexm4/pic32cx_bz3/src/halCurve25519.c',          condAlways],
     ]
 
     zdrvStackBZ3HALCommonSrcFiles = [
@@ -1105,6 +1140,8 @@ def instantiateComponent(drvMacTester):
         preprocessorAS.setValue('PIC32CX_CHIP_SOC;_PIC32CX_;HAL_USE_FLASH_ACCESS;_MAC2_')
     elif (deviceName in pic32cx_bz3_family):
         preprocessorAS.setValue('PIC32CX_CHIP_SOC;_PIC32CX_;HAL_USE_FLASH_ACCESS;_MAC2_;PLATFORM_PIC32CXBZ3')
+    elif (deviceName in pic32cx_bz6_family):
+        preprocessorAS.setValue('PIC32CX_CHIP_SOC;_PIC32CX_;HAL_USE_FLASH_ACCESS;_MAC2_;PLATFORM_PIC32CXBZ6')
     preprocessorAS.setCategory('C32')
     preprocessorAS.setKey('preprocessor-macros')
     preprocessorAS.setAppend(True, ';')
@@ -1140,6 +1177,10 @@ def instantiateComponent(drvMacTester):
     elif (deviceName in pic32cx_bz3_family):
       macAppMakeRulesFile.setSourcePath("/driver/zigbee" + suffix + "/application//zigbee_only/WSNTester/WSNTester_configs/Mac_Common_StdzgpSec_bz3_Makerules.h")
       macAppMakeRulesFile.setOutputName("Mac_Common_StdzgpSec_bz3_Makerules.h")
+    #elif (deviceName in pic32cx_bz6_family):
+    #  macAppMakeRulesFile.setSourcePath("/driver/zigbee/application//zigbee_only/WSNTester/WSNTester_configs/Mac_Common_StdzgpSec_bz6_Makerules.h")
+    #  macAppMakeRulesFile.setOutputName("Mac_Common_StdzgpSec_bz6_Makerules.h")
+
     macAppMakeRulesFile.setDestPath("/zigbee/lib/")
     macAppMakeRulesFile.setProjectPath("config/" + configName + "/zigbee/lib/")
     macAppMakeRulesFile.setType("HEADER")
@@ -1151,6 +1192,9 @@ def instantiateComponent(drvMacTester):
       setAdditionaloptionXC32GCC1.setValue('-include"lib/Mac_Common_StdzgpSec_bz2_Makerules.h"')
     elif (deviceName in pic32cx_bz3_family):    
       setAdditionaloptionXC32GCC1.setValue('-include"lib/Mac_Common_StdzgpSec_bz3_Makerules.h"')
+    elif (deviceName in pic32cx_bz6_family):    
+      setAdditionaloptionXC32GCC1.setValue('-include"lib/Mac_Common_StdzgpSec_bz6_Makerules.h"')
+
     setAdditionaloptionXC32GCC1.setCategory('C32')
     setAdditionaloptionXC32GCC1.setKey('appendMe')
     setAdditionaloptionXC32GCC1.setEnabled(checkMacAsLib)
@@ -1164,6 +1208,10 @@ def instantiateComponent(drvMacTester):
     elif (deviceName in pic32cx_bz3_family):
       MacLibFile.setSourcePath("/driver/zigbee" + suffix + "/src/lib/Mac_Common_StdzgpSec_bz3_Lib.a")
       MacLibFile.setOutputName("Mac_Common_StdzgpSec_bz3_Lib.a")
+    #elif (deviceName in pic32cx_bz6_family):
+    #  MacLibFile.setSourcePath("/driver/zigbee/src/lib/Mac_Common_StdzgpSec_bz6_Lib.a")
+    #  MacLibFile.setOutputName("Mac_Common_StdzgpSec_bz6_Lib.a")
+
     MacLibFile.setEnabled(checkMacAsLib)
     MacLibFile.setDependencies(setEnableMACLib, ["MAC_AS_SOURCE"])
 ################################### SOURCE FILES ####################################################
@@ -1572,6 +1620,8 @@ def onAttachmentConnected(source, target):
           Database.sendMessage("pic32cx_bz2_devsupport", "CONSOLE_ENABLE", {"isEnabled":True})
         elif (deviceName in pic32cx_bz3_family):
           Database.sendMessage("pic32cx_bz3_devsupport", "CONSOLE_ENABLE", {"isEnabled":True})
+        elif (deviceName in pic32cx_bz6_family):
+          Database.sendMessage("pic32cx_bz6_devsupport", "CONSOLE_ENABLE", {"isEnabled":True})
         print("setting ENABLE CONSOLE in application Configuration as True Since DRV_USART is connected")
     elif (connectID == "Zigbee_WolfCrypt_Dependency"):
         print("drv_zigbee_lib:onAttachmentConnected configuring lib_wolfcrypt")

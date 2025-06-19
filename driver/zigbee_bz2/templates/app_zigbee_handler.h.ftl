@@ -147,6 +147,14 @@ typedef enum
     EVENT_IEEE_ADDRESS_RESPONSE,
     /* Simple Descriptor Response */
     EVENT_SIMPLE_DESCRIPTOR_RESPONSE,
+    /* Security get config Response */
+    EVENT_SECURITY_GET_CONFIG_RESPONSE,
+    /* Security set config Response */
+    EVENT_SECURITY_SET_CONFIG_RESPONSE,
+    /* Clear All Bindings Response */
+    EVENT_CLEAR_ALL_BINDINGS_RESPONSE,
+    /* Security Decommssioning Response */
+    EVENT_SECURITY_DECOMMISSIONING_RESPONSE,
     /* Match Descriptor Response */
     EVENT_MATCH_DESCRIPTOR_RESPONSE,
     /* Active Endpoint Response */
@@ -163,7 +171,8 @@ typedef enum
     EVENT_BIND_RESPONSE,
     /* Unbind reponse */
     EVENT_UNBIND_RESPONSE,
-
+    /* Survey Beacon reponse */
+    EVENT_SURVEY_BEACON_RESPONSE,
     /* Events in the Cluster Group Event */
 <#if ((ONOFF_CLUSTER_ENABLE == true) && (ONOFF_CLUSTER_CS != "CLIENT")  && (OC_ON == true))>
     /* Command ZCL ON */

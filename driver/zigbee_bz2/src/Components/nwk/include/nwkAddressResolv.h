@@ -70,6 +70,16 @@ bool NWK_LinkShortAndExtAddress(const ShortAddr_t shortAddr,
 void NWK_RemoveFromAddressMap(const ExtAddr_t *const extAddr);
 
 /**************************************************************************//**
+  \brief Check whether entry is present in the address map.
+
+  \param[in] extAddr - pointer to a extended address.
+  
+  \return True - If address map entry is present.
+          False - Otherwise
+ ******************************************************************************/
+bool NWK_IsAddressMapEntryPresent(const ExtAddr_t *const extAddr);
+
+/**************************************************************************//**
   \brief Searching a extended address by the short address.
 
   \param[in] shortAddr - a short address.

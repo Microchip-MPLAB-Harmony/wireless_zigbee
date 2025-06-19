@@ -18,7 +18,7 @@
 
 // DOM-IGNORE-BEGIN
 /*******************************************************************************
-* Copyright (C) 2018 Microchip Technology Inc. and its subsidiaries.
+* Copyright (C) 2024 Microchip Technology Inc. and its subsidiaries.
 *
 * Subject to your compliance with these terms, you may use Microchip software
 * and any derivatives exclusively with Microchip products. It is your
@@ -55,6 +55,11 @@
 #include <configserver/include/private/csSIB.h>
 #include <z3device/common/include/z3Device.h>
 #include <nwk/include/nwk.h>
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <zdo/include/zdo.h>
+#include <zdo/include/zdoRetrieveAuthenticationToken.h>
+#include <zdo/include/zdoSecurityChallenge.h>
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
 #include <z3device/stack_interface/nwk/include/nwk_api.h>
 #include <z3device/stack_interface/bdb/include/bdb_api.h>
 
@@ -106,6 +111,21 @@ static void processMgmtSendPermitJoinCmd(const ScanValue_t *args);
 static void zdoPermitJoiningResponse(ZDO_ZdpResp_t *resp);
 static void processSendNwkUpdateReqCmd(const ScanValue_t *args);
 static void processSimpleDescriptorRequestCmd(const ScanValue_t *args);
+#if defined _ZIGBEE_REV_23_SUPPORT_
+static void processSendMgmtNwkBeaconSurveyReqCmd(const ScanValue_t *args);
+static void processSecurityGetConfigReqCmd(const ScanValue_t *args);
+static void processSecuritySetConfigReqCmd(const ScanValue_t *args);
+static void processSecurityChallengeReqCmd(const ScanValue_t *args);
+static void processStartKeyNegotiation(const ScanValue_t *args);
+static void processClearAllBindingsReqCmd(const ScanValue_t *args);
+static void processSecurityDecommissioningReqCmd(const ScanValue_t *args);
+static void processSecurityDecommissioningOrClrAllBindingsReqCmd(uint16_t clusterId, const ScanValue_t *args);
+static void processStartKeyUpdate(const ScanValue_t *args);
+static void processSetNwkHubConnectivity(const ScanValue_t *args);
+<#if !(TC_SWAPOUT_ENABLED)>  
+static void processTcLossCmd(const ScanValue_t *args);
+</#if>
+#endif //_ZIGBEE_REV_23_SUPPORT_
 static void processUnBindReqCmd(const ScanValue_t *args);
 static void processUnBindReqCmdWithSrcAddrDestEndpoint(const ScanValue_t *args);
 #if BDB_TOUCHLINK_SUPPORT == 1 
@@ -178,6 +198,20 @@ static PROGMEM_DECLARE(ConsoleCommand_t zdoHelpCmds[]) =
    {"sendMgmtPermitJoin", "ddd", processMgmtSendPermitJoinCmd, "[dstAddr][dur][tcSig]\r\n"},
    {"sendNwkMgmtUpdateReq", "ddd", processSendNwkUpdateReqCmd, "<channel> <scanDuration> <nwkAddr>\r\n"},
    {"simpleDescReq", "dd",processSimpleDescriptorRequestCmd, "[nwkAddr] [dstEp]\r\n"},
+#if defined _ZIGBEE_REV_23_SUPPORT_
+   {"sendMgmtNwkBeaconSurveyReq", "ddd", processSendMgmtNwkBeaconSurveyReqCmd, "[dstShortAddr][scanChannelList][configBitMask]\r\n"},
+   {"securityGetConfigReq", "dd", processSecurityGetConfigReqCmd, "[dstShortAddr][PanConflictTLVId] \r\n"},
+   {"startKeyUpdate", "ddddddd", processStartKeyUpdate, "[relayCmd][unAuthDevExtAdd][dstRxtAddr][keyNegMethod][preSharedSecret] \r\n"},
+   {"startKeyNegotiation", "ddddddd", processStartKeyNegotiation, "[requestedKeyNegotiationMethod][requestedPreSharedSecretType][partnerLongAddress][isRelayCommand][relayLongAddress] \r\n"},
+   {"securityChallengeReq", "d", processSecurityChallengeReqCmd, "[EUI64] \r\n"},
+   {"securitySetConfigReq", "dddddddd", processSecuritySetConfigReqCmd, "[dstShortAddr][TLVcount][TlvId1][Tlv1Value][TlvId2][Tlv2Value][TlvId3][Tlv3Value] \r\n"},
+   {"clearAllBindingsReq", "dddddddd", processClearAllBindingsReqCmd, "[dstShortAddr][1EUI64][2EUI64][3EUI64][4EUI64][5EUI64][6EUI64][7EUI64]\r\n"},
+   {"securityDecomReq", "dddddddd", processSecurityDecommissioningReqCmd, "[dstShortAddr][1EUI64][2EUI64][3EUI64][4EUI64][5EUI64][6EUI64][7EUI64]\r\n"},
+   {"setNwkHubConnectivity", "d", processSetNwkHubConnectivity, "[HubConnectivity]\r\n"},
+<#if !(TC_SWAPOUT_ENABLED)>  
+   {"tcLoss", "", processTcLossCmd, ""},
+</#if>
+#endif
    {"unbindReq", "sddddd", processUnBindReqCmd, "[addrMode][DstAddr][extAddr][ep][ClusterId]\r\n"},
    {"unbindReq2", "sdddddddd", processUnBindReqCmdWithSrcAddrDestEndpoint, "[addrMode][DstAddr][extSrcAddrHigh][extSrcAddrLow][extDstAddrHigh][extDstAddrLow/GroupID][ep_Src][ep_Dst][ClusterId]\r\n"},
 #ifdef OTAU_SERVER
@@ -622,7 +656,45 @@ static void processMgmtSendPermitJoinCmd(const ScanValue_t *args)
 
   permit->permitDuration = args[1].uint8;
   permit->tcSignificance = args[2].uint8;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/* Beacon appendix encapsulation is added only if the device is R23 supported Trsut centre*/
+#ifdef _TRUST_CENTRE_  
+  if (APS_CENTRALIZED_TRUST_CENTER == APS_GetOwnTcMode())
+  {
+    uint8_t *tlvData = NULL;
+    uint8_t *tlvList[BEACON_APPENDIX_ENC_TLV_COUNT];
+    EncapsulationTlv_t encTlv;
+    KeyNegotiationTlv_t keyNegotiationTlv;
+    FragmentationParametersTlv_t fragmentationTlv;
+  
+    descModeMem.zdpReq.asduPayloadLength = sizeof(ZDO_MgmtPermitJoiningReq_t);
+    
+    /* Key Negotiation TLV */
+    keyNegotiationTlv.tagId  = SUPPORTED_KEY_NEGOTIATION;
+    keyNegotiationTlv.length = CALC_TLV_LENGTH_VALUE(SUPPORTED_KEY_NEGOTIATION_METHODS_GLOBAL_TLV_DEFAULT_LENGTH);
+    CS_ReadParameter(CS_SUPPORTED_KEY_NEGOTIATION_PROTOCOL_ID, &keyNegotiationTlv.keyNegotiationProtocolBitmask);
+    CS_ReadParameter(CS_SUPPORTED_PRE_SHARED_SECRETS_ID, &keyNegotiationTlv.preSharedSecretBitmask);
+    memcpy(&keyNegotiationTlv.sourceDeviceEUI64, MAC_GetExtAddr(), sizeof(ExtAddr_t));
 
+    /* Fragmentation TLV */
+    fragmentationTlv.tagId  = FRAGMENTATION_PARAMETER;
+    fragmentationTlv.length = CALC_TLV_LENGTH_VALUE(FRAGMENTATION_PARAMETERS_GLOBAL_TLV_DEFAULT_LENGTH);
+    fragmentationTlv.nodeId = NWK_GetShortAddr();
+    CS_ReadParameter(CS_APS_DATA_FRAGMENTATION_ID, &fragmentationTlv.fragmentationOption);
+    CS_ReadParameter(CS_APS_MAX_SIZE_ASDU_ID, &fragmentationTlv.incomingTransferUnits);
+  
+    /* Prepare Encapsulation TLV */
+    tlvList[0U] = (uint8_t *)(&keyNegotiationTlv);
+    tlvList[1U] = (uint8_t *)(&fragmentationTlv);
+    TLV_Encapsulate((void *)&tlvList, 2U, BEACON_APPENDIX_ENCAPSULATION, &encTlv);
+  
+    tlvData = ((uint8_t*)permit) + sizeof(ZDO_MgmtPermitJoiningReq_t);
+    descModeMem.zdpReq.asduPayloadLength += TOTAL_TLV_SIZE(encTlv.length);
+
+    TLV_Encode(tlvData, &encTlv);
+  }
+#endif //_TRUST_CENTRE_
+#endif //_ZIGBEE_REV_23_SUPPORT_
   ZDO_ZdpReq(&descModeMem.zdpReq);
 }
 
@@ -697,8 +769,205 @@ static void processSimpleDescriptorRequestCmd(const ScanValue_t *args)
   zdpSimpleDescReq(args[0].uint16,args[1].uint8);
 }
 
+#if defined _ZIGBEE_REV_23_SUPPORT_
 /**************************************************************************//**
-\brief Processes UnBindReq command
+/**************************************************************************//**
+\brief Processes Security Start Key Negotiation Request.
+       It requires long address of destination node. relay address is needed 
+       when router is involved.
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processStartKeyNegotiation(const ScanValue_t *args)
+{
+  uint8_t requestedKeyNegotiationMethod = 0;
+  uint8_t requestedPreSharedSecretType = 0;
+  ExtAddr_t partnerLongAddress = 0;
+  uint8_t relayCmd    = 0;
+  ExtAddr_t relayLongAddress = 0;
+
+  requestedKeyNegotiationMethod = args[0].uint8;
+  requestedPreSharedSecretType = args[1].uint8;
+  partnerLongAddress = ((uint64_t)args[2].uint32 << 32);
+  partnerLongAddress |= args[3].uint32;
+  
+  relayCmd = args[4].uint8;
+  relayLongAddress = ((uint64_t)args[5].uint32 << 32);
+  relayLongAddress |= args[6].uint32;
+
+  StartKeyNegotiationReq(requestedKeyNegotiationMethod, requestedPreSharedSecretType, partnerLongAddress, relayCmd, relayLongAddress);
+}
+
+/**************************************************************************//**
+\brief Processes Mgmt SendSurveyBeacon Request command
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processSendMgmtNwkBeaconSurveyReqCmd(const ScanValue_t *args)
+{
+  zdpMgmtBeaconSurveyReq(args[0].uint16, args[1].uint32, args[2].uint8);
+}
+
+/**************************************************************************//**
+\brief Processes Security Challenge request command.
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processSecurityChallengeReqCmd(const ScanValue_t *args)
+{
+  ZDO_SecChallengeReq(args[0].uint64);
+}
+
+<#if !(TC_SWAPOUT_ENABLED)>  
+/**************************************************************************//**
+\brief Processes Trust center loss command.
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processTcLossCmd(const ScanValue_t *args)
+{
+  appNofityTcLoss();
+}
+</#if>
+
+/**************************************************************************//**
+\brief Processes Security Start Key Update Request.
+       It require short address of destination node.
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processStartKeyUpdate(const ScanValue_t *args)
+{
+  uint8_t relayCmd    = 0;
+  uint64_t destAddr   = 0;
+  ExtAddr_t unAuthDevExtAdd = 0;
+
+  relayCmd = args[0].uint8;
+  unAuthDevExtAdd = ((uint64_t)args[1].uint32 << 32);
+  unAuthDevExtAdd |= args[2].uint32;
+  destAddr = ((uint64_t)args[3].uint32 << 32);
+  destAddr |= args[4].uint32;
+
+  zdpStartKeyUpdatedReq(relayCmd, unAuthDevExtAdd, APS_EXT_ADDRESS, destAddr, args[5].uint8, args[6].uint8);
+}
+
+/**************************************************************************//**
+\brief Processes Security Get Config request command
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processSecurityGetConfigReqCmd(const ScanValue_t *args)
+{   
+  uint8_t tlvIdList[1];
+  tlvIdList[0] = args[1].uint8; /* Map to PAN ID Conflict Report Global TLV ID macro*/
+  zdpSecurityGetConfigReq(args[0].uint16,1,tlvIdList);
+}
+/**************************************************************************//**
+\brief Processes Security Set Config request command
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processSecuritySetConfigReqCmd(const ScanValue_t *args)
+{
+  uint8_t panIdTlvId = 0, channelTlvId = 0, cfgParamsTlvId = 0;
+  uint16_t panId = 0, cfgParams = 0; Channel_t channel = 0;
+  uint8_t tlvCount = args[1].uint8;
+
+  int i;
+
+  for(i = 1; i <= tlvCount; i++)
+  {
+    switch(args[i*2].uint8)
+    {
+      case NEXT_PAN_ID_CHANGE:
+        panIdTlvId = args[i*2].uint8;
+        panId = args[2*i+1].uint16;
+        break;
+
+      case NEXT_CHANNEL_CHANGE:
+        channelTlvId = args[i*2].uint8;
+        channel = args[2*i+1].uint8;
+        break;
+
+      case CONFIGURATION_PARAMETER:
+        cfgParamsTlvId = args[i*2].uint8;
+        cfgParams = args[2*i+1].uint16;
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  zdpSecuritySetConfigReq(args[0].uint16,tlvCount,panIdTlvId,panId,channelTlvId,channel,cfgParamsTlvId,cfgParams);
+}
+
+/**************************************************************************//**
+\brief Processes Clear All Bindings request command
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processClearAllBindingsReqCmd(const ScanValue_t *args)
+{
+  processSecurityDecommissioningOrClrAllBindingsReqCmd(CLEAR_ALL_BINDINGS_CLID, args);
+}
+
+/**************************************************************************//**
+\brief Processes Security Decommssioning request command
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processSecurityDecommissioningReqCmd(const ScanValue_t *args)
+{
+  processSecurityDecommissioningOrClrAllBindingsReqCmd(SECURITY_DECOMMISSIONING_CLID, args);
+}
+
+/**************************************************************************//**
+\brief Processes Security Decommssioning / Clear all binding request commands
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processSecurityDecommissioningOrClrAllBindingsReqCmd(uint16_t clusterID, const ScanValue_t *args)
+{
+  ExtAddr_t eui64list[7];
+  uint8_t argIndex = 1U;
+  uint8_t eui64ListIndex = 0U;
+
+  while(argIndex <= MAX_EUI64_COUNT)
+  {
+    if(args[argIndex].uint64 != 0U)
+    {
+      eui64list[eui64ListIndex++] = args[argIndex].uint64;
+    }
+    argIndex++;
+  }
+
+  zdpDecomissioningOrClrBindingReq(clusterID, args[0].uint16, eui64ListIndex, eui64list);
+}
+
+/**************************************************************************//**
+\brief Processes set NWK Hub connectivity request.
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processSetNwkHubConnectivity(const ScanValue_t *args)
+{
+  uint8_t value = 0;
+  bool hubConnectivity = false;
+
+  value = args[0].uint8;
+  if ((value == 1))
+  {
+      hubConnectivity = true;
+  }
+
+  NWK_SetHubConnectivity(hubConnectivity);
+}
+
+#endif //_ZIGBEE_REV_23_SUPPORT
+
+/**************************************************************************//**
+\brief Processes UnBindReqCmd command
 
 \param[in] args - array of command arguments
 ******************************************************************************/

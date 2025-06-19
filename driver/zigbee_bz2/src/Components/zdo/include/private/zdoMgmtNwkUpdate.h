@@ -82,6 +82,23 @@ typedef struct _ZdoMgmtNwkUpdate_t
   ZdoMgmtNwkUpdateState_t state;
 } ZdoMgmtNwkUpdate_t;
 
+/** Enumerations of internal states of the component. */
+typedef enum _ZdoMgmtSurveyBeaconReqState_t
+{
+  ZDO_MGMT_SURVEY_BCON_REQ_IDLE_STATE,
+  ZDO_MGMT_SURVEY_BCON_REQ_ERROR_STATE,
+  ZDO_MGMT_SURVEY_BCON_REQ_ACTIVE_SCAN_STATE
+} ZdoMgmtSurveyBeaconReqState_t;
+
+/** Internale state and variable to process ZDO Mgmt Survey Beacon command. */
+typedef struct _ZdoMgmtSurveyBeacon_t
+{
+  /* Pointer to allocated ZDO Command to perform requests to the stack and
+   * Mgmt Survey Beacon Request commands. */  
+  ZdoCommand_t *zdoCommand;
+  /* Internal state of the Mgmt Survey Beacon Request. */
+  ZdoMgmtSurveyBeaconReqState_t state;
+} ZdoMgmtSurveyBeacon_t;
 /******************************************************************************
                                Prototypes section
  ******************************************************************************/
@@ -124,6 +141,13 @@ ZDO_PRIVATE void zdoMgmtNwkUpdateNotifyInd(const APS_DataInd_t *const apsDataInd
   \brief Resets the Mgmt Nwk Update module to the idle state.
  ******************************************************************************/
 ZDO_PRIVATE void zdoResetMgmtNwkUpdate(void);
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+  \brief Resets the Mgmt Survey Beacon module to the idle state.
+ ******************************************************************************/
+ZDO_PRIVATE void zdoResetMgmtSurveyBeacon(void);
+#endif
 
 #ifdef _FREQUENCY_AGILITY_
 /**************************************************************************//**

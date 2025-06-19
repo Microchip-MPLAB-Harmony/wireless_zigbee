@@ -247,6 +247,24 @@ bool APS_IsBoundToAnyGroup(const ClusterId_t clusterId, const Endpoint_t srcEndp
  ******************************************************************************/
 void APS_FreeBindingEntry(ApsBindingEntry_t *const entry);
 
+/**************************************************************************//**
+  \brief Free all binding entries.
+
+  \param[in] None.
+
+  \return None.
+ ******************************************************************************/
+void APS_FreeAllBindingEntries(void);
+
+/**************************************************************************//**
+  \brief Free binding entry based on matching extended address.
+
+  \param[in] extAddr - extended address.
+
+  \return None.
+ ******************************************************************************/
+void APS_FreeBindingEntryExtAddr(ExtAddr_t extAddr);
+
 #endif /* _BINDING_ */
 #endif /* APSME_BIND_H */
 /** eof apsmeBind.h */

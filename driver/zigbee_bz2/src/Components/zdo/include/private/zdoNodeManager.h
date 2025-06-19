@@ -19,7 +19,7 @@
 
 // DOM-IGNORE-BEGIN
 /*******************************************************************************
-* Copyright (C) 2018 Microchip Technology Inc. and its subsidiaries.
+* Copyright (C) 2024 Microchip Technology Inc. and its subsidiaries.
 *
 * Subject to your compliance with these terms, you may use Microchip software
 * and any derivatives exclusively with Microchip products. It is your
@@ -65,7 +65,12 @@
 #define MGMT_RTG_REQ_SIZE 1
 #define MGMT_RTG_RESP_SIZE 3
 #define ROUTING_TABLE_ENTRY_SIZE 5
-
+#define MGMT_BCON_SURVEY_REQ_SIZE 8
+#define SECURITY_GET_CONFIG_REQ_SIZE 2
+#define SECURITY_GET_CONFIG_RESP_MIN_SIZE 4
+#define SECURITY_SET_CONFIG_REQ_SIZE 14
+#define SECURITY_SET_CONFIG_RESP_MIN_SIZE 8
+#define SECURITY_DECOMMISSIONING_RESP_SIZE 0
 /******************************************************************************
                                Prototypes section
  ******************************************************************************/
@@ -85,6 +90,27 @@ ZDO_PRIVATE void zdoZdpNodeRequestCreate(ZDO_ZdpReq_t *zdpReq);
   \return None.
  ******************************************************************************/
 ZDO_PRIVATE void zdoZdpNodeMessageInd(const APS_DataInd_t *const apsDataInd);
+
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/******************************************************************************
+  \brief Process Security Get/Set config request.
+
+  \param[in] apsDataInd - pointer to APSDE-DATA indication structure of
+                          the received ZDP command.
+  \return None.
+ ******************************************************************************/
+ZDO_PRIVATE void zdoSecurityMessageInd(const APS_DataInd_t *const apsDataInd);
+
+/**************************************************************************//**
+  \brief Process a Mgmt Nwk Survey Beacon Request command.
+ 
+  \param[in] apsDataInd - pointer to APSDE-DATA indication parameters structure
+                          of received Mgmt Nwk Update Request command.
+  \return None.
+ ******************************************************************************/
+ZDO_PRIVATE void zdoMgmtSurveyBeaconReqInd(const APS_DataInd_t *const apsDataInd);
+#endif //_ZIGBEE_REV_23_SUPPORT_
 
 #endif /* _ZDO_NODE_MANAGER_H */
 /** eof zdoNodeManager.h */

@@ -31,7 +31,17 @@
 #include <nwk/include/nwkEndDeviceTimeout.h>
 #include <aps/include/apsAIB.h>
 #include <security/TrustCentre/include/tcPermissions.h>
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <mac_phy/include/mac.h>
+#include "security/serviceprovider/include/sspSfp.h"
+#endif
 
+/******************************************************************************
+                   Gloabl variable section 
+ ******************************************************************************/
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+static RNwkEncryptMacDataReq_t encMacDataReq;
+#endif
 /******************************************************************************
                    Implementations section
  ******************************************************************************/
@@ -715,4 +725,69 @@ void rNwkSetEDTimeoutByParentProcess(ZS_CommandBuffer_t *commandBuffer)
 }
 #endif
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+static void  rNwkCommandMacDataConf(MAC_DataConf_t *conf)
+{
+  MAC_DataReq_t *req = GET_PARENT_BY_FIELD(MAC_DataReq_t, confirm, conf);
+  ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+  RMacDataConfirm_t *rawConf = (RMacDataConfirm_t *)confBuffer->commandFrame.payload;
+
+  confBuffer->commandFrame.commandId = R_NWK_ENCRYPT_DATA_CONFIRM;
+
+  rawConf->msduHandle = req->msduHandle;
+  rawConf->status = conf->status;
+
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof(*rawConf);
+
+  serialManager.write(confBuffer);
+  
+  rFreeMem(encMacDataReq.encryptReq);
+  rFreeMem(req);
+  rFreeMem(req->msdu);
+}
+
+static void rNwkCommandEncryptConf(SSP_EncryptFrameConf_t *conf)
+{
+  SSP_EncryptFrameReq_t *encryptReq = GET_PARENT_BY_FIELD(SSP_EncryptFrameReq_t, confirm, conf);
+  //RNwkEncryptMacDataReq_t encMacDataRequest = GET_PARENT_BY_FIELD(RNwkEncryptMacDataReq_t, encryptReq, encryptReq);
+  
+  
+  encMacDataReq.macDatareq->msdu = (uint8_t *)encryptReq->pdu;
+  encMacDataReq.macDatareq->msduLength = encryptReq->payloadLength;
+  
+  encMacDataReq.macDatareq->MAC_DataConf = rNwkCommandMacDataConf;
+  
+  MAC_DataReq(encMacDataReq.macDatareq);
+
+}
+
+void rNwkCommandEncryptRequest(ZS_CommandBuffer_t *commandBuffer)
+{
+  SSP_EncryptFrameReq_t* encryptReq = (SSP_EncryptFrameReq_t*)rGetMem();
+  MAC_DataReq_t *req = (MAC_DataReq_t *) rGetMem();
+
+  encMacDataReq.macDatareq = req;
+  encMacDataReq.encryptReq = encryptReq;
+  RMacDataRequest_t *rawReq = (RMacDataRequest_t *)commandBuffer->commandFrame.payload;
+
+  req->srcAddrMode = (MAC_AddrMode_t)rawReq->srcAddrMode;
+  req->dstAddrMode = (MAC_AddrMode_t)rawReq->dstAddrMode;
+  req->dstPanId = rawReq->dstPanId;
+
+  if (MAC_SHORT_ADDR_MODE == req->dstAddrMode)
+    req->dstAddr.sh = rawReq->dstShortAddr;
+  else if (MAC_EXT_ADDR_MODE == req->dstAddrMode)
+    req->dstAddr.ext = rawReq->dstExtAddr;
+
+  req->txOptions = (MAC_TxOptions_t)rawReq->txOptions;
+  req->msduHandle = rawReq->msduHandle;
+
+  req->msduLength = rawReq->msduLength;
+  req->msdu = (uint8_t *)rGetMem();
+  memcpy(req->msdu, rawReq->msdu, rawReq->msduLength);
+  
+  NWK_EncryptOutputPacket(encMacDataReq.encryptReq, encMacDataReq.macDatareq, rNwkCommandEncryptConf);
+
+}
+#endif
 /* eof rNwk.c */

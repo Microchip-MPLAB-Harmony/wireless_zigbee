@@ -26,7 +26,10 @@
 #include <systemenvironment/include/sysUtils.h>
 #include <bufferallocator.h>
 #include <zdo/include/zdoSecurityManager.h>
-
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <mac_phy/mac_hwd_phy/RF231_RF212/PHY/include/at86rf233.h> // Included for Obtaining RF_MAX_CHANNEL & RF_MIN_CHANNEL
+#include <zdo/include/zdoSecurityStartKeyUpdate.h>
+#endif
 /*****************************************************************************
                                Definitions section
 ******************************************************************************/
@@ -46,6 +49,13 @@ SYS_EventReceiver_t zdoReqCmdValidation = {  .func = zdoReqCmdValidationHandler 
 static void zdoRspCmdValidationHandler(SYS_EventId_t eventId, SYS_EventData_t data);
 
 SYS_EventReceiver_t zdoRspCmdValidation = {  .func = zdoRspCmdValidationHandler };
+#endif
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/***************** Definition for Security Set Configuration  - Request and Response *********/
+#define SECURITY_SET_CONFIG_MAX_TLV 3   // Security set Configuration Request - TLV0 - Next PAN, TLV1 - Next Channel, TLV2 - Configuration Parameter
+#define  MAX_CONFIG_PARAMS    7         // First 3 bit represents - AIB, Device - Security, NIB only in use, rest 3 to 15 reserved 
+
 #endif
 /******************************************************************************
                    Implementations section
@@ -133,6 +143,456 @@ void rZdoMgmtLeaveRequestProcess(ZS_CommandBuffer_t *commandBuffer)
   ZDO_ZdpReq(zdpClientReq);
 
 }
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/*****************************************************************************
+\brief Beacon response callback
+\param[in] resp - response payload
+*****************************************************************************/
+static void rZdoSurveyBeaconResp(ZDO_ZdpResp_t *resp) 
+{
+  ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+  ZS_ZDO_ZdoMgmtBconSurveyResp_t *rResp =  (ZS_ZDO_ZdoMgmtBconSurveyResp_t *)confBuffer->commandFrame.payload;
+  
+  confBuffer->commandFrame.commandId = 	R_ZDO_BEACON_SURVEY_CONFIRM;
+  confBuffer->commandFrame.length = 	R_COMMAND_ID_SIZE + sizeof(ZS_ZDO_ZdoMgmtBconSurveyResp_t);
+  
+  SYS_BYTE_MEMCPY(&rResp->status, &resp->respPayload.status, sizeof(uint8_t));
+  SYS_BYTE_MEMCPY(&rResp->beaconResultsTlv, &resp->respPayload.asduBuffer, (sizeof(ZS_ZDO_ZdoMgmtBconSurveyResp_t) - 1));
+  serialManager.write(confBuffer);
+  rFreeMem(resp);
+}
+
+/*****************************************************************************
+\brief Sends Management Survey Beacon request
+\param[in] shortAddr        - short address / destination node;
+\param[in] tlvID            - tlv ID
+\parma[in] tlvlength        - tlv Length
+\param[in] configBitMask  -  configBitMask
+\param[in] scanChannelList  - scanChannelList
+******************************************************************************/
+void rZdoMgmtBeaconSurveyReqProcess(ZS_CommandBuffer_t *commandBuffer)
+{
+  ZDO_ZdpReq_t *zdpReq = (ZDO_ZdpReq_t *) rGetMem();
+  uint8_t *tlvData = (uint8_t *)&zdpReq->req.reqPayload.asduBuffer;
+  ZDO_MgmtBconSurveyReq_t surveyBeaconReq;
+  ZS_ZdoMgmtBeaconReq_t *rReq = (ZS_ZdoMgmtBeaconReq_t *) commandBuffer->commandFrame.payload;
+  zdpReq->ZDO_ZdpResp = rZdoSurveyBeaconResp;
+  zdpReq->reqCluster = MGMT_NWK_BEACON_SURVEY_CLID;
+  zdpReq->dstAddrMode = APS_SHORT_ADDRESS;
+
+  zdpReq->dstAddress.shortAddress = rReq->dstAddr;
+  surveyBeaconReq.tlvID = rReq->tlvID;
+  surveyBeaconReq.tlvLength = rReq->tlvLength;
+  surveyBeaconReq.configBitMask = rReq->configBitMask;
+  surveyBeaconReq.scanChannelList.channelPageCount = rReq->scanChannelList.channelPageCount;
+  surveyBeaconReq.scanChannelList.channelMask = rReq->scanChannelList.channelMask;
+  
+  (void)TLV_Encode(tlvData, &surveyBeaconReq);
+  zdpReq->asduPayloadLength = TOTAL_TLV_SIZE(surveyBeaconReq.tlvLength);
+  ZDO_ZdpReq(zdpReq);  
+}
+
+/**************************************************************************//**
+\brief Security set Config response callback
+\param[in] resp - response payload
+********************************************************************************************/
+void rZDOSecuritySetConfigConf(ZDO_ZdpResp_t *resp)
+{
+    ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+    ZDO_SecuritySetConfigResp_t *rResp = (ZDO_SecuritySetConfigResp_t *)confBuffer->commandFrame.payload;
+    
+    confBuffer->commandFrame.commandId = R_ZDO_SECURITY_SET_CONFIG_CONFIRM;
+    confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof(ZDO_SecuritySetConfigResp_t);
+    
+    SYS_BYTE_MEMCPY(&rResp->status, &resp->respPayload.status, sizeof(uint8_t));
+    serialManager.write(confBuffer);
+    rFreeMem(resp);
+}
+
+/*******************************************************************************
+\brief Sends the Zappsi - Security Set Configuration request process
+\param[in] dstaddr - nwk address of destination node
+\param[in] panIdTlvId - PAN ID TLV ID
+\param[in] panId - PAN ID
+\param[in] channelTlvId - Channel TLV ID
+\param[in] channel - Channel
+\param[in] cfgParamsTlvId - Configuration parameters TLV Id
+\param[in] configParams - Configuration parameters
+*****************************************************************************/
+void rZdoSecuritySetConfigReqProcess(ZS_CommandBuffer_t *commandBuffer)
+{
+   ZDO_ZdpReq_t *zdpReq = (ZDO_ZdpReq_t *) rGetMem();
+
+   NextPanIdChangeTlv_t nextPanIdTlv;
+   NextChannelChangeTlv_t nextChannelChangeTlv;
+   ConfigurationParametersTlv_t configParamsTlv;
+
+   ZS_ZdoSecuritySetConfigReq_t *rReq = (ZS_ZdoSecuritySetConfigReq_t *) commandBuffer->commandFrame.payload;
+   zdpReq->ZDO_ZdpResp = rZDOSecuritySetConfigConf;
+   zdpReq->reqCluster  = SECURITY_SET_CONFIG_CLID;
+   zdpReq->dstAddrMode = APS_SHORT_ADDRESS;
+   zdpReq->dstAddress.shortAddress = rReq->dstAddr;
+   zdpReq->asduPayloadLength = 0;
+   
+   uint8_t panIdTlvId     = rReq->nextPanIdTlv.tagId;
+   uint8_t channelTlvId   = rReq->nextChannelChangeTlv.tagId;
+   uint8_t cfgParamsTlvId = rReq->configParamsTlv.tagId; 
+   
+   uint8_t panIdTlvLength = rReq->nextPanIdTlv.length;
+   uint8_t channelTlvLength = rReq->nextChannelChangeTlv.length;
+   uint8_t cfgParamsTlvLength = rReq->configParamsTlv.length;
+  
+   PanId_t   panIdField        = rReq->nextPanIdTlv.nextPanIdChange;
+   uint32_t channelField      = rReq->nextChannelChangeTlv.channelField;
+   uint16_t  configParams = rReq->configParamsTlv.configurationParameters;
+   
+   uint8_t *tlvData = (uint8_t *)&zdpReq->req.reqPayload.asduBuffer;
+   uint8_t *nextBufPtr = NULL;
+   
+   int tlvIndex  = 0;
+   uint8_t tlvId[SECURITY_SET_CONFIG_MAX_TLV] = {panIdTlvId, channelTlvId, cfgParamsTlvId};
+   for(tlvIndex =0; tlvIndex <SECURITY_SET_CONFIG_MAX_TLV; tlvIndex++)
+   {
+       switch(tlvId[tlvIndex])
+       {
+           case NEXT_PAN_ID_CHANGE:
+               nextPanIdTlv.tagId           = rReq->nextPanIdTlv.tagId;
+               nextPanIdTlv.length          = rReq->nextPanIdTlv.length;
+               nextPanIdTlv.nextPanIdChange = panIdField;
+               if(nextBufPtr == NULL)
+               {
+                  nextBufPtr = TLV_Encode(tlvData, &nextPanIdTlv);
+                  zdpReq->asduPayloadLength = TOTAL_TLV_SIZE(panIdTlvLength);
+               }
+               else
+               {
+                   nextBufPtr = TLV_Encode(nextBufPtr, &nextPanIdTlv);
+                   zdpReq->asduPayloadLength += TOTAL_TLV_SIZE(panIdTlvLength);
+               }
+               break;
+               
+           case NEXT_CHANNEL_CHANGE:               
+               if((channelField >= RF_MIN_CHANNEL)&&(channelField <= RF_MAX_CHANNEL))
+               {
+                  nextChannelChangeTlv.tagId        = rReq->nextChannelChangeTlv.tagId;
+                  nextChannelChangeTlv.length       = rReq->nextChannelChangeTlv.length;
+                  nextChannelChangeTlv.channelField = 1 << channelField;
+                  if(nextBufPtr == NULL)
+                  {
+                      nextBufPtr = TLV_Encode(tlvData, &nextChannelChangeTlv);
+                      zdpReq->asduPayloadLength = TOTAL_TLV_SIZE(channelTlvLength);
+                  }
+                  else
+                  {
+                      nextBufPtr = TLV_Encode(nextBufPtr, &nextChannelChangeTlv);
+                      zdpReq->asduPayloadLength += TOTAL_TLV_SIZE(channelTlvLength);
+                              
+                  }
+               }
+               break;
+           case CONFIGURATION_PARAMETER:
+               if(configParams <= MAX_CONFIG_PARAMS)
+               {
+                  configParamsTlv.tagId                     =  rReq->configParamsTlv.tagId;
+                  configParamsTlv.length                    =  rReq->configParamsTlv.length;
+                  configParamsTlv.configurationParameters   =  configParams;
+                  if(nextBufPtr == NULL)
+                  {
+                      nextBufPtr = TLV_Encode(tlvData, &configParamsTlv);
+                      zdpReq->asduPayloadLength = TOTAL_TLV_SIZE(cfgParamsTlvLength);
+                      
+                  }
+                  else
+                  {
+                      nextBufPtr = TLV_Encode(nextBufPtr, &configParamsTlv);
+                      zdpReq->asduPayloadLength += TOTAL_TLV_SIZE(cfgParamsTlvLength);
+                  }                  
+               }
+               break;
+           default:
+               break;    
+       }
+   }
+    ZDO_ZdpReq(zdpReq);
+}
+
+/**************************************************************************
+\brief Security Get Config response callback
+\param[in] resp - response payload
+****************************************************************************/
+void zdpSecurityGetConfigResponse(ZDO_ZdpResp_t *resp)
+{
+    ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+    ZDO_SecurityGetConfigResp_t *rResp = (ZDO_SecurityGetConfigResp_t *)confBuffer->commandFrame.payload;
+    
+    confBuffer->commandFrame.commandId = R_ZDO_SECURITY_GET_CONFIG_CONFIRM;
+    confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof(ZDO_SecurityGetConfigResp_t);
+    
+    SYS_BYTE_MEMCPY(&rResp->status, &resp->respPayload.status, sizeof(uint8_t));
+    serialManager.write(confBuffer);
+    rFreeMem(resp);
+}
+
+/******************************************************************************************
+ * Breif Sends the Security Get Configuration Request
+ * param[in] dstAddr  - nwk Address of Destination Address
+ * param[in] tlvCount - The number of TLV Ids (tlv counts) in the message,
+ * param[in] tlvId    - The Pointer to ID of each TLV that is being Requested . 
+ *****************************************************************************************/
+void rZdoSecurityGetConfigReqProcess(ZS_CommandBuffer_t *commandBuffer)
+{
+  ZDO_ZdpReq_t *zdpReq = (ZDO_ZdpReq_t *) rGetMem();
+  ZDO_SecurityGetConfigReq_t *getConfigReq = &zdpReq->req.reqPayload.getConfigReq;
+  ZDOSecurityGetConfigReq_t *rGetConfigReq = (ZDOSecurityGetConfigReq_t *) commandBuffer->commandFrame.payload;
+
+  /* we assume we get pan id conflict report as first TLV ID
+    Currently only one tlvId - PAN_ID_CONFLICT_REPORT Allowed in first Index, 
+    Modification required in future if more TLV ids are used */
+  if(rGetConfigReq->tlvIds[0U] == PAN_ID_CONFLICT_REPORT)
+  {
+    zdpReq->ZDO_ZdpResp              = zdpSecurityGetConfigResponse;
+    zdpReq->reqCluster               = SECURITY_GET_CONFIG_CLID; 
+    zdpReq->dstAddrMode              = APS_SHORT_ADDRESS; 
+    zdpReq->dstAddress.shortAddress  = rGetConfigReq->dstAddr;
+    zdpReq->asduPayloadLength = (rGetConfigReq->tlvCount)+1;
+    getConfigReq->tlvCount = rGetConfigReq->tlvCount;
+    getConfigReq->tlvIds[0U] = PAN_ID_CONFLICT_REPORT;
+    ZDO_ZdpReq(zdpReq);
+  }
+  else
+  {
+    ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+    uint8_t NotSupported = ZDO_NOT_SUPPORTED_STATUS;
+    ZDO_SecurityGetConfigResp_t *rResp = (ZDO_SecurityGetConfigResp_t *)confBuffer->commandFrame.payload;
+    
+    confBuffer->commandFrame.commandId = R_ZDO_SECURITY_GET_CONFIG_CONFIRM;
+    confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof(ZDO_SecurityGetConfigResp_t);
+    
+    SYS_BYTE_MEMCPY(&rResp->status, &NotSupported, sizeof(uint8_t));
+    serialManager.write(confBuffer);
+  }
+}
+
+/**************************************************************************//**
+\brief Security Start Key Update response callback
+\param[in] resp - response payload
+********************************************************************************************/
+void rZdoSecStartKeyUpdateResp(ZDO_ZdpResp_t *resp)
+{
+  ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+  ZS_ZDO_SecurityStartKeyUpdateResp_t *rResp = (ZS_ZDO_SecurityStartKeyUpdateResp_t *)confBuffer->commandFrame.payload;
+  
+  confBuffer->commandFrame.commandId = R_ZDO_SECURITY_START_KEY_UPDATE_CONFIRM;
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof(ZS_ZDO_SecurityStartKeyUpdateResp_t);
+  SYS_BYTE_MEMCPY(&rResp->status, &resp->respPayload.secStartKeyUpdateResp.status, sizeof(uint8_t));
+  SYS_BYTE_MEMCPY(&rResp->seqNum, &resp->respPayload.seqNum, sizeof(uint8_t));
+  serialManager.write(confBuffer);
+  rFreeMem(resp);
+}
+
+/**************************************************************************//**
+\zappsi serialization API Check Sends the Security Service Start Key Update Request
+
+\param[in] relayCmd         - relay command flag;
+\param[in] unAuthDevExtAdd  - Extended Address of Device to Authorise;
+\param[in] addressMode      - Destination node address Mode;
+\param[in] destAddr         - short address of destination node;
+******************************************************************************/
+void rZdoSecurityStartKeyUpdateReqProcess(ZS_CommandBuffer_t *commandBuffer)
+{
+  uint8_t *nextTlvPointer = NULL;
+
+  ZS_ZDO_SecurityStartKeyUpdateReq_t *rReq = (ZS_ZDO_SecurityStartKeyUpdateReq_t *)commandBuffer->commandFrame.payload;
+  ZDO_ZdpReq_t *zdpReq = (ZDO_ZdpReq_t *) rGetMem();
+  uint8_t *pReqData = &zdpReq->req.reqPayload.asduBuffer[0];
+
+  FragmentationParametersTlv_t fragmentationTlv;
+  SelectedKeyNegotiationMethodTlv_t selectedKeyNegotiationTlv;
+  SecurityServiceStartKeyUpdate_t rStartKeyUpdate;
+
+  memcpy(&selectedKeyNegotiationTlv, &(rReq->rSelectedKeyNegotiationTlv), sizeof(SelectedKeyNegotiationMethodTlv_t));
+  nextTlvPointer = TLV_Encode(&rStartKeyUpdate.reqData[0], &selectedKeyNegotiationTlv);
+  rStartKeyUpdate.dataLen =TOTAL_TLV_SIZE(selectedKeyNegotiationTlv.length);
+
+  memcpy(&fragmentationTlv, &(rReq->rFragmentationTlv), sizeof(FragmentationParametersTlv_t));
+  nextTlvPointer = TLV_Encode(nextTlvPointer, &fragmentationTlv);
+  rStartKeyUpdate.dataLen += TOTAL_TLV_SIZE(fragmentationTlv.length);
+
+  rStartKeyUpdate.callback = NULL;
+  rStartKeyUpdate.relayCmd = rReq->relayCmd;
+  rStartKeyUpdate.unAuthDevExtAdd = rReq->unAuthDevExtAdd;	
+  rStartKeyUpdate.destAddressMode = rReq->addressMode;
+
+  if(APS_EXT_ADDRESS  == rReq->addressMode)
+  {
+    memcpy(&rStartKeyUpdate.destAddress.extAddress, &(rReq->dstAddr), sizeof(ExtAddr_t));
+  }
+  else
+  {
+    rStartKeyUpdate.destAddress.shortAddress = (ShortAddr_t)(rReq->dstAddr);
+  }
+  /* Update the ZDP request */
+  zdpReq->ZDO_ZdpResp = rZdoSecStartKeyUpdateResp;
+  zdpReq->reqCluster  = SECURITY_START_KEY_UPDATE_CLID;
+  zdpReq->dstAddrMode = rStartKeyUpdate.destAddressMode;
+  zdpReq->dstAddress  = rStartKeyUpdate.destAddress;
+  memcpy(pReqData, rStartKeyUpdate.reqData, rStartKeyUpdate.dataLen);
+  zdpReq->asduPayloadLength = rStartKeyUpdate.dataLen;
+  /* Relay command information */
+  zdpReq->service.relayMsgInfo.isRelayCmd = rStartKeyUpdate.relayCmd;
+  zdpReq->service.relayMsgInfo.unAuthDevExtAdd = rStartKeyUpdate.unAuthDevExtAdd;
+  
+  /* Place the Request */
+  ZDO_ZdpReq(zdpReq);
+}
+
+/**************************************************************************//**
+\brief Security Decommissioning response callback
+\param[in] resp - Response payload
+******************************************************************************/
+void rZDOSecurityDecomissioningResponse(ZDO_ZdpResp_t *resp)
+{
+    ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+    ZS_ZdoDeviceEUI64TlvListResp_t *rResp = (ZS_ZdoDeviceEUI64TlvListResp_t *)confBuffer->commandFrame.payload;
+    
+    confBuffer->commandFrame.commandId = R_ZDO_SECURITY_DECOMMISSIONG_CONF;
+    confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof(ZS_ZdoDeviceEUI64TlvListResp_t);
+    
+    SYS_BYTE_MEMCPY(&rResp->status, &resp->respPayload.status, sizeof(uint8_t));
+    serialManager.write(confBuffer);
+    rFreeMem(resp);
+}
+
+/**************************************************************************//**
+\Zappsi - brief Clear All Bindings response callback
+\param[in] resp - Response payload
+******************************************************************************/
+void rZDOClearAllBindingsResponse(ZDO_ZdpResp_t *resp)
+{
+    ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+    ZS_ZdoDeviceEUI64TlvListResp_t *rResp = (ZS_ZdoDeviceEUI64TlvListResp_t *)confBuffer->commandFrame.payload;
+    
+    confBuffer->commandFrame.commandId = R_ZDO_CLEAR_ALL_BINDING_CONF;
+    confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof(ZS_ZdoDeviceEUI64TlvListResp_t);
+    
+    SYS_BYTE_MEMCPY(&rResp->status, &resp->respPayload.status, sizeof(uint8_t));
+    serialManager.write(confBuffer);
+    rFreeMem(resp);
+}
+
+/*******************************************************************************
+\Zappsi - Sends the Security Decommissioning / Clear all binding request
+
+\param[in] clusterId - command cluster id either security decommissioning
+           request or clear all binding request
+\param[in] dstaddr - nwk Address of Destination node
+\param[in] deviceCount - total number of devices that need to decommissioned 
+           or binding to be cleared
+\param[in] eui64List - pointer to the list of ext address that need to be 
+           decommissioned.
+
+\returns None.
+*****************************************************************************/
+void rZdoDecommissioningOrClrBindingReqProcess(ZS_CommandBuffer_t *commandBuffer)
+{
+  ZDO_ZdpReq_t *zdpReq = (ZDO_ZdpReq_t *) rGetMem();
+  DeviceEUI64ListTlv_t rdeviceEUI64ListTlv;
+  ZS_ZdoDeviceEUI64TlvListReq_t *rReq = (ZS_ZdoDeviceEUI64TlvListReq_t *) commandBuffer->commandFrame.payload;
+
+  ExtAddr_t *eui64List = (ExtAddr_t *)&rReq->extAddrList;
+  uint16_t clusterId;
+  uint8_t *tlvData = (uint8_t *)&zdpReq->req.reqPayload.asduBuffer;
+  uint8_t argListIndex = 0U;
+  uint8_t tlvListIndex = 0U;
+  clusterId = rReq->clusterId;
+  switch(clusterId)
+  {
+    case SECURITY_DECOMMISSIONING_CLID:
+    {
+      zdpReq->ZDO_ZdpResp = rZDOSecurityDecomissioningResponse;
+      break;
+    }
+    case CLEAR_ALL_BINDINGS_CLID:
+    {
+      zdpReq->ZDO_ZdpResp = rZDOClearAllBindingsResponse;
+      break;
+    }
+    default:
+    {
+      /*Default case*/
+      break;
+    }
+  }
+  zdpReq->dstAddrMode = rReq->dstAddrMode;
+  zdpReq->dstAddress.shortAddress  = rReq->dstAddr;
+  while(argListIndex < rReq->deviceCount)
+  {
+    rdeviceEUI64ListTlv.extAddrList[tlvListIndex++] = *(eui64List + argListIndex);
+    argListIndex++;
+  }
+    zdpReq->reqCluster = rReq->clusterId;
+
+  rdeviceEUI64ListTlv.tagId = rReq->tagId;
+  rdeviceEUI64ListTlv.extAddrCount = rReq->deviceCount;
+  rdeviceEUI64ListTlv.length = rReq->length;
+
+  (void)TLV_Encode(tlvData, &rdeviceEUI64ListTlv);
+  zdpReq->asduPayloadLength = TOTAL_TLV_SIZE(rdeviceEUI64ListTlv.length);
+
+  ZDO_ZdpReq(zdpReq);
+
+}
+
+/**************************************************************************//**
+\brief Security Get Authentication level response callback
+\param[in] resp - Response payload
+******************************************************************************/
+void rZdoGetAuthenticationLevelResp(ZDO_ZdpResp_t *resp)
+{
+    ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+    ZS_ZdoAuthenticationLevelResp_t *rResp = (ZS_ZdoAuthenticationLevelResp_t *)confBuffer->commandFrame.payload;
+    
+    confBuffer->commandFrame.commandId = R_ZDO_SECURITY_AUTHENTICATION_LEVEL_CONFIRM;
+    confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof(ZS_ZdoAuthenticationLevelResp_t);
+    
+    SYS_BYTE_MEMCPY(&rResp->status, &resp->respPayload.status, sizeof(uint8_t));
+    serialManager.write(confBuffer);
+    rFreeMem(resp);
+}
+
+/**************************************************************************//**
+\brief Security Get Authentication level request function
+\param[in] ZS_ZdoAuthenticationLevelReq_t req payload member contains
+\Extended Address and TargetIeeeAddrTlv Variable as member
+******************************************************************************/
+void rZdoGetAuthenticationLevelReqProcess(ZS_CommandBuffer_t *commandBuffer)
+{
+    ZDO_ZdpReq_t *zdpReq = (ZDO_ZdpReq_t *) rGetMem();
+    uint8_t *tlvData = (uint8_t *)&zdpReq->req.reqPayload.asduBuffer;
+    TargetIeeeAddrTlv_t apsSecurityLevelTlv = {0U};
+    ZS_ZdoAuthenticationLevelReq_t *rReq = (ZS_ZdoAuthenticationLevelReq_t *)commandBuffer->commandFrame.payload;
+
+
+    zdpReq->reqCluster  = SECURITY_GET_AUTHENTICATION_LEVEL_CLID;
+    zdpReq->ZDO_ZdpResp  = rZdoGetAuthenticationLevelResp;
+    zdpReq->dstAddrMode = APS_EXT_ADDRESS;
+    // zdpReq->dstAddress.shortAddress = 0x00;
+    
+    memcpy(zdpReq->dstAddress.extAddress, &rReq->destAddr, sizeof(ExtAddr_t));
+
+    apsSecurityLevelTlv.tagId = LOCAL_TLV_TAG_ID;
+    apsSecurityLevelTlv.length = CALC_TLV_LENGTH_VALUE((sizeof(TargetIeeeAddrTlv_t) - (SIZE_OF_TAG + SIZE_OF_LENGTH)));
+    /* Ref: R23 Spec Section 2.4.3.4.3.3 */
+//    memcpy(&apsSecurityLevelTlv.targetDeviceEUI64, MAC_GetExtAddr(), sizeof(ExtAddr_t));
+    memcpy(&apsSecurityLevelTlv.targetDeviceEUI64, &rReq->apsSecurityLevelTlv.targetDeviceEUI64, sizeof(ExtAddr_t));
+
+    (void)TLV_Encode(tlvData, &apsSecurityLevelTlv);
+    zdpReq->asduPayloadLength = TOTAL_TLV_SIZE(apsSecurityLevelTlv.length);
+
+    ZDO_ZdpReq(zdpReq);
+}
+#endif
 
 void rZdoMgmtNwkUpdateNotifyProcess(ZS_CommandBuffer_t *commandBuffer)
 {
@@ -285,6 +745,46 @@ void rZdoMgmtPermitJoiningRequestProcess(ZS_CommandBuffer_t *commandBuffer)
   SYS_BYTE_MEMCPY(&zdpReq->permitDuration, &rReq->permitDuration, sizeof (uint8_t));
   SYS_BYTE_MEMCPY(&zdpReq->tcSignificance, &rReq->tcSignificance, sizeof (uint8_t));
 
+  
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/* Beacon appendix encapsulation is added only if the device is R23 supported Trsut centre*/
+#ifdef _TRUST_CENTRE_  
+  if (APS_CENTRALIZED_TRUST_CENTER == APS_GetOwnTcMode())
+  {
+    uint8_t *tlvData = NULL;
+    uint8_t *tlvList[BEACON_APPENDIX_ENC_TLV_COUNT];
+    EncapsulationTlv_t encTlv;
+    KeyNegotiationTlv_t keyNegotiationTlv;
+    FragmentationParametersTlv_t fragmentationTlv;
+  
+    zdpClientReq->asduPayloadLength = sizeof(ZDO_MgmtPermitJoiningReq_t);
+    
+    /* Key Negotiation TLV */
+    keyNegotiationTlv.tagId  = SUPPORTED_KEY_NEGOTIATION;
+    keyNegotiationTlv.length = CALC_TLV_LENGTH_VALUE(SUPPORTED_KEY_NEGOTIATION_METHODS_GLOBAL_TLV_DEFAULT_LENGTH);
+    CS_ReadParameter(CS_SUPPORTED_KEY_NEGOTIATION_PROTOCOL_ID, &keyNegotiationTlv.keyNegotiationProtocolBitmask);
+    CS_ReadParameter(CS_SUPPORTED_PRE_SHARED_SECRETS_ID, &keyNegotiationTlv.preSharedSecretBitmask);
+    memcpy(&keyNegotiationTlv.sourceDeviceEUI64, MAC_GetExtAddr(), sizeof(ExtAddr_t));
+
+    /* Fragmentation TLV */
+    fragmentationTlv.tagId  = FRAGMENTATION_PARAMETER;
+    fragmentationTlv.length = CALC_TLV_LENGTH_VALUE(FRAGMENTATION_PARAMETERS_GLOBAL_TLV_DEFAULT_LENGTH);
+    fragmentationTlv.nodeId = NWK_GetShortAddr();
+    CS_ReadParameter(CS_APS_DATA_FRAGMENTATION_ID, &fragmentationTlv.fragmentationOption);
+    CS_ReadParameter(CS_APS_MAX_SIZE_ASDU_ID, &fragmentationTlv.incomingTransferUnits);
+  
+    /* Prepare Encapsulation TLV */
+    tlvList[0U] = (uint8_t *)(&keyNegotiationTlv);
+    tlvList[1U] = (uint8_t *)(&fragmentationTlv);
+    TLV_Encapsulate((void *)&tlvList, 2U, BEACON_APPENDIX_ENCAPSULATION, &encTlv);
+  
+    tlvData = ((uint8_t*)zdpReq) + sizeof(ZDO_MgmtPermitJoiningReq_t);
+    zdpClientReq->asduPayloadLength += TOTAL_TLV_SIZE(encTlv.length);
+
+    TLV_Encode(tlvData, &encTlv);
+  }
+#endif //_TRUST_CENTRE_
+#endif //_ZIGBEE_REV_23_SUPPORT_
   ZDO_ZdpReq(zdpClientReq);
 }
 
@@ -440,6 +940,8 @@ void rZdoNodeDescRequestProcess(ZS_CommandBuffer_t *commandBuffer)
 
   zdpReq->nwkAddrOfInterest = rReq->nwkAddrOfInterest;
 
+  zdpClientReq->asduPayloadLength = 2U;
+
   ZDO_ZdpReq(zdpClientReq);
 }
 
@@ -570,13 +1072,12 @@ void rZdpActiveEPRequestProcess(ZS_CommandBuffer_t *commandBuffer)
 void rZdpComplexDescConfirm(ZDO_ZdpResp_t *conf)
 {
   ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
-  ZS_ZdpComplexDescConf_t *rConf = (ZS_ZdpComplexDescConf_t *) confBuffer->commandFrame.payload;
-  ZDO_ComplexDescResp_t *zdpResp = &conf->respPayload.complexDescResp;
-
+  ZS_ZdpUnsupportedCommandConf_t *rConf = (ZS_ZdpUnsupportedCommandConf_t *) confBuffer->commandFrame.payload;
+  ZDO_UnsupportedCommandResp_t *zdpResp = &conf->respPayload.unsupportedCommandResp;
   rConf->status = conf->respPayload.status;
   rConf->resp.nwkAddrOfInterest = zdpResp->nwkAddrOfInterest;
   confBuffer->commandFrame.commandId = R_ZDO_COMPLEX_DESC_CONFIRM;
-  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpComplexDescConf_t);
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUnsupportedCommandConf_t);
 
   serialManager.write(confBuffer);
   rFreeMem(conf);
@@ -585,16 +1086,13 @@ void rZdpComplexDescConfirm(ZDO_ZdpResp_t *conf)
 void rZdpComplexDescRequestProcess(ZS_CommandBuffer_t *commandBuffer)
 {
   ZDO_ZdpReq_t *zdpClientReq = (ZDO_ZdpReq_t *) rGetMem();
-  ZDO_ComplexDescReq_t *complexDescReq = &zdpClientReq->req.reqPayload.complexDescReq;
-  ZS_ZdpComplexDescReq_t *rReq = (ZS_ZdpComplexDescReq_t *) commandBuffer->commandFrame.payload;
-
+  ZDO_UnsupportedCommandReq_t *unsupportedCommandReq = &zdpClientReq->req.reqPayload.unsupportedCommandReq;
+  ZS_ZdpUnsupportedCommandReq_t *rReq = (ZS_ZdpUnsupportedCommandReq_t *) commandBuffer->commandFrame.payload;
   zdpClientReq->ZDO_ZdpResp = rZdpComplexDescConfirm;
-    zdpClientReq->reqCluster = COMPLEX_DESCRIPTOR_CLID;
-  complexDescReq->nwkAddrOfInterest = rReq->nwkAddrOfInterest;
-
+  zdpClientReq->reqCluster = COMPLEX_DESCRIPTOR_CLID;
+  unsupportedCommandReq->nwkAddrOfInterest = rReq->nwkAddrOfInterest;
   zdpClientReq->dstAddrMode = APS_SHORT_ADDRESS;
   zdpClientReq->dstAddress.shortAddress = rReq->nwkAddrOfInterest;
-
   ZDO_ZdpReq(zdpClientReq);
 }
 #ifdef _PARENT_ANNCE_  
@@ -635,13 +1133,12 @@ void rZdpParentAnnceRequestProcess(ZS_CommandBuffer_t *commandBuffer)
 static void rZdpUserDescConfirm(ZDO_ZdpResp_t *conf)
 {
   ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
-  ZS_ZdpUserDescConf_t *rConf = (ZS_ZdpUserDescConf_t *) confBuffer->commandFrame.payload;
-  ZDO_UserDescResp_t *zdpResp = &conf->respPayload.userDescResp;
+  ZS_ZdpUnsupportedCommandConf_t *rConf = (ZS_ZdpUnsupportedCommandConf_t *) confBuffer->commandFrame.payload;
+  ZDO_UnsupportedCommandResp_t *zdpResp = &conf->respPayload.unsupportedCommandResp;
   rConf->status = conf->respPayload.status;
   rConf->resp = *zdpResp;
   confBuffer->commandFrame.commandId = R_ZDO_USER_DESC_CONFIRM;
-  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUserDescConf_t);
-
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUnsupportedCommandConf_t);
   serialManager.write(confBuffer);
   rFreeMem(conf);
 }
@@ -649,16 +1146,12 @@ static void rZdpUserDescConfirm(ZDO_ZdpResp_t *conf)
 void rZdpUserDescRequestProcess(ZS_CommandBuffer_t *commandBuffer)
 {
   ZDO_ZdpReq_t *zdpClientReq = (ZDO_ZdpReq_t *) rGetMem();
-  ZDO_UserDescReq_t *userDescReq = &zdpClientReq->req.reqPayload.userDescReq;
-  ZS_ZdpUserDescReq_t *rReq = (ZS_ZdpUserDescReq_t *) commandBuffer->commandFrame.payload;
-
+  ZDO_UnsupportedCommandReq_t *unsupportedCommandReq = &zdpClientReq->req.reqPayload.unsupportedCommandReq;
+  ZS_ZdpUnsupportedCommandReq_t *rReq = (ZS_ZdpUnsupportedCommandReq_t *) commandBuffer->commandFrame.payload;
   zdpClientReq->ZDO_ZdpResp = rZdpUserDescConfirm;
   zdpClientReq->reqCluster = USER_DESCRIPTOR_CLID;
   zdpClientReq->dstAddrMode = APS_SHORT_ADDRESS;
   zdpClientReq->dstAddress.shortAddress = rReq->nwkAddrOfInterest;
-
-  userDescReq->nwkAddrOfInterest = rReq->nwkAddrOfInterest;
-
   ZDO_ZdpReq(zdpClientReq);
 }
 
@@ -760,14 +1253,12 @@ void rZdpRtgRequestProcess(ZS_CommandBuffer_t *commandBuffer)
 static void rZdpUserDescSetConfirm(ZDO_ZdpResp_t *conf)
 {
   ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
-  ZS_ZdpUserDescSetConf_t *rConf = (ZS_ZdpUserDescSetConf_t *) confBuffer->commandFrame.payload;
-  ZDO_UserDescConfResp_t *zdpResp = &conf->respPayload.userDescConfResp;
-
+  ZS_ZdpUnsupportedCommandConf_t *rConf = (ZS_ZdpUnsupportedCommandConf_t *) confBuffer->commandFrame.payload;
+  ZDO_UnsupportedCommandResp_t *zdpResp = &conf->respPayload.unsupportedCommandResp;
   rConf->status = conf->respPayload.status;
-  rConf->nwkAddrOfInterest = zdpResp->nwkAddrOfInterest;
+  rConf->resp = *zdpResp;
   confBuffer->commandFrame.commandId = R_ZDO_USER_DESC_SET_CONFIRM;
-  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUserDescSetConf_t);
-
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUnsupportedCommandConf_t);
   serialManager.write(confBuffer);
   rFreeMem(conf);
 }
@@ -775,18 +1266,340 @@ static void rZdpUserDescSetConfirm(ZDO_ZdpResp_t *conf)
 void rZdpUserDescSetRequestProcess(ZS_CommandBuffer_t *commandBuffer)
 {
   ZDO_ZdpReq_t *zdpClientReq = (ZDO_ZdpReq_t *) rGetMem();
-  ZDO_UserDescSetReq_t *zdpReq = &zdpClientReq->req.reqPayload.userDescSetReq;
-  ZS_ZdpUserDescSetReq_t *rReq = (ZS_ZdpUserDescSetReq_t *) commandBuffer->commandFrame.payload;
-
+  ZS_ZdpUnsupportedCommandReq_t *rReq = (ZS_ZdpUnsupportedCommandReq_t *) commandBuffer->commandFrame.payload;
   zdpClientReq->ZDO_ZdpResp = rZdpUserDescSetConfirm;
   zdpClientReq->reqCluster = USER_DESC_CONF_CLID;
   zdpClientReq->dstAddrMode = APS_SHORT_ADDRESS;
   zdpClientReq->dstAddress.shortAddress = rReq->nwkAddrOfInterest;
+  ZDO_ZdpReq(zdpClientReq);
+}
 
-  *zdpReq = *rReq;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+
+static void rZdpDiscoveryCacheConfirm(ZDO_ZdpResp_t *conf) {
+  ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+  ZS_ZdpUnsupportedCommandConf_t *rConf = (ZS_ZdpUnsupportedCommandConf_t *) confBuffer->commandFrame.payload;
+  ZDO_UnsupportedCommandResp_t *zdpResp = &conf->respPayload.unsupportedCommandResp;
+  rConf->status = conf->respPayload.status;
+  rConf->resp = *zdpResp;
+  confBuffer->commandFrame.commandId = R_ZDO_DISCOVERY_CACHE_CONFIRM;
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUnsupportedCommandConf_t);
+  serialManager.write(confBuffer);
+  rFreeMem(conf);
+}
+
+void rZdpDiscoveryCacheRequestProcess(ZS_CommandBuffer_t *commandBuffer) {
+  ZDO_ZdpReq_t *zdpClientReq = (ZDO_ZdpReq_t *) rGetMem();
+  ZDO_UnsupportedCommandReq_t *unsupportedCommandReq = &zdpClientReq->req.reqPayload.unsupportedCommandReq;
+  ZS_ZdpUnsupportedCommandReq_t *rReq = (ZS_ZdpUnsupportedCommandReq_t *) commandBuffer->commandFrame.payload;
+  zdpClientReq->ZDO_ZdpResp = rZdpDiscoveryCacheConfirm;
+  zdpClientReq->reqCluster = DISCOVERY_CASH_CLID;
+  zdpClientReq->dstAddrMode = APS_SHORT_ADDRESS;
+  zdpClientReq->dstAddress.shortAddress = rReq->nwkAddrOfInterest;
+  ZDO_ZdpReq(zdpClientReq);
+}
+
+static void rZdpDiscoveryStoreConfirm(ZDO_ZdpResp_t *conf) {
+  ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+  ZS_ZdpUnsupportedCommandConf_t *rConf = (ZS_ZdpUnsupportedCommandConf_t *) confBuffer->commandFrame.payload;
+  ZDO_UnsupportedCommandResp_t *zdpResp = &conf->respPayload.unsupportedCommandResp;
+  rConf->status = conf->respPayload.status;
+  rConf->resp = *zdpResp;
+  confBuffer->commandFrame.commandId = R_ZDP_DISCOVERY_STORE_CONFIRM;
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUnsupportedCommandConf_t);
+  serialManager.write(confBuffer);
+  rFreeMem(conf);
+}
+
+void rZdpDiscoveryStoreRequestProcess(ZS_CommandBuffer_t *commandBuffer) {
+  ZDO_ZdpReq_t *zdpClientReq = (ZDO_ZdpReq_t *) rGetMem();
+  ZDO_UnsupportedCommandReq_t *unsupportedCommandReq = &zdpClientReq->req.reqPayload.unsupportedCommandReq;
+  ZS_ZdpUnsupportedCommandReq_t *rReq = (ZS_ZdpUnsupportedCommandReq_t *) commandBuffer->commandFrame.payload;
+  zdpClientReq->ZDO_ZdpResp = rZdpDiscoveryStoreConfirm;
+  zdpClientReq->reqCluster = DISCOVERY_STORE_CLID;
+  zdpClientReq->dstAddrMode = APS_SHORT_ADDRESS;
+  zdpClientReq->dstAddress.shortAddress = rReq->nwkAddrOfInterest;
+  ZDO_ZdpReq(zdpClientReq);
+}
+
+static void rZdpNodeDescStoreConfirm(ZDO_ZdpResp_t *conf) {
+  ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+  ZS_ZdpUnsupportedCommandConf_t *rConf = (ZS_ZdpUnsupportedCommandConf_t *) confBuffer->commandFrame.payload;
+  ZDO_UnsupportedCommandResp_t *zdpResp = &conf->respPayload.unsupportedCommandResp;
+  rConf->status = conf->respPayload.status;
+  rConf->resp = *zdpResp;
+  confBuffer->commandFrame.commandId = R_ZDP_NODE_DESC_STORE_CONFIRM;
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUnsupportedCommandConf_t);
+  serialManager.write(confBuffer);
+  rFreeMem(conf);
+}
+
+void rZdpNodeDescriptorStoreRequestProcess(ZS_CommandBuffer_t *commandBuffer) {
+  ZDO_ZdpReq_t *zdpClientReq = (ZDO_ZdpReq_t *) rGetMem();
+  ZDO_UnsupportedCommandReq_t *unsupportedCommandReq = &zdpClientReq->req.reqPayload.unsupportedCommandReq;
+  ZS_ZdpUnsupportedCommandReq_t *rReq = (ZS_ZdpUnsupportedCommandReq_t *) commandBuffer->commandFrame.payload;
+  zdpClientReq->ZDO_ZdpResp = rZdpNodeDescStoreConfirm;
+  zdpClientReq->reqCluster = NODE_DESC_STORE_CLID;
+  zdpClientReq->dstAddrMode = APS_SHORT_ADDRESS;
+  zdpClientReq->dstAddress.shortAddress = rReq->nwkAddrOfInterest;
+  ZDO_ZdpReq(zdpClientReq);
+}
+
+static void rZdpPowerDescStoreConfirm(ZDO_ZdpResp_t *conf) {
+  ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+  ZS_ZdpUnsupportedCommandConf_t *rConf = (ZS_ZdpUnsupportedCommandConf_t *) confBuffer->commandFrame.payload;
+  ZDO_UnsupportedCommandResp_t *zdpResp = &conf->respPayload.unsupportedCommandResp;
+  rConf->status = conf->respPayload.status;
+  rConf->resp = *zdpResp;
+  confBuffer->commandFrame.commandId = R_ZDP_POWER_DESC_STORE_CONFIRM;
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUnsupportedCommandConf_t);
+  serialManager.write(confBuffer);
+  rFreeMem(conf);
+}
+
+void rZdpPowerDescriptorStoreRequestProcess(ZS_CommandBuffer_t *commandBuffer) {
+  ZDO_ZdpReq_t *zdpClientReq = (ZDO_ZdpReq_t *) rGetMem();
+  ZDO_UnsupportedCommandReq_t *unsupportedCommandReq = &zdpClientReq->req.reqPayload.unsupportedCommandReq;
+  ZS_ZdpUnsupportedCommandReq_t *rReq = (ZS_ZdpUnsupportedCommandReq_t *) commandBuffer->commandFrame.payload;
+  zdpClientReq->ZDO_ZdpResp = rZdpPowerDescStoreConfirm;
+  zdpClientReq->reqCluster = POWER_DESC_STORE_CLID;
+  zdpClientReq->dstAddrMode = APS_SHORT_ADDRESS;
+  zdpClientReq->dstAddress.shortAddress = rReq->nwkAddrOfInterest;
+  ZDO_ZdpReq(zdpClientReq);
+}
+
+static void rZdpActiveEPStoreConfirm(ZDO_ZdpResp_t *conf) {
+  ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+  ZS_ZdpUnsupportedCommandConf_t *rConf = (ZS_ZdpUnsupportedCommandConf_t *) confBuffer->commandFrame.payload;
+  ZDO_UnsupportedCommandResp_t *zdpResp = &conf->respPayload.unsupportedCommandResp;
+  rConf->status = conf->respPayload.status;
+  rConf->resp = *zdpResp;
+  confBuffer->commandFrame.commandId = R_ZDP_ACTIVE_EP_STORE_CONFIRM;
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUnsupportedCommandConf_t);
+  serialManager.write(confBuffer);
+  rFreeMem(conf);
+}
+
+void rZdpActiveEPStoreRequestProcess(ZS_CommandBuffer_t *commandBuffer) {
+  ZDO_ZdpReq_t *zdpClientReq = (ZDO_ZdpReq_t *) rGetMem();
+  ZDO_UnsupportedCommandReq_t *unsupportedCommandReq = &zdpClientReq->req.reqPayload.unsupportedCommandReq;
+  ZS_ZdpUnsupportedCommandReq_t *rReq = (ZS_ZdpUnsupportedCommandReq_t *) commandBuffer->commandFrame.payload;
+  zdpClientReq->ZDO_ZdpResp = rZdpActiveEPStoreConfirm;
+  zdpClientReq->reqCluster = ACTIVE_EP_STORE_CLID;
+  zdpClientReq->dstAddrMode = APS_SHORT_ADDRESS;
+  zdpClientReq->dstAddress.shortAddress = rReq->nwkAddrOfInterest;
+  ZDO_ZdpReq(zdpClientReq);
+}
+
+static void rZdpSimpleDescStoreConfirm(ZDO_ZdpResp_t *conf) {
+  ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+  ZS_ZdpUnsupportedCommandConf_t *rConf = (ZS_ZdpUnsupportedCommandConf_t *) confBuffer->commandFrame.payload;
+  ZDO_UnsupportedCommandResp_t *zdpResp = &conf->respPayload.unsupportedCommandResp;
+  rConf->status = conf->respPayload.status;
+  rConf->resp = *zdpResp;
+  confBuffer->commandFrame.commandId = R_ZDP_SIMPLE_DESC_STORE_CONFIRM;
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUnsupportedCommandConf_t);
+  serialManager.write(confBuffer);
+  rFreeMem(conf);
+}
+
+void rZdpSimpleDescStoreRequestProcess(ZS_CommandBuffer_t *commandBuffer) {
+  ZDO_ZdpReq_t *zdpClientReq = (ZDO_ZdpReq_t *) rGetMem();
+  ZDO_UnsupportedCommandReq_t *unsupportedCommandReq = &zdpClientReq->req.reqPayload.unsupportedCommandReq;
+  ZS_ZdpUnsupportedCommandReq_t *rReq = (ZS_ZdpUnsupportedCommandReq_t *) commandBuffer->commandFrame.payload;
+  zdpClientReq->ZDO_ZdpResp = rZdpSimpleDescStoreConfirm;
+  zdpClientReq->reqCluster = SIMPLE_DESC_STORE_CLID;
+  zdpClientReq->dstAddrMode = APS_SHORT_ADDRESS;
+  zdpClientReq->dstAddress.shortAddress = rReq->nwkAddrOfInterest;
+  ZDO_ZdpReq(zdpClientReq);
+}
+
+static void rZdpRemoveNodeCacheConfirm(ZDO_ZdpResp_t *conf) {
+  ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+  ZS_ZdpUnsupportedCommandConf_t *rConf = (ZS_ZdpUnsupportedCommandConf_t *) confBuffer->commandFrame.payload;
+  ZDO_UnsupportedCommandResp_t *zdpResp = &conf->respPayload.unsupportedCommandResp;
+  rConf->status = conf->respPayload.status;
+  rConf->resp = *zdpResp;
+  confBuffer->commandFrame.commandId = R_ZDP_REMOVE_NODE_CACHE_CONFIRM;
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUnsupportedCommandConf_t);
+  serialManager.write(confBuffer);
+  rFreeMem(conf);
+}
+
+void rZdpRemoveNodeCacheRequestProcess(ZS_CommandBuffer_t *commandBuffer) {
+  ZDO_ZdpReq_t *zdpClientReq = (ZDO_ZdpReq_t *) rGetMem();
+  ZDO_UnsupportedCommandReq_t *unsupportedCommandReq = &zdpClientReq->req.reqPayload.unsupportedCommandReq;
+  ZS_ZdpUnsupportedCommandReq_t *rReq = (ZS_ZdpUnsupportedCommandReq_t *) commandBuffer->commandFrame.payload;
+  zdpClientReq->ZDO_ZdpResp = rZdpRemoveNodeCacheConfirm;
+  zdpClientReq->reqCluster = REMOVE_NODE_CACHE_CLID;
+  zdpClientReq->dstAddrMode = APS_SHORT_ADDRESS;
+  zdpClientReq->dstAddress.shortAddress = rReq->nwkAddrOfInterest;
 
   ZDO_ZdpReq(zdpClientReq);
 }
+
+static void rZdpFindNodeCacheConfirm(ZDO_ZdpResp_t *conf) {
+  ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+  ZS_ZdpUnsupportedCommandConf_t *rConf = (ZS_ZdpUnsupportedCommandConf_t *) confBuffer->commandFrame.payload;
+  ZDO_UnsupportedCommandResp_t *zdpResp = &conf->respPayload.unsupportedCommandResp;
+  rConf->status = conf->respPayload.status;
+  rConf->resp = *zdpResp;
+  confBuffer->commandFrame.commandId = R_ZDP_FIND_NODE_CACHE_CONFIRM;
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUnsupportedCommandConf_t);
+  serialManager.write(confBuffer);
+  rFreeMem(conf);
+}
+
+void rZdpFindNodeCacheRequestProcess(ZS_CommandBuffer_t *commandBuffer) {
+  ZDO_ZdpReq_t *zdpClientReq = (ZDO_ZdpReq_t *) rGetMem();
+  ZDO_UnsupportedCommandReq_t *unsupportedCommandReq = &zdpClientReq->req.reqPayload.unsupportedCommandReq;
+  ZS_ZdpUnsupportedCommandReq_t *rReq = (ZS_ZdpUnsupportedCommandReq_t *) commandBuffer->commandFrame.payload;
+  zdpClientReq->ZDO_ZdpResp = rZdpFindNodeCacheConfirm;
+  zdpClientReq->reqCluster = FIND_NODE_CACHE_CLID;
+  zdpClientReq->dstAddrMode = APS_SHORT_ADDRESS;
+  zdpClientReq->dstAddress.shortAddress = rReq->nwkAddrOfInterest;
+  ZDO_ZdpReq(zdpClientReq);
+}
+
+static void rZdpExtendedSimpleDescConfirm(ZDO_ZdpResp_t *conf) {
+  ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+  ZS_ZdpUnsupportedCommandConf_t *rConf = (ZS_ZdpUnsupportedCommandConf_t *) confBuffer->commandFrame.payload;
+  ZDO_UnsupportedCommandResp_t *zdpResp = &conf->respPayload.unsupportedCommandResp;
+  rConf->status = conf->respPayload.status;
+  rConf->resp = *zdpResp;
+  confBuffer->commandFrame.commandId = R_ZDO_EXTENDED_SIMPLE_DESC_CONFIRM;
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUnsupportedCommandConf_t);
+  serialManager.write(confBuffer);
+  rFreeMem(conf);
+}
+
+void rZdpExtendedSimpleDescRequestProcess(ZS_CommandBuffer_t *commandBuffer) {
+  ZDO_ZdpReq_t *zdpClientReq = (ZDO_ZdpReq_t *) rGetMem();
+  ZDO_UnsupportedCommandReq_t *unsupportedCommandReq = &zdpClientReq->req.reqPayload.unsupportedCommandReq;
+  ZS_ZdpUnsupportedCommandReq_t *rReq = (ZS_ZdpUnsupportedCommandReq_t *) commandBuffer->commandFrame.payload;
+  zdpClientReq->ZDO_ZdpResp = rZdpExtendedSimpleDescConfirm;
+  zdpClientReq->reqCluster = EXTENDED_SIMPLE_DESC_CLID;
+  zdpClientReq->dstAddrMode = APS_SHORT_ADDRESS;
+  zdpClientReq->dstAddress.shortAddress = rReq->nwkAddrOfInterest;
+  ZDO_ZdpReq(zdpClientReq);
+}
+
+static void rZdpExtendedActiveEPConfirm(ZDO_ZdpResp_t *conf) {
+  ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+  ZS_ZdpUnsupportedCommandConf_t *rConf = (ZS_ZdpUnsupportedCommandConf_t *) confBuffer->commandFrame.payload;
+  ZDO_UnsupportedCommandResp_t *zdpResp = &conf->respPayload.unsupportedCommandResp;
+  rConf->status = conf->respPayload.status;
+  rConf->resp = *zdpResp;
+  confBuffer->commandFrame.commandId = R_ZDO_EXTENDED_ACTIVE_EP_CONFIRM;
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUnsupportedCommandConf_t);
+  serialManager.write(confBuffer);
+  rFreeMem(conf);
+}
+
+void rZdpExtendedActiveEPRequestProcess(ZS_CommandBuffer_t *commandBuffer) {
+  ZDO_ZdpReq_t *zdpClientReq = (ZDO_ZdpReq_t *) rGetMem();
+  ZDO_UnsupportedCommandReq_t *unsupportedCommandReq = &zdpClientReq->req.reqPayload.unsupportedCommandReq;
+  ZS_ZdpUnsupportedCommandReq_t *rReq = (ZS_ZdpUnsupportedCommandReq_t *) commandBuffer->commandFrame.payload;
+  zdpClientReq->ZDO_ZdpResp = rZdpExtendedActiveEPConfirm;
+  zdpClientReq->reqCluster = EXTENDED_ACTIVE_EP_CLID;
+  zdpClientReq->dstAddrMode = APS_SHORT_ADDRESS;
+  zdpClientReq->dstAddress.shortAddress = rReq->nwkAddrOfInterest;
+  ZDO_ZdpReq(zdpClientReq);
+}
+
+static void rZdpMgmtNWKDiscConfirm(ZDO_ZdpResp_t *conf) {
+  ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+  ZS_ZdpUnsupportedCommandConf_t *rConf = (ZS_ZdpUnsupportedCommandConf_t *) confBuffer->commandFrame.payload;
+  ZDO_UnsupportedCommandResp_t *zdpResp = &conf->respPayload.unsupportedCommandResp;
+  rConf->status = conf->respPayload.status;
+  rConf->resp = *zdpResp;
+  confBuffer->commandFrame.commandId = R_ZDO_MGMT_NWK_DISC_CONFIRM;
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUnsupportedCommandConf_t);
+  serialManager.write(confBuffer);
+  rFreeMem(conf);
+}
+
+void rZdpMgmtNWKDiscRequestProcess(ZS_CommandBuffer_t *commandBuffer) {
+  ZDO_ZdpReq_t *zdpClientReq = (ZDO_ZdpReq_t *) rGetMem();
+  ZDO_UnsupportedCommandReq_t *unsupportedCommandReq = &zdpClientReq->req.reqPayload.unsupportedCommandReq;
+  ZS_ZdpUnsupportedCommandReq_t *rReq = (ZS_ZdpUnsupportedCommandReq_t *) commandBuffer->commandFrame.payload;
+  zdpClientReq->ZDO_ZdpResp = rZdpMgmtNWKDiscConfirm;
+  zdpClientReq->reqCluster = MGMT_NWK_DISC_CLID;
+  zdpClientReq->dstAddrMode = APS_SHORT_ADDRESS;
+  zdpClientReq->dstAddress.shortAddress = rReq->nwkAddrOfInterest;
+  ZDO_ZdpReq(zdpClientReq);
+}
+
+static void rZdpMgmtDirectJoinConfirm(ZDO_ZdpResp_t *conf) {
+  ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+  ZS_ZdpUnsupportedCommandConf_t *rConf = (ZS_ZdpUnsupportedCommandConf_t *) confBuffer->commandFrame.payload;
+  ZDO_UnsupportedCommandResp_t *zdpResp = &conf->respPayload.unsupportedCommandResp;
+  rConf->status = conf->respPayload.status;
+  rConf->resp = *zdpResp;
+  confBuffer->commandFrame.commandId = R_ZDO_MGMT_DIRECT_JOIN_CONFIRM;
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUnsupportedCommandConf_t);
+  serialManager.write(confBuffer);
+  rFreeMem(conf);
+}
+
+void rZdpMgmtDirectJoinRequestProcess(ZS_CommandBuffer_t *commandBuffer) {
+  ZDO_ZdpReq_t *zdpClientReq = (ZDO_ZdpReq_t *) rGetMem();
+  ZDO_UnsupportedCommandReq_t *unsupportedCommandReq = &zdpClientReq->req.reqPayload.unsupportedCommandReq;
+  ZS_ZdpUnsupportedCommandReq_t *rReq = (ZS_ZdpUnsupportedCommandReq_t *) commandBuffer->commandFrame.payload;
+  zdpClientReq->ZDO_ZdpResp = rZdpMgmtDirectJoinConfirm;
+  zdpClientReq->reqCluster = MGMT_DIRECT_JOIN_CLID;
+  zdpClientReq->dstAddrMode = APS_SHORT_ADDRESS;
+  zdpClientReq->dstAddress.shortAddress = rReq->nwkAddrOfInterest;
+  ZDO_ZdpReq(zdpClientReq);
+}
+
+static void rZdpMgmtCacheConfirm(ZDO_ZdpResp_t *conf) {
+  ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+  ZS_ZdpUnsupportedCommandConf_t *rConf = (ZS_ZdpUnsupportedCommandConf_t *) confBuffer->commandFrame.payload;
+  ZDO_UnsupportedCommandResp_t *zdpResp = &conf->respPayload.unsupportedCommandResp;
+  rConf->status = conf->respPayload.status;
+  rConf->resp = *zdpResp;
+  confBuffer->commandFrame.commandId = R_ZDP_MGMT_CACHE_CONFIRM;
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUnsupportedCommandConf_t);
+  serialManager.write(confBuffer);
+  rFreeMem(conf);
+}
+
+void rZdpMgmtCacheRequestProcess(ZS_CommandBuffer_t *commandBuffer) {
+  ZDO_ZdpReq_t *zdpClientReq = (ZDO_ZdpReq_t *) rGetMem();
+  ZDO_UnsupportedCommandReq_t *unsupportedCommandReq = &zdpClientReq->req.reqPayload.unsupportedCommandReq;
+  ZS_ZdpUnsupportedCommandReq_t *rReq = (ZS_ZdpUnsupportedCommandReq_t *) commandBuffer->commandFrame.payload;
+  zdpClientReq->ZDO_ZdpResp = rZdpMgmtCacheConfirm;
+  zdpClientReq->reqCluster = MGMT_CACHE_CLID;
+  zdpClientReq->dstAddrMode = APS_SHORT_ADDRESS;
+  zdpClientReq->dstAddress.shortAddress = rReq->nwkAddrOfInterest;
+  ZDO_ZdpReq(zdpClientReq);
+}
+
+static void rZdpReservedClusterConfirm(ZDO_ZdpResp_t *conf) {
+  ZS_CommandBuffer_t *confBuffer = bufferAllocator.allocate();
+  ZS_ZdpUnsupportedCommandConf_t *rConf = (ZS_ZdpUnsupportedCommandConf_t *) confBuffer->commandFrame.payload;
+  ZDO_UnsupportedCommandResp_t *zdpResp = &conf->respPayload.unsupportedCommandResp;
+  rConf->status = conf->respPayload.status;
+  rConf->resp = *zdpResp;
+  confBuffer->commandFrame.commandId = R_ZDO_RESERVED_CLUSTER_CONFIRM;
+  confBuffer->commandFrame.length = R_COMMAND_ID_SIZE + sizeof (ZS_ZdpUnsupportedCommandConf_t);
+  serialManager.write(confBuffer);
+  rFreeMem(conf);
+}
+
+void rZdpReservedClusterRequestProcess(ZS_CommandBuffer_t *commandBuffer) {
+  ZDO_ZdpReq_t *zdpClientReq = (ZDO_ZdpReq_t *) rGetMem();
+  ZDO_UnsupportedCommandReq_t *unsupportedCommandReq = &zdpClientReq->req.reqPayload.unsupportedCommandReq;
+  ZS_ZdpUnsupportedCommandReq_t *rReq = (ZS_ZdpUnsupportedCommandReq_t *) commandBuffer->commandFrame.payload;
+  zdpClientReq->ZDO_ZdpResp = rZdpReservedClusterConfirm;
+  zdpClientReq->reqCluster = RESERVED_CLUSTER_CLID;
+  zdpClientReq->dstAddrMode = APS_SHORT_ADDRESS;
+  zdpClientReq->dstAddress.shortAddress = rReq->nwkAddrOfInterest;
+  ZDO_ZdpReq(zdpClientReq);
+}
+
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
 
 static void rZdpNwkUpdateConfirm(ZDO_ZdpResp_t *conf)
 {
@@ -873,20 +1686,12 @@ void rZdpActiveEPRequestProcess(ZS_CommandBuffer_t *commandBuffer)
   (void)commandBuffer;
 }
 
-void rZdpComplexDescRequestProcess(ZS_CommandBuffer_t *commandBuffer)
-{
-  (void)commandBuffer;
-}
 #ifdef _PARENT_ANNCE_  
 void rZdpParentAnnceRequestProcess(ZS_CommandBuffer_t *commandBuffer)
 {
   (void)commandBuffer;
 }
 #endif
-void rZdpUserDescRequestProcess(ZS_CommandBuffer_t *commandBuffer)
-{
-  (void)commandBuffer;
-}
 
 void rZdpEndDeviceAnnceRequestProcess(ZS_CommandBuffer_t *commandBuffer)
 {
@@ -899,11 +1704,6 @@ void rZdpLqiRequestProcess(ZS_CommandBuffer_t *commandBuffer)
 }
 
 void rZdpRtgRequestProcess(ZS_CommandBuffer_t *commandBuffer)
-{
-  (void)commandBuffer;
-}
-
-void rZdpUserDescSetRequestProcess(ZS_CommandBuffer_t *commandBuffer)
 {
   (void)commandBuffer;
 }
@@ -1200,6 +2000,10 @@ void rZdoVerifyKeyRequestProcess(ZS_CommandBuffer_t *commandBuffer)
   ZS_VerifyKeyReq_t *rReq = (ZS_VerifyKeyReq_t *) commandBuffer->commandFrame.payload;
 
   verifyKey->timeout = rReq->timeout;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  verifyKey->keyType = rReq->keyType;
+  verifyKey->relayCmd = rReq->relayCmd;
+#endif
   verifyKey->verifyKeyConf = rZdoVerifyKeyConfirmProcess;
   ZDO_VerifyKeyReq(verifyKey);
 }

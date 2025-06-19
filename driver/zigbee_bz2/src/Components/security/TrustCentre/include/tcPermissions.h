@@ -121,5 +121,15 @@ bool TC_IsAllowInstallCodes();
  ******************************************************************************/
 void TC_InitializePolicy(APS_TCSecurityPolicy_t *policy);
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+  \brief Get TC policy requireInstallCodesOrPresetPassphrase.
+
+  \param[in] None.
+
+  \return tcPolicyValue - TC_POLICY_INSTALL_CODES_OR_PASSPHRASE.
+ ******************************************************************************/
+uint8_t TC_GetRequireInstallCodesOrPresetPassphrase();
+#endif // #ifdef _ZIGBEE_REV_23_SUPPORT_
 #endif //#if defined (_LINK_SECURITY_) && defined (_TRUST_CENTRE_)
 #endif //#if !defined TC_PERMISSIONS_H

@@ -43,6 +43,17 @@ pic32cx_bz3_family = {'PIC32CX5109BZ31048',
                       'WBZ350',
                       }
 
+pic32cx_bz6_family = {  'PIC32CX2051BZ62132',
+                        'PIC32CX2051BZ62064',
+                        'PIC32CX2051BZ66048',
+                        'WBZ653',
+                        'WBZ652',
+                        'WBZ651',
+                        'PIC32WM_BZ6204',
+                        'PIC32WM_BZ6203',
+                        'PIC32WM_BZ6602',                        
+                        'PIC32CX2051BZ62132_FPGA',
+                    }
 global deviceName
 deviceName = Variables.get("__PROCESSOR")
 
@@ -63,6 +74,13 @@ def finalizeComponent(drvzgpdevice):
         res = Database.activateComponents(["tc0","pic32cx_bz3_devsupport"])
         result = Database.connectDependencies([[drvzgpdevice.getID(), 'TC0_TMR_Zigbee', 'tc0', 'TC0_TMR']])
 
+    elif (deviceName in pic32cx_bz6_family):
+        #res = Database.activateComponents(["tcc2","pic32cx_bz3_devsupport"])
+        #result = Database.connectDependencies([[drvzgpdevice.getID(), 'TCC2_PWM_Zigbee', 'tcc2', 'TCC2_PWM']])
+        res = Database.activateComponents(["tc0","pic32cx_bz6_devsupport"])
+        result = Database.connectDependencies([[drvzgpdevice.getID(), 'TC0_TMR_Zigbee', 'tc0', 'TC0_TMR']])
+
+
     #responsible for adding custom app.c to project path instead of the app.c from device support
     try:
         if( deviceName in pic32cx_bz2_family):
@@ -72,6 +90,11 @@ def finalizeComponent(drvzgpdevice):
             print("DISABLED APP FILE GENERATION FROM DEVICE SUPPORT")
         elif( deviceName in pic32cx_bz3_family):
             disableDeviceApp = Database.getComponentByID("pic32cx_bz3_devsupport")
+            devicecAppFile = disableDeviceApp.getSymbolByID("DEVICE_APP_C")
+            devicecAppFile.setEnabled(False)
+            print("DISABLED APP FILE GENERATION FROM DEVICE SUPPORT")
+        elif( deviceName in pic32cx_bz6_family):
+            disableDeviceApp = Database.getComponentByID("pic32cx_bz6_devsupport")
             devicecAppFile = disableDeviceApp.getSymbolByID("DEVICE_APP_C")
             devicecAppFile.setEnabled(False)
             print("DISABLED APP FILE GENERATION FROM DEVICE SUPPORT")
@@ -144,6 +167,14 @@ def instantiateComponent(drvzgpdevice):
               if r not in activeComponents:
                   print("require component '{}' - activating it".format(r))
                   res = Database.activateComponents([r])
+    elif (deviceName in pic32cx_bz6_family):
+          activeComponents = Database.getActiveComponentIDs()
+          #requiredComponents = ["tcc2","pic32cx_bz3_devsupport"]
+          requiredComponents = ["tc0","pic32cx_bz6_devsupport"]
+          for r in requiredComponents:
+              if r not in activeComponents:
+                  print("require component '{}' - activating it".format(r))
+                  res = Database.activateComponents([r])
 
     global MacAsSource
     MacAsSource = drvzgpdevice.createBooleanSymbol("MAC_AS_SOURCE", None)
@@ -184,6 +215,9 @@ def instantiateComponent(drvzgpdevice):
     if( deviceName in pic32cx_bz2_family):
         drvzgpdevice.setDependencyEnabled('TCC2_PWM_Zigbee', False) #If bz2, disable TCC2 by default
     elif( deviceName in pic32cx_bz3_family):
+        #drvzgpdevice.setDependencyEnabled('TC0_TMR_Zigbee', False)
+        drvzgpdevice.setDependencyEnabled('TCC2_PWM_Zigbee', False)
+    elif( deviceName in pic32cx_bz6_family):
         #drvzgpdevice.setDependencyEnabled('TC0_TMR_Zigbee', False)
         drvzgpdevice.setDependencyEnabled('TCC2_PWM_Zigbee', False)
 
@@ -277,6 +311,11 @@ def instantiateComponent(drvzgpdevice):
     deviceDeepSleepenabled1 = drvzgpdevice.createBooleanSymbol('DEVICE_DEEP_SLEEP_ENABLED', None)
     deviceDeepSleepenabled1.setVisible(False)
     deviceDeepSleepenabled1.setDefaultValue(False)
+
+    global tcSwapoutEnabled1
+    tcSwapoutEnabled1 = drvzgpdevice.createBooleanSymbol("TC_SWAPOUT_ENABLED", None)
+    tcSwapoutEnabled1.setVisible(False)
+    tcSwapoutEnabled1.setDefaultValue(False)
     #################################################################
     ###############  System Initialization Settings   ###############
     #################################################################
@@ -327,6 +366,7 @@ def instantiateComponent(drvzgpdevice):
         ['aps/include/intrpData.h',                  condAlways],
         ['aps/include/private/apsFrames.h',          condAlways],
         ['aps/include/private/apsKeyPairSet.h',      condAlways],
+        ['aps/include/apsFragmentationCache.h',      condAlways],
         ['aps/include/private/apsMemoryManager.h',   condAlways],
     ]
 
@@ -608,6 +648,7 @@ def instantiateComponent(drvzgpdevice):
         #['hal/cortexm4/pic32cx_bz2/include/hpl_aes_sync.h',          condAlways],
         #['hal/cortexm4/pic32cx_bz2/include/hri_aes_e54.h',           condAlways],
         ['hal/cortexm4/pic32cx_bz2/include/halAes.h',                condAlways],
+        ['hal/cortexm4/pic32cx_bz2/include/halCurve25519.h',          condAlways],
         # ['hal/cortexm4/pic32cx_bz2/include/Pic32cx_Miscellaneous.h', condAlways],
     ]
 
@@ -638,6 +679,7 @@ def instantiateComponent(drvzgpdevice):
         ['hal/cortexm4/pic32cx_bz3/include/halTrng.h',               condAlways],
         #['hal/cortexm4/pic32cx_bz3/include/hri_aes_e54.h',           condAlways],
         ['hal/cortexm4/pic32cx_bz3/include/halAes.h',                condAlways],
+        ['hal/cortexm4/pic32cx_bz3/include/halCurve25519.h',          condAlways],
         # ['hal/cortexm4/pic32cx_bz3/include/Pic32cx_Miscellaneous.h', condAlways],
     ]
     
@@ -919,6 +961,7 @@ def instantiateComponent(drvzgpdevice):
         #['hal/cortexm4/pic32cx_bz2/src/halSleepTimerClock.c',     condAlways],
         #['hal/cortexm4/pic32cx_bz2/src/hpl_aes.c',                condAlways],
         ['hal/cortexm4/pic32cx_bz2/src/halAes.c',                 condAlways],
+        ['hal/cortexm4/pic32cx_bz2/src/halCurve25519.c',              condAlways],
     ]
     
     zdrvStackHALCommonSrcFiles = [
@@ -942,6 +985,7 @@ def instantiateComponent(drvzgpdevice):
         #['hal/cortexm4/pic32cx_bz3/src/halSleepTimerClock.c',     condAlways],
         ['hal/cortexm4/pic32cx_bz3/src/halTrng.c',                condAlways],
         ['hal/cortexm4/pic32cx_bz3/src/halAes.c',                 condAlways],
+        ['hal/cortexm4/pic32cx_bz3/src/halCurve25519.c',          condAlways],
     ]
 
     zdrvStackBZ3HALCommonSrcFiles = [
@@ -1082,6 +1126,7 @@ def instantiateComponent(drvzgpdevice):
 		['/src/Components/security/serviceprovider/include',                   condAlways],
         ['/src/Components/security/serviceprovider/include/private',           condAlways],
         ['/src/Components/security/SoftAes',                                   condAlways],
+        ['/src/Components/security/Curve25519',                                condAlways],
         ['/peripheral',                                                                                    condAlways],
         ['/driver/pds/include',                                                                            condAlways],
         ['/crypto',                                                                                        condAlways],
@@ -1680,4 +1725,6 @@ def onAttachmentDisconnected(source, target):
           Database.sendMessage("pic32cx_bz2_devsupport", "CONSOLE_ENABLE", {"isEnabled":False})
         elif (deviceName in pic32cx_bz3_family):
           Database.sendMessage("pic32cx_bz3_devsupport", "CONSOLE_ENABLE", {"isEnabled":False})
+        elif (deviceName in pic32cx_bz6_family):
+          Database.sendMessage("pic32cx_bz6_devsupport", "CONSOLE_ENABLE", {"isEnabled":False})
         print("setting ENABLE CONSOLE in application Configuration as False Since DRV_USART is disconnected")

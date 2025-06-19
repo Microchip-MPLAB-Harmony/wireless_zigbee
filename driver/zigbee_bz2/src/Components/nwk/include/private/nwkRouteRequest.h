@@ -130,6 +130,10 @@ typedef struct PACK _NwkRouteRequestPayload_t
    * the IEEE address of the destination of the route request command frame.
    ** ZigBee spec r18, 3.4.1.3.5, page 321. */
   ExtAddr_t dstExtAddr;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  /** Router Information Global TLV is appended at the end of the payload (Zigbee Spec R23) */
+  RouterInformationTlv_t routerInformationTlv;
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
 } NwkRouteRequestPayload_t;
 END_PACK
 

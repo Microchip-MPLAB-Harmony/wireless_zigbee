@@ -72,6 +72,9 @@
 #define  HASH_NWK_COUNTERS_UPDATED_EVENT           0x40
 #define  HASH_NWK_REQ_ID_UPDATED_EVENT             0x200
 #define  HASH_CHANNEL_CHANGED_EVENT                0x02
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#define  HASH_APS_FRAGMENT_CACHE_UPDATED_EVENT     0x400
+#endif
 
 #define EVENT_TO_MEM_ID_MAPPING(event, id)  {.eventId = (event), .itemId = (id)}
 
@@ -93,6 +96,9 @@ typedef enum
   NWK_COUNTERS_UPDATED_EVENT,
   NWK_REQ_ID_UPDATED_EVENT,
   CHANNEL_CHANGED_EVENT,
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  APS_FRAGMENT_CACHE_UPDATED_EVENT,
+#endif
   BC_PDS_MAX_EVENT
 }EventsInPDS_t;
 
@@ -196,7 +202,13 @@ static EventToMemoryIdMapping_t PROGMEM_DECLARE(pdsMemoryMap[]) =
 
   EVENT_TO_MEM_ID_MAPPING((uint8_t)BC_EVENT_NWK_RREQ_ID_UPDATED,         NWK_RREQ_IDENTIFIER_ITEM_ID),
 
-  EVENT_TO_MEM_ID_MAPPING((uint8_t)BC_EVENT_CHANNEL_CHANGED,             BC_EXT_GEN_MEMORY_ITEM_ID)
+  EVENT_TO_MEM_ID_MAPPING((uint8_t)BC_EVENT_CHANNEL_CHANGED,             BC_EXT_GEN_MEMORY_ITEM_ID),
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  
+  EVENT_TO_MEM_ID_MAPPING((uint8_t)BC_EVENT_APS_FRAG_CACHE_UPDATE,       CS_APS_FRAGMENTATION_CACHE_ITEM_ID),
+
+#endif
 };
 static uint16_t eventsSubscribedFlag;
 static uint16_t eventToBeProcessedFlag;
@@ -209,7 +221,10 @@ static uint16_t eventToItemLookpupTable[BC_PDS_MAX_EVENT] =
   HASH_APS_COUNTERS_UPDATED_EVENT, HASH_NWK_SECURITY_TABLES_UPDATED_EVENT,
   HASH_BIND_TABLES_UPDATED_EVENT, HASH_GROUP_TABLES_UPDATED_EVENT,
   HASH_GROUP_REMOVED_EVENT, HASH_NWK_COUNTERS_UPDATED_EVENT,
-  HASH_NWK_REQ_ID_UPDATED_EVENT, HASH_CHANNEL_CHANGED_EVENT
+  HASH_NWK_REQ_ID_UPDATED_EVENT, HASH_CHANNEL_CHANGED_EVENT,
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  HASH_APS_FRAGMENT_CACHE_UPDATED_EVENT
+#endif
 };
 
 static uint16_t eventItemBitMask[BC_PDS_MAX_EVENT + 1];  	// MISRA 18.1 - Rectification added +1 element to avoid 
@@ -232,7 +247,10 @@ static uint8_t pdsEventIdTable[BC_PDS_MAX_EVENT] =
    (uint8_t)BC_EVENT_GROUPS_REMOVED,
    (uint8_t)BC_SECURITY_NWK_COUNTERS_UPDATE,
    (uint8_t)BC_EVENT_NWK_RREQ_ID_UPDATED,
-   (uint8_t)BC_EVENT_CHANNEL_CHANGED
+   (uint8_t)BC_EVENT_CHANNEL_CHANGED,
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+   (uint8_t)BC_EVENT_APS_FRAG_CACHE_UPDATE
+#endif
 };
 /******************************************************************************
                     Prototypes section
@@ -469,15 +487,19 @@ void PDS_SubscribeToStoreCompletion(SYS_EventId_t EventId)
 static void pdsDataStoreCallback(PDS_MemId_t itemID)
 {
   uint8_t countEvents;
-
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  if ((itemID < (uint16_t)BC_EXT_GEN_MEMORY_ITEM_ID) || (itemID > (uint16_t)CS_APS_FRAGMENTATION_CACHE_ITEM_ID))
+#else
   if ((itemID < (uint16_t)BC_EXT_GEN_MEMORY_ITEM_ID) || (itemID > (uint16_t)NWK_RREQ_IDENTIFIER_ITEM_ID))
+#endif      
   {
     return;
   }
   PDS_MemId_t memoryId = (uint16_t)(itemID ^ (uint16_t)PDS_BC_STACK_OFFSET_ID) ;
   for (countEvents = 0; countEvents < (uint8_t)BC_PDS_MAX_EVENT; countEvents++)
   {
-    if ((bool)(eventsSubscribedFlag & (1UL << countEvents)) && (bool)(eventToBeProcessedFlag & (1UL << countEvents)) && (bool)(eventToItemLookpupTable[countEvents]&(1UL<<memoryId)) && (memoryId <= (uint16_t)BITCLOUD_MAX_ITEMS_AMOUNT))
+    if ((bool)(eventsSubscribedFlag & (1UL << countEvents)) && (bool)(eventToBeProcessedFlag & (1UL << countEvents)) 
+    && (bool)(eventToItemLookpupTable[countEvents]&(1UL<<memoryId)) && (memoryId <= (uint16_t)BITCLOUD_MAX_ITEMS_AMOUNT))
     {
       eventItemBitMask[countEvents] |= (uint16_t)(1UL << memoryId);
       if (eventItemBitMask[countEvents] ==  eventToItemLookpupTable[countEvents])

@@ -301,6 +301,10 @@ static bool sysIsInternalEvent(SYS_EventId_t eventId)
     case BC_EVENT_NWK_REMOVE_NEIGHBOR:
     case BC_EVENT_NWK_STALE_NEIGHBOR:
     case BC_EVENT_MAC_TX_BCAST_CH_ACCESS_FAIL:
+  #ifdef _ZIGBEE_REV_23_SUPPORT_
+    case BC_EVENT_APS_TC_BACKUP:
+    case BC_EVENT_APS_TC_SWAP:
+  #endif /* _ZIGBEE_REV_23_SUPPORT_ */
       return true;
 
     default:

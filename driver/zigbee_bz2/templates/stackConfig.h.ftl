@@ -42,6 +42,24 @@
 #ifndef STACK_CONFIG_H
 #define STACK_CONFIG_H
 
+
+<#if ENABLE_ZIGBEE_REV_23 == true>
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+
+//-----------------------------------------------
+// Flag to enable the R23 Join procedure
+// Value range: 0 to 2
+// C-type: uint8_t
+// Can be set: at compile time only
+//  R22_JOIN_TCLK            0
+//  R23_JOIN_DLK_OFFNWK      1
+//  R23_JOIN_DLK_ONNWK       2
+
+#define CS_R23_JOIN_FLAG     ${CS_R23_JOIN_FLAG}
+//-----------------------------------------------
+
+#endif
+</#if>
 #if (BDB_SUPPORT == 1)
 
 //-----------------------------------------------
@@ -537,7 +555,7 @@
 // Amount of buffers on NWK layer used to keep incoming and outgoing frames. This
 // parameters affects how many children of a parent are able to get broadcat
 // messages.
-#define CS_NWK_BUFFERS_AMOUNT 8
+#define CS_NWK_BUFFERS_AMOUNT 12
 
 //-----------------------------------------------
 //APS_DATA_FRAGMENTATION == 1
@@ -568,5 +586,63 @@
   #define CS_APS_BLOCK_SIZE 0
 #endif
 
+// ToDo: Configure Supported Key Negotiation Protocols and Pre-shared Secrets bitmasks via MCC
 
+//-----------------------------------------------
+//Support Key Negotiation Protocols Indicator
+//-----------------------------------------------
+
+// Support Key Negotiation Protocols Indicator
+// If set as 0, protocol not supported. If set as 1, protocol is supported
+
+/* Static Key Request (Zigbee 3.0 Mechanism) */ 
+#define APS_SUPPORT_KEY_NEGOTIATION_STATIC_KEY_REQUEST              0
+
+/* SPEKE using Curve25519 with Hash AES-MMO-128 */ 
+#define APS_SUPPORT_KEY_NEGOTIATION_SPEKE_CURVE25519_AES_MMO_128    1
+
+/* SPEKE using Curve25519 with Hash SHA-256 */
+#define APS_SUPPORT_KEY_NEGOTIATION_SPEKE_CURVE25519_SHA_256        1
+
+/* Supported Key Negotiation Protocols Indicator value */
+#define CS_SUPPORTED_KEY_NEGOTIATION_PROTOCOL   ((APS_SUPPORT_KEY_NEGOTIATION_STATIC_KEY_REQUEST << 0) | \
+                                                 (APS_SUPPORT_KEY_NEGOTIATION_SPEKE_CURVE25519_AES_MMO_128 << 1) | \
+                                                 (APS_SUPPORT_KEY_NEGOTIATION_SPEKE_CURVE25519_SHA_256 << 2))
+
+//-----------------------------------------------
+//Supported Pre-shared Secrets
+//-----------------------------------------------
+
+// Supported Pre-shared Secrets
+// If set as 0, the pre-shared not supported. If set as 1, pre-shared is supported
+
+/* Symmetric Authentication Token */ 
+#define APS_SUPPORTED_PRE_SHARED_SECRETS_SYMMETRIC_AUTH_TOKEN           0
+
+/* Install Code Key */ 
+#define APS_SUPPORTED_PRE_SHARED_SECRETS_INSTALL_CODE_KEY               0
+
+/* Passcode Key */
+#define APS_SUPPORTED_PRE_SHARED_SECRETS_PASSCODE_KEY                   1
+
+/* Basic Access Key */ 
+#define APS_SUPPORTED_PRE_SHARED_SECRETS_BASIC_ACCESS_KEY               0
+
+/* Administrative Access Key */
+#define APS_SUPPORTED_PRE_SHARED_SECRETS_ADMINISTRATIVE_ACCESS_KEY      0
+
+/* Supported Pre-shared Secrets value */
+#define CS_SUPPORTED_PRE_SHARED_SECRETS     ((APS_SUPPORTED_PRE_SHARED_SECRETS_SYMMETRIC_AUTH_TOKEN << 0) | \
+                                             (APS_SUPPORTED_PRE_SHARED_SECRETS_INSTALL_CODE_KEY << 1) | \
+                                             (APS_SUPPORTED_PRE_SHARED_SECRETS_PASSCODE_KEY << 2) | \
+                                             (APS_SUPPORTED_PRE_SHARED_SECRETS_BASIC_ACCESS_KEY << 3) | \
+                                             (APS_SUPPORTED_PRE_SHARED_SECRETS_ADMINISTRATIVE_ACCESS_KEY << 4))
+
+//-----------------------------------------------
+//Device interview procedure during DLK
+//-----------------------------------------------
+
+// Enable the device interview procedure during DLK
+// If set as true, perform device interview during DLK protocol is supported, Otherwise not
+#define CS_APS_PERFORM_DEVICE_INTERVIEW   false
 #endif // STACK_CONFIG_H

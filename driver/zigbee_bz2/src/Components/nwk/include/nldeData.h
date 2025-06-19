@@ -295,6 +295,15 @@ typedef struct _NWK_DataInd_t
   {
     QueueElement_t qelem; /**< link used for queuing */
     ZDO_ResolveAddrReq_t resolveAddrReq; /*!< Is used for address resolving */
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+    struct
+    {
+      /** Flag for indicating the given request to be process and send via APS Relay Command */
+      uint8_t isRelayCmd;
+      /** Extended Address of Device to Authorise */
+      ExtAddr_t unAuthDevExtAdd;
+    } relayMsgInfo;
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
   } service;
 
   /** The type of destination address supplied by the DstAddr parameter.

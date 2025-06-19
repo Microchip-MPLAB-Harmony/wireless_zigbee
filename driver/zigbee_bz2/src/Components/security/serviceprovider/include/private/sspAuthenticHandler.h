@@ -51,6 +51,9 @@
 #include <sspManager.h>
 #include <sspHashHandler.h>
 #include <sspAesHandler.h>
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <sspCurve25519Handler.h>
+#endif //_ZIGBEE_REV_23_SUPPORT_
 
 /******************************************************************************
                         Types section.

@@ -154,3 +154,15 @@ FLASH_PARAMETER(CS_DISTRIBUTED_NETWORK_ADDRESS_ID, 0x35,	 csReadOnlyItems.distri
 FLASH_PARAMETER(CS_TOUCHLINK_SUPPORT_ID, 0x36, csReadOnlyItems.touchlinkSupport)                                   //BDB
 #endif
 FLASH_PARAMETER(CS_RADIO_ARB_MODE_ID, 0x37, csReadOnlyItems.csRadioArbMode)
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#ifndef _MAC2_
+FLASH_PARAMETER(CS_NWK_DISCOVERY_TABLE_SIZE_ID, 0x38, csReadOnlyItems.csNwkDiscoveryTableSize)
+#endif
+#ifdef _APS_FRAGMENTATION_
+FLASH_PARAMETER(CS_APS_DATA_FRAGMENTATION_ID, 0x39, csReadOnlyItems.csApsDataFragmentation)
+#endif //_APS_FRAGMENTATION_
+FLASH_PARAMETER(CS_APS_FRAGMENTATION_CACHE_AMOUNT_ID, 0x3A, csReadOnlyItems.csApsFragmentationCacheAmount)
+#ifndef _MAC2_ 
+FLASH_PARAMETER(CS_APS_CMD_REQ_BUFFERS_AMOUNT_ID, 0x3B, csReadOnlyItems.csApsDataReqBuffersAmount)
+#endif
+#endif //_ZIGBEE_REV_23_SUPPORT_

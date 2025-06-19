@@ -656,6 +656,9 @@ typedef struct
 {
   APS_AddrMode_t      addrMode;     //!< Address mode indicates which type of address shall be used
   APS_Address_t       addr;         //!< Can be set to either short, extended, or group addresses, depending on the address mode
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  ShortAddr_t         nwkBroadcastAddress; //!< shall be set when the addreee mode is group
+#endif //#ifdef _ZIGBEE_REV_23_SUPPORT_
   ProfileId_t         profileId;    //!< Profile ID
   Endpoint_t          endpointId;   //!< Endpoint ID
   ClusterId_t         clusterId;    //!< Cluster ID

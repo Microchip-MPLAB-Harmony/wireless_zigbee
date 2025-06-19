@@ -60,6 +60,9 @@
 #include <nwk/include/nwkEndDeviceTimeout.h>
 #endif
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#define MIN_NO_SAMPLES 3U
+#endif
 /******************************************************************************
                                  Types section
  ******************************************************************************/
@@ -120,6 +123,12 @@ typedef struct _NwkNeighbor_t
   /** This link is used to traverse next End Device in case of hash collision **/
   struct _NwkNeighbor_t *next;
 #endif /* _CHILD_MANAGEMENT_ */
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  /** Commissioning type used during joining the network via Network Commissioning */
+  NwkCommissioningType_t commissioningType;
+  /** Joining Method */
+  NWK_JoinMethod_t joinMethod;
+#endif
 } NwkNeighbor_t;
 
 /** The neighbor table item. */
@@ -187,6 +196,14 @@ typedef struct _NwkMutablePartOfNeighbor_t
   /** The estimated link quality for RF transmissions from this device. */
   Lqi_t lqi;
   Rssi_t rssi;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  /** min no of samples to be considered for updating lqa in neighbor table entry. */
+  uint8_t  noOfSamples;
+  /** LQA Array for maintaining a min no of most recent samples. */
+  uint8_t lqaArray[MIN_NO_SAMPLES];
+  /** Variable for Internal Use to detect reset of the device. */
+  bool checkReset;
+#endif
   /** The cost of an outgoing link as measured by the neighbor. */
   unsigned outgoingCost   :3;
   /** The cost of an incoming link as measured by this device. */
@@ -355,6 +372,26 @@ NwkNeighbor_t * NWK_NextEDChild(NwkNeighbor_t* neighbor,
  ******************************************************************************/
 NwkPathCost_t NWK_CostFromLqi(const Lqi_t lqi);
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+  \brief Calculate an incoming cost by LQA.
+
+  \param[in] lqi - link quality Indicator from MAC layer.
+  \param[in] rssi - received Signal Strength Indicator from MAC Layer.
+  \return incomingCost.
+ ******************************************************************************/
+NwkPathCost_t NWK_CostFromLqa(const Lqi_t lqa, const Rssi_t rssi);
+
+/***************************************************************************//**
+  \brief Calculate the LQA value using LQI and RSSI
+
+  \param[in] lqi - link quality Indicator from MAC layer.
+  \param[in] rssi - received Signal Strength Indicator from MAC Layer.
+  \return LQA valuee
+ ******************************************************************************/
+uint8_t NWK_GetLQAFromLQIAndRSSI(const Lqi_t lqi, const Rssi_t rssi);
+
+#endif/*_ZIGBEE_REV_23_SUPPORT_*/
 /***************************************************************************//**
   \brief Updating the outgoing cost and age field of the neighbor.
 

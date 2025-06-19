@@ -339,6 +339,9 @@ void CS_PdsDefaultValue(void)
 #ifndef _MAC2_
   csSIB.csExtPANID = CCPU_TO_LE64(CS_EXT_PANID);
   csNIB.channelPage = CS_CHANNEL_PAGE;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  csNIB.nwkPerformExtraMacDataPollRetries = CS_NWK_EXTRA_MAC_POLL_RETRIES,
+#endif //_ZIGBEE_REV_23_SUPPORT_
   csNIB.deviceType = CS_DEVICE_TYPE;
   csSIB.csRxOnWhenIdle =(bool)((CS_DEVICE_TYPE == DEVICE_TYPE_END_DEVICE) ? CS_RX_ON_WHEN_IDLE : true);
   csSIB.csComplexDescriptorAvailable = CS_COMPLEX_DESCRIPTOR_AVAILABLE;
@@ -367,6 +370,11 @@ void CS_PdsDefaultValue(void)
   csAIB.tcSecurityPolicy.flags.allowRejoins = CS_TC_PERMISSIONS_ALLOWREJOINS;
 #endif
   csAIB.tcSecurityPolicy.flags.allowInstallCodes = CS_TC_PERMISSIONS_ALLOWINSTALLCODES;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  csAIB.tcSecurityPolicy.requireInstallCodesOrPresetPassphrase = CS_TC_PERMISSIONS_REQUIREINSTALLCODESORPRESETPASSPHRASE,
+  csAIB.apsChallengePeriodTimeoutSec = CS_APS_CHALLENGE_PERIOD_TIMEOUT_SEC,
+  csAIB.apsChallengePeriodRemainingSec = 0,
+#endif
 #endif //#if defined _TRUST_CENTRE_
 #endif /* _LINK_SECURITY_ */
 #endif /* _SECURITY_ */

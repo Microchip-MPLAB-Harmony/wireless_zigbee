@@ -16,7 +16,7 @@
 
 // DOM-IGNORE-BEGIN
 /*******************************************************************************
-* Copyright (C) 2018 Microchip Technology Inc. and its subsidiaries.
+* Copyright (C) 2024 Microchip Technology Inc. and its subsidiaries.
 *
 * Subject to your compliance with these terms, you may use Microchip software
 * and any derivatives exclusively with Microchip products. It is your
@@ -59,6 +59,11 @@
 #include <zcl/include/zclSecurityManager.h>
 #include <zdo/include/zdo.h>
 #include <app_zigbee/zigbee_console/consoleCmds.h>
+#if defined _ZIGBEE_REV_23_SUPPORT_
+#include <tlv/include/tlv.h>
+#include <aps/include/apsmeKeyNegotiate.h>
+#include <zdo/include/zdo.h>
+#endif
 /******************************************************************************
                     Prototypes section
 ******************************************************************************/
@@ -71,19 +76,26 @@ static void zdpNwkAddrResponse(ZDO_ZdpResp_t *resp);
 static void zdpActiveEpResponse(ZDO_ZdpResp_t *resp);
 static void zdpNodeDescResponse(ZDO_ZdpResp_t *resp);
 static void ZCL_ReadReportingResp(ZCL_Notify_t *ntfy);
-  
 static void NWKf_LeaveConf(NWK_LeaveConf_t *conf);
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+static void zdpSurveyBeaconResp(ZDO_ZdpResp_t *resp);
+static void zdpSecurityGetConfigResponse(ZDO_ZdpResp_t *resp);
+static void zdpSecuritySetConfigResponse(ZDO_ZdpResp_t *resp);
+static void zdpClearAllBindingsResponse(ZDO_ZdpResp_t *resp);
+static void zdpSecurityDecommissioningResponse(ZDO_ZdpResp_t *resp);
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
 
 /******************************************************************************
                     Global variables section
 ******************************************************************************/
+#define MAX_TLV 3
+
 DescModeManagerMem_t descModeMem;
 static NWK_LeaveReq_t reqNwk;
 /*******************************************************************************
                     Local variables section
 *******************************************************************************/
 static uint8_t zclDefaultResponseBit = ZCL_FRAME_CONTROL_DISABLE_DEFAULT_RESPONSE;
-
 /******************************************************************************
                     Implementation section
 ******************************************************************************/
@@ -752,6 +764,276 @@ void zdpSimpleDescReq(ShortAddr_t addr,uint8_t ep)
   ZDO_ZdpReq(zdpReq);
 }
 
+#if defined _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+\brief Sends the Beacon Survey Request
+
+\param[in] shortAddr        - Short Address;
+\param[in] scanChannelList  - specific channel from the list;
+\param[in] configBitMask    - Bit Mask;
+******************************************************************************/
+void zdpMgmtBeaconSurveyReq(uint16_t shortAddr, uint32_t scanChannelList, uint8_t configBitMask)
+{
+  ZDO_ZdpReq_t *zdpReq = &descModeMem.zdpReq;
+  uint8_t *tlvData = (uint8_t *)&zdpReq->req.reqPayload.asduBuffer;
+  ZDO_MgmtBconSurveyReq_t surveyBeaconReq;
+  
+  zdpReq->reqCluster = MGMT_NWK_BEACON_SURVEY_CLID;
+  zdpReq->ZDO_ZdpResp = zdpSurveyBeaconResp;
+ 
+  zdpReq->dstAddrMode = APS_SHORT_ADDRESS;
+
+  zdpReq->dstAddress.shortAddress = shortAddr;
+  surveyBeaconReq.tlvID = LOCAL_TLV_TAG_ID;
+  surveyBeaconReq.tlvLength = CALC_TLV_LENGTH_VALUE((sizeof(ZDO_MgmtBconSurveyReq_t) - (SIZE_OF_TAG + SIZE_OF_LENGTH)));;
+  surveyBeaconReq.configBitMask = configBitMask;
+  surveyBeaconReq.scanChannelList.channelPageCount = 1U;
+  surveyBeaconReq.scanChannelList.channelMask = scanChannelList;
+  
+  (void)TLV_Encode(tlvData, &surveyBeaconReq);
+  zdpReq->asduPayloadLength = TOTAL_TLV_SIZE(surveyBeaconReq.tlvLength);
+  
+  ZDO_ZdpReq(zdpReq);  
+}
+
+/**************************************************************************//**
+\brief Sends the Security Service Start Key Neogtiation Request
+
+\param[in] requestedKeyNegotiationMethod - Key negotiation method;
+\param[in] requestedPreSharedSecretType  - Pre shared secret type;
+\param[in] partnerLongAddress            - Long address of initiator of start key update command;
+\param[in] isRelayCommand                - Relay command flag;
+\param[in] relayLongAddress              - Long address of a relay device;
+******************************************************************************/
+void StartKeyNegotiationReq(uint8_t requestedKeyNegotiationMethod, uint8_t requestedPreSharedSecretType, ExtAddr_t partnerLongAddress, uint8_t isRelayCommand, ExtAddr_t relayLongAddress)
+{
+  APS_KeyNegotiationReq_t apsStartKeyNegotiationReq = {0};
+
+  apsStartKeyNegotiationReq.requestedKeyNegotiationMethod = requestedKeyNegotiationMethod;
+  apsStartKeyNegotiationReq.requestedPreSharedSecretType = requestedPreSharedSecretType;
+  apsStartKeyNegotiationReq.partnerLongAddress = partnerLongAddress;
+  
+  apsStartKeyNegotiationReq.isRelayCommand = isRelayCommand;
+  if (isRelayCommand)
+  {
+    memcpy(&apsStartKeyNegotiationReq.relayLongAddress, (uint8_t*)&relayLongAddress, sizeof(ExtAddr_t));
+  }
+
+  APS_KeyNegotiationReq(&apsStartKeyNegotiationReq);
+}
+
+/**************************************************************************//**
+\brief Sends the Security Service Start Key Update Request
+
+\param[in] relayCmd         - relay command flag;
+\param[in] unAuthDevExtAdd  - Extended Address of Device to Authorise;
+\param[in] addressMode      - Destination node address Mode;
+\param[in] destAddr         - short address of destination node;
+\param[in] keyNegoMethod    - Key negotiation method.
+\param[in] preSharedSecret  - Pre shared secret. 
+******************************************************************************/
+void zdpStartKeyUpdatedReq(bool relayCmd, ExtAddr_t unAuthDevExtAdd, APS_AddrMode_t addressMode, uint64_t destAddr, uint8_t keyNegoMethod, uint8_t preSharedSecret)
+{
+  ZDO_StartKeyUpdateReq(relayCmd, unAuthDevExtAdd, addressMode, destAddr, keyNegoMethod, preSharedSecret, NULL);
+}
+/*******************************************************************************
+\brief Sends the Security Get Configuration request
+
+\param[in] dstaddr - nwk Address of Destination node
+\param[in] tlvCount  - The number of TLV IDs contained in the message
+\param[in] tlvId - Pointer to ID of each TLV that is being requested.
+*****************************************************************************/
+void zdpSecurityGetConfigReq(ShortAddr_t dstaddr,uint8_t tlvCount,uint8_t *tlvId)
+{
+  ZDO_ZdpReq_t *zdpReq = &descModeMem.zdpReq;
+  ZDO_SecurityGetConfigReq_t *getConfigReq = &zdpReq->req.reqPayload.getConfigReq;
+
+  if(tlvId[0U] == PAN_ID_CONFLICT_REPORT) // Currently only one PAN_ID_CONFLICT_REPORT Allowed, That too in 1s Index
+  {                                       // Modification will be there if more TLV ids are used 
+    zdpReq->ZDO_ZdpResp              = zdpSecurityGetConfigResponse;
+    zdpReq->reqCluster               = SECURITY_GET_CONFIG_CLID; 
+    zdpReq->dstAddrMode              = APS_SHORT_ADDRESS; 
+    zdpReq->dstAddress.shortAddress  = dstaddr;
+    zdpReq->asduPayloadLength = tlvCount+1;
+    getConfigReq->tlvCount = tlvCount;
+    getConfigReq->tlvIds[0U] = PAN_ID_CONFLICT_REPORT;
+    ZDO_ZdpReq(zdpReq);
+  }
+  else
+  {
+    appSnprintf("!!! SecurityGetConfigReq is Invalid, Currently only PAN_ID_CONFLICT_REPORT Id is allowed\n\r");
+  }
+}
+
+/*******************************************************************************
+\brief Sends the Security Set Configuration request
+
+\param[in] dstaddr - nwk address of destination node
+\param[in] tlvCount - TLV count
+\param[in] panIdTlvId - PAN ID TLV ID
+\param[in] panId - PAN ID
+\param[in] channelTlvId - Channel TLV ID
+\param[in] channel - Channel
+\param[in] cfgParamsTlvId - Configuration parameters TLV Id
+\param[in] configParams - Configuration parameters
+*****************************************************************************/
+void zdpSecuritySetConfigReq(ShortAddr_t dstaddr,uint8_t tlvCount,uint8_t panIdTlvId,PanId_t panId,uint8_t channelTlvId,Channel_t channel,uint8_t cfgParamsTlvId,uint16_t configParams)
+{
+  ZDO_ZdpReq_t *zdpReq = &descModeMem.zdpReq;
+  uint8_t *tlvData = (uint8_t *)&zdpReq->req.reqPayload.asduBuffer;
+  uint8_t *nextBufPtr = NULL;
+
+  NextPanIdChangeTlv_t nextPanIdTlv;
+  NextChannelChangeTlv_t nextChannelChangeTlv;
+  ConfigurationParametersTlv_t configParamsTlv;
+
+  zdpReq->ZDO_ZdpResp              = zdpSecuritySetConfigResponse;
+  zdpReq->reqCluster               = SECURITY_SET_CONFIG_CLID;
+  zdpReq->dstAddrMode              = APS_SHORT_ADDRESS;
+  zdpReq->dstAddress.shortAddress  = dstaddr;
+  zdpReq->asduPayloadLength = 0;
+
+  int i = 0, j = 0;
+  uint8_t tlvId[MAX_TLV] = {panIdTlvId, channelTlvId, cfgParamsTlvId};
+
+  for (i = 0;  i < MAX_TLV; i++)
+  {
+    switch (tlvId[i])
+    {
+      case NEXT_PAN_ID_CHANGE:
+        nextPanIdTlv.tagId = panIdTlvId;
+        nextPanIdTlv.length = 1U;
+        nextPanIdTlv.nextPanIdChange = panId;
+        if (nextBufPtr == NULL)
+        {
+          nextBufPtr = TLV_Encode(tlvData, &nextPanIdTlv);
+          zdpReq->asduPayloadLength = TOTAL_TLV_SIZE(nextPanIdTlv.length);
+        }
+        else
+        {
+          nextBufPtr = TLV_Encode(nextBufPtr, &nextPanIdTlv);
+          zdpReq->asduPayloadLength += TOTAL_TLV_SIZE(nextPanIdTlv.length);
+        }
+        break;
+
+      case NEXT_CHANNEL_CHANGE:
+        if ((channel >= RF_MIN_CHANNEL) && (channel <= RF_MAX_CHANNEL))
+        {
+          nextChannelChangeTlv.tagId = channelTlvId;
+          nextChannelChangeTlv.length = 3U;
+          //NOTE: Assuming channel page is '0'
+          nextChannelChangeTlv.channelField = 1 << channel;
+          if (nextBufPtr == NULL)
+          {
+            nextBufPtr = TLV_Encode(tlvData, &nextChannelChangeTlv);
+            zdpReq->asduPayloadLength = TOTAL_TLV_SIZE(nextChannelChangeTlv.length);
+          }
+          else
+          {
+            nextBufPtr = TLV_Encode(nextBufPtr, &nextChannelChangeTlv);
+            zdpReq->asduPayloadLength += TOTAL_TLV_SIZE(nextChannelChangeTlv.length);
+          }
+        }
+        break;
+
+      case CONFIGURATION_PARAMETER:
+        if (configParams <= MAX_CONFIG_PARAMS)
+        {
+          configParamsTlv.tagId = cfgParamsTlvId;
+          configParamsTlv.length = 1U;
+          configParamsTlv.configurationParameters = configParams;
+          if (nextBufPtr == NULL)
+          {
+            nextBufPtr = TLV_Encode(tlvData, &configParamsTlv);
+            zdpReq->asduPayloadLength = TOTAL_TLV_SIZE(configParamsTlv.length);
+          }
+          else
+          {
+            nextBufPtr = TLV_Encode(nextBufPtr, &configParamsTlv);
+            zdpReq->asduPayloadLength += TOTAL_TLV_SIZE(configParamsTlv.length);
+          }
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  ZDO_ZdpReq(zdpReq);
+}
+
+/*******************************************************************************
+\brief Sends the Secrity Decommissioning / Clear all binding request
+
+\param[in] clusterId - command cluster id either security decommissioning
+           request or clear all binding request
+\param[in] dstaddr - nwk Address of Destination node
+\param[in] deviceCount - total number of devices that need to decommissioned 
+           or binding to be cleared
+\param[in] eui64List - pointer to the list of ext address that need to be 
+           decommissioned.
+
+\returns None.
+*****************************************************************************/
+void zdpDecomissioningOrClrBindingReq(uint16_t clusterId, ShortAddr_t dstaddr, uint8_t deviceCount, ExtAddr_t* eui64List)
+{
+  ZDO_ZdpReq_t *zdpReq = &descModeMem.zdpReq;
+  uint8_t *tlvData = (uint8_t *)&zdpReq->req.reqPayload.asduBuffer;
+  DeviceEUI64ListTlv_t deviceEUI64ListTlv;
+  uint8_t argListIndex = 0U;
+  uint8_t tlvListIndex = 0U;
+
+  zdpReq->reqCluster = clusterId;
+  switch(clusterId)
+  {
+    case SECURITY_DECOMMISSIONING_CLID:
+    {
+      zdpReq->ZDO_ZdpResp = zdpSecurityDecommissioningResponse;
+      break;
+    }
+    case CLEAR_ALL_BINDINGS_CLID:
+    {
+      zdpReq->ZDO_ZdpResp = zdpClearAllBindingsResponse;
+      break;
+    }
+    default:
+    {
+      /* Control should not reach */
+      break;
+    }
+       
+  }
+  zdpReq->dstAddrMode              = APS_SHORT_ADDRESS;
+  zdpReq->dstAddress.shortAddress  = dstaddr;
+
+  while(argListIndex < deviceCount)
+  {
+    deviceEUI64ListTlv.extAddrList[tlvListIndex++] = *(eui64List+argListIndex);
+    argListIndex++;
+  }
+
+  deviceEUI64ListTlv.tagId = LOCAL_TLV_TAG_ID;
+  deviceEUI64ListTlv.extAddrCount = deviceCount;
+  deviceEUI64ListTlv.length = deviceCount * sizeof(ExtAddr_t);
+
+  (void)TLV_Encode(tlvData, &deviceEUI64ListTlv);
+  zdpReq->asduPayloadLength = TOTAL_TLV_SIZE(deviceEUI64ListTlv.length);
+
+  ZDO_ZdpReq(zdpReq);
+}
+
+/**************************************************************************//**
+\brief Notify the stack about the trust center loss
+
+\return None.
+******************************************************************************/
+void appNofityTcLoss(void)
+{
+  SYS_PostEvent(BC_EVENT_APS_TC_SWAP, 0);
+}
+#endif //_ZIGBEE_REV_23_SUPPORT_
+
 /*******************************************************************************
 \brief Sends the Node Descriptor request
 
@@ -760,6 +1042,11 @@ void zdpSimpleDescReq(ShortAddr_t addr,uint8_t ep)
 *****************************************************************************/
 void zdpNodeDescReq(ShortAddr_t dstaddr, ShortAddr_t nwkAddrofInterest)
 {
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  uint16_t apsFragmentation = 0U;
+  uint8_t *tlvData = NULL;
+  uint8_t *nextTlvPointer = NULL;
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
   ZDO_ZdpReq_t *zdpReq = &descModeMem.zdpReq;
   ZDO_NodeDescReq_t *nodeDescReq = &zdpReq->req.reqPayload.nodeDescReq;
 
@@ -768,6 +1055,36 @@ void zdpNodeDescReq(ShortAddr_t dstaddr, ShortAddr_t nwkAddrofInterest)
   zdpReq->dstAddrMode              = APS_SHORT_ADDRESS; 
   zdpReq->dstAddress.shortAddress  = dstaddr;
   nodeDescReq->nwkAddrOfInterest = nwkAddrofInterest;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  zdpReq->asduPayloadLength = sizeof(ZDO_NodeDescReq_t);
+  
+  tlvData = ((uint8_t *)nodeDescReq) + sizeof(ZDO_NodeDescReq_t);
+
+  FragmentationParametersTlv_t fragmentationTlv;
+  fragmentationTlv.tagId = FRAGMENTATION_PARAMETER;
+  fragmentationTlv.length = CALC_TLV_LENGTH_VALUE(FRAGMENTATION_PARAMETERS_GLOBAL_TLV_DEFAULT_LENGTH);
+  fragmentationTlv.nodeId = NWK_GetShortAddr();
+  CS_ReadParameter(CS_APS_DATA_FRAGMENTATION_ID, &fragmentationTlv.fragmentationOption);
+  CS_ReadParameter(CS_APS_MAX_SIZE_ASDU_ID, &fragmentationTlv.incomingTransferUnits);
+ 
+  nextTlvPointer = TLV_Encode(tlvData, &fragmentationTlv);
+  zdpReq->asduPayloadLength += TOTAL_TLV_SIZE(fragmentationTlv.length);
+  
+  if(0U == dstaddr)
+  {
+    KeyNegotiationTlv_t keyNegotiationTlv;
+    keyNegotiationTlv.tagId = SUPPORTED_KEY_NEGOTIATION;
+    keyNegotiationTlv.length = CALC_TLV_LENGTH_VALUE(SUPPORTED_KEY_NEGOTIATION_METHODS_GLOBAL_TLV_DEFAULT_LENGTH);
+    CS_ReadParameter(CS_SUPPORTED_KEY_NEGOTIATION_PROTOCOL_ID, &keyNegotiationTlv.keyNegotiationProtocolBitmask);
+    CS_ReadParameter(CS_SUPPORTED_PRE_SHARED_SECRETS_ID, &keyNegotiationTlv.preSharedSecretBitmask);
+    memcpy(&keyNegotiationTlv.sourceDeviceEUI64, MAC_GetExtAddr(), sizeof(ExtAddr_t));
+    
+    TLV_Encode(nextTlvPointer, &keyNegotiationTlv);
+    
+    zdpReq->asduPayloadLength += TOTAL_TLV_SIZE(keyNegotiationTlv.length);
+  }
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
+
   ZDO_ZdpReq(zdpReq);
 }
 
@@ -848,6 +1165,94 @@ static void zdpSimpleDescResponse(ZDO_ZdpResp_t *resp)
   APP_Zigbee_Handler(event);
 }
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+\brief Security get Config response callback
+
+\param[in] resp - response payload
+******************************************************************************/
+static void zdpSecurityGetConfigResponse(ZDO_ZdpResp_t *resp)
+{
+  APP_Zigbee_Event_t event;
+  event.eventGroup = EVENT_ZIGBEE;
+  event.eventId = EVENT_SECURITY_GET_CONFIG_RESPONSE;
+  event.eventData.ParentChildInfo.status = resp->respPayload.status;
+  uint8_t *tlvPointer;
+  tlvPointer = (uint8_t *)&(resp->respPayload.asduBuffer);
+  uint16_t length = TOTAL_TLV_SIZE(*(tlvPointer+1));
+  TLV_Decode_Resp_t decodeResponse = TLV_Decode(tlvPointer, length, SECURITY_GET_CONFIG_CLID);
+  if(decodeResponse.overallStatus == VALIDATION_SUCCESS)
+  {
+    appSnprintf(" TLVDecode SecurityGetConfigReq is Valid\r\n");
+    appSnprintf("--> decode_overallStatus = %d, \r\n", decodeResponse.overallStatus);
+    appSnprintf("-->             tlvCount = %d, \r\n", decodeResponse.tlvCount);    
+    appSnprintf("--> tlvId , length, Value  is   %d, %d, %d \r\n", *tlvPointer, *(tlvPointer+1),*(tlvPointer+2));
+  }
+  else
+  {
+    appSnprintf( " !!!! TLVDecode SecurityGetConfigResponse is Invalid, Status = %d, \r\n", INVALID_TLV);
+  }
+  APP_Zigbee_Handler(event);
+}
+
+/**************************************************************************//**
+\brief Security set Config response callback
+\param[in] resp - response payload
+******************************************************************************/
+static void zdpSecuritySetConfigResponse(ZDO_ZdpResp_t *resp)
+{
+  APP_Zigbee_Event_t event;
+  event.eventGroup = EVENT_ZIGBEE;
+  event.eventId = EVENT_SECURITY_SET_CONFIG_RESPONSE;
+  event.eventData.ParentChildInfo.status = resp->respPayload.status;
+
+  APP_Zigbee_Handler(event);
+}
+
+/**************************************************************************//**
+\brief Clear All Bindings response callback
+\param[in] resp - Response payload
+******************************************************************************/
+static void zdpClearAllBindingsResponse(ZDO_ZdpResp_t *resp)
+{
+  APP_Zigbee_Event_t event;
+  event.eventGroup = EVENT_ZIGBEE;
+  event.eventId = EVENT_CLEAR_ALL_BINDINGS_RESPONSE;
+  event.eventData.ParentChildInfo.status = resp->respPayload.status;
+
+  APP_Zigbee_Handler(event);
+}
+
+/**************************************************************************//**
+\brief Security Decommissioning response callback
+\param[in] resp - Response payload
+******************************************************************************/
+static void zdpSecurityDecommissioningResponse(ZDO_ZdpResp_t *resp)
+{
+  APP_Zigbee_Event_t event;
+  event.eventGroup = EVENT_ZIGBEE;
+  event.eventId = EVENT_SECURITY_DECOMMISSIONING_RESPONSE;
+  event.eventData.ParentChildInfo.status = resp->respPayload.status;
+
+  APP_Zigbee_Handler(event);
+}
+/**************************************************************************//**
+\brief ZDP Beacon Survey response callback
+
+\param[in] resp - response payload
+******************************************************************************/
+static void zdpSurveyBeaconResp(ZDO_ZdpResp_t *resp)
+{
+  APP_Zigbee_Event_t event;
+  event.eventGroup = EVENT_ZIGBEE;
+  event.eventId = EVENT_SURVEY_BEACON_RESPONSE;
+  event.eventData.ParentChildInfo.status = resp->respPayload.status;
+
+  APP_Zigbee_Handler(event);
+}
+
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
+
 /**************************************************************************//**
 \brief Nwk Address response callback
 
@@ -913,7 +1318,51 @@ static void zdpNodeDescResponse(ZDO_ZdpResp_t *resp)
   event.eventGroup = EVENT_ZIGBEE;
   event.eventId = EVENT_NODE_DESCRIPTOR_RESPONSE;
   event.eventData.ParentChildInfo.status = resp->respPayload.status;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  ZDO_ZdpReq_t* zdpReqPtr;
+  uint8_t* tlvPointer;
+  uint16_t tlvLength;
+  TLV_Decode_Resp_t tlvDecodeResp;
+  zdpReqPtr = GET_PARENT_BY_FIELD(ZDO_ZdpReq_t, resp ,resp);
+  tlvPointer = (uint8_t *)&(resp->respPayload.nodeDescResp);
+  tlvPointer = (uint8_t *)(tlvPointer + sizeof(ZDO_NodeDescResp_t));
+  tlvLength = zdpReqPtr->asduPayloadLength - ZDP_RESP_HEADER_SIZE - NODE_DESCRIPTOR_RESP_SIZE;
 
+  tlvDecodeResp = TLV_Decode(tlvPointer, tlvLength, NODE_DESCRIPTOR_RESP_CLID);
+
+  if((tlvDecodeResp.overallStatus == VALIDATION_SUCCESS) && (tlvDecodeResp.tlvCount > 0U))
+  {
+    const ExtAddr_t *sourceExtAddr = NULL;
+    SelectedKeyNegotiationMethodTlv_t *keyTlv = NULL;
+    FragmentationParametersTlv_t *incomingFragmentationTlv = NULL;
+
+    if(resp->srcAddrMode == APS_SHORT_ADDRESS)
+    {
+      sourceExtAddr = NWK_GetExtByShortAddress(resp->srcAddress.shortAddress);
+    } 
+    else
+    {
+      sourceExtAddr = (const ExtAddr_t *)&(resp->srcAddress.extAddress);
+    }
+
+    (void)APS_UpdateFrameCounterSynchronization(sourceExtAddr, true);
+
+    incomingFragmentationTlv = (FragmentationParametersTlv_t *)TLV_GetTlvByTagId(&tlvDecodeResp, FRAGMENTATION_PARAMETER);
+    if(incomingFragmentationTlv != NULL)
+    {
+      const ExtAddr_t *fragmentationExtAddr;
+      fragmentationExtAddr = NWK_GetExtByShortAddress(incomingFragmentationTlv->nodeId);
+      (void)APS_UpdateFragmentationCacheDetails(fragmentationExtAddr, (bool)(incomingFragmentationTlv->fragmentationOption), 
+                                                incomingFragmentationTlv->incomingTransferUnits);
+    }
+
+    keyTlv = (SelectedKeyNegotiationMethodTlv_t *)TLV_GetTlvByTagId(&tlvDecodeResp, LOCAL_TLV_TAG_ID);
+    if(keyTlv != NULL)
+    {
+      (void)APS_UpdateKeyNegotiationMethod(sourceExtAddr, keyTlv->keyNegotiationProtocol);
+    }
+  }
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
   APP_Zigbee_Handler(event);
 }
 

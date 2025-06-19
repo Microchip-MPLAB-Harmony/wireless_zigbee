@@ -30,6 +30,8 @@ else ifeq ($(PLATFORM), PLATFORM_PIC32CX)
   BOARD = BOARD_PIC32CX
 else ifeq ($(PLATFORM), PLATFORM_PIC32CXBZ3)
   BOARD = BOARD_PIC32CXBZ3
+else ifeq ($(PLATFORM), PLATFORM_PIC32CXBZ6)
+  BOARD = BOARD_PIC32CXBZ6
 else ifeq ($(PLATFORM), PLATFORM_SAM3S_EK_RF2XX)
   BOARD = BOARD_SAM3S_EK
 else ifeq ($(PLATFORM), PLATFORM_SAM4S_PIRRD)
@@ -89,6 +91,8 @@ else ifeq ($(RFCHIP), AT86RF233)
   ifeq ($(PLATFORM), PLATFORM_PIC32CX)
     AES_TYPE = BUILTIN_AES_TYPE
   else ifeq ($(PLATFORM), PLATFORM_PIC32CXBZ3)
+    AES_TYPE = BUILTIN_AES_TYPE
+  else ifeq ($(PLATFORM), PLATFORM_PIC32CXBZ6)
     AES_TYPE = BUILTIN_AES_TYPE
   else	
     AES_TYPE = HW_AES_TYPE
@@ -332,7 +336,8 @@ ifeq ($(COMPILER_AND_MICRO_TYPE), GCC_AVR)
 else ifeq ($(COMPILER_AND_MICRO_TYPE), IAR_AVR)
   EXP_VERSION = IAR C/C++ Compiler V6.70.5.1028 for Atmel AVR
 else ifeq ($(COMPILER_AND_MICRO_TYPE), GCC_ARM)
-  EXP_VERSION = gcc version 8.3.1 (Microchip XC32 Compiler v4.35)
+  #EXP_VERSION = gcc version 8.3.1 20190819 [ARM/embedded-6-branch revision 243739] (Microchip xc32 v3.01)
+  EXP_VERSION = gcc version 8.3.1 (Microchip XC32 Compiler v4.45)
 else ifeq ($(COMPILER_AND_MICRO_TYPE), IAR_ARM)
   EXP_VERSION = IAR ANSI C/C++ Compiler V8.30.2.160/W32 for ARM
 else ifeq ($(COMPILER_AND_MICRO_TYPE), IAR_AVR32)
@@ -404,6 +409,7 @@ UTILS_PATH     =  $(COMPONENTS_PATH)/../../utils
 BDB_PATH       = $(COMPONENTS_PATH)/bdb
 PDS_PATH       = $(COMPONENTS_PATH)/../../drivers/PersistDataServer
 CRYPTO_PATH    = $(COMPONENTS_PATH)/../../drivers/crypto
+TLV_PATH       = $(COMPONENTS_PATH)/tlv
 
 ifeq ($(PLATFORM), PLATFORM_ZIGBIT_TURBO)
   HAL_HWD_COMMON_PATH = $(HAL_PATH)/arm7tdmi/at91sam7x256/common
@@ -432,6 +438,10 @@ endif
 ifeq ($(PLATFORM), PLATFORM_PIC32CXBZ3)
   HAL_HWD_COMMON_PATH = $(HAL_PATH)/cortexm4/pic32cx_bz3
   HAL_MAC_API_PATH    = $(HAL_PATH)/cortexm4/pic32cx_bz3
+endif
+ifeq ($(PLATFORM), PLATFORM_PIC32CXBZ6)
+  HAL_HWD_COMMON_PATH = $(HAL_PATH)/cortexm4/pic32cx_bz6
+  HAL_MAC_API_PATH    = $(HAL_PATH)/cortexm4/pic32cx_bz6
 endif
 ifeq ($(PLATFORM), PLATFORM_CUSTOM_1)
   HAL_HWD_COMMON_PATH = $(HAL_PATH)/arm7tdmi/at91sam7x256/common
@@ -580,11 +590,15 @@ ifeq ($(COMPILER_TYPE), GCC) # GCC flags -------------------------------
     ifeq ($(PLATFORM), PLATFORM_PIC32CX)
 	  HAL_CFLAGS += -D_PIC32CX_BZ2_
       HAL_CFLAGS += -mprocessor=32CX1012BZ25048E
-      HAL_CFLAGS += -mdfp="C:/Users/chetemp/.mchp_packs/Microchip/PIC32CX-BZ-ENG_DFP/1.0.55/BZ25"
+      HAL_CFLAGS += -mdfp="C:/Users/I41664/.mchp_packs/Microchip/PIC32CX-BZ-ENG_DFP/1.0.65/BZ25"
     else ifeq ($(PLATFORM), PLATFORM_PIC32CXBZ3)
 	  HAL_CFLAGS += -D_PIC32CX_BZ3_
       HAL_CFLAGS += -mprocessor=32CX5109BZ31048E
       HAL_CFLAGS += -mdfp="C:/Users/chetemp/.mchp_packs/Microchip/PIC32CX-BZ3-ENG_DFP/0.0.90/BZ3"
+    else ifeq ($(PLATFORM), PLATFORM_PIC32CXBZ6)
+	  HAL_CFLAGS += -D_PIC32CX_BZ6_
+      HAL_CFLAGS += -mprocessor=32CX2051BZ62132_FPGA
+      HAL_CFLAGS += -mdfp="C:/Users/I41664/.mchp_packs/Microchip/PIC32CX-BZ6-ENG_DFP/0.0.133/BZ6-FPGA"
     endif
 
     ifeq ($(SOFT_FP), TRUE)
@@ -1194,6 +1208,10 @@ ifneq ($(BUILD_TARGET), TARGET_HAL_SE)
     STACK_CFLAGS += -D_ZIGBEE_REV_21_SUPPORT_
   endif
 
+  ifeq ($(ZIGBEE_R23_SUPPORT), TRUE)
+    STACK_CFLAGS += -D_ZIGBEE_REV_23_SUPPORT_
+  endif
+
   ifeq ($(CHILD_MANAGEMENT), TRUE)
     STACK_CFLAGS += -D_CHILD_MANAGEMENT_
     #STACK_CFLAGS += -D_SSP_USE_FLASH_FOR_CONST_DATA
@@ -1522,3 +1540,4 @@ VCP_LIB = VCP
 OFD_LIB = OFD
 ZAPPSI_LIB = zappsi
 BDB_LIB = bdb
+TLV_LIB = tlv

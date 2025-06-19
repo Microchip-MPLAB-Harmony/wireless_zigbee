@@ -95,6 +95,8 @@ enum
   HAL_HARD_FAULT_EXCEPTION                 = 0x2023,
   HAL_HARD_FAULT_EXCEPTION_STACK_OVERFLOW  = 0x2024,
   HAL_AES                                  = 0x2025,
+  HAL_CURVE25519                           = 0x2026,
+  HAL_SHA256                               = 0x2027,
 };
 
 /******************************************************************************

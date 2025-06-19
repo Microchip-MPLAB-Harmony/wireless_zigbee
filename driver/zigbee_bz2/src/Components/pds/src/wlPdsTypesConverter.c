@@ -93,6 +93,9 @@ static void updateBindTable(void *data, uint16_t size, uint16_t oldSize);
 static void updateGroupTable(void *data, uint16_t size, uint16_t oldSize);
 #endif //_GROUP_TABLE_
 static void updateNeighborTable(void *data, uint16_t size, uint16_t oldSize);
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+static void updateFragmentationCacheDescriptor(void *data, uint16_t size, uint16_t oldSize);
+#endif //_ZIGBEE_REV_23_SUPPORT_
 
 /******************************************************************************
                     Static variables section
@@ -157,6 +160,11 @@ bool pdsUpdateMemoryCallback(PDS_UpdateMemory_t *item)
 #endif
     case NWK_RREQ_IDENTIFIER_ITEM_ID:
       break;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+    case CS_APS_FRAGMENTATION_CACHE_ITEM_ID:
+      updateFragmentationCacheDescriptor(item->data, item->size, item->oldSize);
+      break;
+#endif
     default:
         /* TO DO */
       break;
@@ -447,6 +455,24 @@ static void updateNeighborTable(void *data, uint16_t size, uint16_t oldSize)
     (void)PDS_Store(CS_NEIB_TABLE_ITEM_ID);
   }
 }
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/******************************************************************************
+\brief Updates Fragmentation Cache Descriptors
+
+\param[in] data    - pointer to data with fragmentation cache;
+\param[in] size    - current item size;
+\param[in] oldSize - last size of item
+******************************************************************************/
+static void updateFragmentationCacheDescriptor(void *data, uint16_t size, uint16_t oldSize)
+{
+  if (size == oldSize)
+    return;
+
+  updateTable(data, size, oldSize);
+  PDS_Store(CS_APS_FRAGMENTATION_CACHE_ITEM_ID);
+}
+#endif // _ZIGBEE_REV_23_SUPPORT_
 
 #endif // _ENABLE_PERSISTENT_SERVER_
 // eof wlPdsTypesConverter.c

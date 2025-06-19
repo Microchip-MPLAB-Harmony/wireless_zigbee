@@ -64,6 +64,9 @@
 #include <aps/include/apsCommon.h>
 #if defined _SECURITY_
 #include <aps/include/apsCommandReq.h>
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <tlv/include/tlv.h>
+#endif
 
 /******************************************************************************
                                 Types section
@@ -106,7 +109,7 @@ typedef enum
   APS_UPDATE_DEVICE_STATUS_HIGH_SECURITY_SECURED_REJOIN   = 0x04,
   APS_UPDATE_DEVICE_STATUS_HIGH_SECURITY_UNSECURED_JOIN   = 0x05,
   APS_UPDATE_DEVICE_STATUS_RESERVED                       = 0x06,
-  APS_UPDATE_DEVICE_STATUS_HIGH_SECURITY_UNSECURED_REJOIN = 0x07
+  APS_UPDATE_DEVICE_STATUS_HIGH_SECURITY_UNSECURED_REJOIN = 0x07,
 } APS_UpdateDeviceStatus_t;
 
 /**
@@ -142,6 +145,10 @@ typedef struct
   APS_UpdateDeviceStatus_t status;
   /** Confirm primitive as a parameter of the callback function. */
   APS_UpdateDeviceConf_t confirm;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  /** The TLVs of the joining device as relayed during Network Commissioning.*/
+  uint8_t joiningDeviceTLV[JOINING_ENCAPSULATION_TLV_SIZE]; 
+#endif
 } APS_UpdateDeviceReq_t;
 
 /**
@@ -164,6 +171,10 @@ typedef struct
   /** \ref Endian "[LE]"
    * The 16-bit network address of the device whose status is being updated. */
   ShortAddr_t deviceShortAddress;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  /** The TLVs of the joining device as relayed during Network Commissioning.*/
+  uint8_t joiningDeviceTLV[JOINING_ENCAPSULATION_TLV_SIZE]; 
+#endif
 } APS_UpdateDeviceInd_t;
 
 /**

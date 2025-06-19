@@ -67,8 +67,9 @@
 #define GROUP_TABLE_ITEM_SIZE         (CS_GROUP_TABLE_SIZE * sizeof(NWK_GroupTableEntry_t))
 #define RREQ_IDENTIFIER_ITEM_SIZE     (sizeof(uint8_t))
 #define BC_STACK_VESRION_ITEM_SIZE   (sizeof(csSIB.csStackVersion))
-
-
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#define FRAGMENTATION_CACHE_DESCRIPTOR_ITEM_SIZE (CS_APS_KEY_PAIR_DESCRIPTORS_AMOUNT * sizeof(ApsFragmentationCacheDescriptor_t))
+#endif
 
 /******************************************************************************
                    Types section

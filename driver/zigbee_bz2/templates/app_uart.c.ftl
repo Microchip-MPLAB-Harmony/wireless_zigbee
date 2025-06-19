@@ -138,11 +138,13 @@ void APP_UartInit(void)
     }
     if((appUart.readInProgressStatus == false) && (appUart.dataRead == false))
     {
+<#if !(TC_SWAPOUT_ENABLED)>  
     #if (APP_USE_ISD_CONSOLE_TUNNELING != 1)
 
          DRV_USART_ReadBufferAdd(appUart.usartHandle, (void*)&appUart.readBuffer[0], APP_RX_READ_LENGTH, &appUart.readBufferHandle);
          if (appUart.readBufferHandle != DRV_USART_BUFFER_HANDLE_INVALID)
     #endif
+</#if>
          {
              appUart.readInProgressStatus = true;
          }

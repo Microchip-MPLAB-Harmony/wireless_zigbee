@@ -581,46 +581,6 @@ void ZS_ZdpActiveEPReq(ZS_ZdpActiveEPReq_t* req,
       R_ZDO_ACTIVE_EP_DESC_CONFIRM, (void*)conf);
 }
 /***************************************************************************//**
-\brief Request for remote device complex description.
-
-It is generated from a local device wishing to
-inquire as to the complex descriptor of a remote device. This command shall be
-unicast either to the remote device itself or to an alternative device that contains
-the discovery information of the remote device.
-ZigBee Specification r17, 2.4.3.1.8 Complex_Desc_req
-
-\param[in] req - Determines the request parameters.
-See description of ZS_ZdpComplexDescReq_t for details.
-
-\return
-*******************************************************************************/
-void ZS_ZdpComplexDescReq(ZS_ZdpComplexDescReq_t* req,
-                          void (*conf)(ZS_ZdpComplexDescConf_t*))
-{
-  generateSimpleFrame(R_ZDO_COMPLEX_DESC_REQUEST, req, sizeof(*req),
-      R_ZDO_COMPLEX_DESC_CONFIRM, (void*)conf);
-}
-/***************************************************************************//**
-\brief Request for remote device user description.
-
-It is generated from a local device wishing to inquire
-as to the user descriptor of a remote device. This command shall be unicast either
-to the remote device itself or to an alternative device that contains the discovery
-information of the remote device.
-ZigBee Specification r17, 2.4.3.1.9 User_Desc_req
-
-\param[in] req - Determines the request parameters.
-See description of ZS_ZdpUserDescReq_t for details.
-
-\return
-*******************************************************************************/
-void ZS_ZdpUserDescReq(ZS_ZdpUserDescReq_t* req,
-                       void (*conf)(ZS_ZdpUserDescConf_t*))
-{
-  generateSimpleFrame(R_ZDO_USER_DESC_REQUEST, req, sizeof(*req),
-                      R_ZDO_USER_DESC_CONFIRM, (void*)conf);
-}
-/***************************************************************************//**
 \brief Request for notification of remote devices about network changes.
 
 It is provided to enable ZigBee devices on the network to notify
@@ -664,26 +624,6 @@ void ZS_ZdpLqiReq(ZS_ZdpLqiReq_t* req,
 {
   generateSimpleFrame(R_ZDO_MGMT_LQI_REQUEST, req, sizeof(*req),
                       R_ZDO_MGMT_LQI_CONFIRM, (void*)conf);
-}
-/***************************************************************************//**
-\brief Request for remote device user description configuration.
-
-It is generated from a local device wishing to
-configure the user descriptor on a remote device. This command shall be unicast
-either to the remote device itself or to an alternative device that contains the
-discovery information of the remote device.
-ZigBee Specification r17, 2.4.3.1.12 User_Desc_set
-
-\param[in] req - Determines the request parameters.
-See description of ZS_ZdpUserDescSetReq_t for details.
-
-\return
-*******************************************************************************/
-void ZS_ZdpUserDescSetReq(ZS_ZdpUserDescSetReq_t* req,
-                          void (*conf)(ZS_ZdpUserDescSetConf_t*))
-{
-  generateSimpleFrame(R_ZDO_USER_DESC_SET_REQUEST, req, sizeof(*req),
-                      R_ZDO_USER_DESC_SET_CONFIRM, (void*)conf);
 }
 /***************************************************************************//**
 \brief Request for remote device to scan network.

@@ -262,6 +262,11 @@
 
 //#define ZGP_ENABLE_MULTI_SENSOR_SUPPORT
   
+<#if (GP_DEVICE_TYPE == "COMBO_BASIC") >
+// Enable the Windows covering Cluster Macro mapping if application demands
+//#define ZGP_ENABLE_WINDOWS_COVERING_COMMAND_MAPPING
+</#if>
+
   // Enabling manufacturer specific cmd/cluster handling in sink
   //#define ZGP_SINK_ENABLE_MANUFAC_SPECIFIC_HANDLING
   

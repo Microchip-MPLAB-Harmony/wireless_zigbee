@@ -68,6 +68,8 @@ typedef enum
   SSP_KEYEDHASHMAC_NULLCALLBACK0              = 0x781B,
   SSP_AESENCRYPT_NULLCALLBACK0                = 0x781C,
   SSPMANAGER_MUTEXLOCKCONF_00                 = 0x781E,
-  SSPMANAGER_SSPCCMREQHANDLER_00              = 0x781F
+  SSPMANAGER_SSPCCMREQHANDLER_00              = 0x781F,
+  SSP_SSPCURVE25519_HANDLER_00                = 0x7820,
+  SSP_SHA256_HANDLER_00                       = 0x7821,
 } SspDbgCodeId_t;
 #endif // _SSPDBGH

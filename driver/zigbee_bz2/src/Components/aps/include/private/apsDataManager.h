@@ -198,13 +198,33 @@ APS_PRIVATE void apsDecryptSentFrameConf(ApsDataBuffer_t *buffer);
   \brief Constructs and sends APS acknowledgement.
 
   \param nwkDataInd - NLDE-DATA.indication primitive pointer.
-         securityStatus - securty type to be used to generate ACK.
+  \param securityStatus - security type to be used to generate ACK.
+  \param isForApSCmd - decribes the ack is for aps comand/aps data
+  \param cmdInd       - pointer to the command indication
   \return true if ACK has been sent, false - otherwise.
 *****************************************************************************/
-bool apsConstructAndSendAck(NWK_DataInd_t *nwkDataInd, APS_Status_t securityStatus);
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+bool apsConstructAndSendAck(NWK_DataInd_t *nwkDataInd, APS_Status_t securityStatus, bool isForApSCmd, ApsCommandInd_t* cmdInd);
+#else
+bool apsConstructAndSendAck(NWK_DataInd_t *nwkDataInd, APS_Status_t securityStatus);
+#endif
 #ifdef _SECURITY_
 bool apsCommandFrameIndicationHandler(NWK_DataInd_t *nwkDataInd, ApsSecurityStatusDescriptor_t securityStatus);
+#endif
+/*************************************************************************//**
+  \brief Adjusts APS ACK wait timer's interval. Sets interval to the shortest
+    timeout among all timeouts.
+
+  \param[in] bufferType    - type of buffer parameter
+  \param[in] buffer        - pointer to data buffer.
+  \param[in] fragmentation - is timeout for fragmented frame.
+  \param[in] timeout       - new timeout.
+ *****************************************************************************/
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+void apsStartAckTimer(ApsBufferType_t bufferType, void *buffer, bool fragmentation, uint32_t timeout);
+#else
+void apsStartAckTimer(ApsDataBuffer_t *buffer, bool fragmentation, uint32_t timeout);
 #endif
 
 #endif  //#ifndef _APSDATAMANAGER_H

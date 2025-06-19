@@ -59,7 +59,9 @@
 /******************************************************************************
                    Define(s) section
  **************************************************************************/
-
+#ifndef SYS_BACKUP
+#define SYS_BACKUP
+#endif
 
 /** The list of task IDs. The IDs are sorted according to descending
     priority. For each task ID there is the corresponding task handler function. 

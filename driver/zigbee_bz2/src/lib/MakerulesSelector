@@ -212,11 +212,15 @@ else ifeq ($(BOARD), BOARD_PIC32CX)                   ##### BOARD_PIC32CX board 
   HAL_CLOCK_SOURCE = RC_INTERNAL
   HAL_FREQUENCY = HAL_48MHz
  
- else ifeq ($(BOARD), BOARD_PIC32CXBZ3)                   ##### BOARD_PIC32CX board ####
+else ifeq ($(BOARD), BOARD_PIC32CXBZ3)                   ##### BOARD_PIC32CX board ####
   HAL_CLOCK_SOURCE = RC_INTERNAL
   HAL_FREQUENCY = HAL_48MHz
-  
-else
+
+else ifeq ($(BOARD), BOARD_PIC32CXBZ6)                   ##### BOARD_PIC32CX board ####
+  HAL_CLOCK_SOURCE = RC_INTERNAL
+  HAL_FREQUENCY = HAL_48MHz
+
+else  
   $(error unknown BOARD)
 endif
 
@@ -404,7 +408,9 @@ else ifeq ($(BOARD), BOARD_SAMR21)
 else ifeq ($(BOARD), BOARD_PIC32CX)
   HAL_LIB_NAME_PLATFORM = _Pic32cx
 else ifeq ($(BOARD), BOARD_PIC32CXBZ3)
-  HAL_LIB_NAME_PLATFORM = _Pic32cx  
+  HAL_LIB_NAME_PLATFORM = _Pic32cx
+else ifeq ($(BOARD), BOARD_PIC32CXBZ6)
+  HAL_LIB_NAME_PLATFORM = _Pic32cx 
 else
   $(error unknown HAL_LIB_NAME_PLATFORM for board $(BOARD))
 endif
@@ -469,15 +475,25 @@ ifeq ($(PLATFORM), PLATFORM_PIC32CX)
   LIB_DEVICE_NAME = _bz2
 else ifeq ($(PLATFORM), PLATFORM_PIC32CXBZ3)
   LIB_DEVICE_NAME = _bz3
+else ifeq ($(PLATFORM), PLATFORM_PIC32CXBZ6)
+  LIB_DEVICE_NAME = _bz6
 else
   $(error unknown Device name)
 endif
 
 ifeq ($(BUILD_TARGET), TARGET_ZIGBEE_BDB_STACK)
   ifeq ($(SOFT_FP), TRUE)
-    STACK_LIB = $(LIB_TYPE)$(LIB_NAME_DEV_TYPE)$(LIB_DEVICE_NAME)_softfp
+    ifeq ($(ZIGBEE_R23_SUPPORT), TRUE)
+      STACK_LIB = $(LIB_TYPE)$(LIB_NAME_DEV_TYPE)$(LIB_DEVICE_NAME)_r23_softfp
+    else
+      STACK_LIB = $(LIB_TYPE)$(LIB_NAME_DEV_TYPE)$(LIB_DEVICE_NAME)_softfp
+    endif
   else
-    STACK_LIB = $(LIB_TYPE)$(LIB_NAME_DEV_TYPE)$(LIB_DEVICE_NAME)
+    ifeq ($(ZIGBEE_R23_SUPPORT), TRUE)
+      STACK_LIB = $(LIB_TYPE)$(LIB_NAME_DEV_TYPE)$(LIB_DEVICE_NAME)_r23
+    else
+      STACK_LIB = $(LIB_TYPE)$(LIB_NAME_DEV_TYPE)$(LIB_DEVICE_NAME)
+    endif
   endif  
 else
   STACK_LIB = $(LIB_TYPE)$(LIB_NAME_KF)$(LIB_NAME_DEV_TYPE)$(LIB_NAME_SECURITY_MODE)$(LIB_DEVICE_NAME)

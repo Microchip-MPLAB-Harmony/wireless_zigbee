@@ -92,6 +92,7 @@ void startOtauServer(void)
 
   ZCL_OtauInitParams_t initParam;
   uint32_t fileVersion;
+  fileVersion = 0U;
   initParam.clusterSide = ZCL_SERVER_CLUSTER_TYPE;
   initParam.firmwareVersion.versionId = fileVersion;
   initParam.otauEndpoint = APP_SRC_ENDPOINT_ID;

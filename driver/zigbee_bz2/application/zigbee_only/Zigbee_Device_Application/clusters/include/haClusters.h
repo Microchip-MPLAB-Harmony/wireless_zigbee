@@ -16,7 +16,7 @@
 
 // DOM-IGNORE-BEGIN
 /*******************************************************************************
-* Copyright (C) 2018 Microchip Technology Inc. and its subsidiaries.
+* Copyright (C) 2024 Microchip Technology Inc. and its subsidiaries.
 *
 * Subject to your compliance with these terms, you may use Microchip software
 * and any derivatives exclusively with Microchip products. It is your
@@ -51,7 +51,7 @@
 /******************************************************************************
                     Defines section
 ******************************************************************************/
-
+#define MAX_CONFIG_PARAMS 7
 /******************************************************************************
                     Types section
 ******************************************************************************/
@@ -143,6 +143,85 @@ void zdpSimpleDescReq(ShortAddr_t addr,uint8_t ep);
 \param[in] ep   - Endpoint which requests Match desctiptor
 ******************************************************************************/
 void zdpMatchDescReq(ShortAddr_t addr,uint8_t ep);
+
+#if defined _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+\brief Sends the Security Service Start Key Update Request
+
+\param[in] relayCmd         - relay command flag;
+\param[in] unAuthDevExtAdd  - Extended Address of Device to Authorise;
+\param[in] addressMode      - Destination node address Mode;
+\param[in] destAddr         - short address of destination node;
+\param[in] keyNegoMethod    - Key negotiation method.
+\param[in] preSharedSecret  - Pre shared secret. 
+******************************************************************************/
+void zdpStartKeyUpdatedReq(bool relayCmd, ExtAddr_t unAuthDevExtAdd, APS_AddrMode_t addressMode, uint64_t destAddr, uint8_t keyNegoMethod, uint8_t preSharedSecret);
+
+/**************************************************************************//**
+\brief Sends the Security Service Start Key Negotiation Request
+
+\param[in] requestedKeyNegotiationMethod - Key negotiation method;
+\param[in] requestedPreSharedSecretType  - Pre shared secret type;
+\param[in] partnerLongAddress            - Long address of initiator of start key update command;
+\param[in] isRelayCommand                - Relay command flag;
+\param[in] relayLongAddress              - Long address of a relay device;
+******************************************************************************/
+void StartKeyNegotiationReq(uint8_t requestedKeyNegotiationMethod, uint8_t requestedPreSharedSecretType, ExtAddr_t partnerLongAddress, uint8_t isRelayCommand, ExtAddr_t relayLongAddress);
+
+/*******************************************************************************
+\brief Sends the Security Get Configuration request
+
+\param[in] dstaddr - nwk Address of Destination node
+\param[in] tlvCount  - The number of TLV IDs contained in the message
+\param[in] tlvId - Pointer to ID of each TLV that is being requested.
+*****************************************************************************/
+void zdpSecurityGetConfigReq(ShortAddr_t dstaddr,uint8_t tlvCount,uint8_t *tlvId);
+
+/*******************************************************************************
+\brief Sends the Security Set Configuration request
+
+\param[in] dstaddr - nwk address of destination node
+\param[in] tlvCount - TLV count
+\param[in] panIdTlvId - PAN ID TLV ID
+\param[in] panId - PAN ID
+\param[in] channelTlvId - Channel TLV ID
+\param[in] channel - Channel
+\param[in] cfgParamsTlvId - Configuration parameters TLV Id
+\param[in] configParams - Configuration parameters
+*****************************************************************************/
+void zdpSecuritySetConfigReq(ShortAddr_t dstaddr,uint8_t tlvCount,uint8_t panIdTlvId,PanId_t PanId,uint8_t channelTlvId,Channel_t channel,uint8_t cfgParamsTlvId,uint16_t configParams);
+
+/*******************************************************************************
+\brief Sends the Secrity Decommissioning request / clear All binding request
+
+\param[in] clusterId - command cluster id either security decommissioning
+           request or clear all binding request
+\param[in] dstaddr - nwk Address of Destination node
+\param[in] deviceCount - total number of devices that need to decommissioned 
+           or binding to be cleared
+\param[in] eui64List - pointer to the list of ext address that need to be 
+           decommissioned.
+
+\return None.
+*****************************************************************************/
+void zdpDecomissioningOrClrBindingReq(uint16_t clusterId, ShortAddr_t dstaddr, uint8_t deviceCount, ExtAddr_t* eui64List);
+
+/**************************************************************************//**
+\brief Sends the Security Challenge Request
+
+\param[in] addressMode      - Destination address mode;
+\param[in] destAddr         - Destination address;
+******************************************************************************/
+void zdpSecChallengeReq(APS_AddrMode_t addressMode, uint64_t destAddr);
+
+/**************************************************************************//**
+\brief Notify the stack about the trust center loss
+
+\return None.
+******************************************************************************/
+void appNofityTcLoss(void);
+
+#endif //_ZIGBEE_REV_23_SUPPORT_
 
 /*******************************************************************************
 \brief Sends the Active EP req request
@@ -264,6 +343,16 @@ void zdpMgmtBindReq(uint16_t shortAddr, uint8_t startIndex);
 \param[in] startIndex        - Start Index
 ******************************************************************************/
 void zdpMgmtLqiReq(uint16_t shortAddr, uint8_t startIndex);
+
+/**************************************************************************//**
+\brief Sends Management Survey Beacon request
+
+\param[in] shortAddr        - short address of destination node;
+\param[in] scanChannelList  - list of channels to be scanned
+\param[in] configBitMask  -   bit determines enhanced/active scan
+******************************************************************************/
+void zdpMgmtBeaconSurveyReq(uint16_t shortAddr, uint32_t scanChannelList, uint8_t configBitMask);
+
 /**************************************************************************//**
 \brief Sends configure reporting request to notify another device about reporting
 

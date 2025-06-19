@@ -59,6 +59,7 @@
 #define SSP_SECURITY_CONTROL_FIELD_LENGTH 1U
 #define SSP_FRAME_COUNTER_FIELD_LENGTH    4U
 #define SSP_KEY_SEQ_NUMBER_FIELD_LENGTH   1U
+#define CURVE25519_PUBLIC_KEY_SIZE        32U
 
 /******************************************************************************
                         Types section.

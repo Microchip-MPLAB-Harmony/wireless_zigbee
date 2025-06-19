@@ -174,6 +174,21 @@ typedef struct PACK
   uint8_t apsCounter;
 } ApduDataFrameGroup_t;
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+typedef struct PACK
+{
+  uint8_t dstEndpoint;                                  //Destination endpoint
+  uint16_t clusterId;                                   //Cluster identifier
+  uint16_t profileId;                                   //Profile identifier
+  uint8_t srcEndpoint;                                  //Source endpoint
+  uint8_t apsCounter;                                   //APS counter
+} ApduDataAckPayload_t;
+
+typedef struct PACK
+{
+  uint8_t apsCounter;                                   //APS counter
+} ApduCmdAckPayload_t;
+#endif
 typedef struct PACK
 {
   ApduFrameControlField_t frameControl;                 //Frame Control field

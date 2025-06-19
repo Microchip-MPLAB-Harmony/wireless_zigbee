@@ -493,12 +493,18 @@ static ZCL_Status_t processMove(bool wOnOff, ZCL_Addressing_t *addressing, uint8
   if (ZLL_LEVEL_CONTROL_UP_DIRECTION == req->moveMode)
   {
     level = MAX_CUSTOM_LEVEL;
-    transitionTime = ((MAX_CUSTOM_LEVEL - currentLevel) * 10 /* 1/10 sec */) / req->rate;
+    if((req->rate) != 0U)
+    {
+      transitionTime =(uint8_t)(((MAX_CUSTOM_LEVEL - currentLevel) * 10U /* 1/10 sec */) / req->rate);
+    }
   }
   else if (ZLL_LEVEL_CONTROL_DOWN_DIRECTION == req->moveMode)
   {
     level = MIN_CUSTOM_LEVEL;
-    transitionTime = ((currentLevel - MIN_CUSTOM_LEVEL) * 10 /* 1/10 sec */) / req->rate;
+    if((req->rate) != 0U)
+    {
+      transitionTime = (uint8_t)(((currentLevel - MIN_CUSTOM_LEVEL) * 10U /* 1/10 sec */) / req->rate);
+    }
   }
 
   moveToLevel(wOnOff, executeIfOff, level, transitionTime);

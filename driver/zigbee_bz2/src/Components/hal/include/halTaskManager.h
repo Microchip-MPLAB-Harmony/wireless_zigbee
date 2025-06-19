@@ -64,6 +64,8 @@ typedef enum
 {
   HAL_APPTIMER,
   HAL_SM_REQ,
+  HAL_CURVE25519_REQ,
+  HAL_SHA256_REQ,
   HAL_MAX_TASKS_ID
 } HalTaskIds_t;
 

@@ -142,6 +142,9 @@ static void processGetDeviceTypeCmd(const ScanValue_t *args);
 
 #if BDB_COMMANDS_IN_CONSOLE == 1
 static void processSetInstallCodeCmd(const ScanValue_t *args);
+#if defined _ZIGBEE_REV_23_SUPPORT_
+static void processSetInstallCodePassphraseCmd(const ScanValue_t *args);
+#endif //_ZIGBEE_REV_23_SUPPORT_
 #ifndef ZAPPSI_HOST
 #if defined (_LINK_SECURITY_) && defined (_TRUST_CENTRE_)
 static void processSetAllowRemoteTCpolicyChange(const ScanValue_t *args);
@@ -432,6 +435,9 @@ const ConsoleCommand_t commissioningHelpCmds[]=
   {"formAndSteer", "", processFormAndSteerCmd, "-> forms network and steers\r\n"},
   {"formSteerAndFB", "", processFormSteerAndFBCmd, "-> forms network ,steers and FB\r\n"},
   {"SetInstallCode", "dds", processSetInstallCodeCmd, "-> Sets IC [extAddr][code]\r\n"},
+#if defined _ZIGBEE_REV_23_SUPPORT_  
+  {"SetInstallCodePassphrase", "s", processSetInstallCodePassphraseCmd, "-> Sets IC [code]\r\n"},
+#endif //  _ZIGBEE_REV_23_SUPPORT_
 #ifndef ZAPPSI_HOST
 #if defined (_LINK_SECURITY_) && defined (_TRUST_CENTRE_)
   {"SetAllowRemoteTCpolicyChange", "d", processSetAllowRemoteTCpolicyChange, "-> Sets TCPolicy[enable/disable]\r\n"},
@@ -656,6 +662,22 @@ static void processSetInstallCodeCmd(const ScanValue_t *args)
   BDB_ConfigureInstallCode(extAddr, icode, myICCallback);
   (void)args;
 }
+
+#if defined _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+\brief Processes InstallCode Passphrase command
+
+\param[in] args - array of command arguments
+******************************************************************************/;
+static void processSetInstallCodePassphraseCmd(const ScanValue_t *args)
+{
+  uint8_t icode[18];
+  hexStrTouint8array(args[0].str, icode, 18U);
+  APS_SetInstallCodePassphrase(icode);
+  (void)args;
+}
+#endif //_ZIGBEE_REV_23_SUPPORT_
+
 #ifndef ZAPPSI_HOST
 #if defined (_LINK_SECURITY_) && defined (_TRUST_CENTRE_)
 /**************************************************************************//**

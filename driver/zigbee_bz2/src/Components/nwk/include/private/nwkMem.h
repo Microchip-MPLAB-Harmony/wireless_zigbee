@@ -89,7 +89,7 @@
 #include <private/nwkKeys.h>
 #include <private/nwkEndDeviceTimeoutReq.h>
 #include <private/nwkEndDeviceTimeoutInd.h>
-
+#include <private/nwkDiscEntry.h>
 /******************************************************************************
                                Types section
  ******************************************************************************/
@@ -204,6 +204,7 @@ typedef struct _NwkMem_t
   NwkEndDeviceTimeoutReq_t endDeviceTimeoutReq;
   NwkEndDeviceTimeoutInd_t endDeviceTimeoutInd;
 #endif /* _CHILD_MANAGEMENT_ */
+NwkDiscoveryTable_t nwkDiscoveryTable;
 } NwkMem_t;
 
 /******************************************************************************
@@ -459,6 +460,10 @@ INLINE NwkEndDeviceTimeoutInd_t* nwkMemEndDeviceTimeoutInd(void)
 }
 #endif /* _CHILD_MANAGEMENT_ */
 
+INLINE NwkDiscoveryTable_t* nwkMemDiscoveryTable(void)
+{
+  return &nwkMem.nwkDiscoveryTable;
+}
 #endif /* _NWK_MEM_H */
 /** eof nwkMem.h */
 

@@ -70,7 +70,14 @@
       {sspKeyedHashReqHandler},                 \
       {sspEncryptFrameReqHandler},              \
       {sspDecryptFrameReqHandler},              \
-      {sspCcmReqHandler}
+      {sspCcmReqHandler}                        
+    #elif _ZIGBEE_REV_23_SUPPORT_
+    #define SSP_TASKS_LIST                      \
+      {sspKeyedHashReqHandler},                 \
+      {sspEncryptFrameReqHandler},              \
+      {sspDecryptFrameReqHandler},              \
+      {sspCcmReqHandler},                       \
+      {sspCurve25519ReqHandler}
     #else
     #define SSP_TASKS_LIST                      \
       {sspKeyedHashReqHandler},                 \
@@ -156,6 +163,7 @@ typedef enum
 #ifdef _SSP_SW_AES_
   SSP_TASK_AES,
 #endif // _SSP_SW_AES_
+  SSP_TASK_CURVE25519,
 #ifdef ZGP_SECURITY_ENABLE
   SSP_TASK_ZGP_ENCRYPT_FRAME,
   SSP_TASK_ZGP_DECRYPT_FRAME,
@@ -181,6 +189,7 @@ typedef enum  // ssp possible requests' types.
   SSP_REQ_ID_SFP_ENCRYPT_FRAME  = SSP_TASK_ENCRYPT_FRAME,
   SSP_REQ_ID_SFP_DECRYPT_FRAME  = SSP_TASK_DECRYPT_FRAME,
   SSP_REQ_ID_CCM_REQ            = SSP_TASK_CCM_REQ,
+  SSP_REQ_ID_CURVE25519         = SSP_TASK_CURVE25519,
 #ifdef ZGP_SECURITY_ENABLE
   SSP_REQ_ID_SFP_ZGP_ENCRYPT_FRAME = SSP_TASK_ZGP_ENCRYPT_FRAME,
   SSP_REQ_ID_SFP_ZGP_DECRYPT_FRAME = SSP_TASK_ZGP_DECRYPT_FRAME

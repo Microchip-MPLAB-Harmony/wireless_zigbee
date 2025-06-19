@@ -251,6 +251,10 @@ typedef enum
   APS_INVALID_EP_STATUS                  = 0x82,
   /** A transmit request has failed since the ASDU is too large and fragmentation
    * is not supported. */
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  //! Request is not authorized from this device
+  APS_NOT_AUTHORIZED_STATUS              = 0x8D,
+#endif
   APS_ASDU_TOO_LONG_STATUS               = 0xa0,
   /** A received fragmented frame can not be defragmented currently. */
   APS_DEFRAG_DEFERRED_STATUS             = 0xa1,

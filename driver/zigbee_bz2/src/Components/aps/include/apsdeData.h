@@ -137,6 +137,19 @@ typedef struct
     } zsi;
 #endif /* # _ZAPPSI_ */
     ZDO_ResolveAddrReq_t resolveAddrReq; /*!< Used for address resolving */
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+    /* Relay Message Information */
+    struct 
+    {
+      /** Flag for indicating the given request to be process and send via APS Relay Command */
+      uint8_t isRelayCmd;
+      /** NWK security enable flag */
+      uint8_t nwkSecurityEnable;
+      /** Extended Address of Device to Authorise */
+      ExtAddr_t unAuthDevExtAdd;
+    } relayMsgInfo;
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
   } service;
   /** \endcond **/
 
@@ -195,6 +208,11 @@ typedef struct
   /** The distance, in hops, that a transmitted frame will be allowed to
    * travel via the network*/
   uint8_t radius;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  /** This indicates the broadcast address used for multicast 
+   * messages (DstAddrMode = 0x01).*/
+  ShortAddr_t nwkBroadcastAddress;
+#endif //_ZIGBEE_REV_23_SUPPORT_
   /** A pointer to a callback function called upon request
    * completion. Must not be set to NULL. */
   void (*APS_DataConf)(APS_DataConf_t *conf);
@@ -228,6 +246,18 @@ typedef struct
       void (*process)(void*);
     } zsi;
 #endif /* # _ZAPPSI_ */
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+    struct
+    {
+      /** Flag for indicating the given request to be process and send via APS Relay Command */
+      uint8_t isRelayCmd;
+      /** NWK security enable flag */
+      uint8_t nwkSecurityEnable;
+      /** Extended Address of Device to Authorise */
+      ExtAddr_t unAuthDevExtAdd;
+    } relayMsgInfo;
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
   } service;
   /** \endcond **/
 

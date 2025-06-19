@@ -81,9 +81,6 @@ typedef  ShortAddr_t  NwkAddrRange_t;
 /** Converting of time value from seconds to milliseconds. */
 #define NWK_SEC_TO_MSEC(time) ((time) << 10)
 
-#define IS_CORRECT_BROADCAST_ADDR(A) \
-  ((0xFFFFU == (A))||((0xFFFBU <= LE16_TO_CPU(A))&&(LE16_TO_CPU(A) <= 0xFFFDU)))
-
 #define NWK_INVALID_PANID  0xFFFFU
 
 #define CHECK_MEM_OVERLAP(dst, src, len, assert_num)         \

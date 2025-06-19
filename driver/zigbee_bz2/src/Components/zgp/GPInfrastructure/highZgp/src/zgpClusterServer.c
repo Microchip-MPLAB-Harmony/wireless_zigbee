@@ -161,6 +161,7 @@ static HAL_AppTimer_t pairingConfigSessionTimer = {.callback = pairingConfigSess
                                                    };
 #endif
 
+extern ZGP_SinkGroup_t zgpSinkGroupEntry;
 /******************************************************************************
                     Implementations section
 ******************************************************************************/
@@ -1383,6 +1384,8 @@ static ZCL_Status_t processActionOnCompletePairing(zgpPairingConfigContextInfo_t
     else
     {
       zgpServerSendGpPairingForEntry(sinkTableEntry, EXTEND_SINKTABLE_ENTRY);
+      //Needs validation with other test cases added for 4.4.3.1 step 3
+      zgpServerAddGroup(sinkTableEntry , pairingConfigContextInfo->actions.sendGpPairing);
     }
   }
   else if(pairingConfigContextInfo->actions.action == REMOVE_GPD)
@@ -1986,6 +1989,26 @@ zgpSinkTableStatus_t zgpSinkRemoveGpdEntry(ZGP_SinkTableEntry_t *sinkEntry, bool
   {
     if(sendGpPairing)
     {
+      if ((PRECOMMISSIONED_GROUPCAST == sinkEntry->options.communicationMode) || (DERIVED_GROUPCAST == sinkEntry->options.communicationMode) ||
+               (LIGHTWEIGHT_UNICAST == sinkEntry->options.communicationMode))
+      {
+        for (uint8_t i = 0; i < ZGP_SINK_GROUP_LIST_SIZE; i++)
+        {
+          if (ZGP_NWK_ADDRESS_GROUP_INIT != sinkEntry->tableGenericInfo.zgpSinkGrouplist[i].sinkGroup)
+          {
+            if (NWK_IsGroupMember(sinkEntry->tableGenericInfo.zgpSinkGrouplist[i].sinkGroup, GREEN_POWER_ENDPOINT))
+            {
+              if (NWK_RemoveGroup(sinkEntry->tableGenericInfo.zgpSinkGrouplist[i].sinkGroup, GREEN_POWER_ENDPOINT))
+              {
+               if(sinkEntry->tableGenericInfo.zgpSinkGrouplist[i].sinkGroup == zgpSinkGroupEntry.sinkGroup)
+                 zgpSinkGroupEntry.sinkGroup = ZGP_NWK_ADDRESS_GROUP_INIT;
+               sinkEntry->tableGenericInfo.zgpSinkGrouplist[i].sinkGroup = ZGP_NWK_ADDRESS_GROUP_INIT;
+              // To be decided on handling this negative scenario
+              }
+             }
+          }
+        }
+      }
       ZGPH_SendGpPairing(sinkEntry,REMOVE_GPD, 0xFF);
     }
     zgpTransRemoveAndAddEventHandler(NONE, sinkEntry, NULL, 0x00, NULL);
@@ -2181,6 +2204,7 @@ void ZGPH_SendGpPairing(ZGP_SinkTableEntry_t *sinkTableEntry,ZGP_SinkTableAction
     options.assignedAliasPresent = false;
     options.groupCastRadiusPresent = false;
     options.gpdSecurityKeyPresent = false;
+
     if (REMOVE_GPD == action)
       options.removeGpd = true;
   }

@@ -48,7 +48,9 @@
  ******************************************************************************/
 #include <mac_phy/include/mac.h>
 #include <nwk/include/nwkCommon.h>
-
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <tlv/include/tlv.h>
+#endif
 /******************************************************************************
                                 Types section
  ******************************************************************************/
@@ -118,6 +120,10 @@ typedef struct _NWK_JoinInd_t
   MAC_CapabilityInf_t capabilityInformation;
   /** This parameter indicating the method used to join the network. */  
   NWK_JoinControl_t ctrl;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+    /** The TLVs of the joining device as relayed during Network Commissioning.*/
+    uint8_t joiningDeviceTLV[JOINING_ENCAPSULATION_TLV_SIZE];     
+#endif  
 } NWK_JoinInd_t;
 
 /******************************************************************************

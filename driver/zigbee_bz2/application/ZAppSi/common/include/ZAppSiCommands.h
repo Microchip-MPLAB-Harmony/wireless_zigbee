@@ -88,6 +88,7 @@ typedef enum
     ZS_PERMIT_REJOIN_ATTR_ID         = 0x06,
     ZS_DEFAULT_PERMISSIONS_ATTR_ID   = 0x07,
 	ZS_CERTIFICATION_CTRL_ATTR_ID    = 0x08,
+    ZS_R23_JOIN_ATTR_ID              = 0x09,
     ZS_JOIN_CONTROL_ATTR_ID          = 0x10,
     ZS_RX_ON_WHEN_IDLE_ATTR_ID       = 0x52,
     ZS_EXTENDED_ADDRESS_ATTR_ID      = 0x6f,
@@ -105,6 +106,13 @@ typedef enum
     ZS_INDIRECT_POLL_RATE_ATTR_ID    = 0xAB,
     ZS_PROTOCOL_VERSION_ATTR_ID      = 0xAC,
     ZS_DISTRIBUTED_SECURITY_ID       = 0xAD,
+#ifdef _ZIGBEE_REV_23_SUPPORT_      
+    ZS_MAC_DATA_POLL_RETRIES_ATTR_ID = 0xB0,
+    ZS_SUPPORTED_KEY_NEGOTIATION_PROTOCOL_ATTR_ID = 0xB1,
+    ZS_SUPPORTED_PRE_SHARED_SECRETS_ATTR_ID = 0xB2,          
+	ZS_SET_ENDDEVICE_CAPACITY_ID     = 0xB3,          
+    ZS_SET_NWK_HUB_CONNECTIVITY_ATTR_ID      = 0xB4,
+#endif //#ifdef _ZIGBEE_REV_23_SUPPORT_
     ZS_NETWORK_KEY_AMOUNT_ATTR_ID    = 0xC0,
     ZS_SECURITY_KEY_ATTR_ID          = 0xC1,
     ZS_CHANNEL_MASK_ATTR_ID          = 0xC3,
@@ -1873,6 +1881,135 @@ typedef struct PACK _ZS_ZdoMgmtLeaveReq_t
   ))
 } ZS_ZdoMgmtLeaveReq_t;
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/** Describes the parameters of the Beacon Survey request */   //  Added for Beacon Request
+typedef struct PACK _ZS_ZdoMgmtBconSurveyReq_t
+{
+  ShortAddr_t dstAddr;
+/* Type or tag id of a Tlv. */
+  uint8_t tlvID;
+/* Data lenght of the Tlv. */
+  uint8_t tlvLength;
+/* bitmask to determine active/enhanced scan. */
+  uint8_t configBitMask;
+/* describes the channel page and the list of channels to be scanned */
+  ChannelList_t scanChannelList; 
+} ZS_ZdoMgmtBeaconReq_t;
+
+/** Describes the parameters of the Security set configuration Response */
+typedef struct PACK _ZDO_SecuritySetConfigResp_t
+{
+    uint8_t status;
+} ZDO_SecuritySetConfigResp_t;
+
+/** Describes the parameters of the Mgmt Survey Beacon Response */
+typedef struct PACK _ZS_ZDO_ZdoMgmtBconSurveyResp_t
+{
+  uint8_t status;
+  BconSurveyResults_TLV_t beaconResultsTlv;
+}ZS_ZDO_ZdoMgmtBconSurveyResp_t;
+
+/** Describes about Security Set Configuration Request */
+/*  Parameter 1 - Short Address
+    parameter 2 - Next PAN Id , Length, chnage
+    parameter 3 - Next Channel - ID , Length, Field  
+    Parameter 4 - Configuration Parmeter - ID, length, Config Param*/
+typedef struct PACK _ZS_ZdoSecuritySetConfigReq_t
+{
+    ShortAddr_t dstAddr;
+    NextPanIdChangeTlv_t nextPanIdTlv;
+    NextChannelChangeTlv_t nextChannelChangeTlv;
+    ConfigurationParametersTlv_t configParamsTlv;
+} ZS_ZdoSecuritySetConfigReq_t;
+
+/** Describes the parameters of the Security Start Key Update Response */
+typedef struct PACK _ZDO_SecurityStartKeyUpdateResp_t
+{
+    uint8_t seqNum;
+    uint8_t status;
+}ZS_ZDO_SecurityStartKeyUpdateResp_t;
+
+/** Describes the parameters of the Security Get configuration Response */
+typedef struct PACK _ZDO_SecurityGetConfigResp_t
+{
+    uint8_t status;
+} ZDO_SecurityGetConfigResp_t;
+
+/** Describes about Security Get Configuration Request ************
+ * parameter 1 - Short Address
+ * parameter 2 - tlvCounts
+ * parameter 3 - tlvIds
+*/
+typedef struct PACK _ZS_ZDOSecurityGetConfigReq_t
+{
+  ShortAddr_t dstAddr;
+  uint8_t tlvCount;
+  uint8_t tlvIds[1];
+}ZDOSecurityGetConfigReq_t;
+
+/** Describes about Security Start Key Update Request */
+/*  Parameter 1 - destination Address
+    parameter 2 - Relay Cmd
+    parameter 3 - unAuthDevExtAdd
+    Parameter 4 - APS Address Mode
+    Parameter 5 - selectedKeyNegotiationTlv
+    parameter 6 - Fragmentation TLV      ************/
+typedef struct PACK _ZS_ZDO_SecurityStartKeyUpdateReq_t
+{
+    uint64_t dstAddr;
+    uint8_t relayCmd; 
+    ExtAddr_t unAuthDevExtAdd; 
+    uint8_t addressMode;
+    SelectedKeyNegotiationMethodTlv_t rSelectedKeyNegotiationTlv;
+    FragmentationParametersTlv_t rFragmentationTlv; 
+}ZS_ZDO_SecurityStartKeyUpdateReq_t;
+
+/** Describes the parameters of the Device EUI64 TLV List Response */
+typedef struct PACK
+{
+  uint8_t status;
+}ZS_ZdoDeviceEUI64TlvListResp_t;
+
+/**************************************************************************//**
+\brief  Specifies the structure of Device EUI64 List tlv - 
+\This structure TLV is used in either Zappsi`s clear-all-binding request or decommissioning request
+\Parameter 1  - destination Address
+\parameter 2  - destination Address Mode 
+\parameter 3  - Cluster ID
+\parameter 4  - device Count
+\parameter 5  - tagID
+\parameter 6  - length
+\parameter 7  - External Address Array Lists 
+ *****************************************************************************/
+typedef struct PACK
+{
+  ShortAddr_t dstAddr;
+  uint8_t dstAddrMode;
+  uint16_t clusterId;
+  uint8_t deviceCount;
+  uint8_t tagId;
+  uint8_t length;
+  uint64_t extAddrList[MAX_EUI64_COUNT];
+}ZS_ZdoDeviceEUI64TlvListReq_t;
+
+/**************************************************************************//**
+\brief  Specifies the structure of Security get authentication level request 
+\Parameter 1  - Extended destination Address
+\parameter 2  - TargetIeeeAddrTlv_t variable memebers
+ *****************************************************************************/
+typedef struct PACK
+{
+  ExtAddr_t destAddr;
+  TargetIeeeAddrTlv_t apsSecurityLevelTlv;
+}ZS_ZdoAuthenticationLevelReq_t;
+
+/** Describes the parameters of the Get Authenetication level Status Response */
+typedef struct PACK
+{
+   uint8_t status;
+}ZS_ZdoAuthenticationLevelResp_t;
+
+#endif
 /***************************************************************************//**
 \brief Describes the parameters of the ZS_ZdoMgmtLeaveConf function
 *******************************************************************************/
@@ -1925,7 +2062,13 @@ typedef struct PACK
 /***************************************************************************//**
 \brief Describes the parameters of the ZS_ZdoNodeDescReq function
 *******************************************************************************/
-typedef ZDO_NodeDescReq_t ZS_ZdoNodeDescReq_t;
+typedef struct PACK
+{
+  /* NWK address for the node descriptor request */
+  ShortAddr_t nwkAddrOfInterest;
+  /*Address of destination remote device*/
+  ShortAddr_t destAddr;
+} ZS_ZdoNodeDescReq_t;
 /***************************************************************************//**
 \brief Describes the parameters of the ZS_ZdoNodeDescConf function
 ********************************************************************************/
@@ -2025,10 +2168,6 @@ typedef struct PACK
   /*!See ZDO_ActiveEPResp_t description in zdo.h*/
   ZDO_ActiveEPResp_t resp;
 } ZS_ZdpActiveEPConf_t;
-/***************************************************************************//**
-\brief Describes the parameters of the ZS_ZdpComplexDescReq function
-*******************************************************************************/
-typedef ZDO_ComplexDescReq_t ZS_ZdpComplexDescReq_t;
 #ifdef _PARENT_ANNCE_  
 /***************************************************************************//**
 \brief Describes the parameters of the ZS_ZdpParentAnnceReq function
@@ -2050,29 +2189,17 @@ typedef struct PACK
 } ZS_ZdpParentAnnceResp_t;
 #endif
 /***************************************************************************//**
-\brief Describes the parameters of the ZS_ZdpComplexDescConf function
+\brief Describes the parameters of the ZS_ZdpUnsupportedCommandReq_t function
+*******************************************************************************/
+typedef ZDO_UnsupportedCommandReq_t ZS_ZdpUnsupportedCommandReq_t;
+/***************************************************************************//**
+\brief Describes the parameters of the ZS_ZdpUnsupportedCommandConf_t function
 *******************************************************************************/
 typedef struct PACK
 {
-  /*!See ZDO_Status_t description*/
-  uint8_t status;
-  /*!See ZDO_ComplexDescResp description in zdo.h*/
-  ZDO_ComplexDescResp_t resp;
-} ZS_ZdpComplexDescConf_t;
-/***************************************************************************//**
-\brief Describes the parameters of the ZS_ZdpUserDescReq function
-*******************************************************************************/
-typedef ZDO_UserDescReq_t ZS_ZdpUserDescReq_t;
-/***************************************************************************//**
-\brief Describes the parameters of the ZS_ZdpUserDescConf function
-*******************************************************************************/
-typedef struct PACK
-{
-  /*!See ZDO_Status_t description*/
-  uint8_t status;
-  /*!See ZDO_UserDescResp_t description in zdo.h*/
-  ZDO_UserDescResp_t resp;
-} ZS_ZdpUserDescConf_t;
+  uint8_t status;                    /*!See ZDO_Status_t description */
+  ZDO_UnsupportedCommandResp_t resp; /*!See ZDO_UnsupportedCommandResp_t description in zdo.h*/
+} ZS_ZdpUnsupportedCommandConf_t;
 /***************************************************************************//**
 \brief Describes the parameters of the ZS_ZdpEnDeviceAnnceReq function
 *******************************************************************************/
@@ -2126,20 +2253,6 @@ typedef struct PACK
   /*!See ZDO_MgmtRtgResp_t description*/
   ZDO_MgmtRtgResp_t  resp;
 } ZS_ZdpRtgConf_t;
-/***************************************************************************//**
-\brief Describes the parameters of the ZS_ZdpUserDescSetReq function
-*******************************************************************************/
-typedef ZDO_UserDescSetReq_t ZS_ZdpUserDescSetReq_t;
-/***************************************************************************//**
-\brief Describes the parameters of the ZS_ZdpUserDescSetConf function
-*******************************************************************************/
-typedef struct PACK
-{
-  /*!See ZDO_Status_t description*/
-  uint8_t   status;
-  /*Address of remote device which send confirmation*/
-  uint16_t  nwkAddrOfInterest;
-} ZS_ZdpUserDescSetConf_t;
 /***************************************************************************//**
 \brief Describes the parameters of the ZS_ZdpNwkUpdateReq function
 *******************************************************************************/
@@ -2681,6 +2794,8 @@ typedef struct PACK
 typedef struct PACK
 {
   uint32_t timeout;
+  uint8_t keyType;
+  uint8_t relayCmd;
 } ZS_VerifyKeyReq_t;
 
 typedef struct PACK

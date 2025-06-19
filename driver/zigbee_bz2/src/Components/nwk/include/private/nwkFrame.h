@@ -112,6 +112,11 @@ typedef enum _NwkCmdIdentifier_t
   NWK_CMD_NETWORK_UPDATE  = 0x0a, /**< ZigBee spec r17, 3.4.10 */
   NWK_CMD_ENDDEVICE_TIMEOUT_REQUEST  = 0x0b, /**< Child Aging and Recovery Protocol r20, 7.2 */
   NWK_CMD_ENDDEVICE_TIMEOUT_RESPONSE = 0x0c, /**< Child Aging and Recovery Protocol r20, 7.2 */
+  NWK_CMD_LINK_POWER_DELTA           = 0x0d, /**< Link Power Delta spec r23, 3.4.13 */
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  NWK_CMD_NWK_COMMISSIONING_REQUEST  = 0x0e, /**< Network Commissioning spec r23, 3.4.14 */
+  NWK_CMD_NWK_COMMISSIONING_RESPONSE = 0x0f, /**< Network Commissioning spec r23, 3.4.14 */
+#endif
 } NwkCmdIdentifier_t;
 
 /** Type of command id field. */

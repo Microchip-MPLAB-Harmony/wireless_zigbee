@@ -54,6 +54,19 @@
 #include <configserver/include/configserver.h>
 #include <systemenvironment/include/dbg.h>
 #include <zdo/include/private/zdoDbg.h>
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <nwk/include/nwkDiscoveryTable.h>
+#include <tlv/include/tlv.h>
+#include <aps/include/apsmeKeyNegotiate.h>
+#endif //_ZIGBEE_REV_23_SUPPORT_
+/******************************************************************************
+                                definitions section
+ ******************************************************************************/
+#define BEACON_SURVEY_RESULT_TAG_ID 0x01
+#define POTENTIAL_PARENTS_TLV 0x02
+#define ONNWK_INDEX 0x01
+#define POTENTAILPARENT_INDEX 0x02
+#define OTHRNWK_INDEX 0x03
 
 /******************************************************************************
                                 Types section
@@ -286,6 +299,106 @@ typedef struct PACK ZDO_MgmtRtgResp_
 } ZDO_MgmtRtgResp_t;
 END_PACK
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/** Mgmt_NWK_Beacon_Survey_req request parameters structure.Zigbee Specification r23, 2.4.3.3.12*/
+typedef struct ZDO_MgmtBeaconSurveyScanReq_t
+{
+/* MAC Scan Request strucrure. */
+  MAC_ScanReq_t macScan;
+/*short addr of the remote device requesting survey response*/
+  uint16_t surveyorShortAddr;
+/*Sequence Number of the Survey Beacon Request*/
+  uint8_t surveyorZdpSeqNo;
+} ZDO_MgmtBeaconSurveyScanReq_t;
+
+BEGIN_PACK
+typedef struct PACK _ChannelList_t
+{
+/* decides the number of channel pages scan is to be performed */
+  uint8_t channelPageCount;
+/* channel mask over which scan is to be done. */
+  uint32_t channelMask;
+}ChannelList_t;
+
+/** Describes the parameters of the Beacon Survey request */
+typedef struct PACK _ZDO_MgmtBconSurveyReq_t
+{
+/* Type or tag id of a Tlv. */
+  uint8_t tlvID;
+/* Data lenght of the Tlv. */
+  uint8_t tlvLength;
+/* bitmask to determine active/enhanced scan. */
+  uint8_t configBitMask;
+/* describes the channel page and the list of channels to be scanned */
+  ChannelList_t scanChannelList; 
+} ZDO_MgmtBconSurveyReq_t;
+
+/** parameters of Mgmt Beacon Survey response TLV */
+typedef struct PACK _ZDO_BconSurveyResp_t
+{
+/* raw buffer to hold the beacon response. */
+  uint8_t bconSurveyRsp[35];
+} ZDO_BconSurveyResp_t;
+
+typedef struct PACK
+{
+  /* Status. */
+  uint8_t status;
+} ZDO_SecStartKeyUpdateResp_t;
+
+typedef struct PACK
+{
+  /* Type or tag id of a Tlv. */
+  uint8_t tagId;
+  /* Data length of the Tlv. */
+  uint8_t length;
+  /* Extended UID of source device. */
+  uint64_t sourceDeviceEUI64;
+  /* Curve Public Point. */
+  uint8_t publicPoint[32];
+} ZDO_SecStartKeyNegotiationReq_t;
+
+typedef struct PACK
+{
+  /* Curve Public Point TLV. */
+  uint8_t curve25519PublicPointTlv[CURVE25519_PUBLIC_POINT_LOCAL_TLV_DEFAULT_LENGTH + SIZE_OF_TAG + SIZE_OF_LENGTH];
+} ZDO_SecStartKeyNegotiationResp_t;
+
+typedef struct PACK
+{
+  /* Type or tag ID of the TLV. */
+  uint8_t tagId;
+  /* Data length of the TLV. */
+  uint8_t length;
+  /* Extended UID of the sender (device that generated the frame). */
+  uint64_t senderEUI64;
+  /* Challenge value - A randomly generated 64-bit value. */
+  uint8_t challengeValue[CHALLENGE_SIZE];
+} ZDO_FrameCounterChallengeTlv_t;
+
+typedef struct PACK
+{
+  /* Type or tag ID of the TLV. */
+  uint8_t tagId;
+  /* Data length of the TLV. */
+  uint8_t length;
+  /* Extended UID of the responder (device that replies to challenge). */
+  uint64_t responderEUI64;
+  /* Received challenge value - A randomly generated 64-bit value. */
+  uint8_t receivedChallengeValue[CHALLENGE_SIZE];
+  /* Current outgoing APS security frame counter from Responder */
+  uint32_t apsOutgoingFrameCounter;
+  /* AES-CCM-128 outgoing frame counter which is used for MIC over all previous fields in this */
+  uint32_t challengeSecurityFrameCounter;
+  /* MIC - AES-128-CCM 64-bit MIC on all fields except challengeSecurityFrameCounter */
+  uint8_t mic[CCM_MIC_SIZE];
+} ZDO_FrameCounterResp_t;
+
+
+END_PACK
+
+#endif //_ZIGBEE_REV_23_SUPPORT_
+
 /** Describes the parameters of the Rtg request */
 typedef struct
 {
@@ -387,7 +500,6 @@ information of the remote device. */
 typedef struct PACK
 {
   ShortAddr_t nwkAddrOfInterest; //!< NWK address for the node descriptor request
-  ShortAddr_t destAddr;
 } ZDO_NodeDescReq_t;
 
 /** This request is generated from a local device wishing to
@@ -408,33 +520,13 @@ typedef struct PACK
   ShortAddr_t nwkAddrOfInterest; //!< NWK address for the active endpoints request
 } ZDO_ActiveEPReq_t;
 
-/** This request is generated from a local device wishing to
-inquire as to the complex descriptor of a remote device. This command shall be
-unicast either to the remote device itself or to an alternative device that contains
-the discovery information of the remote device. */
+/** This is an unsupported command request generated from a local device to a remote device. 
+This command shall be unicast either to the remote device itself or to an alternative device 
+which may or may not support this request. */
 typedef struct PACK
 {
-  ShortAddr_t nwkAddrOfInterest; //!< NWK address for the complex descriptor request
-} ZDO_ComplexDescReq_t;
-
-/** This request is generated from a local device wishing to inquire
-as to the user descriptor of a remote device. This command shall be unicast either
-to the remote device itself or to an alternative device that contains the discovery
-information of the remote device. */
-typedef struct PACK
-{
-  ShortAddr_t nwkAddrOfInterest; //!< NWK address for the user descriptor request
-} ZDO_UserDescReq_t;
-
-/** This is generated from a local device wishing to
-configure the user descriptor on a remote device. This command shall be unicast
-either to the remote device itself or to an alternative device that contains the
-discovery information of the remote device. */
-typedef struct PACK
-{
-  ShortAddr_t nwkAddrOfInterest; //!< NWK address for the user descriptor setting request
-  UserDescriptor_t userDescriptor; //!< The user descriptor of a device
-} ZDO_UserDescSetReq_t;
+  ShortAddr_t nwkAddrOfInterest; //!< NWK address of an Unsupported Command request
+} ZDO_UnsupportedCommandReq_t;
 
 /** This request is generated from a local device wishing to
 get the simple descriptor of a remote device on the specified endpoint. This
@@ -445,6 +537,13 @@ typedef struct PACK
   ShortAddr_t nwkAddrOfInterest; //!< NWK address for the simple descriptor request
   Endpoint_t  endpoint; //!< The endpoint on the destination
 } ZDO_SimpleDescReq_t;
+/** This request is generated  by a device that wants to retrieve the configuration 
+of a remote device. */
+typedef struct PACK
+{
+  uint8_t tlvCount;
+  uint8_t tlvIds[1];
+} ZDO_SecurityGetConfigReq_t;
 
 /** This request is used to notify other ZigBee devices that a device has
 joined or re-joined the network, identifying the devices 64-bit IEEE address
@@ -793,31 +892,14 @@ typedef struct PACK
   PowerDescriptor_t powerDescriptor; //!< Power descriptor of the device
 } ZDO_PowerDescResp_t;
 
-/**  This command is generated by a remote device in response to a
-Complex_Desc_req directed to the remote device. This command shall be unicast
-to the originator of the Complex_Desc_req command. */
+/** A response with NOT_SUPPORTED status is generated by a remote device in response to a
+Unsupported Cluster Request directed to the remote device. This command shall be unicast to
+the originator of the Unsupported Cluster Request. */
 typedef struct PACK
 {
-  ShortAddr_t      nwkAddrOfInterest; //!< NWK address of the complex descriptor request
-  uint8_t          length; //!< Length in bytes of the ComplexDescriptor field.
-} ZDO_ComplexDescResp_t;
-
-/** The User_Desc_rsp is generated by a remote device in response to a
-User_Desc_req directed to the remote device. This command shall be unicast to
-the originator of the User_Desc_req command. */
-typedef struct PACK
-{
-  ShortAddr_t      nwkAddrOfInterest; //!< NWK address of the user descriptor request
-  UserDescriptor_t  userDescriptor; //!< The user descriptor of a device
-} ZDO_UserDescResp_t;
-
-/** This command is generated by a remote device in response to a
-User_Desc_set directed to the remote device. This command shall be unicast to
-the originator of the User_Desc_set command. */
-typedef struct PACK
-{
-  ShortAddr_t      nwkAddrOfInterest; //!< NWK address of the user descriptor setting request
-} ZDO_UserDescConfResp_t;
+  ShortAddr_t nwkAddrOfInterest;       //!< NWK address of unsupported command requests
+  uint8_t     FieldLength;
+} ZDO_UnsupportedCommandResp_t;
 
 /** This command is generated by a remote device in response to an
 Active_EP_req directed to the remote device. This command shall be unicast to
@@ -887,6 +969,12 @@ typedef struct PACK
   uint8_t               length; //!< Length in bytes of the Simple Descriptor to follow.
   ZdpSimpleDescriptor_t simpleDescriptor; //!<The simple descriptor itself
 } ZDO_SimpleDescResp_t;
+typedef struct PACK
+{
+    uint8_t type;
+    uint8_t length;
+    uint16_t nwkPanIdConflictCount;
+}PanIdCoflict_TLV_t;
 
 /** This command is generated from Remote Devices on receipt
 of a System_Server_Discovery_req primitive if the parameter matches the Server
@@ -967,10 +1055,8 @@ typedef struct PACK
     ZDO_NodeDescResp_t              nodeDescResp; //!< Node descriptor response
     ZDO_PowerDescResp_t             powerDescResp; //!< Power descriptor response
     ZDO_SimpleDescResp_t            simpleDescResp; //!< Simple descriptor response
-    ZDO_ComplexDescResp_t           complexDescResp; //!< Complex descriptor response
-    ZDO_UserDescResp_t              userDescResp; //!< User descriptor response
     ZDO_ActiveEPResp_t              activeEPResp; //!< Active endpoint response
-    ZDO_UserDescConfResp_t          userDescConfResp; //!< User descriptor setting confirmation
+    ZDO_UnsupportedCommandResp_t    unsupportedCommandResp; //!< Unsupported command response
     ZDO_SystemServerDiscoveryResp_t systemServerDiscoveryResp; //!< System server discovery response
 #ifdef _BINDING_
     ZDO_MatchDescResp_t             matchDescResp;      //!< Match descriptor response
@@ -981,11 +1067,18 @@ typedef struct PACK
     ZDO_MgmtLqiResp_t               mgmtLqiResp;        //!< LQI response
     ZDO_MgmtNwkUpdateNotf_t         mgmtNwkUpdateNotf;  //!< Network update notification
     ZDO_MgmtRtgResp_t               mgmtRtgResp;        //!< Rtg response
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+    ZDO_BconSurveyResp_t            mgmtBconSurveyRsp;  //!<Beacon Survey Response
+    ZDO_SecStartKeyUpdateResp_t     secStartKeyUpdateResp;  //!< Start key update response
+    ZDO_SecStartKeyNegotiationResp_t secStartKeyNegotiationResp;  //!< Start key negotiation response
+    ZDO_FrameCounterResp_t         frameCounterResp;    //!< Frame counter response
+#endif
 #ifdef _CHILD_MANAGEMENT_
 #ifdef _PARENT_ANNCE_
     ZDO_ParentAnnceReq_t            parentAnnce;       //!< Parent Announce request 
 #endif
-#endif    
+#endif
+    uint8_t asduBuffer[APS_MAX_NON_SECURITY_ASDU_SIZE - ZDP_RESP_HEADER_SIZE];
   };
 } ZDO_ZdpRespFrame_t;
 
@@ -1001,12 +1094,11 @@ typedef struct PACK
     ZDO_NodeDescReq_t                          nodeDescReq; //!< Node descriptor request
     ZDO_PowerDescReq_t                         powerDescReq; //!< Power descriptor request
     ZDO_SimpleDescReq_t                        simpleDescReq; //!< Simple descriptor request
+    ZDO_SecurityGetConfigReq_t                 getConfigReq; //!< Security get configuration request 
     ZDO_DeviceAnnceReq_t                       deviceAnnce; //!< Device_annce request
     ZDO_ActiveEPReq_t                          activeEPReq; //!< Active endpoint request
-    ZDO_ComplexDescReq_t                       complexDescReq; //!< Complex descriptor request (not supported yet)
-    ZDO_UserDescReq_t                          userDescReq; //!< User descriptor request (not supported yet)
-    ZDO_UserDescSetReq_t                       userDescSetReq; //!< User descriptor setting (not supported yet)
     ZDO_SystemServerDiscoveryReq_t             systemServerDiscoveryReq; //!< System server discovery request
+    ZDO_UnsupportedCommandReq_t                unsupportedCommandReq; //!< Unsupported Command request
 #ifdef _BINDING_
     ZDO_MatchDescReq_t                         matchDescReq;      //!< Match descriptor request
     ZDO_EndDeviceBindReq_t                     endDeviceBindReq;  //!< End Device Bind Request
@@ -1021,11 +1113,15 @@ typedef struct PACK
     ZDO_MgmtNwkUnsolicatedEnhancedUpdateNotf_t mgmtNwkUnsolicatedEnhancedUpdateNotf;
     ZDO_MgmtLqiReq_t                           mgmtLqiReq; //!< LQI request
     ZDO_MgmtRtgReq_t                           mgmtRtgReq; //!< Rtg request
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+    ZDO_MgmtBconSurveyReq_t                    mgmtBconSurveyReq; //!< BeaconSurvey request
+#endif
 #ifdef _CHILD_MANAGEMENT_
 #ifdef _PARENT_ANNCE_
     ZDO_ParentAnnceReq_t                       parentAnnce; //!< Parent Announce request
 #endif
 #endif
+    uint8_t asduBuffer[APS_MAX_NON_SECURITY_ASDU_SIZE - ZDP_REQ_HEADER_SIZE];
   };
 } ZDO_ZdpReqFrame_t;
 
@@ -1081,13 +1177,28 @@ typedef struct
     uint8_t state;
     uint8_t seqNumCopy;  //used to prevent seq number encription
     APS_DataReq_t apsDataReq;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+    /* Relay Message Information */
+    struct 
+    {
+      /** Flag for indicating the given request to be process and send via APS Relay Command */
+      uint8_t isRelayCmd;
+      /** NWK security enable flag  */
+      uint8_t nwkSecurityEnable;
+      /** Extended Address of Device to Authorise */
+      ExtAddr_t unAuthDevExtAdd;
+    } relayMsgInfo;
+#endif
   } service;
   //\endcond
-
+  uint16_t asduPayloadLength;
   // Address fields
   uint16_t   reqCluster; //!< Request's type; takes values from the \ref ZdpClustersList "enumeration"
   APS_AddrMode_t dstAddrMode; //!< Destination address mode, either short (network) address, group or extended address mode
   APS_Address_t dstAddress;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  ShortAddr_t nwkBroadcastAddress; //!< nwkBroadcastAddress shall be filled in case of group addressing mode
+#endif //#ifdef _ZIGBEE_REV_23_SUPPORT_
   // ZDP frame for sending out
   ZDO_ZdpFrame_t req; //!< ZDP request parameters
   //Callback and Response

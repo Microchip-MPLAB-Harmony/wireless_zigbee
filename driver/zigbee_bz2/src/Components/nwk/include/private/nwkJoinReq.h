@@ -62,9 +62,15 @@
 #define NWK_JOIN_REQ_TX_PARAMETERS \
   {NWK_TX_DELAY_UNICAST_COMMAND, nwkPrepareJoinReqTx, nwkConfirmJoinReqTx, true}
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#define NWK_COMMISSIONING_REQ_TX_PARAMETERS \
+  {NWK_TX_DELAY_UNICAST_COMMAND, nwkPrepareCommissioningReqTx, nwkConfirmCommissioningReqTx, true}
+#endif
+
 /******************************************************************************
                                  Types section
  ******************************************************************************/
+
 /** Internal states of the join request component. */
 typedef enum _NwkJoinReqState_t
 {
@@ -91,6 +97,9 @@ typedef enum _NwkJoinReqState_t
    JOIN_REQ_SET_FIRST_SHORT_ADDRESS_STATE = 0x33,
    JOIN_REQ_SET_TRANSACTION_TIME_STATE = 0x34,
    JOIN_REQ_SET_EXT_ADDRESS_STATE = 0x35,
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+   JOIN_REQ_SET_FIRST_SHORT_ADDRESS_ONLY_STATE = 0x36,
+#endif
    JOIN_REQ_LAST_STATE
 } NwkJoinReqState_t;
 
@@ -106,6 +115,23 @@ typedef struct PACK
    * in the association request command. ZigBee spec r17, 3.4.6.3.1, page 329. */
   MAC_CapabilityInf_t capability;
 } NwkRejoinReqCmd_t;
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+
+/** Format of NWK Commissioning command payload */
+typedef struct PACK
+{
+  /** Command ID  */
+  NwkCommandIdField_t commandId;
+  /** Commissioning Type */
+  uint8_t commissioningType;
+  /** Capability information field */
+  MAC_CapabilityInf_t capability;
+  /** Start of payload (TLV's)  */
+  uint8_t payload[1];
+} NwkCommissioningReqCmd_t;
+
+#endif
 END_PACK
 
 /** Internal parameters of the join request component. */
@@ -179,6 +205,38 @@ NWK_PRIVATE void nwkConfirmJoinReqTx(NwkOutputPacket_t *const outPkt,
  ******************************************************************************/
 NWK_PRIVATE bool nwkJoinReqIsIdle(void);
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+  \brief Processed received NWK Commissioning Response command.
+
+  \param[in] payload - a payload of network NWK commissioning request command.
+  \param[in] header - pointer to raw NWK header.
+  \param[in] parse - parsed header fields.
+
+  \return 'true' if continue processing of command packet otherwise 'false'.
+ ******************************************************************************/
+NWK_PRIVATE bool nwkCommissioningResponseFrameInd(const uint8_t *const payload,
+  const NwkFrameHeader_t *const header, const NwkParseHeader_t *const parse);
+
+/**************************************************************************//**
+  \brief Prepare header and payload of the NWK Commissioning request command.
+
+  \param[in] outPkt - pointer to output packet.
+  \return None.
+ ******************************************************************************/
+NWK_PRIVATE void nwkPrepareCommissioningReqTx(NwkOutputPacket_t *const outPkt);
+
+/**************************************************************************//**
+  \brief Confirmation of NWK Commissioning request command transmission.
+
+  \param[in] outPkt - pointer to output packet.
+  \param[in] status - network status of NWK Commissioning request transmission.
+  \return None.
+ ******************************************************************************/
+NWK_PRIVATE void nwkConfirmCommissioningReqTx(NwkOutputPacket_t *const outPkt,
+  const NWK_Status_t status);
+#endif
+
 #else /* _ROUTER_ or _ENDDEVICE_ */
 
 #define nwkRejoinResponseFrameInd NULL
@@ -187,6 +245,12 @@ NWK_PRIVATE bool nwkJoinReqIsIdle(void);
 #define nwkPrepareJoinReqTx NULL
 #define nwkConfirmJoinReqTx NULL
 #define nwkJoinReqIsIdle NULL
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#define nwkPrepareCommissioningReqTx NULL
+#define nwkConfirmCommissioningReqTx NULL
+#define nwkCommissioningResponseFrameInd NULL
+#endif
 
 #endif /* _ROUTER_ or _ENDDEVICE_ */
 

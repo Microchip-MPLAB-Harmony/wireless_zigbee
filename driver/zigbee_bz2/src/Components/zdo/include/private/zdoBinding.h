@@ -80,6 +80,24 @@ ZDO_PRIVATE void zdoMgmtBindRequestCreate(ZDO_ZdpReq_t *const zdpReq);
  ******************************************************************************/
 ZDO_PRIVATE void zdoMgmtBindInd(const APS_DataInd_t *const apsDataInd);
 
+#if defined _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+  \brief Prepare APS_DataReq_t structure for Clear All Bindings ZDP request.
+
+  \param[in] zdpReq - the pointer to ZDP request for Clear All Bindings request.
+  \return None.
+ ******************************************************************************/
+ZDO_PRIVATE void zdoZdpClearAllBindingsReqCreate(ZDO_ZdpReq_t *const zdpReq);
+
+/**************************************************************************//**
+  \brief Process an incoming Clear All Bindings request and send response.
+
+  \param[in] apsDataInd - pointer to APSDE-DATA indication structure of
+                          the received Clear All Bindings request command.
+  \return None.
+ ******************************************************************************/
+ZDO_PRIVATE void zdoClearAllBindingsInd(const APS_DataInd_t *const apsDataInd);
+#endif //defined _ZIGBEE_REV_23_SUPPORT_
 #endif /* _BINDING_ */
 #endif /* _ZDO_BINDING_H */
 /** eof zdoBinding.h */

@@ -40,6 +40,7 @@ modules =                \
   nwkDataReq             \
   nwkDirectJoin          \
   nwkDiscovery           \
+  nwkDiscoveryTable      \
   nwkEDScan              \
   nwkFormation           \
   nwkFrame               \

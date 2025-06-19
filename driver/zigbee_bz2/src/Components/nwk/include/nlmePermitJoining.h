@@ -104,6 +104,15 @@ typedef uint8_t NWK_RejoinPermit_t;
  ******************************************************************************/
 void NWK_PermitJoiningReq(NWK_PermitJoiningReq_t *const req);
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+  \brief NLME-PERMIT-JOINING-COPY-Tlv-TO-NIB request primitive's prototype.
+
+  \param[in] tlvData - tlv Data structure pointer.
+  \return None.
+ ******************************************************************************/
+void NWK_PermitJoiningCpyTlvsToNib(uint8_t *tlvData);
+#endif //_ZIGBEE_REV_23_SUPPORT_
 /**************************************************************************//**
   \brief Enable or disable an end deivce or a router rejoin.
 

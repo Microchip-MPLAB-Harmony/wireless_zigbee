@@ -69,9 +69,15 @@
 #define DEV_TYPE_ROUTER       1
 #define DEV_TYPE_ENDDEVICE    2
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/** The Stack version needs to be updated for every ZigBee Pro-Core revision. 
+        Current revision - R23 */
+#define SERVER_MASK_STACK_VERSION 0x0017
+#else
 /** The Stack version needs to be updated for every ZigBee Pro-Core revision. 
     The initial version is 1 for ZigBee Pro-Core Revision r22 */
 #define SERVER_MASK_STACK_VERSION 0x0016
+#endif
 // DOM-IGNORE-END
 
 /********************************************************************************

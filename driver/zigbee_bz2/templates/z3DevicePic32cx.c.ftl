@@ -48,6 +48,11 @@
 #include <aps/include/apsCommon.h>
 #include <zcl/include/zclAttributes.h>
 #include <z3device/common/include/z3Device.h>
+<#if TC_SWAPOUT_ENABLED>  
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <z3device/common/include/app_tcSwapout.h>
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
+</#if>
 #include <zcl/include/clusters.h>
 #include <pds/include/wlPdsMemIds.h>
 #include <z3device/common/include/zgpAppInterface.h>
@@ -72,6 +77,13 @@
 #ifdef OTAU_CLIENT
 #include <zcl/include/zclOtauClient.h>
 #endif
+
+#ifdef _LINK_SECURITY_
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <security/TrustCentre/include/tcKeyEstablish.h>
+#endif
+#endif // _LINK_SECURITY_
+
 #ifdef _GREENPOWER_SUPPORT_
 #if APP_ZGP_DEVICE_TYPE >= APP_ZGP_DEVICE_TYPE_PROXY_BASIC
 #include <z3device/common/include/zgpAppInterface.h>
@@ -185,7 +197,10 @@ static bool parentLost = false;
 static void visualizationTimerFired(void);
 
 static void networkEventsHandler(SYS_EventId_t eventId, SYS_EventData_t data);
-
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+static void accessRequestEventsHandler(SYS_EventId_t eventId, SYS_EventData_t data);
+static SYS_EventReceiver_t accessRequestEventListener  = { .func = accessRequestEventsHandler};
+#endif
 static SYS_EventReceiver_t networkEventsListener  = { .func = networkEventsHandler};
 
 #if defined(ZIGBEE_END_DEVICE)
@@ -280,7 +295,6 @@ BDB_CommissioningMode_t autoCommissionsEnableMask = ((APP_COMMISSIONING_TOUCHLIN
 
 
 extern TaskHandle_t zigbeeTaskHandle;
-
 /**************************************************************************
 \brief Create Application queue for zigbee and usart events
 ***************************************************************************/
@@ -324,6 +338,7 @@ void APP_EvtUpload(void)
 #endif
 
 }
+
 /**************************************************************************
 \brief Join retry timer fired callback
 ***************************************************************************/
@@ -704,6 +719,34 @@ static void networkEventsHandler(SYS_EventId_t eventId, SYS_EventData_t data)
   (void)data;
 }
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+\brief Listen access request event
+
+\param[in] eventId - id of raised event;
+\param[in] data    - event's data.
+******************************************************************************/
+static void accessRequestEventsHandler(SYS_EventId_t eventId, SYS_EventData_t data)
+{
+  if (BC_EVENT_ACCESS_REQUEST == eventId)
+  {
+    BcAccessReq_t *const accessReq = (BcAccessReq_t*)data;
+    if (BC_PERFORM_DEVICE_INTERVIEW_ACTION == accessReq->action)
+    {
+      bool performDeviceInterviewProcedure = false;
+      CS_ReadParameter(CS_APS_PERFORM_DEVICE_INTERVIEW_ID, &performDeviceInterviewProcedure);
+
+      /* Check and perform device interview */
+      if (performDeviceInterviewProcedure)
+      {
+        accessReq->denied = 1U;
+        BcDeviceInterviewReq_t* context = (BcDeviceInterviewReq_t*)accessReq->context;
+        TC_PerformDeviceInterview(context);
+      }
+    }
+  }
+}
+#endif
 
 /**************************************************************************
 \brief To Handle steeringfailure from application
@@ -1152,6 +1195,12 @@ static void initApp(void)
   // Set parameters to config server
   CS_WriteParameter(CS_DEVICE_TYPE_ID, &deviceType);
   
+<#if TC_SWAPOUT_ENABLED>  
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+    APP_InitTCBackup();
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
+</#if>
+
 <#if SLEEP_SUPPORTED_DEVICE && RESET_TO_FN_ENABLE>
   BSP_InitializeUserButton((App_ButtonPressCallback_t)userButtonShortPressAction);
 </#if>
@@ -1188,6 +1237,9 @@ static void initApp(void)
     {
         /* Init APS Key Pair set so that existing keys gets removed, only install code derived link key will be used for joining */
         APS_InitKeyPairSet();
+      #ifdef _ZIGBEE_REV_23_SUPPORT_
+        APS_InitFragmentationCache();
+      #endif /* _ZIGBEE_REV_23_SUPPORT_ */
         /* Set the install code */
         BDB_ConfigureInstallCode(devAddr, installCode, installCodeSetCallback);
     }
@@ -1222,6 +1274,11 @@ static void initApp(void)
 #endif //_GREENPOWER_SUPPORT_
 
   epIndex = 0;
+ 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  SYS_SubscribeToEvent(BC_EVENT_ACCESS_REQUEST, &accessRequestEventListener);
+#endif
+
 <#if (AUTOMATIC_COMMISSIONING_ON_STARTUP == true) >
   SYS_SubscribeToEvent((uint8_t)BC_EVENT_LEAVE_COMMAND_RECEIVED, &networkEventsListener);
   SYS_SubscribeToEvent((uint8_t)BC_EVENT_NETWORK_ENTERED, &networkEventsListener);
