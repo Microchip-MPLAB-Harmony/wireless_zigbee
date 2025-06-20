@@ -6,6 +6,26 @@
 
 # Zigbee Driver Library Release notes
 
+## Wireless Zigbee Release v6.2.0
+
++ ### PIC32CX-BZ36 - Zigbee Stack Version BC 6.2 (wireless_zigbee\driver\zigbee_bz3)
+
+  + ### Features
+    + This release includes Zigbee stack support for PIC32CX-BZ36/PIC32WM_BZ3602 device families of 32-bit microcontrollers.
+    + All features as previous releases
+    + IEEE 802.15.4 MAC/PHY Certified
+    + Zigbee Compliant Platform Certified - R22
+    + Zigbee Green Power Proxy Basic Certified
+
+  + ### Known Issues/Limitations
+	+Buck mode is not supported
+    
+
+  + ### Development Tools
+    + [MPLAB X v6.25](https://www.microchip.com/mplab/mplab-x-ide)
+    + [MPLAB® XC32 C/C++ Compiler v4.60](https://www.microchip.com/mplab/compilers)
+    + MPLAB® X IDE plug-ins: MPLAB® Code Configurator (MCC) v5.3.7 and above
+
 ## Wireless Zigbee Release v7.0.0_E1
 
 + ### PIC32CX-BZ2 - Zigbee Stack Version BC 5.3 (Refer wireless_zigbee\driver\zigbee_bz2)
