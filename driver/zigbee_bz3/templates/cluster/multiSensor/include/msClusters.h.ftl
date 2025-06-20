@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _MSCLUSTER_H
-#define _MSCLUSTER_H
+#ifndef MSCLUSTER_H
+#define MSCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -76,7 +76,7 @@
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC" + customClusterIndex + "_MULTI_SENSOR_ENDPOINT")?eval >
   
-  <#if (ENDPOINT == ENDPOINT_PARAM) && (DEVICE == DEVICE_PARAM) >    
+  <#if (ENDPOINT == ENDPOINT_PARAM) && ((DEVICE == DEVICE_PARAM) || (DEVICE == "BOTH") ) >    
     <#assign clusterCount = clusterCount + 1>
         
   </#if>
@@ -205,7 +205,7 @@ extern void (*hsServerClusterInitFunctions[HS_SERVER_CLUSTERS_COUNT])();
 
 #endif
 
-#endif // _MSCLUSTER_H
+#endif // MSCLUSTER_H
 
 // eof msClusters.h
 

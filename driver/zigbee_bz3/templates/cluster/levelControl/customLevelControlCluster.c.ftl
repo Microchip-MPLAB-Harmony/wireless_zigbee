@@ -107,6 +107,14 @@ ZCL_LevelControlClusterClientAttributes_t customLevelControlClusterClientAttribu
   ZCL_DEFINE_LEVEL_CONTROL_CLUSTER_CLIENT_ATTRIBUTES()
 };
 </#if>
+
+//###########################################################################
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+<#if ((LEVELCONTROL_CLUSTER_ENABLE == true) && ((LEVELCONTROL_CLUSTER_CS != "CLIENT") || (LEVELCONTROL_CLUSTER_CS == "BOTH")))>
+    ZCL_LevelControlClusterServerAttributes_t __attribute__((persistent)) backupCstmLevelControlClusterServerAttributes;
+</#if>
+</#if>
+
 /******************************************************************************
                     Local variables
 ******************************************************************************/
@@ -485,12 +493,18 @@ static ZCL_Status_t processMove(bool wOnOff, ZCL_Addressing_t *addressing, uint8
   if (ZLL_LEVEL_CONTROL_UP_DIRECTION == req->moveMode)
   {
     level = MAX_CUSTOM_LEVEL;
-    transitionTime = ((MAX_CUSTOM_LEVEL - currentLevel) * 10 /* 1/10 sec */) / req->rate;
+    if((req->rate) != 0U)
+    {
+      transitionTime =(uint8_t)(((MAX_CUSTOM_LEVEL - currentLevel) * 10U /* 1/10 sec */) / req->rate);
+    }
   }
   else if (ZLL_LEVEL_CONTROL_DOWN_DIRECTION == req->moveMode)
   {
     level = MIN_CUSTOM_LEVEL;
-    transitionTime = ((currentLevel - MIN_CUSTOM_LEVEL) * 10 /* 1/10 sec */) / req->rate;
+    if((req->rate) != 0U)
+    {
+      transitionTime = (uint8_t)(((currentLevel - MIN_CUSTOM_LEVEL) * 10U /* 1/10 sec */) / req->rate);
+    }
   }
 
   moveToLevel(wOnOff, executeIfOff, level, transitionTime);
@@ -891,6 +905,24 @@ bool deviceIsOn(void)
   return false;
 }
 </#if>
+
+/*********************************************************************************
+*********************************************************************************/
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+<#if ((LEVELCONTROL_CLUSTER_ENABLE == true) && ((LEVELCONTROL_CLUSTER_CS != "CLIENT") || (LEVELCONTROL_CLUSTER_CS == "BOTH")))>
+void CDllBackupLlAttributes(void)
+{
+   memcpy4ByteAligned(&backupCstmLevelControlClusterServerAttributes, &customLevelControlClusterServerAttributes, sizeof(ZCL_LevelControlClusterServerAttributes_t));
+}
+</#if>
+<#if ((LEVELCONTROL_CLUSTER_ENABLE == true) && ((LEVELCONTROL_CLUSTER_CS != "CLIENT") || (LEVELCONTROL_CLUSTER_CS == "BOTH")))>
+void CDllRestoreLlAttributes(void)
+{
+  memcpy4ByteAligned(&customLevelControlClusterServerAttributes, &backupCstmLevelControlClusterServerAttributes, sizeof(ZCL_LevelControlClusterServerAttributes_t));
+}
+</#if>
+</#if>
+
 #endif // APP_Z3_DEVICE_TYPE == APP_DEVICE_TYPE_CUSTOM_DEVICE
 
 // eof customLevelControlCluster.c

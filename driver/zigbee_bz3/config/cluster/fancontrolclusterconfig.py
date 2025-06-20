@@ -46,6 +46,12 @@ def customFanControlClusterEnableCheck(symbol, event):
     else:
         symbol.setEnabled(False)
 
+def combinedInterfaceFanControlClusterEnableCheck(symbol, event):
+    if ((zigbeeDeviceType.getValue() == 'ZIGBEE_COMBINED_INTERFACE') and (fanControlCluster.getValue() == True)):
+        symbol.setEnabled(True)
+    else:
+        symbol.setEnabled(False)
+
 def fanControlClusterClientCheck(symbol, event):
     if ((fanControlCluster.getValue() == False) or fanControlClusterCS.getValue() == "SERVER"):
         symbol.setVisible(False)
@@ -77,7 +83,7 @@ def fanControlClusterHandling():
     elif ((getDevice == "ZIGBEE_COMBINED_INTERFACE")):
         fanControlCluster.setVisible(True)
         fanControlCluster.setValue(True)
-        fanControlCluster.setReadOnly(True)
+        fanControlCluster.setReadOnly(False)
         fanControlClusterCS.setValue("CLIENT")
         fanControlClusterCS.setReadOnly(True)
     elif ((getDevice == "ZIGBEE_THERMOSTAT")):
@@ -89,7 +95,10 @@ def fanControlClusterHandling():
     elif ((getDevice == "ZIGBEE_CUSTOM")):
         fanControlCluster.setVisible(True)
         fanControlCluster.setValue(True)
-        fanControlClusterCS.setValue("BOTH")
+        fanControlClusterCS.setValue("SERVER")
+        fanControlClusterCS.setVisible(True)
+        fanControlClusterServerMenu.setVisible(True)
+        fanControlClusterClientMenu.setVisible(False)
     else:
         fanControlCluster.setVisible(False)
 
@@ -125,23 +134,26 @@ fanControlCluster.setReadOnly(False)
 global fanControlClusterCS
 fanControlClusterCS = drvZigbeeComponent.createComboSymbol("FANCONTROL_CLUSTER_CS",  fanControlCluster, ["CLIENT","SERVER", "BOTH"])
 fanControlClusterCS.setLabel("Supported Implementation")
-fanControlClusterCS.setDefaultValue("BOTH")
+fanControlClusterCS.setDefaultValue("SERVER")
 #fanControlClusterCS.setVisible(False)
 fanControlClusterCS.setDescription("fanControl Cluster Supported Implementation- Select the option")
 fanControlClusterCS.setDependencies(fanControlClusterCsCheck,["FANCONTROL_CLUSTER_ENABLE"])
 
+global fanControlClusterClientMenu
 fanControlClusterClientMenu = drvZigbeeComponent.createMenuSymbol("FANCONTROL_CLUSTER_CLIENT_MENU", fanControlCluster)
 fanControlClusterClientMenu.setLabel("Client")
 #fanControlClusterClientMenu.setVisible(False)
 fanControlClusterClientMenu.setDescription("FANCONTROL CLUSTER CLIENT")
 fanControlClusterClientMenu.setDependencies(fanControlClusterClientCheck,["FANCONTROL_CLUSTER_CS","FANCONTROL_CLUSTER_ENABLE"])
 
+global fanControlClusterServerMenu
 fanControlClusterServerMenu = drvZigbeeComponent.createMenuSymbol("FANCONTROL_CLUSTER_SERVER_MENU", fanControlCluster)
 fanControlClusterServerMenu.setLabel("Server")
 #fanControlClusterServerMenu.setVisible(False)
 fanControlClusterServerMenu.setDescription("FANCONTROL CLUSTER SERVER")
 fanControlClusterServerMenu.setDependencies(fanControlClusterServerCheck,["FANCONTROL_CLUSTER_CS","FANCONTROL_CLUSTER_ENABLE"])
 
+global fanControlClusterClientAttributes
 fanControlClusterClientAttributes = drvZigbeeComponent.createMenuSymbol("FANCONTROL_CLUSTER_CLIENT__ATTRIBUTES_MENU", fanControlClusterClientMenu)
 fanControlClusterClientAttributes.setLabel("Attributes")
 #fanControlClusterClientAttributes.setVisible(False)
@@ -259,7 +271,18 @@ fanControlClusterConfSrc.setProjectPath("config/" + configName + "/zigbee/z3devi
 fanControlClusterConfSrc.setType("SOURCE")
 fanControlClusterConfSrc.setOverwrite(True)
 fanControlClusterConfSrc.setMarkup(True)
-fanControlClusterConfSrc.setEnabled(checkDevTypeCombInterface)
+fanControlClusterConfSrc.setEnabled(checkDevTypeCombInterface and fanControlCluster.getValue())
+fanControlClusterConfSrc.setDependencies(combinedInterfaceFanControlClusterEnableCheck, ["FANCONTROL_CLUSTER_ENABLE"])
+
+fanControlClusterConfInc = drvZigbeeComponent.createFileSymbol("CIFANCONTROLCLUSTER_H", None)
+fanControlClusterConfInc.setSourcePath("/driver/zigbee" + suffix + "/application/zigbee_only/Zigbee_Device_Application/devicetypes/combinedInterface/include/ciFanControlCluster.h")
+fanControlClusterConfInc.setOutputName("ciFanControlCluster.h")
+fanControlClusterConfInc.setDestPath("/zigbee/z3device/combinedInterface/include")
+fanControlClusterConfInc.setProjectPath("config/" + configName + "/zigbee/z3device/combinedInterface/include/")
+fanControlClusterConfInc.setType("HEADER")
+fanControlClusterConfInc.setOverwrite(True)
+fanControlClusterConfInc.setEnabled(checkDevTypeCombInterface and fanControlCluster.getValue())
+fanControlClusterConfInc.setDependencies(combinedInterfaceFanControlClusterEnableCheck,["FANCONTROL_CLUSTER_ENABLE"])
 
 # FANCONTROL CLUSTER - Thermostat
 fanControlClusterConfSrc = drvZigbeeComponent.createFileSymbol("ZIGBEE_FANCONTROL_CLUSTER_CONF_SRC_TH", None)

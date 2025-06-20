@@ -51,9 +51,11 @@
 #include <hal/include/appTimer.h>
 #include <aps/include/apsmeBind.h>
 #include <aps/include/private/apsFrames.h>
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <aps/include/private/apsCommand.h>
+#endif
 #include <security/serviceprovider/include/sspSfp.h>
 #include <security/serviceprovider/include/sspAuthentic.h>
-
 /******************************************************************************
                    Types section
 ******************************************************************************/
@@ -77,6 +79,10 @@ typedef enum
   APS_SM_TKI_COMMAND_BUFFER_TYPE,
   APS_SM_COMMAND_IND_BUFFER_TYPE,
   APS_TUNNEL_COMMAND_BUFFER_TYPE
+#ifdef _ZIGBEE_REV_23_SUPPORT_  
+  ,APS_SM_CMD_BUFFER_TYPE,
+  APS_DM_FRAG_ACK_DATA_BUFFER_TYPE            //ACK for data request (fragment)
+#endif  
 } ApsBufferType_t;
 
 typedef enum {
@@ -87,6 +93,10 @@ typedef enum {
   APS_RETRANSMISSION_STATE,
   APS_TIMEOUT_STATE,
 } ApsDataDescriptorState_t ;
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+typedef ApsDataDescriptorState_t ApsCmdDescriptorState_t;
+#endif
 
 typedef enum
 {
@@ -121,14 +131,53 @@ typedef struct
 #endif //_SECURITY_
 } ApsDataDescriptor_t;
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+typedef struct
+{
+  uint8_t busy:1;
+  ApsNldeDataReqType_t entryType:7;
+  ApsCmdDescriptorState_t state:4;
+  uint8_t retriesCounter:4;
+  NWK_DataReq_t nwkDataReq;
+
+   struct
+  {
+    TOP_GUARD
+    uint8_t macHeader[MAC_MSDU_OFFSET];
+    uint8_t macPayload[MAC_MAX_MSDU_SIZE];
+#if (MAC_AFFIX_LENGTH - MAC_MSDU_OFFSET)
+    uint8_t macFooter[MAC_AFFIX_LENGTH - MAC_MSDU_OFFSET];
+#endif
+    BOTTOM_GUARD
+  } pdu;
+  
+} ApsCmdDescriptor_t;
+#endif
+
 typedef struct
 {
   APS_DataReq_t *link; // request pointer
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  NWK_DataInd_t dataIndApsDataReq;
+#endif
   uint32_t timeout;
   ApsDataDescriptor_t dataDescriptor;
   ApsBufferType_t type;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  bool isAckRelayRequired;
+  bool isFragAckRelayRequired;
+#endif
 } ApsDataBuffer_t ;
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+typedef struct
+{
+  ApsCommandReq_t *link;
+  ApsBufferType_t type;
+  uint32_t timeout;
+  ApsCmdDescriptor_t cmdDescriptor;
+} ApsCmdBuffer_t;
+#endif
 /*
   APS Acknowledge buffer declaration
 */
@@ -136,6 +185,10 @@ typedef struct
 {
   /* Current buffer status */
   bool busy;
+#ifdef _ZIGBEE_REV_23_SUPPORT_  
+  bool isForApsCmd;
+  ApsCommandInd_t cmdInd;
+#endif  
   /* Determines type of encryption to be used for ack */
   APS_Status_t securityStatus;
   /* Link to relative NWK_DataInd entity */
@@ -159,7 +212,7 @@ typedef struct
     uint8_t apsSecFooter[APS_MAX_DATA_FRAME_FOOTER_LENGTH];
 #endif /* _LINK_SECURITY_ */
 
-#if (NWK_AFFIX_LENGTH - NWK_NSDU_OFFSET)
+#if ((NWK_AFFIX_LENGTH - NWK_NSDU_OFFSET) > 0U)
     uint8_t lowLevelFooter[NWK_AFFIX_LENGTH - NWK_NSDU_OFFSET];
 #endif
   };
@@ -182,6 +235,16 @@ typedef struct
   uint8_t reqCounter;
   ApsDataBuffer_t *buffers;
 } ApsDataReqBuffersPool_t;
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+typedef struct
+{
+  uint8_t buffersAmount;
+  uint8_t maxReqCounter;
+  uint8_t reqCounter;
+  ApsCmdBuffer_t *buffers;
+} ApsCmdReqBuffersPool_t;
+#endif
 
 #ifdef _APS_FRAGMENTATION_
 typedef struct
@@ -222,17 +285,39 @@ typedef struct
 } ApsFragmTxDescr_t;
 #endif // _APS_FRAGMENTATION_
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/** Structure for Aps Relay Command Request */
+typedef struct _apsRelayCommandReq_t
+{ 
+  struct
+  {
+    /** APS memory buffer pointer */
+    ApsDataBuffer_t *pApsDataBuffer;
+  } service;
+
+  /** APS Command Request */
+  ApsCommandReq_t cmdReq;
+} ApsRelayCommandReq_t;
+#endif/* _ZIGBEE_REV_23_SUPPORT_ */
+
 /*
  * APS sublayer memory structure.
  */
 typedef struct
 {
   ApsDataReqBuffersPool_t dataReqBuffersPool; // Buffers to execute APS Data requests
+#ifdef _ZIGBEE_REV_23_SUPPORT_  
+  ApsCmdReqBuffersPool_t cmdReqBuffersPool; // Buffers to execute APS Cmd requests
+#endif  
   ApsAckBuffersPool_t ackBuffersPool; // Buffers to generate APS acknowledgements
 #ifdef _APS_FRAGMENTATION_
   ApsFragmRxDescr_t apsFragmRxDescr;
   ApsFragmTxDescr_t apsFragmTxDescr;
 #endif // _APS_FRAGMENTATION_
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  ApsRelayCommandReq_t apsRelayCommandReq;
+#endif
 } ApsMem_t;
 
 
@@ -278,11 +363,12 @@ APS_PRIVATE void apsFreeBuffer(void *buffer);
   \brief Check memory availability for NLDE-DATA.request primitive to generate
   APS acknowledge.
 
-  \param  None
+  \param  frametype  - APS frame type
+  
   \return true - memory is available
           false - in other case
 *******************************************************************************/
-APS_PRIVATE bool apsIsBufferAvailableForAck(void);
+APS_PRIVATE bool apsIsBufferAvailableForAck(uint8_t frameType);
 
 /******************************************************************************
                    Inline functions section
@@ -354,15 +440,79 @@ INLINE void apsResetFragmRxDescr(void)
   apsFragmRxDescr->state = 0;
   apsFragmRxDescr->timeout = 0;
 
-  memset(&apsFragmRxDescr->apsBuffer, 0, sizeof(apsFragmRxDescr->apsBuffer));
-  memset(&apsFragmRxDescr->apsAckBuffer, 0, sizeof(apsFragmRxDescr->apsAckBuffer));
-  memset(apsFragmRxDescr->buffers, 0,
-    apsFragmRxDescr->maxBlocksAmount * apsFragmRxDescr->blockSize + apsFragmRxDescr->maxBlocksAmount);
+  (void)memset(&apsFragmRxDescr->apsBuffer, 0, sizeof(apsFragmRxDescr->apsBuffer));
+  (void)memset(&apsFragmRxDescr->apsAckBuffer, 0, sizeof(apsFragmRxDescr->apsAckBuffer));
+  (void)memset(apsFragmRxDescr->buffers, 0,
+    (uint8_t)(apsFragmRxDescr->maxBlocksAmount * apsFragmRxDescr->blockSize + apsFragmRxDescr->maxBlocksAmount));
 
   apsFragmRxDescr->apsBuffer.dataDescriptor.nwkDataReq.nsdu = (uint8_t *)&apsFragmRxDescr->apsAckBuffer.frame;
 }
 
 #endif // ifdef _APS_FRAGMENTATION_
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+
+/***************************************************************************//**
+  \brief Allocates memory buffer for NLDE-DATA.request primitive specified by
+  parameter primitiveType which will be used by APS command request
+
+  \param primitiveType - type of buffer which will be allocated
+    APS_NLDE_DATA_REQ_BUFFER_TYPE - NLDE-DATA.request without frame
+    APS_NLDE_DATA_REQ_WITH_ACK_BUFFER_TYPE - NLDE-DATA.request with ack
+      required flag in APDU
+  \return non-NULL buffer pointer if memory was allocated successfully
+          NULL - no free buffers available.
+*******************************************************************************/
+APS_PRIVATE ApsCmdBuffer_t *apsGetCmdBuffer(uint8_t primitiveType);
+
+/***************************************************************************//**
+  \brief Deallocate memory buffer allocated for APS command request
+
+  \param buffer - pointer to buffer to be freed.
+  \return None
+*******************************************************************************/
+APS_PRIVATE void apsFreeCmdBuffer(void *buffer);
+
+/**************************************************************************//**
+  \brief Get the pointer to cmdBuffer for the given request
+
+  \param[in] commandReq - pointer to request's parameters of APS command
+
+  \return Pointer to aps command buffer allocated for the given request
+ ******************************************************************************/
+ApsCmdBuffer_t *apsGetCmdReqBuffer(ApsCommandReq_t *commandReq);
+
+/*****************************************************************************
+  \brief Gives pointer to APS layer memory pool.
+
+  \param none
+  \retur pointer to APS memory pool.
++*****************************************************************************/
+INLINE ApsCmdReqBuffersPool_t *apsGetCmdReqBuffersMem(void)
+{
+  return &apsMem.cmdReqBuffersPool;
+}
+
+/*****************************************************************************
+  \brief Get memory for APS relay command.
+
+  \param  none
+  \return Pointer to the memory for relay command request
+*****************************************************************************/
+INLINE ApsRelayCommandReq_t *apsGetRelayCommandMem(void)
+{
+  return &apsMem.apsRelayCommandReq;
+}
+
+/*****************************************************************************
+  Getting pointer to ACK buffer by data buffer
+  Parameters: ackDataBuffer - data buffer of APS ack.
+  Returns: Pointer to NWK Data Indication.
+*****************************************************************************/
+ApsAckBuffer_t * apsGetAckByDataBuffer(ApsDataBuffer_t *ackDataBuffer);
+
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
+
 #endif /*APSMEMORYMANAGER_H_*/
 
 //eof apsMemoryManager.h

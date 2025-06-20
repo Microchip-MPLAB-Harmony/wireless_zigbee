@@ -46,6 +46,12 @@ def customIlluminanceMeasurementClusterEnableCheck(symbol, event):
     else:
         symbol.setEnabled(False)
 
+def combinedInterfaceIlluminanceMeasurementClusterEnableCheck(symbol, event):
+    if ((zigbeeDeviceType.getValue() == 'ZIGBEE_COMBINED_INTERFACE') and (illuminanceMeasurementCluster.getValue() == True)):
+        symbol.setEnabled(True)
+    else:
+        symbol.setEnabled(False)
+
 def illuminanceMeasurementClusterClientCheck(symbol, event):
     if ((illuminanceMeasurementCluster.getValue() == False) or illuminanceMeasurementClusterCS.getValue() == "SERVER"):
         symbol.setVisible(False)
@@ -77,7 +83,7 @@ def illuminanceMeasurementClusterHandling():
     elif ((getDevice == "ZIGBEE_COMBINED_INTERFACE")):
         illuminanceMeasurementCluster.setVisible(True)
         illuminanceMeasurementCluster.setValue(True)
-        illuminanceMeasurementCluster.setReadOnly(True)
+        illuminanceMeasurementCluster.setReadOnly(False)
         illuminanceMeasurementClusterCS.setValue("CLIENT")
         illuminanceMeasurementClusterCS.setReadOnly(True)
     elif ((getDevice == "ZIGBEE_MULTI_SENSOR")):
@@ -89,7 +95,10 @@ def illuminanceMeasurementClusterHandling():
     elif ((getDevice == "ZIGBEE_CUSTOM")):
         illuminanceMeasurementCluster.setVisible(True)
         illuminanceMeasurementCluster.setValue(True)
-        illuminanceMeasurementClusterCS.setValue("BOTH")
+        illuminanceMeasurementClusterCS.setValue("SERVER")
+        illuminanceMeasurementClusterCS.setVisible(True)
+        illuminanceMeasurementClusterClientMenu.setVisible(False) 
+        illuminanceMeasurementClusterServerMenu.setVisible(True)
     else:
         illuminanceMeasurementCluster.setVisible(False)
 
@@ -137,12 +146,14 @@ illuminanceMeasurementClusterCS.setDefaultValue("BOTH")
 illuminanceMeasurementClusterCS.setDescription("Illuminance Measurement Cluster Supported Implementation- Select the option")
 illuminanceMeasurementClusterCS.setDependencies(illuminanceMeasurementClusterCsCheck,["ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE"])
 
+global illuminanceMeasurementClusterClientMenu
 illuminanceMeasurementClusterClientMenu = drvZigbeeComponent.createMenuSymbol("ILLUMINANCEMEASUREMENT_CLUSTER_CLIENT_MENU", illuminanceMeasurementCluster)
 illuminanceMeasurementClusterClientMenu.setLabel("Client")
 #illuminanceMeasurementClusterClientMenu.setVisible(False)
 illuminanceMeasurementClusterClientMenu.setDescription("ILLUMINANCE MEASUREMENT CLUSTER CLIENT")
 illuminanceMeasurementClusterClientMenu.setDependencies(illuminanceMeasurementClusterClientCheck,["ILLUMINANCEMEASUREMENT_CLUSTER_CS","ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE"])
 
+global illuminanceMeasurementClusterServerMenu
 illuminanceMeasurementClusterServerMenu = drvZigbeeComponent.createMenuSymbol("ILLUMINANCEMEASUREMENT_CLUSTER_SERVER_MENU", illuminanceMeasurementCluster)
 illuminanceMeasurementClusterServerMenu.setLabel("Server")
 #illuminanceMeasurementClusterServerMenu.setVisible(False)
@@ -284,7 +295,18 @@ illuMeasClusterConfSrc.setProjectPath("config/" + configName + "/zigbee/z3device
 illuMeasClusterConfSrc.setType("SOURCE")
 illuMeasClusterConfSrc.setOverwrite(True)
 illuMeasClusterConfSrc.setMarkup(True)
-illuMeasClusterConfSrc.setEnabled(checkDevTypeCombInterface)
+illuMeasClusterConfSrc.setEnabled(checkDevTypeCombInterface and illuminanceMeasurementCluster.getValue())
+illuMeasClusterConfSrc.setDependencies(combinedInterfaceIlluminanceMeasurementClusterEnableCheck, ["ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE"])
+
+illuMeasClusterConfInc = drvZigbeeComponent.createFileSymbol("CIILLUMINANCEMEASUREMENTCLUSTER_H", None)
+illuMeasClusterConfInc.setSourcePath("/driver/zigbee" + suffix + "/application/zigbee_only/Zigbee_Device_Application/devicetypes/combinedInterface/include/ciIlluminanceMeasurementCluster.h")
+illuMeasClusterConfInc.setOutputName("ciIlluminanceMeasurementCluster.h")
+illuMeasClusterConfInc.setDestPath("/zigbee/z3device/combinedInterface/include")
+illuMeasClusterConfInc.setProjectPath("config/" + configName + "/zigbee/z3device/combinedInterface/include/")
+illuMeasClusterConfInc.setType("HEADER")
+illuMeasClusterConfInc.setOverwrite(True)
+illuMeasClusterConfInc.setEnabled(checkDevTypeCombInterface and illuminanceMeasurementCluster.getValue())
+illuMeasClusterConfInc.setDependencies(combinedInterfaceIlluminanceMeasurementClusterEnableCheck,["ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE"])
 
 # ILLUMINANCE MEASUREMENT CLUSTER - Multi Sensor
 illuMeasClusterConfSrc = drvZigbeeComponent.createFileSymbol("ZIGBEE_ILLUMINANCEMEASUREMENT_CLUSTER_CONF_SRC_MS", None)

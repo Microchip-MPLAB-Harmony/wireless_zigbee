@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPPROXYTABLE_H
-#define _ZGPPROXYTABLE_H
+#ifndef ZGPPROXYTABLE_H
+#define ZGPPROXYTABLE_H
 
 #ifdef _GREENPOWER_SUPPORT_
 /******************************************************************************
@@ -87,6 +87,6 @@ zgpProxyTableStatus_t zgpProxyTableCreateOrUpdateEntry(ZGP_GpPairing_t *gpPairin
 
 #endif // _GREENPOWER_SUPPORT_
 
-#endif // _ZGPPROXYTABLE_H
+#endif // ZGPPROXYTABLE_H
 
 // eof zgpProxyTable.h

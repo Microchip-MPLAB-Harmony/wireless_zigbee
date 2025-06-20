@@ -109,6 +109,10 @@ typedef struct PACK _NwkRouteReplyPayload_t
    * The second element contain the 64-bit address of the destination of
    * the route request command frame to which this frame is a reply.*/
   ExtAddr_t extAddr[NWK_MAX_RREPLY_EXT_ADDR_AMOUNT];
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  /** Router Information Global TLV is appended at the end of the payload (Zigbee Spec R23) */
+  RouterInformationTlv_t routerInformationTlv;
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
 } NwkRouteReplyPayload_t;
 END_PACK
 

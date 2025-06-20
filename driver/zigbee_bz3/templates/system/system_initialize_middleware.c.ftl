@@ -1,5 +1,5 @@
 	// Create ZIGBEE Stack Message QUEUE
-    OSAL_QUEUE_Create(&zigbeeRequestQueueHandle, QUEUE_LENGTH_ZIGBEE, QUEUE_ITEM_SIZE_ZIGBEE);
+    (void)OSAL_QUEUE_Create(&zigbeeRequestQueueHandle, QUEUE_LENGTH_ZIGBEE, QUEUE_ITEM_SIZE_ZIGBEE);
 
     // Retrieve Zigbee's data from Information Base
     ZB_CS_SYS_IBData_t zgbIBdata = {0};
@@ -15,7 +15,7 @@
     // Initialize ZIGBEE Stack
     Zigbee_Init(&osalAPIList, &zigbeeRequestQueueHandle, NULL, &zgbIBdata);
 
-<#if DEVICE_DEEP_SLEEP_ENABLED>
+<#if DEVICE_DEEP_SLEEP_ENABLED && (!APP_ENABLE_CONSOLE) >
     // pass the above read wakep src for the stack to use
 	CS_WriteParameter(CS_DEVICE_DEEP_SLEEP_WAKEUP_SRC_ID, &deepSleepWakeupSrc);
 </#if>

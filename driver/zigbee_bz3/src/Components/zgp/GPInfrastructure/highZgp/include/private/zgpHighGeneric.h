@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPHIGHGENERIC_H
-#define _ZGPHIGHGENERIC_H
+#ifndef ZGPHIGHGENERIC_H
+#define ZGPHIGHGENERIC_H
 
 #ifdef _GREENPOWER_SUPPORT_
 /******************************************************************************
@@ -143,6 +143,6 @@ bool zgpGenericChannelChangeHandling(uint8_t tempChannel);
 bool zgpGenericNotInTransmitChannnel(void);
 #endif // _GREENPOWER_SUPPORT_
 
-#endif // _ZGPGENERIC_H
+#endif // ZGPHIGHGENERIC_H
 
 // eof zgpHighGeneric.h

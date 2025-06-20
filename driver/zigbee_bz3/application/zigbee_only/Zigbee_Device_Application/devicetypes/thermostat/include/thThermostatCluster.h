@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _THTHERMOSTATCLUSTER_H
-#define _THTHERMOSTATCLUSTER_H
+#ifndef THTHERMOSTATCLUSTER_H
+#define THTHERMOSTATCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -154,6 +154,6 @@ void setPiCoolingDemand(uint8_t temp);
 void setPiHeatingDemand(uint8_t temp);
 
 #endif
-#endif // _THTHERMOSTATCLUSTER_H
+#endif // THTHERMOSTATCLUSTER_H
 
 // eof thThermostatCluster.h

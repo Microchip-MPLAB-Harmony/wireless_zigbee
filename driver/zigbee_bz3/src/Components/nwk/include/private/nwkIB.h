@@ -41,8 +41,8 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#if !defined _NWK_IB_H
-#define _NWK_IB_H
+#if !defined NWK_IB_H
+#define NWK_IB_H
 // DOM-IGNORE-END
 
 /******************************************************************************
@@ -62,7 +62,6 @@
 #include <nwk/include/nlmeNetworkDiscovery.h>
 #include <nwk/include/nwkEndDeviceTimeout.h>
 #include <nwk/include/nwkConfigServer.h>
-
 /******************************************************************************
                                 Types section
  ******************************************************************************/
@@ -77,6 +76,14 @@ typedef struct _NIB_t
   uint16_t transmitFailureCounter;
   /** The address of the designated network channel manager function. */
   ShortAddr_t managerAddr;
+  /** This indicates the total number of PAN ID conflicts that have been seen by the local device.*/
+  uint16_t nwkPanIdConflictCount;
+  /** This indicates what the next PAN ID received in the NWK Update Command
+  frame SHALL be in order for a PAN ID change to be accepted.*/
+  PanId_t nwkNextPanId;
+  /** This indicates the next channel that will be used once a command to
+  change channels has been received.*/
+  uint32_t nwkNextChannelChange;
   /** This field shall contain the device capability information established at
    * network joining time. */
   MAC_CapabilityInf_t capabilityInformation;
@@ -107,8 +114,7 @@ typedef struct _NIB_t
   } beacon;
   /** Top part of the identifier of initial route request. */
   uint8_t routeRequestIdTop;
-
-            /*** Attributes are initialized in Config Server. ***/
+/*** Attributes are initialized in Config Server. ***/
   /** The type of the device:
    *  - 0x00 - zigbee coordinator
    *  - 0x01 - zigbee router
@@ -181,6 +187,20 @@ typedef struct _NIB_t
    * that does not negotiate a different timeout value. */
   NwkEndDeviceTimeout_t endDeviceTimeoutDefault;
 #endif /* _CHILD_MANAGEMENT_ */
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  /** This indicates that the network layer will perform additional attempts
+   * upon receipt of a MAC Data poll failure. */
+  uint8_t nwkPerformExtraMacDataPollRetries;
+  /** list of TLVs that are global to the Zigbee network. */
+  uint8_t nwkNetworkWideBeaconPayloadTLV[NWK_WIDE_BEACON_TLV_SIZE];
+  /** list of TLVs that are specific to the local device */
+  uint8_t nwkDeviceLocalBeaconAppendixTLV[NWK_LOCAL_BEACON_TLV_SIZE];
+ /** Reference LQA value.
+   * This reference value is used to evaluate/select the potential parent for joining and rejoining. */
+  uint8_t nwkGoodParentLQA;
+  /** Network Hub Connectivity. */
+  bool nwkHubConnectivity;
+#endif //_ZIGBEE_REV_23_SUPPORT  
 } NIB_t;
 
 /******************************************************************************
@@ -251,6 +271,6 @@ NWK_PRIVATE void nwkSetParentShortAddr(ShortAddr_t addr);
 
 #endif /* _ROUTER_ or _ENDDEVICE_ */
 
-#endif  /* _NWK_IB_H */
+#endif  /* NWK_IB_H */
 /**  eof nwkIB.h */
 

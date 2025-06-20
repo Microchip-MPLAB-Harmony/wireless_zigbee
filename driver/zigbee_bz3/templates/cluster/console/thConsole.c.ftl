@@ -65,6 +65,22 @@
 #include <zcl/clusters/include/identifyCluster.h>
 #include <z3device/clusters/include/onOffCluster.h>
 
+<#compress>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+
+  <#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
+
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  <#assign devicetype = DEVICE_TYPE_FILE_PATH >
+#include <z3device/${devicetype}/include/${deviceTypeFunctionPrefix + clusterName}Cluster.h>
+  </#if>
+
+  </#list>
+  
+</#compress>
+
 /******************************************************************************
                     Defines section
 ******************************************************************************/
@@ -107,6 +123,136 @@ static void processTriggerAlarmCmd(const ScanValue_t *args);
 static void processSetAlarmMaskCmd(const ScanValue_t *args);
 static void processResetAlarms(const ScanValue_t *args);
 #endif // ZB_COMMISSIONING_ON_STARTUP == 0
+
+<#-- All ftl functions used inside the FTL file are defined here  -->
+<#-- Helper functions ---------------------------------------------->
+<#function getParametersLength prefix commandIndex>
+<#return (prefix + "PARAM_NO_" + commandIndex)?eval>
+</#function>
+
+<#function parameterVariableType prefix commandIndex parameterIndex>
+<#-- [ BLOCK scanUnionType] -->
+        <#assign scanUnionType = "uint64" >
+        <#switch (prefix + "CLASSTYPE_" + commandIndex + "_" + parameterIndex)?eval>
+        <#case "General Data">
+            <#assign scanUnionType = "uint"+( prefix + "TYPE_GENERAL_" + commandIndex + "_" + parameterIndex)?eval?remove_beginning("data")  >
+            <#break>
+        <#case "Enumeration">
+            <#assign scanUnionType = "uint8" >
+            <#break>
+        <#case "Unsigned Integer">
+            <#assign scanUnionType = (prefix + "TYPE_UNSIGNED_" + commandIndex + "_" + parameterIndex)?eval >
+            <#break>
+        <#case "Bitmap">
+            <#assign scanUnionType = "uint8">
+            <#break>
+        <#case "Signed Integer">
+            <#assign scanUnionType = (prefix + "TYPE_SIGNED_" + commandIndex + "_" + parameterIndex)?eval >
+            <#break>
+        <#case "Boolean">
+            <#assign scanUnionType = "uint8" >
+            <#break>
+        <#case "String">
+            <#assign scanUnionType = "str">
+            <#break>
+        <#case "Array">
+            <#assign scanUnionType = "str">
+            <#break>
+        <#default>      
+                  
+        </#switch>
+<#assign argumentIndex = parameterIndex + 3 > <#-- We account for the first three parameters in the process Console functions -->
+
+<#return "args[" + argumentIndex + "]." + scanUnionType >
+
+</#function>
+<#-- Helper functions --------------------------------------------->
+
+
+<#-- File specific functions -------------------------------------->
+
+<#macro addPrototype customClusterIndex >
+<#compress>
+    <#assign prefixCommands  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_CLIENT_COMMANDS_">
+
+    <#list 0..<(prefixCommands + "NO")?eval as commandIndex >
+      <#assign CommandName = (prefixCommands+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
+      static void processSend${CommandName}(const ScanValue_t *args);
+    </#list>
+</#compress>
+</#macro>
+
+<#macro addHelpEntry customClusterIndex >
+<#compress>
+    <#assign prefix  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_CLIENT_COMMANDS_">
+   
+    <#list 0..<(prefix + "NO")?eval as commandIndex >
+      
+      <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
+
+      <#assign parameterDataList = "sdd" >
+      <#assign parameterNameList = "[addrMode][addr][ep]" >
+
+      <#assign parametersLength = getParametersLength(prefix, commandIndex) >
+
+      <#list 0..<parametersLength as parameterIndex> <#-- iterate through parameters -->
+
+        <#assign classType = (prefix + "CLASSTYPE_" + commandIndex + "_" + parameterIndex)?eval >
+        <#if (classType == "String") || (classType == "Array") >
+            <#assign parameterDataList = parameterDataList + 's' >
+        <#else>
+            <#assign parameterDataList = parameterDataList + 'd' >
+        </#if>
+
+        <#assign parameterName = (prefix + "PARAMNAME_" + commandIndex + "_" + parameterIndex)?eval >
+
+        <#assign parameterNameList = parameterNameList + "[" + parameterName + "]" >
+
+      </#list>
+      {"${CommandName}", "${parameterDataList}", processSend${CommandName}, "${parameterNameList}\r\n"},
+    </#list>
+</#compress>
+</#macro>
+
+<#macro addDefinition customClusterIndex>
+
+    <#assign prefix  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_CLIENT_COMMANDS_">
+    <#list 0..<(prefix + "NO")?eval as commandIndex >
+      <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
+      <#assign parametersLength = getParametersLength(prefix, commandIndex) >
+/**************************************************************************//**
+\brief Processes Sends ${CommandName} command
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processSend${CommandName}(const ScanValue_t *args)
+{
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  ${deviceTypeFunctionPrefix}Send${CommandName}(determineAddressMode(args), args[1].uint16, args[2].uint8, srcEp<#if (parametersLength == 0) >);
+  <#else>${''}
+    <#list 0..<parametersLength as parameterIndex >,${parameterVariableType(prefix,commandIndex,parameterIndex)} </#list>);
+  </#if>
+
+}
+</#list>
+
+</#macro>
+
+<#macro loopClientCommands >
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+    <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+    <#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
+      <#nested customClusterIndex>
+    </#if>
+</#list>
+</#macro>
+
+<#-- File specific functions -------------------------------------->
+
+<@loopClientCommands ;customClusterIndex> <#-- We pass customClusterIndex from the loopClientCommands macro to addPrototype Macro -->
+  <@addPrototype customClusterIndex=customClusterIndex/>
+</@loopClientCommands>
+
 #endif // #if ZCL_COMMANDS_IN_CONSOLE == 1
 
 /******************************************************************************
@@ -210,6 +356,11 @@ PROGMEM_DECLARE(ConsoleCommand_t zclHelpCmds)[]=
   {"identify", "sddd", processIdentifyCmd, "->Send Identify command: identify [addrMode][addr][ep][idTime]\r\n"},
   {"identifyQuery", "sdd", processIdentifyQueryCmd, "->Send Identify Query command: identifyQuery [addrMode][addr][ep]\r\n"},
   {"triggerEffect", "sdddd", processTriggerEffectCmd, "->Send TriggerEffect command: triggerEffect [addrMode][addr][ep][effectId][effectVariant]"},
+
+  <@loopClientCommands ;customClusterIndex> <#-- We pass customClusterIndex from the loopClientCommands macro to addHelpEntry Macro -->
+  <@addHelpEntry customClusterIndex=customClusterIndex/>
+  </@loopClientCommands>
+
 #endif // #if ZCL_COMMANDS_IN_CONSOLE == 1
   {0,0,0,0},
 };
@@ -255,10 +406,12 @@ static void processGetAppDeviceTypeCmd(const ScanValue_t *args)
 \param[in] args - array of command arguments
 ******************************************************************************/
 static void processSetOccupancyCmd(const ScanValue_t *args)
-{ 
+{
+#ifdef ZCL_THERMOSTAT_CLUSTER_INCLUDE_OPTIONAL_ATTRIBUTES 
   if (ZCL_SUCCESS_STATUS == thermostatSetOccupancy((ZCL_ThOccupancy_t)args[0].uint8))
     appSnprintf("Occupancy set to :%d\r\n",(ZCL_ThOccupancy_t)args[0].uint8);
   else
+#endif
     appSnprintf("Occupancy not set: Invalid value\r\n");
 }
 
@@ -499,7 +652,14 @@ static void processPiHeatingDemandCmd(const ScanValue_t *args)
   setPiHeatingDemand(args[0].uint8); 
 }
 #endif // ZB_COMMISSIONING_ON_STARTUP == 0
+
+<@loopClientCommands ;customClusterIndex> <#-- We pass customClusterIndex from the loopClientCommands macro to addPrototype Macro -->
+  <@addDefinition customClusterIndex=customClusterIndex/>
+</@loopClientCommands>
+
 #endif // ZCL_COMMANDS_IN_CONSOLE == 1 
+
+
 
 #endif // APP_ENABLE_CONSOLE == 1
 

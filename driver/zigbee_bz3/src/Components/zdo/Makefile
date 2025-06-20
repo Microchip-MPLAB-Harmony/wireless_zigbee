@@ -29,35 +29,43 @@ ZDO_WHOLE_BUILD = 1
 #endif
 
 ###### ZDO MODULES #########
-modules =                 \
-  zdoAddrResolving        \
-  zdoBinding              \
-  zdoCommands             \
-  zdoServiceDiscovery     \
-  zdoEndDeviceBinding     \
-  zdoInit                 \
-  zdoIntraPanPortability  \
-  zdoLeaveNetwork         \
-  zdoMem                  \
-  zdoMgmtNwkUpdate        \
-  zdoNodeManager          \
-  zdoNotify               \
-  zdoNwkManager           \
-  zdoPermissionsTable     \
-  zdoPowerManager         \
-  zdoReset                \
-  zdoSecurityManager      \
-  zdoStartNetwork         \
-  zdoStateMachine         \
-  zdoTaskManager          \
-  zdoZib                  \
-  zdoParentAnnounce                  \
-  zdoZdpReq
+modules =                   \
+  zdoAddrResolving          \
+  zdoBinding                \
+  zdoCommands               \
+  zdoServiceDiscovery       \
+  zdoEndDeviceBinding       \
+  zdoInit                   \
+  zdoIntraPanPortability    \
+  zdoLeaveNetwork           \
+  zdoMem                    \
+  zdoMgmtNwkUpdate          \
+  zdoNodeManager            \
+  zdoNotify                 \
+  zdoNwkManager             \
+  zdoPermissionsTable       \
+  zdoPowerManager           \
+  zdoReset                  \
+  zdoSecurityManager        \
+  zdoSecurityServiceManager \
+  zdoStartNetwork           \
+  zdoStateMachine           \
+  zdoTaskManager            \
+  zdoZib                    \
+  zdoParentAnnounce         \
+  zdoZdpReq                 \
+  zdoSecurityStartKeyUpdate \
+  zdoSecurityChallenge      \
+  zdoRetrieveAuthenticationToken \
+  zdoSecurityStartKeyNegotiation \
+  zdoSecurityGetAuthLevel \
 
 include_path =                   \
   $(BASE_PATH)                   \
   $(KF_INCS)                     \
   $(SSP_PATH)/include            \
+  $(SSP_PATH)/include/private    \
+  $(SSP_PATH)/../SoftAes         \
   $(SE_PATH)/include             \
   $(MAC_PHY_PATH)/include        \
   $(MAC_HWI_PATH)/include        \
@@ -84,7 +92,7 @@ include_path =                   \
   $(PARTPACK_PATCH)/include      \
   $(PARTPACK_PATCH)/include/soc  \
   $(CMIS_PATH)                   \
-  
+  $(CRYPTO_PATH)
 
 ifeq ($(COMPILER_TYPE), GCC) # GCC flags -------------------------------
   CFLAGS += -Werror

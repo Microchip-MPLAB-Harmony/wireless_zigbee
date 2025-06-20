@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _THTIMECLUSTER_H
-#define _THTIMECLUSTER_H
+#ifndef THTIMECLUSTER_H
+#define THTIMECLUSTER_H
 /******************************************************************************
                     Includes section
 ******************************************************************************/
@@ -61,6 +61,6 @@ extern ZCL_TimeClusterClientAttributes_t thTimeClusterClientAttributes;
 ******************************************************************************/
 void thTimeCluserInit(void);
 
-#endif // _THTIMECLUSTER_H
+#endif // THTIMECLUSTER_H
 
 // eof thTimeCluster.h

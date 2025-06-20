@@ -47,6 +47,12 @@ def customOnOffClusterEnableCheck(symbol, event):
     else:
         symbol.setEnabled(False)
 
+def combinedInterfaceOnOffClusterEnableCheck(symbol, event):
+    if ((zigbeeDeviceType.getValue() == 'ZIGBEE_COMBINED_INTERFACE') and (OnOffCluster.getValue() == True)):
+        symbol.setEnabled(True)
+    else:
+        symbol.setEnabled(False)
+
 def OnOffClusterClientCheck(symbol, event):
     if ((OnOffCluster.getValue() == False) or OnOffClusterCS.getValue() == "SERVER"):
         symbol.setVisible(False)
@@ -63,13 +69,18 @@ def onOffClusterHandling():
 
     getDevice = zigbeeDeviceType.getValue()
 
-    if ((getDevice == "ZIGBEE_COLOR_SCENE_CONTROLLER")
-        or (getDevice == "ZIGBEE_COMBINED_INTERFACE")
+    if ((getDevice == "ZIGBEE_COLOR_SCENE_CONTROLLER")       
         or (getDevice == "ZIGBEE_CONTROL_BRIDGE")
         ):
         OnOffCluster.setVisible(True)
         OnOffCluster.setValue(True)
         OnOffCluster.setReadOnly(True)
+        OnOffClusterCS.setValue("CLIENT")
+        OnOffClusterCS.setReadOnly(True)
+    elif (getDevice == "ZIGBEE_COMBINED_INTERFACE"):
+        OnOffCluster.setVisible(True)
+        OnOffCluster.setValue(True)
+        OnOffCluster.setReadOnly(False)
         OnOffClusterCS.setValue("CLIENT")
         OnOffClusterCS.setReadOnly(True)
     elif ((getDevice == "ZIGBEE_MULTI_SENSOR") 
@@ -92,7 +103,10 @@ def onOffClusterHandling():
     elif ((getDevice == "ZIGBEE_CUSTOM")):
         OnOffCluster.setVisible(True)
         OnOffCluster.setValue(True)
-        OnOffClusterCS.setValue("BOTH")
+        OnOffClusterCS.setValue("SERVER")
+        OnOffClusterCS.setVisible(True)
+        OnOffClusterServerMenu.setVisible(True)
+        OnOffClusterClientMenu.setVisible(False)
     else:
         OnOffCluster.setVisible(False)
 
@@ -187,12 +201,14 @@ OnOffClusterCS.setVisible(False)
 OnOffClusterCS.setDescription("ONOFF CLUSTER Supported Implementation- check the box to enable")
 OnOffClusterCS.setDependencies(OnOffClusterCsCheck,["ONOFF_CLUSTER_ENABLE"])
 
+global OnOffClusterClientMenu
 OnOffClusterClientMenu = drvZigbeeComponent.createMenuSymbol("ONOFF_CLUSTER_CLIENT_MENU", OnOffCluster)
 OnOffClusterClientMenu.setLabel("Client")
 OnOffClusterClientMenu.setVisible(False)
 OnOffClusterClientMenu.setDescription("ONOFF CLUSTER CLIENT")
 OnOffClusterClientMenu.setDependencies(OnOffClusterClientCheck,["ONOFF_CLUSTER_CS","ONOFF_CLUSTER_ENABLE"])
 
+global OnOffClusterServerMenu
 OnOffClusterServerMenu = drvZigbeeComponent.createMenuSymbol("ONOFF_CLUSTER_SERVER_MENU", OnOffCluster)
 OnOffClusterServerMenu.setLabel("Server")
 OnOffClusterServerMenu.setVisible(False)
@@ -463,5 +479,17 @@ onOffClusterConfSrc.setProjectPath("config/" + configName + "/zigbee/z3device/co
 onOffClusterConfSrc.setType("SOURCE")
 onOffClusterConfSrc.setOverwrite(True)
 onOffClusterConfSrc.setMarkup(True)
-onOffClusterConfSrc.setEnabled(checkDevTypeCombInterface)
+onOffClusterConfSrc.setEnabled(checkDevTypeCombInterface and OnOffCluster.getValue())
+onOffClusterConfSrc.setDependencies(combinedInterfaceOnOffClusterEnableCheck, ["ONOFF_CLUSTER_ENABLE"])
+
+onOffClusterConfInc = drvZigbeeComponent.createFileSymbol("CIONOFFCLUSTER_H", None)
+onOffClusterConfInc.setSourcePath("/driver/zigbee" + suffix + "/application/zigbee_only/Zigbee_Device_Application/devicetypes/combinedInterface/include/ciOnOffCluster.h")
+onOffClusterConfInc.setOutputName("ciOnOffCluster.h")
+onOffClusterConfInc.setDestPath("/zigbee/z3device/combinedInterface/include")
+onOffClusterConfInc.setProjectPath("config/" + configName + "/zigbee/z3device/combinedInterface/include/")
+onOffClusterConfInc.setType("HEADER")
+onOffClusterConfInc.setOverwrite(True)
+onOffClusterConfInc.setEnabled(checkDevTypeCombInterface and OnOffCluster.getValue())
+onOffClusterConfInc.setDependencies(combinedInterfaceOnOffClusterEnableCheck,["ONOFF_CLUSTER_ENABLE"])
+
 ############################################################################################################

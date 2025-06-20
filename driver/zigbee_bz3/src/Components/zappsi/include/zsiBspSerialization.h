@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZSIBSPSERIALIZATION_H_
-#define _ZSIBSPSERIALIZATION_H_
+#ifndef ZSIBSPSERIALIZATION_H
+#define ZSIBSPSERIALIZATION_H
 /******************************************************************************
                     Includes section
 ******************************************************************************/
@@ -124,4 +124,4 @@ INLINE uint16_t zsiBSP_ReadUidConf(const void *const req)
 #define zsiDeserializeBSP_ReadUidConf                 NULL
 #endif /*ZAPPSI_HOST*/
 
-#endif//_ZSIBSPSERIALIZATION_H_
+#endif//ZSIBSPSERIALIZATION_H

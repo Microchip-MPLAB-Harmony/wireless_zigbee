@@ -1,4 +1,4 @@
-<#if DEVICE_DEEP_SLEEP_ENABLED>
+<#if DEVICE_DEEP_SLEEP_ENABLED && (!APP_ENABLE_CONSOLE)>
 	uint8_t deepSleepWakeupSrc;
 	
 	DEVICE_DeepSleepWakeSrc_T wakeSrc;

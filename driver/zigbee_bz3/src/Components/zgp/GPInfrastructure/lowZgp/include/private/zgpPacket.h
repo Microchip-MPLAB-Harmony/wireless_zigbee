@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPPACKET_H
-#define _ZGPPACKET_H
+#ifndef ZGPPACKET_H
+#define ZGPPACKET_H
 #ifdef _GREENPOWER_SUPPORT_
 
 /******************************************************************************
@@ -172,6 +172,6 @@ void zgpResetPacketManager(void);
 
 
 #endif // _GREENPOWER_SUPPORT_
-#endif //_ZGPPACKET_H
+#endif //ZGPPACKET_H
 
 // eof zgpPacket.h

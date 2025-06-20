@@ -35,6 +35,26 @@ pic32cx_bz3_family = {'PIC32CX5109BZ31048',
                       'WBZ351',
                       'WBZ350',
                       }
+
+pic32cx_bz36_family = {'PIC32CX5109BZ36048',
+                       'PIC32CX5109BZ36032',
+                       'PIC32WM_BZ3601',
+                       'PIC32WM_BZ3602',
+                      }
+ 
+pic32cx_bz6_family = {'PIC32CX2051BZ62132',
+                        'PIC32CX2051BZ62064',
+                        'PIC32CX2051BZ66048',
+                        'WBZ653',
+                        'WBZ652',
+                        'WBZ651',
+                        'WBZ653',
+                        'PIC32WM_BZ6204',
+                        'PIC32WM_BZ6203',
+                        'PIC32WM_BZ6602',                        
+                        'PIC32CX2051BZ62132_FPGA',
+                        }
+
 print('Load Module: Harmony Wireless Zigbee Driver (Devices and Stack Libraries)')
 global deviceName
 deviceName = Variables.get("__PROCESSOR")
@@ -55,9 +75,10 @@ if (deviceName in pic32cx_bz2_family):
     DevColorSceneController.addDependency("Zigbee_WolfCrypt_Dependency", "LIB_WOLFCRYPT", None, False, True)
     DevColorSceneController.addDependency('PIC32CX_BZ2_OTA_SERVICES', 'PIC32CX_BZ_OTA_SERVICES', 'OTA Services', False, False)
     DevColorSceneController.addCapability("BLE_ZIGBEE_PROV_Capability", "BZ_PROV", "BLE ZigBee Commisioning", False)
-elif (deviceName in pic32cx_bz3_family):
+elif ((deviceName in pic32cx_bz3_family) or (deviceName in pic32cx_bz36_family)):
     DevColorSceneController.addDependency('PIC32CX_BZ3_DevSupport_Dependency', 'Device_Support', None, True, True)
-
+elif (deviceName in pic32cx_bz6_family):
+    DevColorSceneController.addDependency('PIC32CX_BZ6_DevSupport_Dependency', 'Device_Support', None, True, True)
 #DevColorSceneController.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
 
@@ -73,9 +94,10 @@ if (deviceName in pic32cx_bz2_family):
     DevMultiSensor.addDependency("Zigbee_WolfCrypt_Dependency", "LIB_WOLFCRYPT", None, False, True)
     DevMultiSensor.addDependency('PIC32CX_BZ2_OTA_SERVICES', 'PIC32CX_BZ_OTA_SERVICES', 'OTA Services', False, False)
     DevMultiSensor.addCapability("BLE_ZIGBEE_PROV_Capability", "BZ_PROV", "BLE ZigBee Commisioning", False)
-elif (deviceName in pic32cx_bz3_family):
+elif ((deviceName in pic32cx_bz3_family) or (deviceName in pic32cx_bz36_family)):
     DevMultiSensor.addDependency('PIC32CX_BZ3_DevSupport_Dependency', 'Device_Support', None, True, True)
-
+elif (deviceName in pic32cx_bz6_family):
+    DevMultiSensor.addDependency('PIC32CX_BZ6_DevSupport_Dependency', 'Device_Support', None, True, True)
 #DevMultiSensor.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
 
@@ -90,8 +112,10 @@ if (deviceName in pic32cx_bz2_family):
     DevCombinedInterface.addDependency("Zigbee_CRYPTO", "LIB_CRYPTO", None, True, True)
     DevCombinedInterface.addDependency("Zigbee_WolfCrypt_Dependency", "LIB_WOLFCRYPT", None, False, True)
     DevCombinedInterface.addDependency('PIC32CX_BZ2_OTA_SERVICES', 'PIC32CX_BZ_OTA_SERVICES', 'OTA Services', False, False)
-elif (deviceName in pic32cx_bz3_family):
+elif ((deviceName in pic32cx_bz3_family) or (deviceName in pic32cx_bz36_family)):
     DevCombinedInterface.addDependency('PIC32CX_BZ3_DevSupport_Dependency', 'Device_Support', None, True, True)
+elif (deviceName in pic32cx_bz6_family):
+    DevCombinedInterface.addDependency('PIC32CX_BZ6_DevSupport_Dependency', 'Device_Support', None, True, True)
 #DevCombinedInterface.addCapability("BLE_ZIGBEE_PROV_Capability", "BZ_PROV", "BLE ZigBee Commisioning", False)
 #DevCombinedInterface.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
@@ -108,9 +132,10 @@ if (deviceName in pic32cx_bz2_family):
     DevThermostat.addDependency("Zigbee_WolfCrypt_Dependency", "LIB_WOLFCRYPT", None, False, True)
     DevThermostat.addDependency('PIC32CX_BZ2_OTA_SERVICES', 'PIC32CX_BZ_OTA_SERVICES', 'OTA Services', False, False)
     DevThermostat.addCapability("BLE_ZIGBEE_PROV_Capability", "BZ_PROV", "BLE ZigBee Commisioning", False)
-elif (deviceName in pic32cx_bz3_family):
+elif ((deviceName in pic32cx_bz3_family) or (deviceName in pic32cx_bz36_family)):
     DevThermostat.addDependency('PIC32CX_BZ3_DevSupport_Dependency', 'Device_Support', None, True, True)
-
+elif (deviceName in pic32cx_bz6_family):
+    DevThermostat.addDependency('PIC32CX_BZ6_DevSupport_Dependency', 'Device_Support', None, True, True)
 #DevThermostat.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
 
@@ -126,9 +151,10 @@ if (deviceName in pic32cx_bz2_family):
     DevIASACE.addDependency("Zigbee_WolfCrypt_Dependency", "LIB_WOLFCRYPT", None, False, True)
     DevIASACE.addDependency('PIC32CX_BZ2_OTA_SERVICES', 'PIC32CX_BZ_OTA_SERVICES', 'OTA Services', False, False)
     DevIASACE.addCapability("BLE_ZIGBEE_PROV_Capability", "BZ_PROV", "BLE ZigBee Commisioning", False)
-elif (deviceName in pic32cx_bz3_family):
+elif ((deviceName in pic32cx_bz3_family) or (deviceName in pic32cx_bz36_family)):
     DevIASACE.addDependency('PIC32CX_BZ3_DevSupport_Dependency', 'Device_Support', None, True, True)
-
+elif (deviceName in pic32cx_bz6_family):
+    DevIASACE.addDependency('PIC32CX_BZ6_DevSupport_Dependency', 'Device_Support', None, True, True)
 #DevIASACE.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
 
@@ -144,9 +170,10 @@ if (deviceName in pic32cx_bz2_family):
     DevOnOffLight.addDependency("Zigbee_WolfCrypt_Dependency", "LIB_WOLFCRYPT", None, False, True)
     DevOnOffLight.addDependency('PIC32CX_BZ2_OTA_SERVICES', 'PIC32CX_BZ_OTA_SERVICES', 'OTA Services', False, False)
     DevOnOffLight.addCapability("BLE_ZIGBEE_PROV_Capability", "BZ_PROV", "BLE ZigBee Commisioning", False)
-elif (deviceName in pic32cx_bz3_family):
+elif ((deviceName in pic32cx_bz3_family) or (deviceName in pic32cx_bz36_family)):
     DevOnOffLight.addDependency('PIC32CX_BZ3_DevSupport_Dependency', 'Device_Support', None, True, True)
-
+elif (deviceName in pic32cx_bz6_family):
+    DevOnOffLight.addDependency('PIC32CX_BZ6_DevSupport_Dependency', 'Device_Support', None, True, True)
 #DevOnOffLight.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
 
@@ -162,9 +189,10 @@ if (deviceName in pic32cx_bz2_family):
     DevDimmableLight.addDependency("Zigbee_WolfCrypt_Dependency", "LIB_WOLFCRYPT", None, False, True)
     DevDimmableLight.addDependency('PIC32CX_BZ2_OTA_SERVICES', 'PIC32CX_BZ_OTA_SERVICES', 'OTA Services', False, False)
     DevDimmableLight.addCapability("BLE_ZIGBEE_PROV_Capability", "BZ_PROV", "BLE ZigBee Commisioning", False)
-elif (deviceName in pic32cx_bz3_family):
+elif ((deviceName in pic32cx_bz3_family) or (deviceName in pic32cx_bz36_family)):
     DevDimmableLight.addDependency('PIC32CX_BZ3_DevSupport_Dependency', 'Device_Support', None, True, True)
-
+elif (deviceName in pic32cx_bz6_family):
+    DevDimmableLight.addDependency('PIC32CX_BZ6_DevSupport_Dependency', 'Device_Support', None, True, True)
 #DevDimmableLight.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
 
@@ -180,9 +208,10 @@ if (deviceName in pic32cx_bz2_family):
     DevColorLight.addDependency("Zigbee_WolfCrypt_Dependency", "LIB_WOLFCRYPT", None, False, True)
     DevColorLight.addDependency('PIC32CX_BZ2_OTA_SERVICES', 'PIC32CX_BZ_OTA_SERVICES', 'OTA Services', False, False)
     DevColorLight.addCapability("BLE_ZIGBEE_PROV_Capability", "BZ_PROV", "BLE ZigBee Commisioning", False)
-elif (deviceName in pic32cx_bz3_family):
+elif ((deviceName in pic32cx_bz3_family) or (deviceName in pic32cx_bz36_family)):
     DevColorLight.addDependency('PIC32CX_BZ3_DevSupport_Dependency', 'Device_Support', None, True, True)
-
+elif (deviceName in pic32cx_bz6_family):
+    DevColorLight.addDependency('PIC32CX_BZ6_DevSupport_Dependency', 'Device_Support', None, True, True)
 #DevColorLight.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
 
@@ -198,9 +227,10 @@ if (deviceName in pic32cx_bz2_family):
     DevExtendedColorLight.addDependency("Zigbee_WolfCrypt_Dependency", "LIB_WOLFCRYPT", None, False, True)
     DevExtendedColorLight.addDependency('PIC32CX_BZ2_OTA_SERVICES', 'PIC32CX_BZ_OTA_SERVICES', 'OTA Services', False, False)
     DevExtendedColorLight.addCapability("BLE_ZIGBEE_PROV_Capability", "BZ_PROV", "BLE ZigBee Commisioning", False)
-elif (deviceName in pic32cx_bz3_family):
+elif ((deviceName in pic32cx_bz3_family) or (deviceName in pic32cx_bz36_family)):
     DevExtendedColorLight.addDependency('PIC32CX_BZ3_DevSupport_Dependency', 'Device_Support', None, True, True)
-
+elif (deviceName in pic32cx_bz6_family):
+    DevExtendedColorLight.addDependency('PIC32CX_BZ6_DevSupport_Dependency', 'Device_Support', None, True, True)
 #DevExtendedColorLight.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
 
@@ -216,8 +246,10 @@ if (deviceName in pic32cx_bz2_family):
     DevTemperatureColorLight.addDependency("Zigbee_WolfCrypt_Dependency", "LIB_WOLFCRYPT", None, False, True)
     DevTemperatureColorLight.addDependency('PIC32CX_BZ2_OTA_SERVICES', 'PIC32CX_BZ_OTA_SERVICES', 'OTA Services', False, False)
     DevTemperatureColorLight.addCapability("BLE_ZIGBEE_PROV_Capability", "BZ_PROV", "BLE ZigBee Commisioning", False)
-elif (deviceName in pic32cx_bz3_family):
+elif ((deviceName in pic32cx_bz3_family) or (deviceName in pic32cx_bz36_family)):
     DevTemperatureColorLight.addDependency('PIC32CX_BZ3_DevSupport_Dependency', 'Device_Support', None, True, True)
+elif (deviceName in pic32cx_bz6_family):
+    DevTemperatureColorLight.addDependency('PIC32CX_BZ6_DevSupport_Dependency', 'Device_Support', None, True, True)
 
 #DevTemperatureColorLight.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 
@@ -233,8 +265,10 @@ if (deviceName in pic32cx_bz2_family):
     DevCustomDevice.addDependency("Zigbee_CRYPTO", "LIB_CRYPTO", None, True, True)
     DevCustomDevice.addDependency("Zigbee_WolfCrypt_Dependency", "LIB_WOLFCRYPT", None, False, True)
     DevCustomDevice.addDependency('PIC32CX_BZ2_OTA_SERVICES', 'PIC32CX_BZ_OTA_SERVICES', 'OTA Services', False, False)
-elif (deviceName in pic32cx_bz3_family):
+elif ((deviceName in pic32cx_bz3_family) or (deviceName in pic32cx_bz36_family)):
     DevCustomDevice.addDependency('PIC32CX_BZ3_DevSupport_Dependency', 'Device_Support', None, True, True)
+elif (deviceName in pic32cx_bz6_family):
+    DevCustomDevice.addDependency('PIC32CX_BZ6_DevSupport_Dependency', 'Device_Support', None, True, True)
 
 #DevCustomDevice.addDependency('PIC32CX_BZ2_BOOTLOADER_SERVICES', 'PIC32CX_BZ_BOOTLOADER_SERVICES', 'Bootloader Services', False, False)
 

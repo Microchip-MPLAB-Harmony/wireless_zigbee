@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSIMACSERIALIZATION_H
-#define _ZSIMACSERIALIZATION_H
+#ifndef ZSIMACSERIALIZATION_H
+#define ZSIMACSERIALIZATION_H
 
 /******************************************************************************
                     Includes section
@@ -362,4 +362,4 @@ INLINE uint16_t zsiMAC_SetReqConfLength(const void *const req)
 #define zsiDeserializeMAC_SetReqConf                 NULL
 #endif /* ZAPPSI_NP */
 
-#endif /* _ZSIMACSERIALIZATION_H */
+#endif /* ZSIMACSERIALIZATION_H */

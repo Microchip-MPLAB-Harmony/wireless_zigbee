@@ -16,7 +16,7 @@
  *******************************************************************************/
 
 /*******************************************************************************
-* Copyright (C) 2018 Microchip Technology Inc. and its subsidiaries.
+* Copyright (C) 2024 Microchip Technology Inc. and its subsidiaries.
 *
 * Subject to your compliance with these terms, you may use Microchip software
 * and any derivatives exclusively with Microchip products. It is your
@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#if !defined _NWK_ATTRIBUTES_H
-#define _NWK_ATTRIBUTES_H
+#if !defined NWK_ATTRIBUTES_H
+#define NWK_ATTRIBUTES_H
 
 /******************************************************************************
                                Includes section
@@ -228,6 +228,53 @@ uint16_t NWK_GetTransmitCouner(void);
  ******************************************************************************/
 uint16_t NWK_GetTransmitFailureCounter(void);
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+  \brief Getting the Pan Id Conflict Counts.
+
+  \return Value of Pan Id Conflict Count
+ ******************************************************************************/
+uint16_t NWK_GetPanIdConflictCount(void);
+
+/**************************************************************************//**
+  \brief Getting the next Pan Id 
+
+  \return Value of next Pan Id 
+ ******************************************************************************/
+PanId_t NWK_GetNextPanId(void);
+/**************************************************************************//**
+  \brief Setting the next Pan Id 
+  \param[in] panId - value of next pan Id
+  \return - None
+******************************************************************************/
+void NWK_SetNextPanId(PanId_t panId);
+
+/**************************************************************************//**
+  \brief Setting the next Channel 
+  \param[in] channel - value of next channel
+  \return None 
+ ******************************************************************************/
+void NWK_SetNextChannel(uint32_t channel);
+/**************************************************************************//**
+  \brief Getting the next Channel 
+
+  \return Value of next Channel 
+ ******************************************************************************/
+uint32_t NWK_GetNextChannel(void);
+/**************************************************************************//**
+  \brief Resets the Pan Id Conflict count.
+ ******************************************************************************/
+void NWK_ResetPanIdConflictCount(void);
+
+/**************************************************************************//**
+  \brief Enable leave request allowed.
+
+  \param[in] leaveReq - leave request allowed.
+
+  \return None
+ ******************************************************************************/
+void NWK_EnableLeaveReqAllowed(bool leaveReq);
+#endif //_ZIGBEE_REV_23_SUPPORT_
 /**************************************************************************//**
   \brief Resets the transmission failures counter and the total tx counter.
  ******************************************************************************/
@@ -301,6 +348,6 @@ uint8_t NWK_GetPeriodOfTimeResults(void);
 ******************************************************************************/
 void NWK_RestartMacTxUcastTimer(void);
 
-#endif /* _NWK_ATTRIBUTES_H */
+#endif /* NWK_ATTRIBUTES_H */
 /** eof nwkAttributes.h */
 

@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _DLCLUSTER_H
-#define _DLCLUSTER_H
+#ifndef DLCLUSTER_H
+#define DLCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -78,6 +78,6 @@ extern void (*eclServerClusterInitFunctions[ECL_SERVER_CLUSTER_INIT_COUNT])();
 extern void (*eclClientClusterInitFunctions[ECL_CLIENT_CLUSTER_INIT_COUNT])();
 #endif
 
-#endif // _DLCLUSTER_H
+#endif // DLCLUSTER_H
 
 // eof eclClusters.h

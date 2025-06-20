@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSIINIT_H_
-#define _ZSIINIT_H_
+#ifndef ZSIINIT_H
+#define ZSIINIT_H
 
 /******************************************************************************
                     Includes section
@@ -76,4 +76,4 @@ void zsiSynchronizeStartupParameters(void);
  ******************************************************************************/
 void zsiResetQueues(void);
 
-#endif /* _ZSIINIT_H_ */
+#endif /* ZSIINIT_H */

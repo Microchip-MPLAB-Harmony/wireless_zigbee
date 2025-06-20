@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSISERIALINTERFACE_H
-#define _ZSISERIALINTERFACE_H
+#ifndef ZSISERIALINTERFACE_H
+#define ZSISERIALINTERFACE_H
 
 /******************************************************************************
                     Includes section
@@ -85,6 +85,6 @@
   #define HOLD_ADDITIONAL_ZAPPSI_INTERFACE_TASKS(TTY)
   #define RELEASE_ADDITIONAL_ZAPPSI_INTERFACE_TASKS()
 #endif // APP_INTERFACE_USBFIFO
-#endif // _ZSISERIALINTERFACE_H
+#endif // ZSISERIALINTERFACE_H
 
 // eof zsiSerialInterface.h

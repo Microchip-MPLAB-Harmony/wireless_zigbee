@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _THGROUPSCLUSTER_H
-#define _THGROUPSCLUSTER_H
+#ifndef THGROUPSCLUSTER_H
+#define THGROUPSCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -62,6 +62,6 @@ extern PROGMEM_DECLARE (ZCL_GroupsClusterCommands_t thGroupsCommands);
 ******************************************************************************/
 void thGroupsClusterInit(void);
 
-#endif // _THGROUPSCLUSTER_H
+#endif // THGROUPSCLUSTER_H
 
 // eof thGroupsCluster.h

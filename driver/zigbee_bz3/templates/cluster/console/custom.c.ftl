@@ -47,6 +47,7 @@
 #include <z3device/clusters/include/haClusters.h>
 #include <z3device/custom/include/customClusters.h>
 #include <zcl/clusters/include/identifyCluster.h>
+#include <systemenvironment/include/sysIdleHandler.h>
 #include <z3device/custom/include/customBasicCluster.h>
 #include <z3device/custom/include/customIdentifyCluster.h>
 #include <z3device/custom/include/customOnOffCluster.h>
@@ -107,11 +108,62 @@ static void customFindingBindingFinishedForACluster(Endpoint_t ResponentEp, Clus
 static void customConfigureReportingResp(ZCL_Notify_t *ntfy);
 #endif
 #endif
+static void isBusyOrPollCheck(SYS_EventId_t eventId, SYS_EventData_t data);
 
 #ifdef OTAU_CLIENT 
 static void customAddOTAUClientCluster(void);
 static void configureImageKeyDone(void);
 #endif
+
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+/******************************************************************************
+                    Static Restore functions section
+******************************************************************************/
+static void APP_RestoreZCLAttributes(void);
+</#if>
+
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+/******************************************************************************
+                  Backup functions Declaration section
+******************************************************************************/
+<#if ((COLORCONTROL_CLUSTER_ENABLE == true) && ((COLORCONTROL_CLUSTER_CS != "CLIENT") || (COLORCONTROL_CLUSTER_CS == "BOTH")))>
+void CDcsBackupCsAttributes(void);</#if>
+<#if ((OCCUPANCYSENSING_CLUSTER_ENABLE == true) && ((OCCUPANCYSENSING_CLUSTER_CS != "CLIENT") || (OCCUPANCYSENSING_CLUSTER_CS == "BOTH")))>
+void CDosBackupOsAttributes(void);</#if>
+<#if ((THERMOSTAT_CLUSTER_ENABLE == true) && ((THERMOSTAT_CLUSTER_CS != "CLIENT") || (THERMOSTAT_CLUSTER_CS == "BOTH")))>
+void CDtsBackupTsAttributes(void); </#if>
+<#if ((ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE == true) && ((ILLUMINANCEMEASUREMENT_CLUSTER_CS != "CLIENT") || (ILLUMINANCEMEASUREMENT_CLUSTER_CS == "BOTH")))>
+void CDlsBackupLsAttributes(void); </#if>
+<#if ((TEMPERATUREMEASUREMENT_CLUSTER_ENABLE == true) && ((TEMPERATUREMEASUREMENT_CLUSTER_CS != "CLIENT") || (TEMPERATUREMEASUREMENT_CLUSTER_CS == "BOTH")))>
+void CDtrBackupTrAttributes(void); </#if>
+<#if ((WATERCONTENTMEASUREMENT_CLUSTER_ENABLE == true) && ((WATERCONTENTMEASUREMENT_CLUSTER_CS != "CLIENT") || (WATERCONTENTMEASUREMENT_CLUSTER_CS == "BOTH")))>
+void CDhsBackupHsAttributes(void); </#if>
+<#if ((LEVELCONTROL_CLUSTER_ENABLE == true) && ((LEVELCONTROL_CLUSTER_CS != "CLIENT") || (LEVELCONTROL_CLUSTER_CS == "BOTH")))>
+void CDllBackupLlAttributes(void);</#if>
+<#if ((ONOFF_CLUSTER_ENABLE == true) && ((ONOFF_CLUSTER_CS != "CLIENT") || (ONOFF_CLUSTER_CS == "BOTH")))>
+void CDofBackupOfAttributes(void);</#if>
+
+/******************************************************************************
+                  Retore functions Declaration section
+******************************************************************************/
+<#if ((COLORCONTROL_CLUSTER_ENABLE == true) && ((COLORCONTROL_CLUSTER_CS != "CLIENT") || (COLORCONTROL_CLUSTER_CS == "BOTH")))>  
+void CDcsRestoreCsAttributes(void);</#if>
+<#if ((OCCUPANCYSENSING_CLUSTER_ENABLE == true) && ((OCCUPANCYSENSING_CLUSTER_CS != "CLIENT") || (OCCUPANCYSENSING_CLUSTER_CS == "BOTH")))>
+void CDosRestoreOsAttributes(void);</#if>
+<#if ((THERMOSTAT_CLUSTER_ENABLE == true) && ((THERMOSTAT_CLUSTER_CS != "CLIENT") || (THERMOSTAT_CLUSTER_CS == "BOTH")))>
+void CDtsRestoreTsAttributes(void);</#if>
+<#if ((TEMPERATUREMEASUREMENT_CLUSTER_ENABLE == true) && ((TEMPERATUREMEASUREMENT_CLUSTER_CS != "CLIENT") || (TEMPERATUREMEASUREMENT_CLUSTER_CS == "BOTH")))>
+void CDtrRestoreTrAttributes(void);</#if>
+<#if ((ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE == true) && ((ILLUMINANCEMEASUREMENT_CLUSTER_CS != "CLIENT") || (ILLUMINANCEMEASUREMENT_CLUSTER_CS == "BOTH")))>
+void CDlsRestoreLsAttributes(void);</#if>
+<#if ((WATERCONTENTMEASUREMENT_CLUSTER_ENABLE == true) && ((WATERCONTENTMEASUREMENT_CLUSTER_CS != "CLIENT") || (WATERCONTENTMEASUREMENT_CLUSTER_CS == "BOTH")))>
+void CDhsRestoreHsAttributes(void);</#if>
+<#if ((LEVELCONTROL_CLUSTER_ENABLE == true) && ((LEVELCONTROL_CLUSTER_CS != "CLIENT") || (LEVELCONTROL_CLUSTER_CS == "BOTH")))>
+void CDllRestoreLlAttributes(void);</#if>
+<#if ((ONOFF_CLUSTER_ENABLE == true) && ((ONOFF_CLUSTER_CS != "CLIENT") || (ONOFF_CLUSTER_CS == "BOTH")))>
+void CDofRestoreOfAttributes(void);</#if>
+
+</#if>
 /******************************************************************************
                     Local variables section
 ******************************************************************************/
@@ -175,7 +227,7 @@ static ClusterId_t customClientClusterToBindIds[] =
 </#if>
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "CLIENT")  >
+  <#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -228,7 +280,7 @@ static ClusterId_t customServerClusterToBindIds[] =
 </#if>
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "SERVER")  >
+  <#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -249,6 +301,7 @@ static AppBindReq_t customBindReq =
   .startIdentifyingFn= customIdetifyStartIdentifyingCb
 </#if>
 };
+static SYS_EventReceiver_t zdoBusyPollCheck = { .func = isBusyOrPollCheck};
 
 /******************************************************************************
                     Implementation section
@@ -258,6 +311,14 @@ static AppBindReq_t customBindReq =
 ******************************************************************************/
 void appDeviceInit(void)
 {
+
+ /* Execute only if it is wakenup from deep sleep. */
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+  uint8_t deepSleepWakeupSrc = 0U; 
+  CS_ReadParameter(CS_DEVICE_DEEP_SLEEP_WAKEUP_SRC_ID, &deepSleepWakeupSrc);
+  if(deepSleepWakeupSrc > 0U)
+    APP_RestoreZCLAttributes();
+</#if>
 
 #if APP_ENABLE_CONSOLE == 1
   initConsole();
@@ -322,6 +383,12 @@ void appDeviceInit(void)
   if (PDS_IsAbleToRestore(APP_CUSTOM_SCENES_MEM_ID))
     PDS_Restore(APP_CUSTOM_SCENES_MEM_ID);
 #endif
+#if defined (_SLEEP_WHEN_IDLE_)
+#if (ZB_COMMISSIONING_ON_STARTUP == 1)
+  SYS_EnableSleepWhenIdle();
+#endif
+#endif
+  SYS_SubscribeToEvent(BC_EVENT_POLL_REQUEST, &zdoBusyPollCheck);
   /**CHANGE* - cluster version need to be reinitilized here after PDS Restore same for all devices
     implement a common function to reinitilized */
 <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
@@ -373,7 +440,7 @@ void appDeviceTaskHandler(void)
 
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
 
-  <#if DEVICE == "SERVER">
+  <#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
 
   <#assign prefixAttribute  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_" + "SERVER" + "_ATTRIBUTES_">
 
@@ -392,9 +459,15 @@ void appDeviceTaskHandler(void)
 </#function>
 static void customFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterId_t clusterId)
 {
+<#if (ONOFF_CLUSTER_ENABLE == true) || (LEVELCONTROL_CLUSTER_ENABLE == true) ||
+      (ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE == true) || (THERMOSTAT_CLUSTER_ENABLE == true) ||
+      (TEMPERATUREMEASUREMENT_CLUSTER_ENABLE == true) || 	(WATERCONTENTMEASUREMENT_CLUSTER_ENABLE == true)||
+      (OCCUPANCYSENSING_CLUSTER_ENABLE == true) || (COLORCONTROL_CLUSTER_ENABLE == true) || (hasReportableServerCluster()) >
+
   ZCL_Cluster_t *serverCluster;
   switch(clusterId)
   {
+<#if (ONOFF_CLUSTER_ENABLE == true) && (ONOFF_CLUSTER_CS != "CLIENT")  >
     case ONOFF_CLUSTER_ID:
       serverCluster = ZCL_GetCluster(APP_ENDPOINT_CUSTOM, ONOFF_CLUSTER_ID, ZCL_CLUSTER_SIDE_SERVER);
       if (serverCluster)
@@ -408,6 +481,8 @@ static void customFindingBindingFinishedForACluster(Endpoint_t ResponentEp, Clus
 #endif
 #endif
       break;
+</#if>
+<#if (LEVELCONTROL_CLUSTER_ENABLE == true) && (LEVELCONTROL_CLUSTER_CS != "CLIENT")  >
     case LEVEL_CONTROL_CLUSTER_ID:
        serverCluster = ZCL_GetCluster(APP_ENDPOINT_CUSTOM, LEVEL_CONTROL_CLUSTER_ID, ZCL_CLUSTER_SIDE_SERVER);
        if (serverCluster)
@@ -422,14 +497,109 @@ static void customFindingBindingFinishedForACluster(Endpoint_t ResponentEp, Clus
 #endif
 
       break;
-    <#if (hasReportableServerCluster())>
-    default:
-       ZCL_StartReporting();
-      break;
-    </#if>
+</#if>
 
+<#if (ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE == true) && (ILLUMINANCEMEASUREMENT_CLUSTER_CS != "CLIENT") >
+    case ILLUMINANCE_MEASUREMENT_CLUSTER_ID:
+      serverCluster = ZCL_GetCluster(APP_ENDPOINT_CUSTOM, ILLUMINANCE_MEASUREMENT_CLUSTER_ID, ZCL_CLUSTER_SIDE_SERVER);
+      if(serverCluster)
+#if (ZB_COMMISSIONING_ON_STARTUP == 1)
+#ifdef _ZCL_REPORTING_SUPPORT_
+      sendConfigureReportingToNotify(APP_ENDPOINT_CUSTOM, 0, 
+                                      ILLUMINANCE_MEASUREMENT_CLUSTER_ID, ZCL_ILLUMINANCE_MEASUREMENT_CLUSTER_MEASURED_VALUE_SERVER_ATTRIBUTE_ID, 
+                                      ILLUMINANCE_MEASUREMENT_VAL_MAX_REPORT_PERIOD, customConfigureReportingResp);      
+#endif
+#else
+      ZCL_startReporting();
+#endif
+      break;
+</#if>
+
+<#if (THERMOSTAT_CLUSTER_ENABLE == true) && (THERMOSTAT_CLUSTER_CS != "CLIENT")  >    
+    case THERMOSTAT_CLUSTER_ID:
+        serverCluster = ZCL_GetCluster(APP_ENDPOINT_CUSTOM, THERMOSTAT_CLUSTER_ID, ZCL_CLUSTER_SIDE_SERVER);
+        if(serverCluster)
+#if (ZB_COMMISSIONING_ON_STARTUP == 1)
+#ifdef _ZCL_REPORTING_SUPPORT_   
+     sendConfigureReportingToNotify(APP_ENDPOINT_CUSTOM, 0, 
+                                      THERMOSTAT_CLUSTER_ID, ZCL_THERMOSTAT_CLUSTER_LOCAL_TEMPERATURE_SERVER_ATTRIBUTE_ID, 
+                                      THERMOSTAT_LOCAL_TEMPERATURE_MAX_REPORT_PERIOD, customConfigureReportingResp); 
+#endif
+#else
+      ZCL_startReporting();
+#endif
+      break;
+</#if>
+
+<#if (TEMPERATUREMEASUREMENT_CLUSTER_ENABLE == true) && (TEMPERATUREMEASUREMENT_CLUSTER_CS != "CLIENT")  >
+    case TEMPERATURE_MEASUREMENT_CLUSTER_ID:
+        serverCluster = ZCL_GetCluster(APP_ENDPOINT_CUSTOM, TEMPERATURE_MEASUREMENT_CLUSTER_ID, ZCL_CLUSTER_SIDE_SERVER);
+        if(serverCluster)
+#if (ZB_COMMISSIONING_ON_STARTUP == 1)
+#ifdef _ZCL_REPORTING_SUPPORT_   
+     sendConfigureReportingToNotify(APP_ENDPOINT_CUSTOM, 0, 
+                                      TEMPERATURE_MEASUREMENT_CLUSTER_ID, ZCL_TEMPERATURE_MEASUREMENT_CLUSTER_SERVER_MEASURED_VALUE_ATTRIBUTE_ID, 
+                                      TEMPERATURE_MEASUREMENT_VAL_MAX_REPORT_PERIOD, customConfigureReportingResp); 
+#endif
+#else
+      ZCL_startReporting();
+#endif
+      break;
+</#if>
+<#if (WATERCONTENTMEASUREMENT_CLUSTER_ENABLE == true) && (WATERCONTENTMEASUREMENT_CLUSTER_CS != "CLIENT")  >
+    case HUMIDITY_MEASUREMENT_CLUSTER_ID:
+        serverCluster = ZCL_GetCluster(APP_ENDPOINT_CUSTOM, HUMIDITY_MEASUREMENT_CLUSTER_ID, ZCL_CLUSTER_SIDE_SERVER);
+        if(serverCluster)
+#if (ZB_COMMISSIONING_ON_STARTUP == 1)
+#ifdef _ZCL_REPORTING_SUPPORT_   
+     sendConfigureReportingToNotify(APP_ENDPOINT_CUSTOM, 0, 
+                                      HUMIDITY_MEASUREMENT_CLUSTER_ID, ZCL_HUMIDITY_MEASUREMENT_CLUSTER_SERVER_MEASURED_VALUE_ATTRIBUTE_ID, 
+                                      HUMIDITY_MEASUREMENT_VAL_MAX_REPORT_PERIOD, customConfigureReportingResp); 
+#endif
+#else
+      ZCL_startReporting();
+#endif
+      break;
+</#if>
+<#if (OCCUPANCYSENSING_CLUSTER_ENABLE == true) && (OCCUPANCYSENSING_CLUSTER_CS != "CLIENT")  >
+    case OCCUPANCY_SENSING_CLUSTER_ID:
+        serverCluster = ZCL_GetCluster(APP_ENDPOINT_CUSTOM, OCCUPANCY_SENSING_CLUSTER_ID, ZCL_CLUSTER_SIDE_SERVER);
+        if(serverCluster)
+#if (ZB_COMMISSIONING_ON_STARTUP == 1)
+#ifdef _ZCL_REPORTING_SUPPORT_   
+     sendConfigureReportingToNotify(APP_ENDPOINT_CUSTOM, 0, 
+                                      OCCUPANCY_SENSING_CLUSTER_ID, ZCL_OCCUPANCY_SENSING_CLUSTER_OCCUPANCY_SERVER_ATTRIBUTE_ID, 
+                                      OCCUPANCY_SENSING_VAL_MAX_REPORT_PERIOD, customConfigureReportingResp); 
+#endif
+#else
+      ZCL_startReporting();
+#endif
+      break;
+</#if>
+
+<#if (COLORCONTROL_CLUSTER_ENABLE == true) && (COLORCONTROL_CLUSTER_CS != "CLIENT")  >
+    case COLOR_CONTROL_CLUSTER_ID:
+        serverCluster = ZCL_GetCluster(APP_ENDPOINT_CUSTOM, COLOR_CONTROL_CLUSTER_ID, ZCL_CLUSTER_SIDE_SERVER);
+        if(serverCluster)
+#if (ZB_COMMISSIONING_ON_STARTUP == 1)
+#ifdef _ZCL_REPORTING_SUPPORT_   
+     sendConfigureReportingToNotify(APP_ENDPOINT_CUSTOM, 0, 
+                                      COLOR_CONTROL_CLUSTER_ID, ZCL_ZLL_CLUSTER_CURRENT_HUE_SERVER_ATTRIBUTE_ID, 
+                                      COLOR_CONTROL_CUURENT_HUE_MAX_REPORT_PERIOD, customConfigureReportingResp); 
+#endif
+#else
+      ZCL_startReporting();
+#endif
+      break;
+</#if>
+    default:
+<#if (hasReportableServerCluster())>
+       ZCL_StartReporting();
+</#if>
+      break;
 
   }
+</#if>
 
 }
 
@@ -447,6 +617,69 @@ static void customConfigureReportingResp(ZCL_Notify_t *ntfy)
 }
 #endif
 #endif
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+/**************************************************************************//**
+\brief backup ZCL attributes
+******************************************************************************/
+void APP_BackupZCLAttributes(void)
+{
+	//Add implementation here to backup zcl attributes if any.
+<#if ((COLORCONTROL_CLUSTER_ENABLE == true) && ((COLORCONTROL_CLUSTER_CS != "CLIENT") || (COLORCONTROL_CLUSTER_CS == "BOTH")))>
+    CDcsBackupCsAttributes();</#if>
+<#if ((OCCUPANCYSENSING_CLUSTER_ENABLE == true) && ((OCCUPANCYSENSING_CLUSTER_CS != "CLIENT") || (OCCUPANCYSENSING_CLUSTER_CS == "BOTH")))>
+    CDosBackupOsAttributes();</#if>
+<#if ((THERMOSTAT_CLUSTER_ENABLE == true) && ((THERMOSTAT_CLUSTER_CS != "CLIENT") || (THERMOSTAT_CLUSTER_CS == "BOTH")))>
+    CDtsBackupTsAttributes(); </#if>
+<#if ((ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE == true) && ((ILLUMINANCEMEASUREMENT_CLUSTER_CS != "CLIENT") || (ILLUMINANCEMEASUREMENT_CLUSTER_CS == "BOTH")))>
+    CDlsBackupLsAttributes(); </#if>
+<#if ((TEMPERATUREMEASUREMENT_CLUSTER_ENABLE == true) && ((TEMPERATUREMEASUREMENT_CLUSTER_CS != "CLIENT") || (TEMPERATUREMEASUREMENT_CLUSTER_CS == "BOTH")))>
+    CDtrBackupTrAttributes(); </#if>
+<#if ((WATERCONTENTMEASUREMENT_CLUSTER_ENABLE == true) && ((WATERCONTENTMEASUREMENT_CLUSTER_CS != "CLIENT") || (WATERCONTENTMEASUREMENT_CLUSTER_CS == "BOTH")))>
+    CDhsBackupHsAttributes(); </#if>
+<#if ((LEVELCONTROL_CLUSTER_ENABLE == true) && ((LEVELCONTROL_CLUSTER_CS != "CLIENT") || (LEVELCONTROL_CLUSTER_CS == "BOTH")))>
+    CDllBackupLlAttributes();</#if>
+<#if ((ONOFF_CLUSTER_ENABLE == true) && ((ONOFF_CLUSTER_CS != "CLIENT") || (ONOFF_CLUSTER_CS == "BOTH")))>
+    CDofBackupOfAttributes();</#if>
+    
+// Custom Cluster Back up function call
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+    <#assign DEVICE = ("ZCC" + customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval>
+      <#if (DEVICE == "SERVER")||(DEVICE == "BOTH")>
+    ${deviceTypeFunctionPrefix}ccZCC${(customClusterIndex)?eval}BackupAttribute();
+    </#if>
+  </#list>
+}
+/**************************************************************************//**
+\brief Restore ZCL attributes
+******************************************************************************/
+static void APP_RestoreZCLAttributes(void)
+{
+<#if ((COLORCONTROL_CLUSTER_ENABLE == true) && ((COLORCONTROL_CLUSTER_CS != "CLIENT") || (COLORCONTROL_CLUSTER_CS == "BOTH")))>  
+    CDcsRestoreCsAttributes();</#if>
+<#if ((OCCUPANCYSENSING_CLUSTER_ENABLE == true) && ((OCCUPANCYSENSING_CLUSTER_CS != "CLIENT") || (OCCUPANCYSENSING_CLUSTER_CS == "BOTH")))>
+    CDosRestoreOsAttributes();</#if>
+<#if ((THERMOSTAT_CLUSTER_ENABLE == true) && ((THERMOSTAT_CLUSTER_CS != "CLIENT") || (THERMOSTAT_CLUSTER_CS == "BOTH")))>
+    CDtsRestoreTsAttributes();</#if>
+<#if ((TEMPERATUREMEASUREMENT_CLUSTER_ENABLE == true) && ((TEMPERATUREMEASUREMENT_CLUSTER_CS != "CLIENT") || (TEMPERATUREMEASUREMENT_CLUSTER_CS == "BOTH")))>
+    CDtrRestoreTrAttributes();</#if>
+<#if ((ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE == true) && ((ILLUMINANCEMEASUREMENT_CLUSTER_CS != "CLIENT") || (ILLUMINANCEMEASUREMENT_CLUSTER_CS == "BOTH")))>
+    CDlsRestoreLsAttributes();</#if>
+<#if ((WATERCONTENTMEASUREMENT_CLUSTER_ENABLE == true) && ((WATERCONTENTMEASUREMENT_CLUSTER_CS != "CLIENT") || (WATERCONTENTMEASUREMENT_CLUSTER_CS == "BOTHBoth")))>
+    CDhsRestoreHsAttributes();</#if>
+<#if ((LEVELCONTROL_CLUSTER_ENABLE == true) && ((LEVELCONTROL_CLUSTER_CS != "CLIENT") || (LEVELCONTROL_CLUSTER_CS == "BOTH")))>
+    CDllRestoreLlAttributes();</#if>
+<#if ((ONOFF_CLUSTER_ENABLE == true) && ((ONOFF_CLUSTER_CS != "CLIENT") || (ONOFF_CLUSTER_CS == "BOTH")))>
+    CDofRestoreOfAttributes();</#if>
+
+// Custom Cluster - Restore Fucntion Call 
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+    <#assign DEVICE = ("ZCC" + customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval>
+    <#if (DEVICE == "SERVER")||(DEVICE == "BOTH")>
+    ${deviceTypeFunctionPrefix}ccZCC${(customClusterIndex)?eval}RestoreAttribute();
+    </#if>
+  </#list>  
+}
+</#if>
 /**************************************************************************//**
 \brief Stops identifying on endpoints
 ******************************************************************************/
@@ -480,6 +713,24 @@ static void customAddOTAUClientCluster(void)
   customClientClusters[CUSTOM_CLIENT_CLUSTERS_COUNT - 1U] = ZCL_GetOtauClientCluster();
 }
 #endif // OTAU_CLIENT
+
+/**************************************************************************//**
+  \brief Processes BC_EVENT_POLL_REQUEST event
+
+  \param[in] eventId - id of raised event;
+  \param[in] data    - event's data.
+******************************************************************************/
+static void isBusyOrPollCheck(SYS_EventId_t eventId, SYS_EventData_t data)
+{
+#if defined (_SLEEP_WHEN_IDLE_)
+  bool *check = (bool *)data;
+
+  if (BC_EVENT_POLL_REQUEST == eventId)
+    *check |= isCommssioiningInProgress();
+#else
+  (void)eventId, (void)data;
+#endif
+}
 
 #endif // APP_DEVICE_TYPE_CUSTOM_DEVICE
 // eof custom.c

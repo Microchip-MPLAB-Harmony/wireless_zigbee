@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSIMEM_H_
-#define _ZSIMEM_H_
+#ifndef ZSIMEM_H
+#define ZSIMEM_H
 
 /******************************************************************************
                     Includes section
@@ -111,4 +111,4 @@ INLINE ZsiDriver_t *zsiDriver(void)
   return &zsiMem.driver;
 }
 
-#endif /* _ZSIMEM_H_ */
+#endif /* ZSIMEM_H */

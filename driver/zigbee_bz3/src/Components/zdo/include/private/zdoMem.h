@@ -41,8 +41,8 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#ifndef _ZDOMEM_H
-#define _ZDOMEM_H
+#ifndef ZDOMEM_H
+#define ZDOMEM_H
 // DOM-IGNORE-END
 
 /******************************************************************************
@@ -59,7 +59,9 @@
 #include <zdo/include/private/zdoPermissionsTable.h>
 #include <zdo/include/private/zdoAddrResolvingInt.h>
 #include <zdo/include/private/zdoMgmtNwkUpdate.h>
-
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <zdo/include/private/zdoSecurityServiceManager.h>
+#endif
 
 /******************************************************************************
                                 Types section
@@ -111,6 +113,10 @@ typedef struct _ZdoMem_t
 #endif
   ZdoAddrResolving_t        zdoAddrResolving;
   ZdoMgmtNwkUpdate_t        mgmtNwkUpdate;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  ZdoSecurityServiceManager_t    securityServiceManager;
+#endif
+  ZdoMgmtSurveyBeacon_t     zdoMgmtSurveyBeaconReq;
 } ZdoMem_t;
 
 extern ZdoMem_t zdoMem;
@@ -233,6 +239,26 @@ static inline ZdoMgmtNwkUpdate_t * zdoMemMgmtNwkUpdate(void)
 {
   return &zdoMem.mgmtNwkUpdate;
 }
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/*************************************************************//**
+  \brief  Zdo Memory allocaton for MgmtSurvey Beacon Request
+  \param   None.
+  \return pointer to ZdoMgmtSurveyBeacon_t.
+ ***************************************************************/
+static inline ZdoMgmtSurveyBeacon_t * zdoMemMgmtSurveyBeacon(void)
+{
+  return &zdoMem.zdoMgmtSurveyBeaconReq;
+}
+/*************************************************************//**
+  \brief  Zdo Memory allocaton for Security Service Manager
+  \param[in]   None.
+  \return pointer to ZdoSecurityServiceManager_t.
+ ***************************************************************/
+static inline ZdoSecurityServiceManager_t * zdoMemSecurityServiceManager(void)
+{
+  return &zdoMem.securityServiceManager;
+}
+#endif
 
-#endif // _ZDOMEM_H
+#endif // ZDOMEM_H
 

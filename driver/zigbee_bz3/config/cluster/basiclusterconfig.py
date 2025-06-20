@@ -87,7 +87,10 @@ def basicClusterHandling():
     elif ((getDevice == "ZIGBEE_CUSTOM")):
         basicCluster.setVisible(True)
         basicCluster.setValue(True)
-        basicClusterCS.setValue("BOTH")
+        basicClusterCS.setValue("SERVER")
+        basicClusterCS.setVisible(True)
+        basicClusterClientMenu.setVisible(False) 
+        basicClusterServerMenu.setVisible(True)
     else:
         basicCluster.setVisible(False)
 
@@ -167,12 +170,14 @@ basicClusterCS.setDefaultValue("BOTH")
 basicClusterCS.setDescription("Basic Cluster Supported Implementation- Select the option")
 basicClusterCS.setDependencies(basiclusterCsCheck,["BASIC_CLUSTER_ENABLE"])
 
+global basicClusterClientMenu
 basicClusterClientMenu = drvZigbeeComponent.createMenuSymbol("BASIC_CLUSTER_CLIENT_MENU", basicCluster)
 basicClusterClientMenu.setLabel("Client")
 #basicClusterClientMenu.setVisible(False)
 basicClusterClientMenu.setDescription("BASIC CLUSTER CLIENT")
 basicClusterClientMenu.setDependencies(basiclusterClientCheck,["BASIC_CLUSTER_CS","BASIC_CLUSTER_ENABLE"])
 
+global basicClusterServerMenu
 basicClusterServerMenu = drvZigbeeComponent.createMenuSymbol("BASIC_CLUSTER_SERVER_MENU", basicCluster)
 basicClusterServerMenu.setLabel("Server")
 #basicClusterServerMenu.setVisible(False)

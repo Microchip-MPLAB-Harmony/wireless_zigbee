@@ -184,11 +184,11 @@ void BSP_Event_Handler(APP_Zigbee_Event_t event);
 void Cluster_Event_Handler(APP_Zigbee_Event_t event);
 void Zigbee_Event_Handler(APP_Zigbee_Event_t event);
 
-#define MIN_COLOR_LEVEL           0
-#define MAX_COLOR_LEVEL           0xfeff
+#define MIN_COLOR_LEVEL           0u      //Added to avoid MISRA_c_2014_10.4 Violation
+#define MAX_COLOR_LEVEL           0xfeffu
 
-#define MIN_SATURATION_LEVEL      0
-#define MAX_SATURATION_LEVEL      0xfe
+#define MIN_SATURATION_LEVEL      0u
+#define MAX_SATURATION_LEVEL      0xfeu
 // *****************************************************************************
 // *****************************************************************************
 // Section: Functions
@@ -229,6 +229,7 @@ void APP_Zigbee_Handler(APP_Zigbee_Event_t event)
         break;
 
         default:
+            /*default none handler */
         break;
     }
 }
@@ -341,7 +342,8 @@ void BSP_Event_Handler(APP_Zigbee_Event_t event)
         }
 		break;
 
-        default:
+        default: // Added Comments in all Default case to avoid MISRA 16.4 violations
+            /*default none handler */
         break;
     }
 }
@@ -362,110 +364,113 @@ void Zigbee_Event_Handler(APP_Zigbee_Event_t event)
         case EVENT_NETWORK_ESTABLISHED:
         {
 <#if (AUTOMATIC_COMMISSIONING_ON_STARTUP == true) >
-            appSnprintf("Network Established\r\n");
+            (void) appSnprintf("Network Established\r\n"); // adding (void) in each appSnprintf - to avoid MISRA 17.7 Violation
 <#else>
-            //appSnprintf("Network Established\r\n");
+            //(void) appSnprintf("Network Established\r\n");
 </#if>
         }
         break;
         case EVENT_DISCONNECTED:
         {
 <#if (AUTOMATIC_COMMISSIONING_ON_STARTUP == true) >
-            appSnprintf("Disconnected from the Network\r\n");
+           (void) appSnprintf("Disconnected from the Network\r\n");
 <#else>
-            //appSnprintf("Disconnected from the Network\r\n");
+            //(void) appSnprintf("Disconnected from the Network\r\n");
 </#if>
         }
         break;
 <#if (AUTOMATIC_COMMISSIONING_ON_STARTUP == true) >
         case EVENT_COMMISSIONING_STARTED:
         {
-            appSnprintf("Commissioning Procedure Started - 180 Seconds \r\n");
-            appSnprintf("Commissioning Sequence: ");
+            (void) appSnprintf("Commissioning Procedure Started - 180 Seconds \r\n");
+            (void) appSnprintf("Commissioning Sequence: ");
 <#if TOUCHLINK == true>
-            appSnprintf("Touchlink->");
+            (void) appSnprintf("Touchlink->");
 </#if>
 <#if NETWORK_FORMATION == true>
-            appSnprintf("Formation->");
+            (void) appSnprintf("Formation->");
 </#if>
 <#if NETWORK_STEERING == true>
-            appSnprintf("Steering->");
+            (void) appSnprintf("Steering->");
 </#if>
 <#if FINDING_AND_BINDING == true>
-            appSnprintf("Find & Bind->");
+            (void) appSnprintf("Find & Bind->");
 </#if>
-            appSnprintf("\r\n");
+            (void) appSnprintf("\r\n");
         }
         break;
 
         case EVENT_COMMISSIONING_COMPLETE:
         {
-            appSnprintf("Commissioning Procedure Complete \r\n");
+            (void) appSnprintf("Commissioning Procedure Complete \r\n");
         }
         break;
         case EVENT_COMMISSIONING_FORMATION_COMPLETE:
         {
-            appSnprintf("Nwk Formation: ");
-            if(event.eventData.value == BDB_COMMISSIONING_SUCCESS)
-                appSnprintf("Success\r\n");
+            (void) appSnprintf("Nwk Formation: ");
+            if(event.eventData.value == (uint8_t)BDB_COMMISSIONING_SUCCESS)
+            {   (void) appSnprintf("Success\r\n"); }
             else //BDB_COMMISSIONING_FORMATION_FAILURE
-                appSnprintf("Failed\r\n");
+            {   (void) appSnprintf("Failed\r\n");  }
         }
         break;
         case EVENT_COMMISSIONING_STEERING_COMPLETE:
         {
-            appSnprintf("Steering: ");
-            if(event.eventData.value == BDB_COMMISSIONING_NO_NETWORK)
-                appSnprintf("No networks found to join\r\n");
-            else if(event.eventData.value == BDB_COMMISSIONING_SUCCESS)
-                appSnprintf("Success\r\n");
+            (void) appSnprintf("Steering: ");
+            if(event.eventData.value == (uint8_t)BDB_COMMISSIONING_NO_NETWORK)
+            {   (void) appSnprintf("No networks found to join\r\n");   }
+            else if(event.eventData.value == (uint8_t)BDB_COMMISSIONING_SUCCESS)
+            {   (void) appSnprintf("Success\r\n"); }
             else
-                appSnprintf("Failed\r\n");
+            {   (void) appSnprintf("Failed\r\n");  }
         }
         break;
         case EVENT_COMMISSIONING_TOUCHLINK_COMPLETE:
         {
-            appSnprintf("Touchlink: Attempt: ");
-            if(event.eventData.value == BDB_COMMISSIONING_NO_SCAN_RESPONSE)
-                appSnprintf("No scan response\r\n");
-            else if(event.eventData.value == BDB_COMMISSIONING_SUCCESS)
-                appSnprintf("Success\r\n");
+            (void) appSnprintf("Touchlink: Attempt: ");
+            if(event.eventData.value == (uint8_t)BDB_COMMISSIONING_NO_SCAN_RESPONSE)
+            {   (void) appSnprintf("No scan response\r\n");    }
+            else if(event.eventData.value == (uint8_t)BDB_COMMISSIONING_SUCCESS)
+            {   (void) appSnprintf("Success\r\n"); }
             else
-                appSnprintf("Failed\r\n");
+            {    (void) appSnprintf("Failed\r\n"); }
         }
         break;
         case EVENT_COMMISSIONING_FINDBIND_COMPLETE:
         {
-            appSnprintf("Finding & Binding: ");
-            if(event.eventData.value == BDB_COMMISSIONING_NO_IDENTIFY_QUERY_RESPONSE)
-              appSnprintf("No identify Query Response\r\n");
-            else if(event.eventData.value == BDB_COMMISSIONING_BINDING_TABLE_FULL)
-              appSnprintf("Binding table full\r\n");
-            else if(event.eventData.value == BDB_COMMISSIONING_SUCCESS)
-              appSnprintf("Success\r\n");
+            (void) appSnprintf("Finding & Binding: ");
+            if(event.eventData.value == (uint8_t) BDB_COMMISSIONING_NO_IDENTIFY_QUERY_RESPONSE)
+            {   (void) appSnprintf("No identify Query Response\r\n");  }
+            else if(event.eventData.value == (uint8_t) BDB_COMMISSIONING_BINDING_TABLE_FULL)
+            {   (void) appSnprintf("Binding table full\r\n");  }
+            else if(event.eventData.value ==(uint8_t) BDB_COMMISSIONING_SUCCESS)
+            {   (void) appSnprintf("Success\r\n"); }
             else
-              appSnprintf("Failed\r\n");
+            {   (void) appSnprintf("Failed\r\n");  }
         }
         break;
         case EVENT_COMMISSIONING_FAILURE:
         {
           switch(event.eventData.value)
           {
-              case BDB_COMMISSIONING_NO_NETWORK:
+              case (uint8_t)BDB_COMMISSIONING_NO_NETWORK:  // since event.eventData.value is APP_Zigbee_Event_t uint8_t variable, 
+                                                           // BDB_COMMISSIONING_NO_NETWORK is anonymous enum 
+                                                           // without typecast raises the MISRA rule 2012 - 10.3 violations.
               {
-                  //appSnprintf("No network found in search\r\n");
+                  //(void) appSnprintf("No network found in search\r\n");
               }
               break;
-              case BDB_COMMISSIONING_NOT_SUPPORTED:
+              case (uint8_t)BDB_COMMISSIONING_NOT_SUPPORTED:
               {
-                  appSnprintf("Commissioning: One of the BDB commissioning procedure not supported\r\n");
+                  (void) appSnprintf("Commissioning: One of the BDB commissioning procedure not supported\r\n");
               }
               break;
-              case BDB_COMMISSIONING_NO_SCAN_RESPONSE:
+              case (uint8_t)BDB_COMMISSIONING_NO_SCAN_RESPONSE:
               break;
-              case BDB_COMMISSIONING_NO_IDENTIFY_QUERY_RESPONSE:
+              case (uint8_t)BDB_COMMISSIONING_NO_IDENTIFY_QUERY_RESPONSE:
               break;
               default:
+                /*default none handler */
               break;
           }
         }
@@ -473,46 +478,46 @@ void Zigbee_Event_Handler(APP_Zigbee_Event_t event)
 
         case EVENT_STARTED_CENTRALIZED_NETWORK:
         {
-            appSnprintf("Started Centralized Network\r\n");
+            (void) appSnprintf("Started Centralized Network\r\n");
         }
         break;
 </#if>
         case EVENT_STARTED_DISTRIBUTED_NETWORK:
         {
 <#if (AUTOMATIC_COMMISSIONING_ON_STARTUP == true) >
-            appSnprintf("Started Distributed Network\r\n");
+            (void) appSnprintf("Started Distributed Network\r\n");
 <#else>
-            //appSnprintf("Started Distributed Network\r\n");
+            //(void) appSnprintf("Started Distributed Network\r\n");
 </#if>
         }
         break;
 <#if (AUTOMATIC_COMMISSIONING_ON_STARTUP == true) >
         case EVENT_JOINED_TO_AN_EXISTING_NETWORK:
         {
-            appSnprintf("Network Search: Complete: Joined to a Network \r\n");
-            appSnprintf("Joined to: Address 0x%04x  MACID 0x%08x%08x ExtendedPANID 0x%08x%08x\r\n", event.eventData.ParentChildInfo.shortAddress, (uint32_t)(event.eventData.ParentChildInfo.extendedAddress >> 32), (uint32_t)(event.eventData.ParentChildInfo.extendedAddress & 0xFFFFFFFF), (uint32_t)(event.eventData.ParentChildInfo.extendedPanId >> 32), (uint32_t)(event.eventData.ParentChildInfo.extendedPanId & 0xFFFFFFFF));
+            (void) appSnprintf("Network Search: Complete: Joined to a Network \r\n");
+            (void) appSnprintf("Joined to: Address 0x%04x  MACID 0x%08x%08x ExtendedPANID 0x%08x%08x\r\n", event.eventData.ParentChildInfo.shortAddress, (uint32_t)(event.eventData.ParentChildInfo.extendedAddress >> 32), (uint32_t)(event.eventData.ParentChildInfo.extendedAddress & 0xFFFFFFFF), (uint32_t)(event.eventData.ParentChildInfo.extendedPanId >> 32), (uint32_t)(event.eventData.ParentChildInfo.extendedPanId & 0xFFFFFFFF));
         }
         break;
 </#if>
 
         case EVENT_WAKEUP:
         {
-            //appSnprintf("Wake up Indication \r\n");
+            //(void) appSnprintf("Wake up Indication \r\n");
         }
         break;
 
         case EVENT_LEFT_FROM_NETWORK:
         {
-            //appSnprintf("Left from the Network \r\n");
+            //(void) appSnprintf("Left from the Network \r\n");
         }
         break;
 
         case EVENT_CHILD_JOINED:
         {
 <#if (AUTOMATIC_COMMISSIONING_ON_STARTUP == true) >
-            appSnprintf("Device joined: Address 0x%04x  MACID 0x%08x%08x ExtendedPANID 0x%08x%08x\r\n", event.eventData.ParentChildInfo.shortAddress, (uint32_t)(event.eventData.ParentChildInfo.extendedAddress >> 32), (uint32_t)(event.eventData.ParentChildInfo.extendedAddress & 0xFFFFFFFF), (uint32_t)(event.eventData.ParentChildInfo.extendedPanId >> 32), (uint32_t)(event.eventData.ParentChildInfo.extendedPanId & 0xFFFFFFFF));
+            (void) appSnprintf("Device joined: Address 0x%04x  MACID 0x%08x%08x ExtendedPANID 0x%08x%08x\r\n", event.eventData.ParentChildInfo.shortAddress, (uint32_t)(event.eventData.ParentChildInfo.extendedAddress >> 32), (uint32_t)(event.eventData.ParentChildInfo.extendedAddress & 0xFFFFFFFF), (uint32_t)(event.eventData.ParentChildInfo.extendedPanId >> 32), (uint32_t)(event.eventData.ParentChildInfo.extendedPanId & 0xFFFFFFFF));
 <#else>
-            //appSnprintf("Device joined: Address 0x%04x  MACID 0x%08x%08x ExtendedPANID 0x%08x%08x\r\n", event.eventData.ParentChildInfo.shortAddress, //(uint32_t)(event.eventData.ParentChildInfo.extendedAddress >> 32), (uint32_t)(event.eventData.ParentChildInfo.extendedAddress & 0xFFFFFFFF), //(uint32_t)(event.eventData.ParentChildInfo.extendedPanId >> 32), (uint32_t)(event.eventData.ParentChildInfo.extendedPanId & 0xFFFFFFFF));
+            //(void) appSnprintf("Device joined: Address 0x%04x  MACID 0x%08x%08x ExtendedPANID 0x%08x%08x\r\n", event.eventData.ParentChildInfo.shortAddress, //(uint32_t)(event.eventData.ParentChildInfo.extendedAddress >> 32), (uint32_t)(event.eventData.ParentChildInfo.extendedAddress & 0xFFFFFFFF), //(uint32_t)(event.eventData.ParentChildInfo.extendedPanId >> 32), (uint32_t)(event.eventData.ParentChildInfo.extendedPanId & 0xFFFFFFFF));
 </#if>
         }
         break;
@@ -520,108 +525,126 @@ void Zigbee_Event_Handler(APP_Zigbee_Event_t event)
         case EVENT_CHILD_REMOVED:
         {
 <#if (AUTOMATIC_COMMISSIONING_ON_STARTUP == true) >
-            appSnprintf("Child Left\r\n");
+            (void) appSnprintf("Child Left\r\n");
 <#else>
-            //appSnprintf("Child Left\r\n");
+            //(void) appSnprintf("Child Left\r\n");
 </#if>
         }
         break;
 
         case EVENT_NWK_UPDATE:
         {
-            //appSnprintf("Network Information updated \r\n");
+            //(void) appSnprintf("Network Information updated \r\n");
         }
         break;
 
         case EVENT_RESET_TO_FACTORY_DEFAULTS:
         {
 <#if (AUTOMATIC_COMMISSIONING_ON_STARTUP == true) >
-            //appSnprintf("Reset To Factory New\r\n");
+            //(void) appSnprintf("Reset To Factory New\r\n");
 <#else>
-            appSnprintf("Reset To Factory New\r\n");
+            (void) appSnprintf("Reset To Factory New\r\n");
 </#if>
         }
         break;
 
         case EVENT_NWK_ADDRESS_RESPONSE:
         {
-            if(event.eventData.ParentChildInfo.status == ZCL_SUCCESS_STATUS)
-                appSnprintf( "->NwkAddrResponse, status = %d, address = %04x\r\n" ,event.eventData.ParentChildInfo.status, event.eventData.ParentChildInfo.shortAddress);
+            if(event.eventData.ParentChildInfo.status == (uint8_t) ZCL_SUCCESS_STATUS)
+            {   (void) appSnprintf( "->NwkAddrResponse, status = %d, address = %04x\r\n" ,event.eventData.ParentChildInfo.status, event.eventData.ParentChildInfo.shortAddress);}
             else
-                appSnprintf( "->NwkAddrResponse, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
+            {   (void) appSnprintf( "->NwkAddrResponse, status = %d \r\n" ,event.eventData.ParentChildInfo.status);    }
         }
         break;
 
         case EVENT_IEEE_ADDRESS_RESPONSE:
         {
-            if(event.eventData.ParentChildInfo.status == ZCL_SUCCESS_STATUS)
-                appSnprintf("->IeeeAddrResponse, status = %d, address = 0x%016x \r\n", event.eventData.ParentChildInfo.status,(event.eventData.ParentChildInfo.extendedAddress));
+            if(event.eventData.ParentChildInfo.status == (uint8_t) ZCL_SUCCESS_STATUS)
+            {   (void) appSnprintf("->IeeeAddrResponse, status = %d, address = 0x%08x%08x \r\n", event.eventData.ParentChildInfo.status, (uint32_t)(event.eventData.ParentChildInfo.extendedAddress >> 32), (uint32_t)(event.eventData.ParentChildInfo.extendedAddress & 0xFFFFFFFF)); }
             else
-                appSnprintf( "->IeeeAddrResponse, status = %d, address = 0x%016x \r\n", event.eventData.ParentChildInfo.status);
+            {   (void) appSnprintf( "->IeeeAddrResponse, status = %d \r\n", event.eventData.ParentChildInfo.status);}
         }
         break;
 
         case EVENT_SIMPLE_DESCRIPTOR_RESPONSE:
         {
-            appSnprintf( "->SimpleDescResponse, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
+            (void) appSnprintf( "->SimpleDescResponse, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
+        }
+        break;
+
+        case EVENT_SECURITY_GET_CONFIG_RESPONSE:
+        {
+            appSnprintf( "->SecurityGetConfigResponse, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
+        }
+        break;
+
+        case EVENT_SECURITY_SET_CONFIG_RESPONSE:
+        {
+            appSnprintf( "->SecSetCfgResp, status = %d \r\n", event.eventData.ParentChildInfo.status);
         }
         break;
 
         case EVENT_MATCH_DESCRIPTOR_RESPONSE:
         {
-            if(event.eventData.ParentChildInfo.status == ZCL_SUCCESS_STATUS)
-                appSnprintf( "->MatchDescResponse, status = %d, MatchedEpCount = %d\r\n" ,event.eventData.ParentChildInfo.status, event.eventData.ParentChildInfo.ep);
+            if(event.eventData.ParentChildInfo.status == (uint8_t) ZCL_SUCCESS_STATUS)
+            {   (void) appSnprintf( "->MatchDescResponse, status = %d, MatchedEpCount = %d\r\n" ,event.eventData.ParentChildInfo.status, event.eventData.ParentChildInfo.ep);}
             else
-                appSnprintf( "->MatchDescResponse, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
+            {   (void) appSnprintf( "->MatchDescResponse, status = %d \r\n" ,event.eventData.ParentChildInfo.status);}
         }
         break;
 
         case EVENT_ACTIVE_EP_RESPONSE:
         {
-            if(event.eventData.ParentChildInfo.status == ZCL_SUCCESS_STATUS)
-                appSnprintf( "->ActiveEpResponse, status = %d, EpCount = %d\r\n" ,event.eventData.ParentChildInfo.status, event.eventData.ParentChildInfo.ep);
+            if(event.eventData.ParentChildInfo.status == (uint8_t) ZCL_SUCCESS_STATUS)
+            {   (void) appSnprintf( "->ActiveEpResponse, status = %d, EpCount = %d\r\n" ,event.eventData.ParentChildInfo.status, event.eventData.ParentChildInfo.ep);}
             else
-                appSnprintf( "->ActiveEpResponse, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
+            {   (void) appSnprintf( "->ActiveEpResponse, status = %d \r\n" ,event.eventData.ParentChildInfo.status);   }
         }
         break;
 
         case EVENT_NODE_DESCRIPTOR_RESPONSE:
         {
-            appSnprintf( "->NodeDescResponse, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
+            (void) appSnprintf( "->NodeDescResponse, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
         }
         break;
 
         case EVENT_LEAVE_RESPONSE:
         {
-            appSnprintf( "->LeaveRsp, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
+            (void) appSnprintf( "->LeaveRsp, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
         }
         break;
 
         case EVENT_MANAGEMENT_BIND_RESPONSE:
         {
-            appSnprintf( "MgmtBindRsp %d\r\n", event.eventData.ParentChildInfo.status); 
+            (void) appSnprintf( "MgmtBindRsp %d\r\n", event.eventData.ParentChildInfo.status); 
         }
         break;
 
         case EVENT_LQI_RESPONSE:
         {
-            appSnprintf( "->MgmtLqiRsp, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
+            (void) appSnprintf( "->MgmtLqiRsp, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
         }
         break;
 
+        case EVENT_SURVEY_BEACON_RESPONSE:
+        {
+            appSnprintf( "->SurveyBeaconRsp, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
+        }
+
         case EVENT_BIND_RESPONSE:
         {
-            appSnprintf( "->BindRsp, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
+            (void) appSnprintf( "->BindRsp, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
         }
         break;
 
         case EVENT_UNBIND_RESPONSE:
         {
-            appSnprintf( "->UnBindRsp, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
+            (void) appSnprintf( "->UnBindRsp, status = %d \r\n" ,event.eventData.ParentChildInfo.status);
         }
         break;
 
         default:
+			/*default none  */
         break;
     }
 }
@@ -645,7 +668,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("On\r\n");
+            (void) appSnprintf("On\r\n");
         }
         break;
 </#if>
@@ -656,7 +679,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("Off\r\n");
+            (void) appSnprintf("Off\r\n");
         }
         break;
 </#if>
@@ -667,7 +690,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("Toggle\r\n");
+            (void) appSnprintf("Toggle\r\n");
         }
         break;
 </#if>
@@ -679,7 +702,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_OffWithEffect_t *payload = (ZCL_OffWithEffect_t *)event.eventData.zclEventData.payload;
-            appSnprintf("OffWithEffect %d 0x%x\r\n", payload->effectIdentifier, payload->effectVariant);
+            (void) appSnprintf("OffWithEffect %d 0x%x\r\n", payload->effectIdentifier, payload->effectVariant);
         }
         break;
 </#if>
@@ -690,7 +713,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("OnWithRecallGlobalScene\r\n");
+            (void) appSnprintf("OnWithRecallGlobalScene\r\n");
         }
         break;
 </#if>
@@ -702,7 +725,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_OnWithTimedOff_t *payload = (ZCL_OnWithTimedOff_t *)event.eventData.zclEventData.payload;
-            appSnprintf("OnWithTimedOff %d %d 0x%x\r\n", payload->onOffControl, payload->onTime, payload->offWaitTime);
+            (void) appSnprintf("OnWithTimedOff %d %d 0x%x\r\n", payload->onOffControl, payload->onTime, payload->offWaitTime);
         }
         break;
 </#if>
@@ -713,7 +736,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("moveToHueInd()\r\n");
+            (void) appSnprintf("moveToHueInd()\r\n");
         }
         break;
 </#if>
@@ -724,7 +747,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-           appSnprintf("moveHueInd()\r\n");
+           (void) appSnprintf("moveHueInd()\r\n");
         }
         break;
 </#if>
@@ -735,7 +758,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("stepHueInd()\r\n");
+            (void) appSnprintf("stepHueInd()\r\n");
         }
         break;
 </#if>
@@ -746,7 +769,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("moveToSaturationInd()\r\n");
+            (void) appSnprintf("moveToSaturationInd()\r\n");
         }
         break;
 </#if>
@@ -757,7 +780,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("moveSaturationInd()\r\n");
+            (void) appSnprintf("moveSaturationInd()\r\n");
         }
         break;
 </#if>
@@ -768,7 +791,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("stepSaturationInd()\r\n");
+            (void) appSnprintf("stepSaturationInd()\r\n");
         }
         break;
 </#if>
@@ -779,7 +802,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("moveToHueAndSaturationInd()\r\n");
+            (void) appSnprintf("moveToHueAndSaturationInd()\r\n");
         }
         break;
 </#if>
@@ -794,7 +817,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             ZCL_ZllMoveToColorCommand_t *payload = (ZCL_ZllMoveToColorCommand_t*)event.eventData.zclEventData.payload;
             x = (MAX_COLOR_LEVEL < payload->colorX) ? MAX_COLOR_LEVEL : payload->colorX;
             y = (MAX_COLOR_LEVEL < payload->colorY) ? MAX_COLOR_LEVEL : payload->colorY;
-            appSnprintf("moveToColorInd() X=%d Y=%d\r\n", x,y);
+            (void) appSnprintf("moveToColorInd() X=%d Y=%d\r\n", x,y);
         }
         break;
 </#if>
@@ -805,7 +828,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("moveColorInd()\r\n");
+            (void) appSnprintf("moveColorInd()\r\n");
         }
         break;
 </#if>
@@ -816,7 +839,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("stepColorInd()\r\n");
+            (void) appSnprintf("stepColorInd()\r\n");
         }
         break;
 </#if>
@@ -827,7 +850,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("moveToColorTemperatureInd()\r\n");
+            (void) appSnprintf("moveToColorTemperatureInd()\r\n");
         }
         break;
 </#if>
@@ -838,7 +861,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("enhancedMoveToHueInd()\r\n");
+            (void) appSnprintf("enhancedMoveToHueInd()\r\n");
         }
         break;
 </#if>
@@ -849,7 +872,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("enhancedMoveHueInd()\r\n");
+            (void) appSnprintf("enhancedMoveHueInd()\r\n");
         }
         break;
 </#if>
@@ -860,7 +883,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("enhancedStepHueInd()\r\n");
+            (void) appSnprintf("enhancedStepHueInd()\r\n");
         }
         break;
 </#if>
@@ -874,7 +897,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             uint16_t saturation;
             ZCL_ZllEnhancedMoveToHueAndSaturationCommand_t *payload = (ZCL_ZllEnhancedMoveToHueAndSaturationCommand_t*)event.eventData.zclEventData.payload;
             saturation = (MAX_SATURATION_LEVEL < payload->saturation) ? MAX_SATURATION_LEVEL : payload->saturation;
-            appSnprintf("enhancedMoveToHueAndSaturationInd() Hue=%d Saturation=%d\r\n", payload->enhancedHue,saturation);
+            (void) appSnprintf("enhancedMoveToHueAndSaturationInd() Hue=%d Saturation=%d\r\n", payload->enhancedHue,saturation);
         }
         break;
 </#if>
@@ -885,7 +908,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("colorLoopSetInd()\r\n");
+            (void) appSnprintf("colorLoopSetInd()\r\n");
         }
         break;
 </#if>
@@ -896,7 +919,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-             appSnprintf("stopMoveStepInd()\r\n");
+             (void) appSnprintf("stopMoveStepInd()\r\n");
         }
         break;
 </#if>
@@ -907,7 +930,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("moveColorTemperatureInd()\r\n");
+            (void) appSnprintf("moveColorTemperatureInd()\r\n");
         }
         break;
 </#if>
@@ -918,7 +941,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("stepColorTemperatureInd()\r\n");
+            (void) appSnprintf("stepColorTemperatureInd()\r\n");
         }
         break;
 </#if>
@@ -929,7 +952,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            //appSnprintf("ZCL ResetToFactoryDefaults\r\n");
+            //(void) appSnprintf("ZCL ResetToFactoryDefaults\r\n");
         }
         break;
 </#if>
@@ -939,7 +962,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf( "->Identify\r\n");
+            (void) appSnprintf( "->Identify\r\n");
         }
         break;
 </#if>
@@ -950,9 +973,9 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
 <#if (AUTOMATIC_COMMISSIONING_ON_STARTUP == true) >
-            //appSnprintf("->IdentifyQuery\r\n");
+            //(void) appSnprintf("->IdentifyQuery\r\n");
 <#else>
-            appSnprintf("->IdentifyQuery\r\n");
+            (void) appSnprintf("->IdentifyQuery\r\n");
 </#if>  
         }
         break;
@@ -964,7 +987,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_TriggerEffect_t *payload = (ZCL_TriggerEffect_t *)event.eventData.zclEventData.payload;
-            appSnprintf("->TriggerEffect 0x%x\r\n",  payload->effectIdentifier);
+            (void) appSnprintf("->TriggerEffect 0x%x\r\n",  payload->effectIdentifier);
         }
         break;
 </#if>
@@ -975,11 +998,11 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
 <#if (AUTOMATIC_COMMISSIONING_ON_STARTUP == true) >
-            //appSnprintf("->IdentifyQueryResponse, addr = 0x%04x, timeout = 0x%04x\r\n", addressing->addr.shortAddress, payload->timeout);
+            //(void) appSnprintf("->IdentifyQueryResponse, addr = 0x%04x, timeout = 0x%04x\r\n", addressing->addr.shortAddress, payload->timeout);
 <#else>	
             ZCL_IdentifyQueryResponse_t *payload = (ZCL_IdentifyQueryResponse_t *)event.eventData.zclEventData.payload;
             ZCL_Addressing_t *addressing = (ZCL_Addressing_t *)event.eventData.zclEventData.addressing;
-            appSnprintf("->IdentifyQueryResponse, addr = 0x%04x, timeout = 0x%04x\r\n", addressing->addr.shortAddress, payload->timeout);
+            (void) appSnprintf("->IdentifyQueryResponse, addr = 0x%04x, timeout = 0x%04x\r\n", addressing->addr.shortAddress, payload->timeout);
 </#if>
         }
         break;
@@ -991,7 +1014,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_AddGroup_t *payload = (ZCL_AddGroup_t *)event.eventData.zclEventData.payload;
-            appSnprintf("addGroupInd(): 0x%04x\r\n", payload->groupId);
+            (void) appSnprintf("addGroupInd(): 0x%04x\r\n", payload->groupId);
         }
         break;
 </#if>
@@ -1002,7 +1025,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_ViewGroup_t *payload = (ZCL_ViewGroup_t *)event.eventData.zclEventData.payload;
-            appSnprintf("viewGroupInd(): 0x%04x\r\n", payload->groupId);
+            (void) appSnprintf("viewGroupInd(): 0x%04x\r\n", payload->groupId);
         }
         break;
 </#if>
@@ -1012,7 +1035,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload; 
-            appSnprintf("getGroupMembershipInd()\r\n");
+            (void) appSnprintf("getGroupMembershipInd()\r\n");
         }
         break;
 </#if>
@@ -1023,7 +1046,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_RemoveGroup_t *payload = (ZCL_RemoveGroup_t *)event.eventData.zclEventData.payload;
-            appSnprintf("removeGroupInd(): 0x%04x\r\n", payload->groupId);
+            (void) appSnprintf("removeGroupInd(): 0x%04x\r\n", payload->groupId);
         }
         break;
 </#if>
@@ -1033,7 +1056,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclAttributeData.addressing;
             //Access - > event.eventData.zclAttributeData.attributeId;
             //Access - > event.eventData.zclAttributeData.event;
-            appSnprintf( "removeAllGroupsInd()\r\n");
+            (void) appSnprintf( "removeAllGroupsInd()\r\n");
         }
         break;
 </#if>
@@ -1044,7 +1067,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_AddGroupIfIdentifying_t *payload = (ZCL_AddGroupIfIdentifying_t *)event.eventData.zclEventData.payload;
-            appSnprintf("addGroupIfIdentifyingInd(): 0x%04x\r\n", payload->groupId);
+            (void) appSnprintf("addGroupIfIdentifyingInd(): 0x%04x\r\n", payload->groupId);
         }
         break;
 </#if>
@@ -1054,7 +1077,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclAttributeData.addressing;
             //Access - > event.eventData.zclAttributeData.attributeId;
             //Access - > event.eventData.zclAttributeData.event;
-            appSnprintf("addGroupResponseInd()\r\n");
+            (void) appSnprintf("addGroupResponseInd()\r\n");
         }
         break;
 </#if>
@@ -1065,8 +1088,8 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_ViewGroupResponse_t *payload = (ZCL_ViewGroupResponse_t *)event.eventData.zclEventData.payload;
-            appSnprintf("viewGroupResponse(): status = 0x%02x\r\n", payload->status);
-            appSnprintf("groupId = 0x%04x\r\n", payload->groupId);
+            (void) appSnprintf("viewGroupResponse(): status = 0x%02x\r\n", payload->status);
+            (void) appSnprintf("groupId = 0x%04x\r\n", payload->groupId);
         }
         break;
 </#if>
@@ -1077,10 +1100,10 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_GetGroupMembershipResponse_t *payload = (ZCL_GetGroupMembershipResponse_t *)event.eventData.zclEventData.payload;
-            appSnprintf("getGroupMembershipResponse()\r\n");
-            appSnprintf("groupCount = %d\r\n", payload->groupCount);
+            (void) appSnprintf("getGroupMembershipResponse()\r\n");
+            (void) appSnprintf("groupCount = %d\r\n", payload->groupCount);
             for (uint8_t i = 0; i < payload->groupCount; i++)
-              appSnprintf("groupId = 0x%04x\r\n", payload->groupList[i]);
+            {  (void) appSnprintf("groupId = 0x%04x\r\n", payload->groupList[i]);}
         }
         break;
 </#if>
@@ -1091,8 +1114,8 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_RemoveGroupResponse_t *payload = (ZCL_RemoveGroupResponse_t *)event.eventData.zclEventData.payload;
-            appSnprintf("removeGroupResponseInd()\r\n");
-            appSnprintf("groupId = 0x%04x\r\n", payload->groupId);
+            (void) appSnprintf("removeGroupResponseInd()\r\n");
+            (void) appSnprintf("groupId = 0x%04x\r\n", payload->groupId);
 
         }
         break;
@@ -1104,7 +1127,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_MoveToLevel_t *payload = (ZCL_MoveToLevel_t *)event.eventData.zclEventData.payload;
-            appSnprintf("->MoveToLevel: lvl=0x%x trTime=%u\r\n", ((ZCL_MoveToLevel_t *)payload)->level, ((ZCL_MoveToLevel_t *)payload)->transitionTime);
+            (void) appSnprintf("->MoveToLevel: lvl=0x%x trTime=%u\r\n", ((ZCL_MoveToLevel_t *)payload)->level, ((ZCL_MoveToLevel_t *)payload)->transitionTime);
         }
         break;
 </#if>
@@ -1115,7 +1138,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_Move_t *payload = (ZCL_Move_t *)event.eventData.zclEventData.payload;
-            appSnprintf("->Move: mode=0x%x rate=0x%x\r\n", ((ZCL_Move_t*)payload)->moveMode, ((ZCL_Move_t*)payload)->rate);
+            (void) appSnprintf("->Move: mode=0x%x rate=0x%x\r\n", ((ZCL_Move_t*)payload)->moveMode, ((ZCL_Move_t*)payload)->rate);
         }
         break;
 </#if>
@@ -1126,7 +1149,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_Step_t *payload = (ZCL_Step_t *)event.eventData.zclEventData.payload;
-            appSnprintf( "->Step: mode=0x%x stepSize=0x%x trTime=%u\r\n", ((ZCL_Step_t *)payload)->stepMode, ((ZCL_Step_t *)payload)->stepSize, ((ZCL_Step_t *)payload)->transitionTime);
+            (void) appSnprintf( "->Step: mode=0x%x stepSize=0x%x trTime=%u\r\n", ((ZCL_Step_t *)payload)->stepMode, ((ZCL_Step_t *)payload)->stepSize, ((ZCL_Step_t *)payload)->transitionTime);
         }
         break;
 </#if>
@@ -1136,7 +1159,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("->Stop\r\n");
+            (void) appSnprintf("->Stop\r\n");
         }
         break;
 </#if>
@@ -1147,7 +1170,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_MoveToLevelWithOnOff_t *payload = (ZCL_MoveToLevelWithOnOff_t *)event.eventData.zclEventData.payload;
-            appSnprintf("->MoveToLevelWithOnOff: lvl=0x%x trTime=%u\r\n", ((ZCL_MoveToLevelWithOnOff_t*)payload)->level, ((ZCL_MoveToLevelWithOnOff_t*)payload)->transitionTime);
+            (void) appSnprintf("->MoveToLevelWithOnOff: lvl=0x%x trTime=%u\r\n", ((ZCL_MoveToLevelWithOnOff_t*)payload)->level, ((ZCL_MoveToLevelWithOnOff_t*)payload)->transitionTime);
         }
         break;
 </#if>
@@ -1158,7 +1181,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_MoveWithOnOff_t *payload = (ZCL_MoveWithOnOff_t *)event.eventData.zclEventData.payload;
-            appSnprintf("->Move with on/off: mode=0x%x rate=0x%x\r\n", ((ZCL_MoveWithOnOff_t*)payload)->moveMode, ((ZCL_MoveWithOnOff_t*)payload)->rate);
+            (void) appSnprintf("->Move with on/off: mode=0x%x rate=0x%x\r\n", ((ZCL_MoveWithOnOff_t*)payload)->moveMode, ((ZCL_MoveWithOnOff_t*)payload)->rate);
         }
         break;
 </#if>
@@ -1169,7 +1192,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_StepWithOnOff_t *payload = (ZCL_StepWithOnOff_t *)event.eventData.zclEventData.payload;
-            appSnprintf("->Step with on/off: mode=0x%x stepSize=0x%x trTime=%u\r\n", ((ZCL_StepWithOnOff_t*)payload)->stepMode, ((ZCL_StepWithOnOff_t*)payload)->stepSize, ((ZCL_StepWithOnOff_t*)payload)->transitionTime);
+            (void) appSnprintf("->Step with on/off: mode=0x%x stepSize=0x%x trTime=%u\r\n", ((ZCL_StepWithOnOff_t*)payload)->stepMode, ((ZCL_StepWithOnOff_t*)payload)->stepSize, ((ZCL_StepWithOnOff_t*)payload)->transitionTime);
         }
         break;
 </#if>
@@ -1179,7 +1202,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("->Stop with on/off\r\n");
+            (void) appSnprintf("->Stop with on/off\r\n");
         }
         break;
 </#if>
@@ -1191,7 +1214,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_Alarm_t *payload = (ZCL_Alarm_t *)event.eventData.zclEventData.payload;
-            appSnprintf("<-Alarms alarmCode = %d clusterId = 0x%x\r\n", payload->alarmCode, payload->clusterIdentifier);
+            (void) appSnprintf("<-Alarms alarmCode = %d clusterId = 0x%x\r\n", payload->alarmCode, payload->clusterIdentifier);
         }
         break;
 </#if>
@@ -1205,11 +1228,11 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             ZCL_getAlarmResponse_t *payload = (ZCL_getAlarmResponse_t *)event.eventData.zclEventData.payload; 
             if ( BC_SUCCESS == payload->status)
             {
-                appSnprintf("<-GetAlarmResponse status = 0x%x clusterId = 0x%x alarmCode = 0x%x\r\n", payload->status, payload->clusterIdentifier, payload->alarmCode);
+                (void) appSnprintf("<-GetAlarmResponse status = 0x%x clusterId = 0x%x alarmCode = 0x%x\r\n", payload->status, payload->clusterIdentifier, payload->alarmCode);
             }
             else
             {
-                appSnprintf("<-GetAlarmResponse failed status = 0x%x\r\n", payload->status);
+                (void) appSnprintf("<-GetAlarmResponse failed status = 0x%x\r\n", payload->status);
             }
         }
         break;
@@ -1221,7 +1244,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;            
-            appSnprintf("<-resetAllAlarm\r\n");
+            (void) appSnprintf("<-resetAllAlarm\r\n");
         }
         break;
 </#if>
@@ -1233,7 +1256,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_ResetAlarm_t *payload = (ZCL_ResetAlarm_t *)event.eventData.zclEventData.payload;        
-            appSnprintf("<-resetAlarm clusterId = 0x%x alarmCode = 0x%x\r\n", payload->clusterIdentifier, payload->alarmCode);
+            (void) appSnprintf("<-resetAlarm clusterId = 0x%x alarmCode = 0x%x\r\n", payload->clusterIdentifier, payload->alarmCode);
         }
         break;
 </#if>
@@ -1244,7 +1267,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload; 
-            appSnprintf("<-getAlarm\r\n");
+            (void) appSnprintf("<-getAlarm\r\n");
         }
         break;
 </#if>
@@ -1255,7 +1278,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload; 
-            appSnprintf("<-resetAlarmLog\r\n");
+            (void) appSnprintf("<-resetAlarmLog\r\n");
         }
         break;
 </#if>
@@ -1266,7 +1289,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;    
-           //appSnprintf("ZCL SetEndpoint Ind");
+           //(void) appSnprintf("ZCL SetEndpoint Ind");
         }
         break;
 </#if>
@@ -1278,7 +1301,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_AddScene_t *cmd =((ZCL_AddScene_t*)event.eventData.zclEventData.payload);
-            appSnprintf("addSceneInd(): 0x%04x, 0x%02x\r\n", cmd->groupId, cmd->sceneId);
+            (void) appSnprintf("addSceneInd(): 0x%04x, 0x%02x\r\n", cmd->groupId, cmd->sceneId);
         }
         break;
 </#if>
@@ -1290,7 +1313,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_ViewScene_t *cmd = ((ZCL_ViewScene_t*)event.eventData.zclEventData.payload);
-            appSnprintf("viewSceneInd(): 0x%04x, 0x%02x\r\n", cmd->groupId, cmd->sceneId);
+            (void) appSnprintf("viewSceneInd(): 0x%04x, 0x%02x\r\n", cmd->groupId, cmd->sceneId);
         }
         break;
 </#if>
@@ -1302,7 +1325,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_EnhancedAddScene_t *cmd = ((ZCL_EnhancedAddScene_t*)event.eventData.zclEventData.payload);
-            appSnprintf("enhancedAddSceneInd(): 0x%04x, 0x%02x\r\n", cmd->groupId, cmd->sceneId);
+            (void) appSnprintf("enhancedAddSceneInd(): 0x%04x, 0x%02x\r\n", cmd->groupId, cmd->sceneId);
         }
         break;
 </#if>
@@ -1314,7 +1337,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_EnhancedViewScene_t *cmd = ((ZCL_EnhancedViewScene_t*)event.eventData.zclEventData.payload);
-            appSnprintf("enhancedViewSceneInd(): 0x%04x, 0x%02x\r\n", cmd->groupId, cmd->sceneId);
+            (void) appSnprintf("enhancedViewSceneInd(): 0x%04x, 0x%02x\r\n", cmd->groupId, cmd->sceneId);
         }
         break;
 </#if>
@@ -1326,7 +1349,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_RemoveScene_t *cmd = ((ZCL_RemoveScene_t*)event.eventData.zclEventData.payload);
-            appSnprintf("removeSceneInd(): 0x%04x, 0x%02x\r\n", cmd->groupId, cmd->sceneId);
+            (void) appSnprintf("removeSceneInd(): 0x%04x, 0x%02x\r\n", cmd->groupId, cmd->sceneId);
         }
         break;
 </#if>
@@ -1338,7 +1361,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_RemoveAllScenes_t *cmd = ((ZCL_RemoveAllScenes_t*)event.eventData.zclEventData.payload);
-            appSnprintf("removeAllScenesInd(): 0x%04x\r\n", cmd->groupId);
+            (void) appSnprintf("removeAllScenesInd(): 0x%04x\r\n", cmd->groupId);
         }
         break;
 </#if>
@@ -1350,7 +1373,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_StoreScene_t *cmd = ((ZCL_StoreScene_t*)event.eventData.zclEventData.payload);
-            appSnprintf("storeSceneInd(): 0x%04x, 0x%x\r\n", cmd->groupId, cmd->sceneId);
+            (void) appSnprintf("storeSceneInd(): 0x%04x, 0x%x\r\n", cmd->groupId, cmd->sceneId);
         }
         break;
 </#if>
@@ -1362,7 +1385,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_RecallScene_t *cmd = ((ZCL_RecallScene_t *)event.eventData.zclEventData.payload);
-            appSnprintf("recallSceneInd(): 0x%04x, 0x%x\r\n", cmd->groupId, cmd->sceneId);
+            (void) appSnprintf("recallSceneInd(): 0x%04x, 0x%x\r\n", cmd->groupId, cmd->sceneId);
         }
         break;
 </#if>
@@ -1374,7 +1397,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_GetSceneMembership_t *cmd = ((ZCL_GetSceneMembership_t *)event.eventData.zclEventData.payload);
-            appSnprintf("getSceneMembershipInd(): 0x%04x\r\n", cmd->groupId);
+            (void) appSnprintf("getSceneMembershipInd(): 0x%04x\r\n", cmd->groupId);
         }
         break;
 </#if>
@@ -1386,7 +1409,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_GetSceneMembership_t *cmd = ((ZCL_GetSceneMembership_t *)event.eventData.zclEventData.payload);
-            appSnprintf("copySceneInd()\r\n");
+            (void) appSnprintf("copySceneInd(): 0x%04x\r\n", cmd->groupId);
         }
         break;
 </#if>
@@ -1398,9 +1421,9 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_AddSceneResponse_t *resp = ((ZCL_AddSceneResponse_t*)event.eventData.zclEventData.payload);
-            appSnprintf("Add scene response: status = 0x%02x\r\n", resp->status);
-            appSnprintf("groupId = 0x%04x\r\n", resp->groupId);
-            appSnprintf("sceneId = 0x%02x\r\n", resp->sceneId);
+            (void) appSnprintf("Add scene response: status = 0x%02x\r\n", resp->status);
+            (void) appSnprintf("groupId = 0x%04x\r\n", resp->groupId);
+            (void) appSnprintf("sceneId = 0x%02x\r\n", resp->sceneId);
         }
         break;
 </#if>
@@ -1412,10 +1435,10 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_ViewSceneResponse_t *resp = ((ZCL_ViewSceneResponse_t*)event.eventData.zclEventData.payload);
-            appSnprintf("View scene response: status = 0x%02x\r\n", resp->status);
-            appSnprintf( "groupId = 0x%04x\r\n", resp->groupId);
-            appSnprintf("sceneId = 0x%02x\r\n", resp->sceneId);
-            appSnprintf("transitionTime = 0x%04x\r\n", resp->transitionTime);
+            (void) appSnprintf("View scene response: status = 0x%02x\r\n", resp->status);
+            (void) appSnprintf( "groupId = 0x%04x\r\n", resp->groupId);
+            (void) appSnprintf("sceneId = 0x%02x\r\n", resp->sceneId);
+            (void) appSnprintf("transitionTime = 0x%04x\r\n", resp->transitionTime);
         }
         break;
 </#if>
@@ -1427,9 +1450,9 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_RemoveSceneResponse_t *resp = ((ZCL_RemoveSceneResponse_t*)event.eventData.zclEventData.payload);
-            appSnprintf("Remove scene response: status = 0x%02x\r\n",resp->status);
-            appSnprintf("groupId = 0x%04x\r\n", resp->groupId);
-            appSnprintf("sceneId = 0x%02x\r\n", resp->sceneId);
+            (void) appSnprintf("Remove scene response: status = 0x%02x\r\n",resp->status);
+            (void) appSnprintf("groupId = 0x%04x\r\n", resp->groupId);
+            (void) appSnprintf("sceneId = 0x%02x\r\n", resp->sceneId);
         }
         break;
 </#if>
@@ -1441,8 +1464,8 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_RemoveAllScenesResponse_t *resp = ((ZCL_RemoveAllScenesResponse_t*)event.eventData.zclEventData.payload);
-            appSnprintf("Remove all scenes response: status = 0x%02x\r\n", resp->status);
-            appSnprintf("groupId = 0x%04x\r\n", resp->groupId);
+            (void) appSnprintf("Remove all scenes response: status = 0x%02x\r\n", resp->status);
+            (void) appSnprintf("groupId = 0x%04x\r\n", resp->groupId);
         }
         break;
 </#if>
@@ -1454,9 +1477,9 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_StoreSceneResponse_t *resp = ((ZCL_StoreSceneResponse_t*)event.eventData.zclEventData.payload);
-            appSnprintf("Store scene response: status = 0x%02x\r\n",resp->status);
-            appSnprintf("groupId = 0x%04x\r\n", resp->groupId);
-            appSnprintf("sceneId = 0x%02x\r\n", resp->sceneId);
+            (void) appSnprintf("Store scene response: status = 0x%02x\r\n",resp->status);
+            (void) appSnprintf("groupId = 0x%04x\r\n", resp->groupId);
+            (void) appSnprintf("sceneId = 0x%02x\r\n", resp->sceneId);
         }
         break;
 </#if>
@@ -1468,11 +1491,11 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_GetSceneMembershipResponse_t *resp = ((ZCL_GetSceneMembershipResponse_t*)event.eventData.zclEventData.payload);
-            appSnprintf("Get scene membership response: status = 0x%02x\r\n", resp->status);
-            appSnprintf("groupId = 0x%04x\r\n", resp->groupId);
-            appSnprintf("sceneCount = 0x%02x\r\n", resp->sceneCount);
+            (void) appSnprintf("Get scene membership response: status = 0x%02x\r\n", resp->status);
+            (void) appSnprintf("groupId = 0x%04x\r\n", resp->groupId);
+            (void) appSnprintf("sceneCount = 0x%02x\r\n", resp->sceneCount);
             for (uint8_t i = 0; i < resp->sceneCount; i++)
-              appSnprintf("sceneId = 0x%02x\r\n", resp->sceneList[i]);
+              (void) appSnprintf("sceneId = 0x%02x\r\n", resp->sceneList[i]);
         }
         break;
 </#if>
@@ -1484,9 +1507,9 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_EnhancedAddSceneResponse_t *resp = (ZCL_EnhancedAddSceneResponse_t *)(event.eventData.zclEventData.payload);
-            appSnprintf("Enhanced add scene response: status = 0x%02x\r\n", resp->status);
-            appSnprintf("groupId = 0x%04x\r\n", resp->groupId);
-            appSnprintf("sceneId = 0x%02x\r\n", resp->sceneId);
+            (void) appSnprintf("Enhanced add scene response: status = 0x%02x\r\n", resp->status);
+            (void) appSnprintf("groupId = 0x%04x\r\n", resp->groupId);
+            (void) appSnprintf("sceneId = 0x%02x\r\n", resp->sceneId);
         }
         break;
 </#if>
@@ -1498,10 +1521,10 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_EnhancedViewSceneResponse_t *resp = ((ZCL_EnhancedViewSceneResponse_t *)(event.eventData.zclEventData.payload));
-            appSnprintf("Enhanced view scene response: status = 0x%02x\r\n", resp->status);
-            appSnprintf("groupId = 0x%04x\r\n", resp->groupId);
-            appSnprintf("sceneId = 0x%02x\r\n", resp->sceneId);
-            appSnprintf("transitionTime = 0x%04x\r\n", resp->transitionTime);
+            (void) appSnprintf("Enhanced view scene response: status = 0x%02x\r\n", resp->status);
+            (void) appSnprintf("groupId = 0x%04x\r\n", resp->groupId);
+            (void) appSnprintf("sceneId = 0x%02x\r\n", resp->sceneId);
+            (void) appSnprintf("transitionTime = 0x%04x\r\n", resp->transitionTime);
         }
         break;
 </#if>
@@ -1513,7 +1536,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_CopySceneResponse_t *resp = ((ZCL_CopySceneResponse_t*)event.eventData.zclEventData.payload);
-            appSnprintf("Copy scene response: status = 0x%02x\r\n", resp->status);
+            (void) appSnprintf("Copy scene response: status = 0x%02x\r\n", resp->status);
         }
         break;
 </#if>
@@ -1524,7 +1547,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf(" ->ACEGetPanelStatusCommandInd Received\r\n");
+            (void) appSnprintf(" ->ACEGetPanelStatusCommandInd Received\r\n");
         }
         break;
 </#if>
@@ -1535,7 +1558,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf(" ->aceGetPanelStatusRespReceived\r\n");
+            (void) appSnprintf(" ->aceGetPanelStatusRespReceived\r\n");
         }
         break;
 </#if>
@@ -1546,7 +1569,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            //appSnprintf("aceArmCommandInd()\r\n");
+            //(void) appSnprintf("aceArmCommandInd()\r\n");
         }
         break;
 </#if>
@@ -1557,7 +1580,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("aceGetZoneInformationCommandInd()\r\n");
+            (void) appSnprintf("aceGetZoneInformationCommandInd()\r\n");
         }
         break;
 </#if>
@@ -1568,7 +1591,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("aceGetZoneIdMapCommandInd()\r\n");
+            (void) appSnprintf("aceGetZoneIdMapCommandInd()\r\n");
         }
         break;
 </#if>
@@ -1579,7 +1602,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("aceByPassCommandInd()\r\n");
+            (void) appSnprintf("aceByPassCommandInd()\r\n");
         }
         break;
 </#if>
@@ -1590,7 +1613,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("aceGetByPassedZoneListCommandInd()\r\n");
+            (void) appSnprintf("aceGetByPassedZoneListCommandInd()\r\n");
         }
         break;
 </#if>
@@ -1601,7 +1624,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf(" ->ACE Emergency Command Received\r\n");
+            (void) appSnprintf(" ->ACE Emergency Command Received\r\n");
         }
         break;
 </#if>
@@ -1612,7 +1635,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf(" ->ACE Fire Command Received\r\n");
+            (void) appSnprintf(" ->ACE Fire Command Received\r\n");
         }
         break;
 </#if>
@@ -1623,7 +1646,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf(" ->ACE Panic Command Received\r\n");
+            (void) appSnprintf(" ->ACE Panic Command Received\r\n");
         }
         break;
 </#if>
@@ -1634,7 +1657,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf(" ->ACEArmResponseCommand Received\r\n");
+            (void) appSnprintf(" ->ACEArmResponseCommand Received\r\n");
         }
         break;
 </#if>
@@ -1645,7 +1668,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf(" ->ZoneIdMapResponseCommand Received \r\n");
+            (void) appSnprintf(" ->ZoneIdMapResponseCommand Received \r\n");
         }
         break;
 </#if>
@@ -1656,7 +1679,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf(" ->aceGetZoneStatusRespReceived\r\n");
+            (void) appSnprintf(" ->aceGetZoneStatusRespReceived\r\n");
         }
         break;
 </#if>
@@ -1667,7 +1690,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            //appSnprintf("acePanelStatusChangedCommandInd()\r\n");
+            //(void) appSnprintf("acePanelStatusChangedCommandInd()\r\n");
         }
         break;
 </#if>
@@ -1678,7 +1701,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            //appSnprintf("aceZoneStatusChangedCommandInd()\r\n");
+            //(void) appSnprintf("aceZoneStatusChangedCommandInd()\r\n");
         }
         break;
 </#if>
@@ -1689,7 +1712,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf("aceGetZoneInformationResponseCommandInd()\r\n");
+            (void) appSnprintf("aceGetZoneInformationResponseCommandInd()\r\n");
         }
         break;
 </#if>
@@ -1700,7 +1723,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf(" ->ACESetByPassesZoneListCommandIndReceived\r\n");
+            (void) appSnprintf(" ->ACESetByPassesZoneListCommandIndReceived\r\n");
         }
         break;
 </#if>
@@ -1711,7 +1734,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            //appSnprintf("aceByPassResponseCommandInd()\r\n");
+            //(void) appSnprintf("aceByPassResponseCommandInd()\r\n");
         }
         break;
 </#if>
@@ -1722,7 +1745,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            appSnprintf(" <-Zone Status Change Notification Received\r\n");
+            (void) appSnprintf(" <-Zone Status Change Notification Received\r\n");
         }
         break;
 </#if>
@@ -1733,7 +1756,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            //appSnprintf("zoneEnrollRequestCommandInd()\r\n");
+            //(void) appSnprintf("zoneEnrollRequestCommandInd()\r\n");
         }
         break;
 </#if>
@@ -1744,7 +1767,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            //appSnprintf("zoneInitiateNormalOperatingModeInd()\r\n");
+            //(void) appSnprintf("zoneInitiateNormalOperatingModeInd()\r\n");
         }
         break;
 </#if>
@@ -1755,7 +1778,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
-            //appSnprintf("zoneInitiateTestModeInd()\r\n");
+            //(void) appSnprintf("zoneInitiateTestModeInd()\r\n");
         }
         break;
 </#if>
@@ -1767,7 +1790,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;
             ZCL_ZoneEnrollResCommand_t *resp = (ZCL_ZoneEnrollResCommand_t*)event.eventData.zclEventData.payload;
-            appSnprintf(" <-ZoneEnrollResponseInd Command : Status = %u\r\n", resp->enrollResponseCode);
+            (void) appSnprintf(" <-ZoneEnrollResponseInd Command : Status = %u\r\n", resp->enrollResponseCode);
         }
         break;
 </#if>
@@ -1778,7 +1801,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclAttributeData.addressing;
             //Access - > event.eventData.zclAttributeData.attributeId;
             //Access - > event.eventData.zclAttributeData.event;
-            //appSnprintf("ZCL ColorControlAttributeEventInd\r\n");
+            //(void) appSnprintf("ZCL ColorControlAttributeEventInd\r\n");
            if(ZCL_CONFIGURE_DEFAULT_ATTRIBUTE_REPORTING_EVENT == event.eventData.zclAttributeData.event)
            {
             switch(event.eventData.zclAttributeData.attributeId)
@@ -1866,7 +1889,8 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             </#if>
 </#if>
             default:
-              break;
+                /*default none  */
+            break;
         }
            }
         }
@@ -1879,7 +1903,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclAttributeData.addressing;
             //Access - > event.eventData.zclAttributeData.attributeId;
             //Access - > event.eventData.zclAttributeData.event;
-            //appSnprintf("ZCL IdentifyAttributeEventInd\r\n");
+            //(void) appSnprintf("ZCL IdentifyAttributeEventInd\r\n");
         }
         break;
 </#if>
@@ -1895,7 +1919,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             ZCL_AttributeEvent_t eventzcl = event.eventData.zclAttributeData.event;
             ZCL_AttributeId_t attributeId = event.eventData.zclAttributeData.attributeId;    
             if((ZCL_CONFIGURE_DEFAULT_ATTRIBUTE_REPORTING_EVENT == eventzcl) && \
-                (ZCL_LEVEL_CONTROL_CLUSTER_CURRENT_LEVEL_ATTRIBUTE_ID == attributeId))
+                ((uint16_t)ZCL_LEVEL_CONTROL_CLUSTER_CURRENT_LEVEL_ATTRIBUTE_ID == attributeId))
             {
                 customLevelControlClusterServerAttributes.currentLevel.minReportInterval = LEVEL_CONTROL_VAL_MIN_REPORT_PERIOD;
                 customLevelControlClusterServerAttributes.currentLevel.maxReportInterval = LEVEL_CONTROL_VAL_MAX_REPORT_PERIOD;
@@ -1908,7 +1932,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             ZCL_AttributeEvent_t eventzcl = event.eventData.zclAttributeData.event;
             ZCL_AttributeId_t attributeId = event.eventData.zclAttributeData.attributeId;    
             if((ZCL_CONFIGURE_DEFAULT_ATTRIBUTE_REPORTING_EVENT == eventzcl) && \
-                (ZCL_LEVEL_CONTROL_CLUSTER_CURRENT_LEVEL_ATTRIBUTE_ID == attributeId))
+                ((uint16_t)ZCL_LEVEL_CONTROL_CLUSTER_CURRENT_LEVEL_ATTRIBUTE_ID == attributeId))
             {
                 lightLevelControlClusterServerAttributes.currentLevel.minReportInterval = LEVEL_CONTROL_VAL_MIN_REPORT_PERIOD;
                 lightLevelControlClusterServerAttributes.currentLevel.maxReportInterval = LEVEL_CONTROL_VAL_MAX_REPORT_PERIOD;
@@ -1944,7 +1968,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             ZCL_AttributeEvent_t eventzcl = event.eventData.zclAttributeData.event;
             ZCL_AttributeId_t attributeId = event.eventData.zclAttributeData.attributeId; 
             if((ZCL_CONFIGURE_DEFAULT_ATTRIBUTE_REPORTING_EVENT == eventzcl) && \
-                (ZCL_ONOFF_CLUSTER_ONOFF_SERVER_ATTRIBUTE_ID == attributeId))
+                ((uint16_t)ZCL_ONOFF_CLUSTER_ONOFF_SERVER_ATTRIBUTE_ID == attributeId))
             {
                 lightOnOffClusterServerAttributes.onOff.minReportInterval = ONOFF_VAL_MIN_REPORT_PERIOD;
                 lightOnOffClusterServerAttributes.onOff.maxReportInterval = ONOFF_VAL_MAX_REPORT_PERIOD;
@@ -2047,7 +2071,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.zclAttributeData.zclEventData.addressing;
             //Access - > event.zclAttributeData.zclEventData.attributeId;
             //Access - > event.zclAttributeData.zclEventData.event;           
-            //appSnprintf("ZCL HS Humidity Measurement Attr Ind\r\n");
+            //(void) appSnprintf("ZCL HS Humidity Measurement Attr Ind\r\n");
 <#if (ZB_DEVICE_TYPE == "ZIGBEE_THERMOSTAT")>
             ZCL_AttributeEvent_t eventzcl = event.eventData.zclAttributeData.event;
             ZCL_AttributeId_t attributeId = event.eventData.zclAttributeData.attributeId;
@@ -2080,7 +2104,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             if(event.eventData.zclAttributeData.attributeId == ZCL_TIME_CLUSTER_SERVER_TIME_ATTRIBUTE_ID && 
                event.eventData.zclAttributeData.event == ZCL_WRITE_ATTRIBUTE_EVENT)
             {
-	          appSnprintf("Standard and local time updated by client\r\n");
+	          (void) appSnprintf("Standard and local time updated by client\r\n");
             }
         }
         break;
@@ -2100,11 +2124,11 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
                 {
                   if(thThermostatUiConfClusterServerAttributes.temperatureDisplayMode.value == ZCL_TEMPERATURE_IN_CELSIUS)
                   {          
-                    appSnprintf(" Temp in Celcius = %d\r\n",thThermostatClusterServerAttributes.localTemperature.value);           
+                    (void) appSnprintf(" Temp in Celcius = %d\r\n",thThermostatClusterServerAttributes.localTemperature.value);           
                   }
                   else
                   {
-                    appSnprintf(" Temp in Fahr = %d\r\n",thTranslateZclCelciusTemptoFahr(thThermostatClusterServerAttributes.localTemperature.value));
+                    (void) appSnprintf(" Temp in Fahr = %d\r\n",thTranslateZclCelciusTemptoFahr(thThermostatClusterServerAttributes.localTemperature.value));
                   }
                 }
                 break;
@@ -2112,14 +2136,14 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
 <#if (TUIC_KEYPADLOCKOUT == true)> 
                 case ZCL_THERMOSTAT_UI_CONF_CLUSTER_KEYPAD_LOCKOUT_SERVER_ATTRIBUTE_ID:
                 {
-                  appSnprintf(" Keypad Lock Attribute = 0x%x\r\n",thThermostatUiConfClusterServerAttributes.keypadLockOut.value);
+                  (void) appSnprintf(" Keypad Lock Attribute = 0x%x\r\n",thThermostatUiConfClusterServerAttributes.keypadLockOut.value);
                 }
                 break;
 </#if>
 <#if (TUIC_SCHEDULEPROGRAMVISIBILITY == true)>    
                 case ZCL_THERMOSTAT_UI_CONF_CLUSTER_SCHEDULE_PROGRAMMING_VISIBILITY_SERVER_ATTRIBUTE_ID:
                 {
-                  appSnprintf(" Schedule Programming Visibility Attribute = 0x%x\r\n",thThermostatUiConfClusterServerAttributes.scheduleProgVisibility.value);
+                  (void) appSnprintf(" Schedule Programming Visibility Attribute = 0x%x\r\n",thThermostatUiConfClusterServerAttributes.scheduleProgVisibility.value);
                 }
                 break;
 </#if>
@@ -2142,11 +2166,11 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
                 {
                   if(customThermostatUiConfClusterServerAttributes.temperatureDisplayMode.value == ZCL_TEMPERATURE_IN_CELSIUS)
                   {          
-                    appSnprintf(" Temp in Celcius = %d\r\n",customThermostatClusterServerAttributes.localTemperature.value);           
+                    (void) appSnprintf(" Temp in Celcius = %d\r\n",customThermostatClusterServerAttributes.localTemperature.value);           
                   }
                   else
                   {
-                    appSnprintf(" Temp in Fahr = %d\r\n",customTranslateZclCelciusTemptoFahr(customThermostatClusterServerAttributes.localTemperature.value));
+                    (void) appSnprintf(" Temp in Fahr = %d\r\n",customTranslateZclCelciusTemptoFahr(customThermostatClusterServerAttributes.localTemperature.value));
                   }
                 }
                 break;
@@ -2155,18 +2179,19 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
 <#if (TUIC_KEYPADLOCKOUT == true)> 
                 case ZCL_THERMOSTAT_UI_CONF_CLUSTER_KEYPAD_LOCKOUT_SERVER_ATTRIBUTE_ID:
                 {
-                  appSnprintf(" Keypad Lock Attribute = 0x%x\r\n",customThermostatUiConfClusterServerAttributes.keypadLockOut.value);
+                  (void) appSnprintf(" Keypad Lock Attribute = 0x%x\r\n",customThermostatUiConfClusterServerAttributes.keypadLockOut.value);
                 }
                 break;
 </#if>
 <#if (TUIC_SCHEDULEPROGRAMVISIBILITY == true)>    
                 case ZCL_THERMOSTAT_UI_CONF_CLUSTER_SCHEDULE_PROGRAMMING_VISIBILITY_SERVER_ATTRIBUTE_ID:
                 {
-                  appSnprintf(" Schedule Programming Visibility Attribute = 0x%x\r\n",customThermostatUiConfClusterServerAttributes.scheduleProgVisibility.value);
+                  (void) appSnprintf(" Schedule Programming Visibility Attribute = 0x%x\r\n",customThermostatUiConfClusterServerAttributes.scheduleProgVisibility.value);
                 }
                 break;
 </#if>
                 default:
+					// Default no process
                   break;
               }
             }
@@ -2215,6 +2240,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             </#if>
         
       default :
+		// Default no process
         break;
       
             }
@@ -2253,6 +2279,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
              break;
              </#if>
             default :
+				//default no process
             break;
 
             }
@@ -2310,7 +2337,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclAttributeData.addressing;
             //Access - > event.eventData.zclAttributeData.attributeId;
             //Access - > event.eventData.zclAttributeData.event;   		
-            //appSnprintf("<-Attr ID 0x%x event 0x%x\r\n",event.eventData.zclAttributeData.attributeId, event.eventData.zclAttributeData.event);
+            //(void) appSnprintf("<-Attr ID 0x%x event 0x%x\r\n",event.eventData.zclAttributeData.attributeId, event.eventData.zclAttributeData.event);
         }
         break;
 </#if>
@@ -2321,7 +2348,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclAttributeData.addressing;
             //Access - > event.eventData.zclAttributeData.attributeId;
             //Access - > event.eventData.zclAttributeData.event;               
-            //appSnprintf("<-Attr ID 0x%x event 0x%x\r\n",event.eventData.zclAttributeData.attributeId, event.eventData.zclAttributeData.event);
+            //(void) appSnprintf("<-Attr ID 0x%x event 0x%x\r\n",event.eventData.zclAttributeData.attributeId, event.eventData.zclAttributeData.event);
         }
         break;
 </#if>
@@ -2333,7 +2360,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclAttributeData.payloadLength;
             //Access - > event.eventData.zclAttributeData.payload;
             ZCL_Report_t *rep = (ZCL_Report_t *)event.eventData.zclEventData.payload;
-            appSnprintf("<-On/Off Attr Report: Value = 0x%x\r\n", (int)rep->value[0]);
+            (void) appSnprintf("<-On/Off Attr Report: Value = 0x%x\r\n", (int)rep->value[0]);
         }
         break;
 </#if>
@@ -2347,7 +2374,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             ZCL_Report_t *rep = (ZCL_Report_t *)event.eventData.zclEventData.payload;;
             uint16_t reportValue;
             memcpy(&reportValue, &rep->value[0], sizeof(uint16_t));
-            appSnprintf("<-Light Sensor Attr Report: Value = 0x%x\r\n", reportValue);
+            (void) appSnprintf("<-Light Sensor Attr Report: Value = 0x%x\r\n", reportValue);
         }
         break;
 </#if>
@@ -2359,7 +2386,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclAttributeData.payloadLength;
             //Access - > event.eventData.zclAttributeData.payload;
             ZCL_Report_t *rep = (ZCL_Report_t *)event.eventData.zclEventData.payload;
-            appSnprintf("<-Level Control Attr Report: Value = 0x%x\r\n", (int)rep->value[0]);
+            (void) appSnprintf("<-Level Control Attr Report: Value = 0x%x\r\n", (int)rep->value[0]);
         }
         break;
 </#if>
@@ -2382,7 +2409,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
                 {
                     memcpy(&reportValue, (event.eventData.zclEventData.payload+ sizeof(ZCL_AttributeId_t)+ sizeof(rep->type)), sizeof(uint16_t));
                 }
-                appSnprintf("<-Color Control Attr (0x%x) Report: Value = 0x%x\r\n", (unsigned)rep->id, reportValue);
+                (void) appSnprintf("<-Color Control Attr (0x%x) Report: Value = 0x%x\r\n", (unsigned)rep->id, reportValue);
                 
                 if((event.eventData.zclEventData.payloadLength >= 4))
                 {
@@ -2409,7 +2436,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclAttributeData.payloadLength;
             //Access - > event.eventData.zclAttributeData.payload;
             ZCL_Report_t *rep = (ZCL_Report_t *)event.eventData.zclEventData.payload;
-            appSnprintf("<-Occupancy Sensor Attr Report: Value = 0x%x\r\n", (int)rep->value[0]);
+            (void) appSnprintf("<-Occupancy Sensor Attr Report: Value = 0x%x\r\n", (int)rep->value[0]);
         }
         break;
 </#if>
@@ -2420,7 +2447,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             //Access - > event.eventData.zclEventData.addressing;
             //Access - > event.eventData.zclEventData.payloadLength;
             //Access - > event.eventData.zclEventData.payload;                
-            //appSnprintf("ZCL Report TH Thermostat Ind\r\n");
+            //(void) appSnprintf("ZCL Report TH Thermostat Ind\r\n");
             ZCL_Report_t *rep = (ZCL_Report_t *)event.eventData.zclEventData.payload;
             int16_t reportValue = 0;
 <#if (ZB_DEVICE_TYPE == "ZIGBEE_COMBINED_INTERFACE") || (ZB_DEVICE_TYPE == "ZIGBEE_CUSTOM") >
@@ -2430,26 +2457,26 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
               if(rep->id == ZCL_THERMOSTAT_CLUSTER_LOCAL_TEMPERATURE_SERVER_ATTRIBUTE_ID)
               {
                 memcpy(&reportValue, &rep->value[0], sizeof(int16_t));
-                appSnprintf("<-Thermostat Attr (0x%x) Report: Value = %d.%dC\r\n", rep->id, (int)(reportValue/THERMOSTAT_LOCAL_TEMPERATURE_SCALE),(int)(reportValue%THERMOSTAT_LOCAL_TEMPERATURE_SCALE));
+                (void) appSnprintf("<-Thermostat Attr (0x%x) Report: Value = %d.%dC\r\n", rep->id, (int)(reportValue/THERMOSTAT_LOCAL_TEMPERATURE_SCALE),(int)(reportValue%THERMOSTAT_LOCAL_TEMPERATURE_SCALE));
               }
               else
               {
                 memcpy(&reportValue, &rep->value[0], sizeof(uint8_t));
-                appSnprintf("<-Thermostat Attr (0x%x) Report: Value = 0x%x\r\n", rep->id, (uint8_t)reportValue);
+                (void) appSnprintf("<-Thermostat Attr (0x%x) Report: Value = 0x%x\r\n", rep->id, (uint8_t)reportValue);
               }
             }
             else if(rep->id == ZCL_THERMOSTAT_CLUSTER_OCCUPIED_COOLING_SETPOINT_SERVER_ATTRIBUTE_ID)
             {
               setPoint_t *payload = (setPoint_t*)rep;
     
-              appSnprintf("<-Setpoints changed on Thermostat:\r\n");
+              (void) appSnprintf("<-Setpoints changed on Thermostat:\r\n");
               memcpy(&reportValue, &rep->value[1], sizeof(int16_t));
 
-              appSnprintf("#cool setpoint: Value = %d.%d\r\n", (int)(reportValue/THERMOSTAT_LOCAL_TEMPERATURE_SCALE),(int)(reportValue%THERMOSTAT_LOCAL_TEMPERATURE_SCALE));
+              (void) appSnprintf("#cool setpoint: Value = %d.%d\r\n", (int)(reportValue/THERMOSTAT_LOCAL_TEMPERATURE_SCALE),(int)(reportValue%THERMOSTAT_LOCAL_TEMPERATURE_SCALE));
               payload++;
 
               memcpy(&reportValue, &payload->value, sizeof(int16_t));
-              appSnprintf("#heat setpoint: Value = %d.%d\r\n", (int)(reportValue/THERMOSTAT_LOCAL_TEMPERATURE_SCALE),(int)(reportValue%THERMOSTAT_LOCAL_TEMPERATURE_SCALE));
+              (void) appSnprintf("#heat setpoint: Value = %d.%d\r\n", (int)(reportValue/THERMOSTAT_LOCAL_TEMPERATURE_SCALE),(int)(reportValue%THERMOSTAT_LOCAL_TEMPERATURE_SCALE));
             }
 </#if>
 <#if (ZB_DEVICE_TYPE == "ZIGBEE_THERMOSTAT") || (ZB_DEVICE_TYPE == "ZIGBEE_CUSTOM")>
@@ -2462,12 +2489,12 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
                #ifdef ZCL_THERMOSTAT_CLUSTER_INCLUDE_OPTIONAL_ATTRIBUTES  
                  thermostatUpdateThRunningMode(reportValue);
                #endif
-               appSnprintf("<-Thermostat Attr (0x%x) Report: Value = %d.%dC\r\n", (unsigned)rep->id, (int)(reportValue/THERMOSTAT_LOCAL_TEMPERATURE_SCALE),(int)(reportValue%THERMOSTAT_LOCAL_TEMPERATURE_SCALE));
+               (void) appSnprintf("<-Thermostat Attr (0x%x) Report: Value = %d.%dC\r\n", (unsigned)rep->id, (int)(reportValue/THERMOSTAT_LOCAL_TEMPERATURE_SCALE),(int)(reportValue%THERMOSTAT_LOCAL_TEMPERATURE_SCALE));
               }
               else if ((rep->id == ZCL_THERMOSTAT_CLUSTER_PI_COOLING_DEMAND_SERVER_ATTRIBUTE_ID) || (rep->id == ZCL_THERMOSTAT_CLUSTER_PI_HEATING_DEMAND_SERVER_ATTRIBUTE_ID))
               {
                 memcpy(&reportValue, &rep->value[0], sizeof(uint8_t));
-                appSnprintf("<-Thermostat Attr (0x%x) Report: Value = 0x%x\r\n", rep->id, (uint8_t)reportValue);
+                (void) appSnprintf("<-Thermostat Attr (0x%x) Report: Value = 0x%x\r\n", rep->id, (uint8_t)reportValue);
               }
              #endif
 </#if>
@@ -2485,7 +2512,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             ZCL_Report_t *rep = (ZCL_Report_t *)event.eventData.zclEventData.payload;
             int16_t reportValue;
             memcpy(&reportValue, &rep->value[0], sizeof(int16_t));
-            appSnprintf( "<-Temperature Measurement Attr Report: Value = 0x%02hx\r\n", reportValue);
+            (void) appSnprintf( "<-Temperature Measurement Attr Report: Value = 0x%02hx\r\n", reportValue);
         }
         break;
 </#if>
@@ -2499,7 +2526,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             ZCL_Report_t *rep = (ZCL_Report_t *)event.eventData.zclEventData.payload;
             uint16_t reportValue;
             memcpy(&reportValue, &rep->value[0], sizeof(uint16_t));
-            appSnprintf( "<-Relative Humidity Measurement Attr Report: Value = 0x%x\r\n", reportValue);
+            (void) appSnprintf( "<-Relative Humidity Measurement Attr Report: Value = 0x%x\r\n", reportValue);
         }
         break;
 </#if>
@@ -2533,7 +2560,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
         //Custom Clusters       
         <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
         <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-        <#if isReportableClient(customClusterIndex)  >
+        <#if isReportableClient(customClusterIndex)  > <#-- Works when the device is both as well -->
         <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
         <#-- Freemarker does not take spaces into account, so we pad it ourself -->        
         case CMD_ZCL_REPORTING_${clusterName?upper_case}:
@@ -2548,10 +2575,11 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
             ZCL_Report_t *rep = (ZCL_Report_t *)event.eventData.zclEventData.payload;
             uint16_t reportValue;
             memcpy(&reportValue, &rep->value[0], sizeof(uint16_t));
-            appSnprintf( "<- ${clusterName} Attr Report: Value = 0x%x\r\n", reportValue);
+            (void) appSnprintf( "<- ${clusterName} Attr Report: Value = 0x%x\r\n", reportValue);
         }
         break;   
-        <#elseif DEVICE == "SERVER">
+        </#if>
+        <#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
         <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
         case CMD_ZCL_ATTR_${clusterName?upper_case}:
         {
@@ -2566,6 +2594,7 @@ void Cluster_Event_Handler(APP_Zigbee_Event_t event)
 
 
         default:
+           //Default no process 
         break;
     }
 }

@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _CBOCCUPANCYSENSINGCLUSTER_H
-#define _CBOCCUPANCYSENSINGCLUSTER_H
+#ifndef CBOCCUPANCYSENSINGCLUSTER_H
+#define CBOCCUPANCYSENSINGCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -56,6 +56,6 @@
 ******************************************************************************/
 void cbOccupancySensingClusterInit(void);
 
-#endif // _CBOCCUPANCYSENSINGCLUSTER_H
+#endif // CBOCCUPANCYSENSINGCLUSTER_H
 
 // eof cbOccupancySensingCluster.h

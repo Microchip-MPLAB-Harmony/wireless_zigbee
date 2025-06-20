@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPSINKBASIC_H
-#define _ZGPSINKBASIC_H
+#ifndef ZGPSINKBASIC_H
+#define ZGPSINKBASIC_H
 
 #ifdef _GREENPOWER_SUPPORT_
 #if APP_ZGP_DEVICE_TYPE == APP_ZGP_DEVICE_TYPE_COMBO_BASIC
@@ -148,6 +148,6 @@ void zgpSinkGpdfHandling(ZGP_LowDataInd_t *gpdfDataInd, bool responseToGpd, uint
 
 #endif // APP_ZGP_DEVICE_TYPE == APP_ZGP_DEVICE_TYPE_COMBO_BASIC
 #endif // _GREENPOWER_SUPPORT_
-#endif // _ZGPSINKBASIC_H
+#endif // ZGPSINKBASIC_H
 
 // eof zgpSinkBasic.h

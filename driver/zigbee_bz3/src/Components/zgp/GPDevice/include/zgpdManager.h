@@ -40,8 +40,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPDMANAGER_H
-#define _ZGPDMANAGER_H
+#ifndef ZGPDMANAGER_H
+#define ZGPDMANAGER_H
 /******************************************************************************
                         Includes  section.
 ******************************************************************************/
@@ -86,6 +86,6 @@ void zgpPostTask(const ZgpTaskID_t taskID);
 void ZGP_TaskHandler(void);
 void zgpSendConfToUpperLayer(void *request);
 bool zgpPutReqInQueue(void *request);
-#endif //_ZGPDMANAGER_H
+#endif //ZGPDMANAGER_H
 
 // eof zgpdManager.h

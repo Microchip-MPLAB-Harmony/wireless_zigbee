@@ -46,6 +46,12 @@ def customTimeClusterEnableCheck(symbol, event):
     else:
         symbol.setEnabled(False)
 
+def combinedInterfaceTimeClusterEnableCheck(symbol, event):
+    if ((zigbeeDeviceType.getValue() == 'ZIGBEE_COMBINED_INTERFACE') and (timeCluster.getValue() == True)):
+        symbol.setEnabled(True)
+    else:
+        symbol.setEnabled(False)
+
 def timeClusterClientCheck(symbol, event):
     if ((timeCluster.getValue() == False) or timeClusterCS.getValue() == "SERVER"):
         symbol.setVisible(False)
@@ -77,7 +83,7 @@ def timeClusterHandling():
     elif ((getDevice == "ZIGBEE_COMBINED_INTERFACE")):
         timeCluster.setVisible(True)
         timeCluster.setValue(True)
-        timeCluster.setReadOnly(True)
+        timeCluster.setReadOnly(False)
         timeClusterCS.setValue("SERVER")
         timeClusterCS.setReadOnly(True)
     elif ((getDevice == "ZIGBEE_THERMOSTAT")):
@@ -89,7 +95,10 @@ def timeClusterHandling():
     elif ((getDevice == "ZIGBEE_CUSTOM")):
         timeCluster.setVisible(True)
         timeCluster.setValue(True)
-        timeClusterCS.setValue("BOTH")
+        timeClusterCS.setValue("SERVER")
+        timeClusterCS.setVisible(True)
+        timeClusterClientMenu.setVisible(False)
+        timeClusterServerMenu.setVisible(True)
     else:
         timeCluster.setVisible(False)
 
@@ -146,12 +155,14 @@ timeClusterCS.setDefaultValue("BOTH")
 timeClusterCS.setDescription("Time Cluster Supported Implementation- Select the option")
 timeClusterCS.setDependencies(timeClusterCsCheck,["TIME_CLUSTER_ENABLE"])
 
+global timeClusterClientMenu
 timeClusterClientMenu = drvZigbeeComponent.createMenuSymbol("TIME_CLUSTER_CLIENT_MENU", timeCluster)
 timeClusterClientMenu.setLabel("Client")
 #timeClusterClientMenu.setVisible(False)
 timeClusterClientMenu.setDescription("TIME CLUSTER CLIENT")
 timeClusterClientMenu.setDependencies(timeClusterClientCheck,["TIME_CLUSTER_CS","TIME_CLUSTER_ENABLE"])
 
+global timeClusterServerMenu
 timeClusterServerMenu = drvZigbeeComponent.createMenuSymbol("TIME_CLUSTER_SERVER_MENU", timeCluster)
 timeClusterServerMenu.setLabel("Server")
 #timeClusterServerMenu.setVisible(False)
@@ -322,7 +333,18 @@ timeClusterConfSrc.setProjectPath("config/" + configName + "/zigbee/z3device/com
 timeClusterConfSrc.setType("SOURCE")
 timeClusterConfSrc.setOverwrite(True)
 timeClusterConfSrc.setMarkup(True)
-timeClusterConfSrc.setEnabled(checkDevTypeCombInterface)
+timeClusterConfSrc.setEnabled(checkDevTypeCombInterface and timeCluster.getValue())
+timeClusterConfSrc.setDependencies(combinedInterfaceTimeClusterEnableCheck, ["TIME_CLUSTER_ENABLE"])
+
+timeClusterConfInc = drvZigbeeComponent.createFileSymbol("CITIMECLUSTER_H", None)
+timeClusterConfInc.setSourcePath("/driver/zigbee" + suffix + "/application/zigbee_only/Zigbee_Device_Application/devicetypes/combinedInterface/include/ciTimeCluster.h")
+timeClusterConfInc.setOutputName("ciTimeCluster.h")
+timeClusterConfInc.setDestPath("/zigbee/z3device/combinedInterface/include")
+timeClusterConfInc.setProjectPath("config/" + configName + "/zigbee/z3device/combinedInterface/include/")
+timeClusterConfInc.setType("HEADER")
+timeClusterConfInc.setOverwrite(True)
+timeClusterConfInc.setEnabled(checkDevTypeCombInterface and timeCluster.getValue())
+timeClusterConfInc.setDependencies(combinedInterfaceTimeClusterEnableCheck,["TIME_CLUSTER_ENABLE"])
 
 # TIME CLUSTER - Thermostat
 timeClusterConfSrc = drvZigbeeComponent.createFileSymbol("ZIGBEE_TIME_CLUSTER_CONF_SRC_TH", None)

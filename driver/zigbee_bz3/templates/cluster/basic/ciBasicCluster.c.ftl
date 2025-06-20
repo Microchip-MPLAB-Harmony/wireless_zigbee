@@ -49,23 +49,41 @@
 #include <zcl/include/zclCommandManager.h>
 #include <z3device/combinedInterface/include/ciBasicCluster.h>
 #include <z3device/combinedInterface/include/ciIdentifyCluster.h>
+<#if (ONOFF_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciOnOffCluster.h>
+</#if><#if (LEVELCONTROL_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciLevelControlCluster.h>
+</#if>
 #include <z3device/combinedInterface/include/ciGroupsCluster.h>
+<#if (SCENES_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciScenesCluster.h>
+</#if><#if (OCCUPANCYSENSING_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciOccupancySensingCluster.h>
+</#if>
 #include <z3device/combinedInterface/include/ciCommissioningCluster.h>
+<#if (ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciIlluminanceMeasurementCluster.h>
+</#if><#if (WATERCONTENTMEASUREMENT_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciHumidityMeasurementCluster.h>
+</#if><#if (TEMPERATUREMEASUREMENT_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciTemperatureMeasurementCluster.h>
+</#if><#if (COLORCONTROL_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciColorControlCluster.h>
+</#if><#if (THERMOSTAT_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciThermostatCluster.h>
+</#if><#if (FANCONTROL_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciFanControlCluster.h>
+</#if><#if (TIME_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciTimeCluster.h>
+</#if><#if (ALARMS_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciAlarmsCluster.h>
+</#if><#if (THERMOSTATUI_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciThermostatUiConfCluster.h>
+</#if><#if (IASZONE_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciIasZoneCluster.h>
+</#if><#if (IASACE_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciIasACECluster.h>
+</#if>
 #include <app_zigbee/app_zigbee_handler.h>
 
 /******************************************************************************

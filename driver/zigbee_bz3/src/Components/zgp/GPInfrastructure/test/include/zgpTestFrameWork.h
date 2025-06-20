@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPTESTFRAMEWORK_H
-#define _ZGPTESTFRAMEWORK_H
+#ifndef ZGPTESTFRAMEWORK_H
+#define ZGPTESTFRAMEWORK_H
 
 #ifdef _GREENPOWER_SUPPORT_
 #if APP_ZGP_DEVICE_TYPE >= APP_ZGP_DEVICE_TYPE_PROXY_BASIC
@@ -88,6 +88,6 @@ void processTableOperationCmd(const ScanValue_t *args);
 #endif // ENABLE_ZGP_TEST_FRAMEWORK
 #endif // APP_ZGP_DEVICE_TYPE >= APP_ZGP_DEVICE_TYPE_PROXY_BASIC
 #endif // _GREENPOWER_SUPPORT_
-#endif // _ZGPTESTFRAMEWORK_H
+#endif // ZGPTESTFRAMEWORK_H
 
 // eof zgpTestFrameWork.h

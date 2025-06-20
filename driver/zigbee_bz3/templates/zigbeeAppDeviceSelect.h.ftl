@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _Z3_DEVICETYPE_CONFIG_H_
-#define _Z3_DEVICETYPE_CONFIG_H_
+#ifndef Z3_DEVICETYPE_CONFIG_H
+#define Z3_DEVICETYPE_CONFIG_H
 
 /* Application Device Types Definitions - Do Not Change */
 #define APP_DEVICE_TYPE_COLOR_SCENE_CONTROLLER  1
@@ -89,6 +89,6 @@
 </#if>
 
 #ifndef CPU_CLK_HZ
-#define CPU_CLK_HZ              ${core.CPU_CLOCK_FREQUENCY}  // Core CPU Clock
+#define CPU_CLK_HZ              ${core.CPU_CLOCK_FREQUENCY}U  // Core CPU Clock
 #endif
 #endif

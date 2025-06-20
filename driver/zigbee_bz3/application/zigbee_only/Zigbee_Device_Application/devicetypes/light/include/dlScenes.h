@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _DLSCENES_H
-#define _DLSCENES_H
+#ifndef DLSCENES_H
+#define DLSCENES_H
 
 /******************************************************************************
                     Includes section
@@ -126,6 +126,6 @@ uint8_t removeScenesByGroup(uint16_t group);
 ******************************************************************************/
 Scene_t *getNextSceneByGroup(Scene_t *scene, uint16_t group);
 
-#endif // _DLSCENES_H
+#endif // DLSCENES_H
 
 // eof dlScenesCluster.h

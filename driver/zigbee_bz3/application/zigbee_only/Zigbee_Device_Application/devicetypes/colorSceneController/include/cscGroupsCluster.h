@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _COLORSCENECONTROLLER_GROUPSCLUSTER_H
-#define _COLORSCENECONTROLLER_GROUPSCLUSTER_H
+#ifndef COLORSCENECONTROLLER_GROUPSCLUSTER_H
+#define COLORSCENECONTROLLER_GROUPSCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -67,6 +67,6 @@ typedef void (*AddGroupResponseCsc_t)(uint8_t status, uint16_t groupId);
 ******************************************************************************/
 void cscGroupsClusterInit(void);
 
-#endif // _COLORSCENECONTROLLER_GROUPSCLUSTER_H
+#endif // COLORSCENECONTROLLER_GROUPSCLUSTER_H
 
 // eof cscGroupsCluster.h

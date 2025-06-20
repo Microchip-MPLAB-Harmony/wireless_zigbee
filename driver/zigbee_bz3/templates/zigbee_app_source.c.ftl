@@ -55,6 +55,7 @@
 #include "app_zigbee/app_zigbee.h"
 #include "app.h"
 #include <osal/osal_freertos.h>
+#include <z3device/common/include/zgb_task.h>
 // *****************************************************************************
 // *****************************************************************************
 // Section: Macros
@@ -98,25 +99,68 @@ void APP_ZigbeeStackCb(ZB_AppGenericCallbackParam_t *cb)
           (ZB_AppGenericCallbackParam_t*) OSAL_Malloc(sizeof(ZB_AppGenericCallbackParam_t));
 
   
-  appMsg.msgId = APP_MSG_ZB_STACK_CB;
+  appMsg.msgId = (uint8_t)APP_MSG_ZB_STACK_CB;
   
-  memcpy(newCB,cb,sizeof(ZB_AppGenericCallbackParam_t));
+  (void)memcpy(newCB,cb,sizeof(ZB_AppGenericCallbackParam_t));
 
-  if(cb->paramSize != 0)
+  if(cb->paramSize != 0U)
   {
     paramPtr = OSAL_Malloc(cb->paramSize);
-    memcpy(paramPtr,cb->parameters, cb->paramSize);
+    (void)memcpy(paramPtr,cb->parameters, cb->paramSize);
     newCB->parameters = paramPtr;
   }
   
-  memcpy(appMsg.msgData,&newCB,sizeof(newCB));
+  (void)memcpy((void *)appMsg.msgData,(const void *)&newCB,sizeof(newCB));
 #ifdef H3_INDEPENDENT 
-  OSAL_QUEUE_Send(&g_appQueue, &appMsg,0);
+  (void)OSAL_QUEUE_Send(&g_appQueue, &appMsg,0);
 #else
-  OSAL_QUEUE_Send(&appData.appQueue, &appMsg,0);
+  (void)OSAL_QUEUE_Send(&appData.appQueue, &appMsg,0);
 #endif 
 }
 
+<#if PIC32CXBZ2_HPA == true>
+/*******************************************************************************
+  Function:
+    void GPIO_RB1_Set
+
+  Remarks:
+    To set CPS pin
+*******************************************************************************/
+void GPIO_RB1_Set(void)
+{
+    GPIOB_REGS->GPIO_LATSET =  (1 << 1);
+}
+
+/*******************************************************************************
+  Function:
+    void GPIO_RB1_Clear
+
+  Remarks:
+    To Clear CPS pin
+*******************************************************************************/
+void GPIO_RB1_Clear(void)
+{
+  GPIOB_REGS->GPIO_LATCLR =  (1 << 1);  
+}
+
+/*******************************************************************************
+  Function:
+    void APP_HpaNotifyCpsCb()
+  Remarks:
+    App callback to drive CPS pin
+******************************************************************************/
+void APP_HpaNotifyCpsCb(bool bypass)
+{
+    if( bypass ==  true  )
+    {
+        GPIO_RB1_Set();
+    }
+    else
+    {
+        GPIO_RB1_Clear();
+    }
+}
+</#if> 
 /*******************************************************************************
   Function:
     void APP_ZigbeeStackInit()
@@ -127,4 +171,7 @@ void APP_ZigbeeStackCb(ZB_AppGenericCallbackParam_t *cb)
 void APP_ZigbeeStackInit(void)
 {
   ZB_EventRegister(APP_ZigbeeStackCb);
+<#if PIC32CXBZ2_HPA == true>
+  ZB_Sys_HpaInit(APP_HpaNotifyCpsCb);
+</#if> 
 }

@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _DLLEVELCONTROLCLUSTER_H
-#define _DLLEVELCONTROLCLUSTER_H
+#ifndef DLLEVELCONTROLCLUSTER_H
+#define DLLEVELCONTROLCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -71,6 +71,6 @@ void levelControlClusterInit(void);
 void levelControlClusterSetExtensionField(uint16_t currentLevel);
 void levelControlDisplayLevel(void);
 void levelControlClusterStop(void);
-#endif // _DLLEVELCONTROLCLUSTER_H
+#endif // DLLEVELCONTROLCLUSTER_H
 
 // eof dlLevelControlCluster.h

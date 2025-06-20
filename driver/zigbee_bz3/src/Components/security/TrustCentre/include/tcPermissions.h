@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#if !defined _TC_PERMISSIONS_H
-#define _TC_PERMISSIONS_H
+#if !defined TC_PERMISSIONS_H
+#define TC_PERMISSIONS_H
 
 #include <aps/include/apsAIB.h>
 
@@ -121,5 +121,15 @@ bool TC_IsAllowInstallCodes();
  ******************************************************************************/
 void TC_InitializePolicy(APS_TCSecurityPolicy_t *policy);
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+  \brief Get TC policy requireInstallCodesOrPresetPassphrase.
+
+  \param[in] None.
+
+  \return tcPolicyValue - TC_POLICY_INSTALL_CODES_OR_PASSPHRASE.
+ ******************************************************************************/
+uint8_t TC_GetRequireInstallCodesOrPresetPassphrase();
+#endif // #ifdef _ZIGBEE_REV_23_SUPPORT_
 #endif //#if defined (_LINK_SECURITY_) && defined (_TRUST_CENTRE_)
-#endif //#if !defined _TC_PERMISSIONS_H
+#endif //#if !defined TC_PERMISSIONS_H

@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZCLZLLIDENTIFYCLUSTER_H
-#define _ZCLZLLIDENTIFYCLUSTER_H
+#ifndef ZCLZLLIDENTIFYCLUSTER_H
+#define ZCLZLLIDENTIFYCLUSTER_H
 
 /*!
 Attributes and commands for determining basic information about a device,
@@ -265,6 +265,6 @@ typedef struct
 } ZCL_IdentifyClusterCommands_t;
 
 
-#endif // _ZCLZLLIDENTIFYCLUSTER_H
+#endif // ZCLZLLIDENTIFYCLUSTER_H
 
 // eof zclZllIdentifyCluster.h

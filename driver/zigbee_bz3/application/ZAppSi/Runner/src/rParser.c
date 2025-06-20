@@ -270,6 +270,9 @@ static PROGMEM_DECLARE(CommandRecord_t commandHandlers[]) = {
 #ifdef _SECURITY_
   {R_NWK_SET_OUT_SEC_COUNTER_REQUEST, rNwkSetOutgoingSecFrameCounter},
   {R_NWK_SET_ACTIVE_KEY_SEQ_NUM_REQUEST, rNwkGetActiveKeySeqNum},
+#ifdef _ZIGBEE_REV_23_SUPPORT_  
+  {R_NWK_ENCRYPT_DATA_REQ, rNwkCommandEncryptRequest},
+#endif  
 #ifdef _LINK_SECURITY_
   {R_ZDO_VERIFY_KEY_REQUEST, rZdoVerifyKeyRequestProcess},
 #endif //#ifdef _LINK_SECURITY_
@@ -280,8 +283,31 @@ static PROGMEM_DECLARE(CommandRecord_t commandHandlers[]) = {
   {R_TC_POLICY_REQUEST_REQ, rTCPolicySetRequestProcess},
 #endif //#if defined (_SECURITY_) && defined (_LINK_SECURITY_) && defined (_TRUST_CENTRE_)
 #ifdef _GREENPOWER_SUPPORT_
-  {R_APSDE_DATA_ALIAS_REQUEST, rApsDataRequestWithAliasProcess}
+  {R_APSDE_DATA_ALIAS_REQUEST, rApsDataRequestWithAliasProcess},
 #endif  //_GREENPOWER_SUPPORT_
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  {R_ZDO_BEACON_SURVEY_REQUEST, rZdoMgmtBeaconSurveyReqProcess},
+  {R_ZDO_SECURITY_SET_CONFIG_REQUEST, rZdoSecuritySetConfigReqProcess},
+  {R_ZDO_SECURITY_GET_CONFIG_REQUEST, rZdoSecurityGetConfigReqProcess},
+  {R_ZDO_SECURITY_START_KEY_UPDATE_REQUEST, rZdoSecurityStartKeyUpdateReqProcess},
+  {R_ZDO_SECURITY_DECOMMISSIONG_REQ, rZdoDecommissioningOrClrBindingReqProcess},
+  {R_ZDO_CLEAR_ALL_BINDING_REQ, rZdoDecommissioningOrClrBindingReqProcess},
+  {R_ZDO_DISCOVERY_CACHE_REQUEST, rZdpDiscoveryCacheRequestProcess},
+  {R_ZDP_DISCOVERY_STORE_REQUEST, rZdpDiscoveryStoreRequestProcess},
+  {R_ZDP_NODE_DESC_STORE_REQUEST, rZdpNodeDescriptorStoreRequestProcess},
+  {R_ZDP_POWER_DESC_STORE_REQUEST, rZdpPowerDescriptorStoreRequestProcess},
+  {R_ZDP_ACTIVE_EP_STORE_REQUEST, rZdpActiveEPStoreRequestProcess},
+  {R_ZDP_SIMPLE_DESC_STORE_REQUEST, rZdpSimpleDescStoreRequestProcess},
+  {R_ZDP_REMOVE_NODE_CACHE_REQUEST, rZdpRemoveNodeCacheRequestProcess},
+  {R_ZDP_FIND_NODE_CACHE_REQUEST, rZdpFindNodeCacheRequestProcess},
+  {R_ZDO_EXTENDED_SIMPLE_DESC_REQUEST, rZdpExtendedSimpleDescRequestProcess},
+  {R_ZDO_EXTENDED_ACTIVE_EP_REQUEST, rZdpExtendedActiveEPRequestProcess},
+  {R_ZDO_MGMT_NWK_DISC_REQUEST, rZdpMgmtNWKDiscRequestProcess},
+  {R_ZDO_MGMT_DIRECT_JOIN_REQUEST, rZdpMgmtDirectJoinRequestProcess},
+  {R_ZDP_MGMT_CACHE_REQUEST, rZdpMgmtCacheRequestProcess},
+  {R_ZDO_RESERVED_CLUSTER_REQUEST, rZdpReservedClusterRequestProcess},
+  {R_ZDO_SECURITY_AUTHENTICATION_LEVEL_REQUEST, rZdoGetAuthenticationLevelReqProcess},
+#endif // _ZIGBEE_REV_23_SUPPORT_
 
 };
 /******************************************************************************

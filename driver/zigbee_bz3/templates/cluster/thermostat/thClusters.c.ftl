@@ -92,9 +92,9 @@ ZCL_Cluster_t thServerClusters[TH_SERVER_CLUSTERS_COUNT] =
   DEFINE_TEMPERATURE_MEASUREMENT_CLUSTER(ZCL_SERVER_CLUSTER_TYPE,&thTemperatureMeasurementClusterServerAttributes),
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "SERVER") >
+  <#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
-  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_SERVER_CLUSTER_TYPE, &${clusterName?lower_case}${DEVICE?capitalize}ClusterAttributes, &${clusterName?lower_case}${DEVICE?capitalize}ClusterCommands),
+  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_SERVER_CLUSTER_TYPE, &${clusterName?lower_case}${"SERVER"?capitalize}ClusterAttributes, &${clusterName?lower_case}ClusterCommands),
   </#if>
   </#list>
 };
@@ -114,7 +114,7 @@ void (*thServerClusterInitFunctions[TH_SERVER_CLUSTER_INIT_COUNT])() =
   thTemperatureMeasurementClusterInit,
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "SERVER")  >
+  <#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${deviceTypeFunctionPrefix}${clusterName}Init,
@@ -137,7 +137,7 @@ ClusterId_t thServerClusterIds[TH_SERVER_CLUSTERS_COUNT] =
   TEMPERATURE_MEASUREMENT_CLUSTER_ID,
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "SERVER")  >
+  <#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -156,9 +156,9 @@ ZCL_Cluster_t thClientClusters[TH_CLIENT_CLUSTERS_COUNT] =
   DEFINE_THERMOSTAT_CLUSTER(ZCL_CLIENT_CLUSTER_TYPE, NULL, NULL),
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "CLIENT")  >
+  <#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
-  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_CLIENT_CLUSTER_TYPE, &${clusterName?lower_case}${DEVICE?capitalize}ClusterAttributes, &${clusterName?lower_case}${DEVICE?capitalize}ClusterCommands),
+  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_CLIENT_CLUSTER_TYPE, &${clusterName?lower_case}${"CLIENT"?capitalize}ClusterAttributes, &${clusterName?lower_case}ClusterCommands),
   </#if>
   </#list>
 };
@@ -174,7 +174,7 @@ ClusterId_t thClientClusterIds[TH_CLIENT_CLUSTERS_COUNT] =
   THERMOSTAT_CLUSTER_ID,
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "CLIENT")  >
+  <#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -196,7 +196,7 @@ void (*thClientClusterInitFunctions[TH_CLIENT_CLUSTER_INIT_COUNT])() =
   thThermostatClusterInit,
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "CLIENT")  >
+  <#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${deviceTypeFunctionPrefix}${clusterName}Init,

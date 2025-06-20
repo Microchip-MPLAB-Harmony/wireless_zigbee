@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZCLALARMSCLUSTER_H
-#define _ZCLALARMSCLUSTER_H
+#ifndef ZCLALARMSCLUSTER_H
+#define ZCLALARMSCLUSTER_H
 
 /*!
 Attributes and commands for sending alarm notifications and configuring alarm
@@ -404,6 +404,6 @@ typedef struct PACK
 
 } ZCL_AlarmsClusterClientCommands_t;
 
-#endif //#ifndef _ZCLALARMSCLUSTER_H
+#endif //#ifndef ZCLALARMSCLUSTER_H
 
 //eof zclAlarmsCluster.h

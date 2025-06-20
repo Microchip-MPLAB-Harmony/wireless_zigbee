@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _APP_CONFIG_H_
-#define _APP_CONFIG_H_
+#ifndef APP_CONFIG_H
+#define APP_CONFIG_H
 
 #if !defined _USE_LIB_ || defined _SUPER_SET_LIB_
 #include "zigbeeAppDeviceSelect.h" 
@@ -323,4 +323,4 @@
 #include <bitcloudPreInclude.h>
 #endif
 #include <stackConfig.h>
-#endif // _APP_CONFIG_H_
+#endif // APP_CONFIG_H

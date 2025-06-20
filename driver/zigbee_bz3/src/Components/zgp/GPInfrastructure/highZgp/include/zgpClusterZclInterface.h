@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPCLUSTERZCLINTERFACE_H
-#define _ZGPCLUSTERZCLINTERFACE_H
+#ifndef ZGPCLUSTERZCLINTERFACE_H
+#define ZGPCLUSTERZCLINTERFACE_H
 
 #ifdef _GREENPOWER_SUPPORT_
 /******************************************************************************
@@ -69,6 +69,6 @@ extern ZCL_Cluster_t zgpServerClusters[1];
 
 
 #endif // _GREENPOWER_SUPPORT_
-#endif // _ZGPCLUSTER_H
+#endif // ZGPCLUSTERZCLINTERFACE_H
 
 // eof zgpClusterZclInterface.h

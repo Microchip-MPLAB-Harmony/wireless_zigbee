@@ -16,7 +16,7 @@
 
 // DOM-IGNORE-BEGIN
 /*******************************************************************************
-* Copyright (C) 2018 Microchip Technology Inc. and its subsidiaries.
+* Copyright (C) 2024 Microchip Technology Inc. and its subsidiaries.
 *
 * Subject to your compliance with these terms, you may use Microchip software
 * and any derivatives exclusively with Microchip products. It is your
@@ -40,6 +40,14 @@
 // DOM-IGNORE-END
 
 /******************************************************************************
+                    Defines section
+******************************************************************************/
+
+#define BYTES_TO_READ_UINT16 2U
+#define BYTES_TO_READ_UINT32 4U
+#define BYTES_TO_READ_UINT64 8U
+
+/******************************************************************************
                     Includes section
 ******************************************************************************/
 #include <z3device/clusters/include/haClusters.h>
@@ -51,6 +59,11 @@
 #include <zcl/include/zclSecurityManager.h>
 #include <zdo/include/zdo.h>
 #include <app_zigbee/zigbee_console/consoleCmds.h>
+#if defined _ZIGBEE_REV_23_SUPPORT_
+#include <tlv/include/tlv.h>
+#include <aps/include/apsmeKeyNegotiate.h>
+#include <zdo/include/zdo.h>
+#endif
 /******************************************************************************
                     Prototypes section
 ******************************************************************************/
@@ -63,17 +76,26 @@ static void zdpNwkAddrResponse(ZDO_ZdpResp_t *resp);
 static void zdpActiveEpResponse(ZDO_ZdpResp_t *resp);
 static void zdpNodeDescResponse(ZDO_ZdpResp_t *resp);
 static void ZCL_ReadReportingResp(ZCL_Notify_t *ntfy);
+static void NWKf_LeaveConf(NWK_LeaveConf_t *conf);
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+static void zdpSurveyBeaconResp(ZDO_ZdpResp_t *resp);
+static void zdpSecurityGetConfigResponse(ZDO_ZdpResp_t *resp);
+static void zdpSecuritySetConfigResponse(ZDO_ZdpResp_t *resp);
+static void zdpClearAllBindingsResponse(ZDO_ZdpResp_t *resp);
+static void zdpSecurityDecommissioningResponse(ZDO_ZdpResp_t *resp);
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
 
 /******************************************************************************
                     Global variables section
 ******************************************************************************/
+#define MAX_TLV 3
+
 DescModeManagerMem_t descModeMem;
-NWK_LeaveReq_t reqNwk;
+static NWK_LeaveReq_t reqNwk;
 /*******************************************************************************
                     Local variables section
 *******************************************************************************/
 static uint8_t zclDefaultResponseBit = ZCL_FRAME_CONTROL_DISABLE_DEFAULT_RESPONSE;
-
 /******************************************************************************
                     Implementation section
 ******************************************************************************/
@@ -111,7 +133,7 @@ void ZCL_ReadAttributeResp(ZCL_Notify_t *ntfy)
   {
     uint8_t numberofAttributesRead = 1;
     ZCL_Status_t zclStatus;
-    element.id            = ZCL_READ_ATTRIBUTES_RESPONSE_COMMAND_ID;
+    element.id            = (uint8_t)ZCL_READ_ATTRIBUTES_RESPONSE_COMMAND_ID;
     element.payloadLength = ntfy->responseLength;
     element.payload       = ntfy->responsePayload;
     element.content       = NULL;
@@ -121,13 +143,13 @@ void ZCL_ReadAttributeResp(ZCL_Notify_t *ntfy)
     {
         zclStatus = ZCL_GetNextElement(&element);
         readAttributeResp = (ZCL_ReadAttributeResp_t *) element.content;
-        if (numberofAttributesRead > 5)
+        if (numberofAttributesRead > 5U)
         {
             appSnprintf("*Increase APP_TX_BUFFER_LENGTH to print all attributes*\r\n");
             return;
         }
         numberofAttributesRead++;
-        if (ZCL_SUCCESS_STATUS != readAttributeResp->status)
+        if ((uint8_t)ZCL_SUCCESS_STATUS != readAttributeResp->status)
         {
           appSnprintf("\r\n failed: Id:0x%x, status = 0x%x\r\n", (unsigned)readAttributeResp->id, (unsigned)readAttributeResp->status);
           return;
@@ -137,54 +159,83 @@ void ZCL_ReadAttributeResp(ZCL_Notify_t *ntfy)
           appSnprintf("\r\n success ");
         }
 
-        if (ZCL_CHARACTER_STRING_DATA_TYPE_ID == readAttributeResp->type)
+        if ((uint8_t)ZCL_CHARACTER_STRING_DATA_TYPE_ID == readAttributeResp->type)
         {
           appSnprintf("Id:0x%x, value = %s\r\n", (unsigned)readAttributeResp->id, readAttributeResp->value);
         }
-        else if (ZCL_OCTET_STRING_DATA_TYPE_ID == readAttributeResp->type)
+        else if ((uint8_t)ZCL_OCTET_STRING_DATA_TYPE_ID == readAttributeResp->type)
         {
           appSnprintf("Id:0x%x, value = %s\r\n", (unsigned)readAttributeResp->id, readAttributeResp->value);
         }
-        else if (ZCL_OCTET_STRING_DATA_TYPE_ID == readAttributeResp->type)
+        else if ((uint8_t)ZCL_OCTET_STRING_DATA_TYPE_ID == readAttributeResp->type)
         {    
           appSnprintf("Id:0x%x, value = %s\r\n", (unsigned)readAttributeResp->id, readAttributeResp->value);
         }
-        else if (ZCL_IEEE_ADDRESS_DATA_TYPE_ID == readAttributeResp->type)
+        else if ((uint8_t)ZCL_IEEE_ADDRESS_DATA_TYPE_ID == readAttributeResp->type)
         {
           appSnprintf("Id:0x%x, value = 0x", (unsigned)readAttributeResp->id);
-          for (uint8_t i = 8; i > 0; i--)
+          for (uint8_t i = 8; i > 0U; i--)
           {
-            appSnprintf("%02x", readAttributeResp->value[i-1]);
+            appSnprintf("%02x", readAttributeResp->value[i-1U]);
           }
           appSnprintf("\r\n");
         }
 
-        else if ((ZCL_U32BIT_DATA_TYPE_ID == readAttributeResp->type) || (ZCL_UTC_TIME_DATA_TYPE_ID == readAttributeResp->type))
+        else if (((uint8_t)ZCL_U32BIT_DATA_TYPE_ID == readAttributeResp->type) || ((uint8_t)ZCL_UTC_TIME_DATA_TYPE_ID == readAttributeResp->type))
         {
           uint32_t u32AttrVal;
-          memcpy(&u32AttrVal, &readAttributeResp->value[0], sizeof(uint32_t));
+
+          uint8_t readAttributeArray[BYTES_TO_READ_UINT32];
+
+          (void)memcpy(&readAttributeArray[0], &readAttributeResp->value[0], sizeof(uint32_t));
+
+          u32AttrVal =   ((uint32_t)(readAttributeArray[3]) << 24) | \
+                         ((uint32_t)(readAttributeArray[2]) << 16) | \
+                         ((uint32_t)(readAttributeArray[1]) << 8) | \
+                         (uint32_t)(readAttributeArray[0]) ;
+
           appSnprintf("Id:0x%x, value = %u\r\n", (unsigned)readAttributeResp->id, u32AttrVal);
         }
-        else if (ZCL_U64BIT_DATA_TYPE_ID == readAttributeResp->type)
+        else if ((uint8_t)ZCL_U64BIT_DATA_TYPE_ID == readAttributeResp->type)
         {
           uint64_t u64AttrVal;
-          memcpy(&u64AttrVal, &readAttributeResp->value[0], sizeof(uint64_t));
+
+          uint8_t readAttributeArray[BYTES_TO_READ_UINT64];
+
+          (void)memcpy(&readAttributeArray[0], &readAttributeResp->value[0], sizeof(uint64_t));
+
+          u64AttrVal =   ((uint64_t)(readAttributeArray[7]) << 56) | \
+                         ((uint64_t)(readAttributeArray[6]) << 48) | \
+                         ((uint64_t)(readAttributeArray[5]) << 40) | \
+                         ((uint64_t)(readAttributeArray[4]) << 32) | \
+                         ((uint64_t)(readAttributeArray[3]) << 24) | \
+                         ((uint64_t)(readAttributeArray[2]) << 16) | \
+                         ((uint64_t)(readAttributeArray[1]) << 8) | \
+                         (uint64_t)(readAttributeArray[0]) ;
+
           appSnprintf("Id:0x%x, value = 0x%08x%08x\r\n", (unsigned)readAttributeResp->id, (uint32_t)(u64AttrVal >> 32), (uint32_t)(u64AttrVal & 0xFFFFFFFF));
         }
-        else if (ZCL_U16BIT_DATA_TYPE_ID == readAttributeResp->type)
+        else if ((uint8_t)ZCL_U16BIT_DATA_TYPE_ID == readAttributeResp->type)
         {
           uint16_t u16AttrVal;
-          memcpy(&u16AttrVal, &readAttributeResp->value[0], sizeof(uint16_t));
+          
+          uint8_t readAttributeArray[BYTES_TO_READ_UINT16];
+
+          (void)memcpy(&readAttributeArray[0], &readAttributeResp->value[0], sizeof(uint16_t));
+
+          u16AttrVal =   ((uint16_t)(readAttributeArray[1]) << 8) | \
+                         (uint16_t)(readAttributeArray[0]) ;
+
           appSnprintf("Id:0x%x, value = %u\r\n", (unsigned)readAttributeResp->id, u16AttrVal);
         }
-        else if(ZCL_S8BIT_DATA_TYPE_ID ==  readAttributeResp->type)
+        else if((uint8_t)ZCL_S8BIT_DATA_TYPE_ID ==  readAttributeResp->type)
         {
           appSnprintf("Id:0x%x, value = %d\r\n", (unsigned)readAttributeResp->id, (signed)readAttributeResp->value[0]);
         }
-        else if (ZCL_S16BIT_DATA_TYPE_ID == readAttributeResp->type)
+        else if ((uint8_t)ZCL_S16BIT_DATA_TYPE_ID == readAttributeResp->type)
         {
           int16_t s16AttrVal;
-          memcpy(&s16AttrVal, &readAttributeResp->value[0], sizeof(int16_t));
+          (void)memcpy(&s16AttrVal, (int16_t *)&readAttributeResp->value[0], sizeof(int16_t));
           appSnprintf("Id:0x%x, value = %d\r\n", (unsigned)readAttributeResp->id, s16AttrVal);
         }
         else
@@ -202,17 +253,17 @@ void ZCL_ReadAttributeResp(ZCL_Notify_t *ntfy)
 /**************************************************************************//**
 \brief Sends a read attribute request to another device
 
-\param[in] mode    - addressing mode;
-\param[in] addr    - short destination address;
-\param[in] ep      - destination endpoint identifier;
-\param[in] srcEp   - source endpoint;
-\param[in] cluster - cluster identifier;
-\param[in] attr    - attribute identifier;
-\param[in] cb      - response callback;
+\param[in] mode           - addressing mode;
+\param[in] addr           - short destination address;
+\param[in] ep             - destination endpoint identifier;
+\param[in] srcEndpoint    - source endpoint;
+\param[in] cluster        - cluster identifier;
+\param[in] attr           - attribute identifier;
+\param[in] cb             - response callback;
 
 \return none
 ******************************************************************************/
-void readAttribute(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, Endpoint_t srcEp, 
+void readAttribute(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, Endpoint_t srcEndpoint, 
                    uint16_t cluster, uint16_t attr, ZclNtfyCallback_t cb)
 {
   /* Stack variables */
@@ -221,9 +272,11 @@ void readAttribute(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, Endpoin
   ZCL_ReadAttributeReq_t readAttrReqElement;
 
   /* Get free command memory */
-  if (!(req = getFreeCommand()))
+  req = getFreeCommand();
+  if (req == NULL)
+  {
     return;
-
+  }
   /* Fill the attribute identifier to read from */
   readAttrReqElement.id = attr;
 
@@ -232,10 +285,10 @@ void readAttribute(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, Endpoin
   element.payload = req->requestPayload;
   element.content = &readAttrReqElement;
   
-  element.id = ZCL_READ_ATTRIBUTES_COMMAND_ID;
-  ZCL_PutNextElement(&element);
+  element.id = (uint8_t)ZCL_READ_ATTRIBUTES_COMMAND_ID;
+  (void)ZCL_PutNextElement(&element);
 
-  fillCommandRequest(req, ZCL_READ_ATTRIBUTES_COMMAND_ID, element.payloadLength, srcEp);
+  fillCommandRequest(req, (uint8_t)ZCL_READ_ATTRIBUTES_COMMAND_ID, element.payloadLength, srcEndpoint);
   
   fillDstAddressing(&req->dstAddressing, mode, addr, ep, cluster);
 
@@ -251,18 +304,18 @@ void readAttribute(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, Endpoin
 /**************************************************************************//**
 \brief Sends a multiple read attribute request to another device
 
-\param[in] mode    - addressing mode;
-\param[in] addr    - short destination address;
-\param[in] ep      - destination endpoint identifier;
-\param[in] srcEp   - source endpoint;
-\param[in] cluster - cluster identifier;
-\param[in] startAttrId    - starting attribute identifier;
-\param[in] count    - number of attributes to read;
-\param[in] cb      - response callback;
+\param[in] mode          - addressing mode;
+\param[in] addr          - short destination address;
+\param[in] ep            - destination endpoint identifier;
+\param[in] srcEndpoint   - source endpoint;
+\param[in] cluster       - cluster identifier;
+\param[in] startAttrId   - starting attribute identifier;
+\param[in] count         - number of attributes to read;
+\param[in] cb            - response callback;
 
 \return none
 ******************************************************************************/
-void readAttributeMultiple(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, Endpoint_t srcEp, 
+void readAttributeMultiple(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, Endpoint_t srcEndpoint, 
                    uint16_t cluster, uint16_t startAttrId, uint8_t count, ZclNtfyCallback_t cb)
 {
   /* Stack variables */
@@ -271,9 +324,11 @@ void readAttributeMultiple(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep,
   ZCL_ReadAttributeReq_t readAttrReqElement;
 
   /* Get free command memory */
-  if (!(req = getFreeCommand()))
+  req = getFreeCommand();
+  if (req == NULL)
+  {
     return;
-
+  }
   /* Fill the attribute identifier to read from */
   readAttrReqElement.id = startAttrId;
 
@@ -282,15 +337,16 @@ void readAttributeMultiple(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep,
   element.payload = req->requestPayload;
   element.content = &readAttrReqElement;
   
-  element.id = ZCL_READ_ATTRIBUTES_COMMAND_ID;
+  element.id = (uint8_t)ZCL_READ_ATTRIBUTES_COMMAND_ID;
   
   for (uint8_t loopIndex = 0; loopIndex < count; loopIndex++)
   {
     readAttrReqElement.id = startAttrId + loopIndex;
-    ZCL_PutNextElement(&element);
+	(void)readAttrReqElement.id;
+    (void)ZCL_PutNextElement(&element);
   }
     
-  fillCommandRequest(req, ZCL_READ_ATTRIBUTES_COMMAND_ID, element.payloadLength, srcEp);
+  fillCommandRequest(req, (uint8_t)ZCL_READ_ATTRIBUTES_COMMAND_ID, element.payloadLength, srcEndpoint);
   
   fillDstAddressing(&req->dstAddressing, mode, addr, ep, cluster);
 
@@ -322,36 +378,37 @@ void ZCL_WriteAttributeResp(ZCL_Notify_t *ntfy)
 /**************************************************************************//**
 \brief Sends a write attribute request to another device
 
-\param[in] mode    - addressing mode;
-\param[in] addr    - short destination address;
-\param[in] ep      - destination endpoint identifier;
-\param[in] srcEp   - source endpoint;
-\param[in] cluster - cluster identifier;
-\param[in] type    - type identifier of data;
-\param[in] attr    - attribute identifier;
-\param[in] data    - pointer to value to be written;
-\param[in] size    - size of the data
-\param[in] cb      - response callback;
+\param[in] mode          - addressing mode;
+\param[in] addr          - short destination address;
+\param[in] ep            - destination endpoint identifier;
+\param[in] srcEndpoint   - source endpoint;
+\param[in] cluster       - cluster identifier;
+\param[in] type          - type identifier of data;
+\param[in] attr          - attribute identifier;
+\param[in] data          - pointer to value to be written;
+\param[in] size          - size of the data
+\param[in] cb            - response callback;
 
 \return none
 ******************************************************************************/
-void writeAttribute(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, Endpoint_t srcEp,
+void writeAttribute(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, Endpoint_t srcEndpoint,
                     uint16_t cluster, uint8_t type, uint16_t attr, void *data,
                     uint8_t size, ZclNtfyCallback_t cb)
 {
   ZCL_Request_t *req;
   ZCL_WriteAttributeReq_t writeAttrReq;
-
-  if (!(req = getFreeCommand()))
+  req = getFreeCommand();
+  if (req == NULL)
+  {
     return;
-
+  }
   writeAttrReq.id = attr;
   writeAttrReq.type = type;
-  memset(&writeAttrReq.value, 0, sizeof(ZCL_WriteAttributeReq_t));
-  memcpy(req->requestPayload, (uint8_t *)&writeAttrReq, sizeof(ZCL_WriteAttributeReq_t) - sizeof(uint8_t));
-  memcpy(req->requestPayload + sizeof(ZCL_WriteAttributeReq_t) - sizeof(uint8_t), (uint8_t *)data, size);
+  (void)memset(&writeAttrReq.value, 0, sizeof(ZCL_WriteAttributeReq_t));
+  (void)memcpy(req->requestPayload, (uint8_t *)&writeAttrReq, sizeof(ZCL_WriteAttributeReq_t) - sizeof(uint8_t));
+  (void)memcpy(req->requestPayload + sizeof(ZCL_WriteAttributeReq_t) - sizeof(uint8_t), (uint8_t *)data, size);
 
-  fillCommandRequest(req, ZCL_WRITE_ATTRIBUTES_COMMAND_ID, size + sizeof(ZCL_WriteAttributeReq_t) - sizeof(uint8_t), srcEp);
+  fillCommandRequest(req, (uint8_t)ZCL_WRITE_ATTRIBUTES_COMMAND_ID, (uint8_t)(size + sizeof(ZCL_WriteAttributeReq_t) - sizeof(uint8_t)), srcEndpoint);
   
   fillDstAddressing(&req->dstAddressing, mode, addr, ep, cluster);
   
@@ -375,36 +432,37 @@ void ZCL_WriteAttributeNoResp(ZCL_Notify_t *ntfy)
 /**************************************************************************//**
 \brief Sends a write attribute no response request to another device
 
-\param[in] mode    - addressing mode;
-\param[in] addr    - short destination address;
-\param[in] ep      - destination endpoint identifier;
-\param[in] srcEp   - source endpoint;
-\param[in] cluster - cluster identifier;
-\param[in] type    - type identifier of data;
-\param[in] attr    - attribute identifier;
-\param[in] data    - pointer to value to be written;
-\param[in] size    - size of the data
-\param[in] cb      - response callback;
+\param[in] mode          - addressing mode;
+\param[in] addr          - short destination address;
+\param[in] ep            - destination endpoint identifier;
+\param[in] srcEndpoint   - source endpoint;
+\param[in] cluster       - cluster identifier;
+\param[in] type          - type identifier of data;
+\param[in] attr          - attribute identifier;
+\param[in] data          - pointer to value to be written;
+\param[in] size          - size of the data
+\param[in] cb            - response callback;
 
 \return none
 ******************************************************************************/
-void writeAttributeNoResp(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, Endpoint_t srcEp,
+void writeAttributeNoResp(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, Endpoint_t srcEndpoint,
                           uint16_t cluster, uint8_t type, uint16_t attr, void *data,
                           uint8_t size, ZclNtfyCallback_t cb)
 {
   ZCL_Request_t *req;
   ZCL_WriteAttributeNoResponseReq_t writeAttrReq;
-
-  if (!(req = getFreeCommand()))
+  req = getFreeCommand();
+  if (req == NULL)
+  {
     return;
-
+  }
   writeAttrReq.id = attr;
   writeAttrReq.type = type;
-  memset(&writeAttrReq.value, 0, sizeof(ZCL_WriteAttributeNoResponseReq_t));
-  memcpy(req->requestPayload, (uint8_t *)&writeAttrReq, sizeof(ZCL_WriteAttributeNoResponseReq_t) - sizeof(uint8_t));
-  memcpy(req->requestPayload + sizeof(ZCL_WriteAttributeNoResponseReq_t) - sizeof(uint8_t), (uint8_t *)data, size);
+  (void)memset(&writeAttrReq.value, 0, sizeof(ZCL_WriteAttributeNoResponseReq_t));
+  (void)memcpy(req->requestPayload, (uint8_t *)&writeAttrReq, sizeof(ZCL_WriteAttributeNoResponseReq_t) - sizeof(uint8_t));
+  (void)memcpy(req->requestPayload + sizeof(ZCL_WriteAttributeNoResponseReq_t) - sizeof(uint8_t), (uint8_t *)data, size);
 
-  fillCommandRequest(req, ZCL_WRITE_ATTRIBUTES_NO_RESPONSE_COMMAND_ID, size + sizeof(ZCL_WriteAttributeNoResponseReq_t) - sizeof(uint8_t), srcEp);
+  fillCommandRequest(req, (uint8_t)ZCL_WRITE_ATTRIBUTES_NO_RESPONSE_COMMAND_ID, (uint8_t)(size + sizeof(ZCL_WriteAttributeNoResponseReq_t) - sizeof(uint8_t)), srcEndpoint);
   
   fillDstAddressing(&req->dstAddressing, mode, addr, ep, cluster);
   
@@ -417,41 +475,41 @@ void writeAttributeNoResp(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, 
 /**************************************************************************//**
 \brief Sends the Configure Reporting for cluster
 
-\param[in] mode - address mode;
-\param[in] addr - short address of destination node;
-\param[in] ep   - destination endpoint;
-\param[in] srcEp   - source endpoint;
-\param[in] cluster - cluster identifier;
-\param[in] attrId - attribute id;
-\param[in] attrType - attribute type
-\param[in] min  - the minimum reporting interval;
-\param[in] max  - the maximum reporting interval
+\param[in] mode          - address mode;
+\param[in] addr          - short address of destination node;
+\param[in] ep            - destination endpoint;
+\param[in] srcEndpoint   - source endpoint;
+\param[in] cluster       - cluster identifier;
+\param[in] attrId        - attribute id;
+\param[in] attrType      - attribute type
+\param[in] min           - the minimum reporting interval;
+\param[in] max           - the maximum reporting interval
 ******************************************************************************/
-void configureReporting(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, Endpoint_t srcEp, uint16_t cluster,
+void configureReporting(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, Endpoint_t srcEndpoint, uint16_t cluster,
   ZCL_AttributeId_t attrId, uint8_t attrType, ZCL_ReportTime_t min, ZCL_ReportTime_t max)
 {
   ZCL_Request_t *req;
   ZCL_NextElement_t element;
   ZCL_ConfigureReportingReq_t configureReportingReq;
-
-  if (!(req = getFreeCommand()))
+  req = getFreeCommand();
+  if (req == NULL)
+  {
     return;
-
+  }
   configureReportingReq.direction            = ZCL_FRAME_CONTROL_DIRECTION_CLIENT_TO_SERVER;
   configureReportingReq.attributeId          = attrId;
   configureReportingReq.attributeType        = attrType;
   configureReportingReq.minReportingInterval = min;
   configureReportingReq.maxReportingInterval = max;
+  configureReportingReq.reportableChange[0]  = 0;
 
-  if(((configureReportingReq.maxReportingInterval == 0x0000) && (configureReportingReq.minReportingInterval == 0xffff)) || (configureReportingReq.maxReportingInterval == 0xffff))
-    configureReportingReq.reportableChange[0] = 0;
   element.payloadLength = 0;
   element.payload = req->requestPayload;
-  element.id = ZCL_CONFIGURE_REPORTING_COMMAND_ID;
+  element.id = (uint8_t)ZCL_CONFIGURE_REPORTING_COMMAND_ID;
   element.content = &configureReportingReq;
-  ZCL_PutNextElement(&element);
+  (void)ZCL_PutNextElement(&element);
 
-  fillCommandRequest(req, ZCL_CONFIGURE_REPORTING_COMMAND_ID, element.payloadLength, srcEp);
+  fillCommandRequest(req, (uint8_t)ZCL_CONFIGURE_REPORTING_COMMAND_ID, element.payloadLength, srcEndpoint);
   fillDstAddressing(&req->dstAddressing, mode, addr, ep, cluster);
   req->ZCL_Notify = ZCL_ConfigureReportingResp;
 
@@ -461,17 +519,17 @@ void configureReporting(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, En
 /**************************************************************************//**
 \brief Sends the Configure Reporting  with report change for cluster
 
-\param[in] mode - address mode;
-\param[in] addr - short address of destination node;
-\param[in] ep   - destination endpoint;
-\param[in] srcEp   - source endpoint;
-\param[in] cluster - cluster identifier;
-\param[in] attrId - attribute id;
-\param[in] attrType - attribute type
-\param[in] min  - the minimum reporting interval;
-\param[in] max  - the maximum reporting interval
+\param[in] mode          - address mode;
+\param[in] addr          - short address of destination node;
+\param[in] ep            - destination endpoint;
+\param[in] srcEndpoint   - source endpoint;
+\param[in] cluster       - cluster identifier;
+\param[in] attrId        - attribute id;
+\param[in] attrType      - attribute type
+\param[in] min           - the minimum reporting interval;
+\param[in] max           - the maximum reporting interval
 ******************************************************************************/
-void configureReportingWithRC(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, Endpoint_t srcEp, uint16_t cluster,
+void configureReportingWithRC(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, Endpoint_t srcEndpoint, uint16_t cluster,
   ZCL_AttributeId_t attrId, uint8_t attrType, ZCL_ReportTime_t min, ZCL_ReportTime_t max,
   void *repChange)
 {
@@ -479,29 +537,32 @@ void configureReportingWithRC(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t 
   ZCL_NextElement_t element;
   ZCL_ConfigureReportingReq_t configureReportingReq;
   ZCL_DataTypeDescriptor_t attrDescr = {.length = 0, .kind = 0};
-
-  if (!(req = getFreeCommand()))
+  req = getFreeCommand();
+  if (req == NULL)
+  {
     return;
-
+  }
   configureReportingReq.direction            = ZCL_FRAME_CONTROL_DIRECTION_CLIENT_TO_SERVER;
   configureReportingReq.attributeId          = attrId;
   configureReportingReq.attributeType        = attrType;
   configureReportingReq.minReportingInterval = min;
   configureReportingReq.maxReportingInterval = max;
   ZCL_GetDataTypeDescriptor(attrType, repChange, &attrDescr);
-  if(attrDescr.length != 0)
-    memcpy(configureReportingReq.reportableChange, (uint8_t *)repChange, attrDescr.length);
-
-  if(((configureReportingReq.maxReportingInterval == 0x0000) && (configureReportingReq.minReportingInterval == 0xffff)) || (configureReportingReq.maxReportingInterval == 0xffff))
+  if(attrDescr.length != 0U)
+  {
+    (void)memcpy(configureReportingReq.reportableChange, (uint8_t *)repChange, attrDescr.length);
+  }
+  if(((configureReportingReq.maxReportingInterval == 0x0000U) && (configureReportingReq.minReportingInterval == 0xffffU)) || (configureReportingReq.maxReportingInterval == 0xffffU))
+  {
     configureReportingReq.reportableChange[0] = 0;
-  
+  }
   element.payloadLength = 0;
   element.payload = req->requestPayload;
-  element.id = ZCL_CONFIGURE_REPORTING_COMMAND_ID;
+  element.id = (uint8_t)ZCL_CONFIGURE_REPORTING_COMMAND_ID;
   element.content = &configureReportingReq;
-  ZCL_PutNextElement(&element);
+  (void)ZCL_PutNextElement(&element);
 
-  fillCommandRequest(req, ZCL_CONFIGURE_REPORTING_COMMAND_ID, element.payloadLength, srcEp);
+  fillCommandRequest(req, (uint8_t)ZCL_CONFIGURE_REPORTING_COMMAND_ID, element.payloadLength, srcEndpoint);
   fillDstAddressing(&req->dstAddressing, mode, addr, ep, cluster);
   req->ZCL_Notify = ZCL_ConfigureReportingResp;
 
@@ -511,33 +572,34 @@ void configureReportingWithRC(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t 
 /**************************************************************************//**
 \brief Sends the Read Reporting for cluster
 
-\param[in] mode - address mode;
-\param[in] addr - short address of destination node;
-\param[in] ep   - destination endpoint;
-\param[in] srcEp   - source endpoint;
-\param[in] cluster - cluster identifier;
-\param[in] attrId - attribute id;
+\param[in] mode          - address mode;
+\param[in] addr          - short address of destination node;
+\param[in] ep            - destination endpoint;
+\param[in] srcEndpoint   - source endpoint;
+\param[in] cluster       - cluster identifier;
+\param[in] attrId        - attribute id;
 ******************************************************************************/
-void readReporting(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, Endpoint_t srcEp, uint16_t cluster,
+void readReporting(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, Endpoint_t srcEndpoint, uint16_t cluster,
   ZCL_AttributeId_t attrId)
 {
   ZCL_Request_t *req;
   ZCL_NextElement_t element;
   ZCL_ReadReportingConfigurationReq_t readReportingReq;
-
-  if (!(req = getFreeCommand()))
+  req = getFreeCommand();
+  if (req == NULL)
+  {
     return;
-
+  }
   readReportingReq.direction            = ZCL_FRAME_CONTROL_DIRECTION_CLIENT_TO_SERVER;
   readReportingReq.attributeId          = attrId;
 
   element.payloadLength = 0;
   element.payload = req->requestPayload;
-  element.id = ZCL_READ_REPORTING_CONFIGURATION_COMMAND_ID;
+  element.id = (uint8_t)ZCL_READ_REPORTING_CONFIGURATION_COMMAND_ID;
   element.content = &readReportingReq;
-  ZCL_PutNextElement(&element);
+  (void)ZCL_PutNextElement(&element);
 
-  fillCommandRequest(req, ZCL_READ_REPORTING_CONFIGURATION_COMMAND_ID, element.payloadLength, srcEp);
+  fillCommandRequest(req, (uint8_t)ZCL_READ_REPORTING_CONFIGURATION_COMMAND_ID, element.payloadLength, srcEndpoint);
   fillDstAddressing(&req->dstAddressing, mode, addr, ep, cluster);
   req->ZCL_Notify = ZCL_ReadReportingResp;
 
@@ -556,19 +618,19 @@ static void ZCL_ReadReportingResp(ZCL_Notify_t *ntfy)
 
   if (ZCL_SUCCESS_STATUS == ntfy->status)
   {
-    element.id            = ZCL_READ_REPORTING_CONFIGURATION_COMMAND_ID;
+    element.id            = (uint8_t)ZCL_READ_REPORTING_CONFIGURATION_COMMAND_ID;
     element.payloadLength = ntfy->responseLength;
     element.payload       = ntfy->responsePayload;
     element.content       = NULL;
 
-    ZCL_GetNextElement(&element);
+    (void)ZCL_GetNextElement(&element);
     readReportingResp = (ZCL_ReadReportingConfigurationResp_t *) element.content;
 
-    if(ZCL_SUCCESS_STATUS == readReportingResp->status)
+    if((uint8_t)ZCL_SUCCESS_STATUS == readReportingResp->status)
     {
       appSnprintf(" <-Read Reporting Attribute (0x%x) response: success\r\n  min = %u max = %u direction = %d attributeType = %u reportableChange = %d\r\n", 
                 (unsigned)readReportingResp->attributeId, readReportingResp->minReportingInterval, readReportingResp->maxReportingInterval,
-                readReportingResp->direction, readReportingResp->attributeType, readReportingResp->reportableChange[1]);
+                readReportingResp->direction, readReportingResp->attributeType, readReportingResp->reportableChange[0]);
     }
     else
     {
@@ -584,16 +646,16 @@ static void ZCL_ReadReportingResp(ZCL_Notify_t *ntfy)
 /**************************************************************************//**
 \brief Fills ZCL Request structure
 
-\param[out] req     - pointer to zcl command request;
-\param[in]  command - command id;
-\param[in] size     - the size of request payload
-\param[in] srcEp    - source endpoint;
+\param[out] req           - pointer to zcl command request;
+\param[in]  command       - command id;
+\param[in] size           - the size of request payload
+\param[in] srcEndpoint    - source endpoint;
 ******************************************************************************/
-void fillCommandRequest(ZCL_Request_t *req, uint8_t command, uint8_t size, Endpoint_t srcEp)
+void fillCommandRequest(ZCL_Request_t *req, uint8_t command, uint8_t size, Endpoint_t srcEndpoint)
 {
   req->id              = command;
   req->requestLength   = size;
-  req->endpointId      = srcEp;
+  req->endpointId      = srcEndpoint;
   req->defaultResponse = zclDefaultResponseBit;
 }
 
@@ -608,9 +670,9 @@ void fillCommandRequest(ZCL_Request_t *req, uint8_t command, uint8_t size, Endpo
 ******************************************************************************/
 void fillDstAddressing(ZCL_Addressing_t *addressing, APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep, ClusterId_t cluster)
 {
-  if(OTAU_CLUSTER_ID == cluster)
+  if((uint16_t)OTAU_CLUSTER_ID == cluster)
   {
-    if(ZCL_GetCluster(APP_SRC_ENDPOINT_ID, cluster, ZCL_CLUSTER_SIDE_SERVER))
+    if((ZCL_GetCluster(APP_SRC_ENDPOINT_ID, cluster, ZCL_CLUSTER_SIDE_SERVER)) != NULL)
     {
       addressing->clusterSide         = ZCL_CLUSTER_SIDE_CLIENT;
     }
@@ -661,8 +723,8 @@ void fillDstAddressingServer(ZCL_Addressing_t *addressing, APS_AddrMode_t mode, 
 ZCL_Request_t *getFreeCommand(void)
 {
   ZCL_Request_t *req;
-
-  if (!(req = ZCL_CommandManagerAllocCommand()))
+  req = ZCL_CommandManagerAllocCommand();
+  if (req == NULL)
   {
     appSnprintf("\r\nNot enough command buffers\r\n");
   }
@@ -702,6 +764,276 @@ void zdpSimpleDescReq(ShortAddr_t addr,uint8_t ep)
   ZDO_ZdpReq(zdpReq);
 }
 
+#if defined _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+\brief Sends the Beacon Survey Request
+
+\param[in] shortAddr        - Short Address;
+\param[in] scanChannelList  - specific channel from the list;
+\param[in] configBitMask    - Bit Mask;
+******************************************************************************/
+void zdpMgmtBeaconSurveyReq(uint16_t shortAddr, uint32_t scanChannelList, uint8_t configBitMask)
+{
+  ZDO_ZdpReq_t *zdpReq = &descModeMem.zdpReq;
+  uint8_t *tlvData = (uint8_t *)&zdpReq->req.reqPayload.asduBuffer;
+  ZDO_MgmtBconSurveyReq_t surveyBeaconReq;
+  
+  zdpReq->reqCluster = MGMT_NWK_BEACON_SURVEY_CLID;
+  zdpReq->ZDO_ZdpResp = zdpSurveyBeaconResp;
+ 
+  zdpReq->dstAddrMode = APS_SHORT_ADDRESS;
+
+  zdpReq->dstAddress.shortAddress = shortAddr;
+  surveyBeaconReq.tlvID = LOCAL_TLV_TAG_ID;
+  surveyBeaconReq.tlvLength = CALC_TLV_LENGTH_VALUE((sizeof(ZDO_MgmtBconSurveyReq_t) - (SIZE_OF_TAG + SIZE_OF_LENGTH)));;
+  surveyBeaconReq.configBitMask = configBitMask;
+  surveyBeaconReq.scanChannelList.channelPageCount = 1U;
+  surveyBeaconReq.scanChannelList.channelMask = scanChannelList;
+  
+  (void)TLV_Encode(tlvData, &surveyBeaconReq);
+  zdpReq->asduPayloadLength = TOTAL_TLV_SIZE(surveyBeaconReq.tlvLength);
+  
+  ZDO_ZdpReq(zdpReq);  
+}
+
+/**************************************************************************//**
+\brief Sends the Security Service Start Key Neogtiation Request
+
+\param[in] requestedKeyNegotiationMethod - Key negotiation method;
+\param[in] requestedPreSharedSecretType  - Pre shared secret type;
+\param[in] partnerLongAddress            - Long address of initiator of start key update command;
+\param[in] isRelayCommand                - Relay command flag;
+\param[in] relayLongAddress              - Long address of a relay device;
+******************************************************************************/
+void StartKeyNegotiationReq(uint8_t requestedKeyNegotiationMethod, uint8_t requestedPreSharedSecretType, ExtAddr_t partnerLongAddress, uint8_t isRelayCommand, ExtAddr_t relayLongAddress)
+{
+  APS_KeyNegotiationReq_t apsStartKeyNegotiationReq = {0};
+
+  apsStartKeyNegotiationReq.requestedKeyNegotiationMethod = requestedKeyNegotiationMethod;
+  apsStartKeyNegotiationReq.requestedPreSharedSecretType = requestedPreSharedSecretType;
+  apsStartKeyNegotiationReq.partnerLongAddress = partnerLongAddress;
+  
+  apsStartKeyNegotiationReq.isRelayCommand = isRelayCommand;
+  if (isRelayCommand)
+  {
+    memcpy(&apsStartKeyNegotiationReq.relayLongAddress, (uint8_t*)&relayLongAddress, sizeof(ExtAddr_t));
+  }
+
+  APS_KeyNegotiationReq(&apsStartKeyNegotiationReq);
+}
+
+/**************************************************************************//**
+\brief Sends the Security Service Start Key Update Request
+
+\param[in] relayCmd         - relay command flag;
+\param[in] unAuthDevExtAdd  - Extended Address of Device to Authorise;
+\param[in] addressMode      - Destination node address Mode;
+\param[in] destAddr         - short address of destination node;
+\param[in] keyNegoMethod    - Key negotiation method.
+\param[in] preSharedSecret  - Pre shared secret. 
+******************************************************************************/
+void zdpStartKeyUpdatedReq(bool relayCmd, ExtAddr_t unAuthDevExtAdd, APS_AddrMode_t addressMode, uint64_t destAddr, uint8_t keyNegoMethod, uint8_t preSharedSecret)
+{
+  ZDO_StartKeyUpdateReq(relayCmd, unAuthDevExtAdd, addressMode, destAddr, keyNegoMethod, preSharedSecret, NULL);
+}
+/*******************************************************************************
+\brief Sends the Security Get Configuration request
+
+\param[in] dstaddr - nwk Address of Destination node
+\param[in] tlvCount  - The number of TLV IDs contained in the message
+\param[in] tlvId - Pointer to ID of each TLV that is being requested.
+*****************************************************************************/
+void zdpSecurityGetConfigReq(ShortAddr_t dstaddr,uint8_t tlvCount,uint8_t *tlvId)
+{
+  ZDO_ZdpReq_t *zdpReq = &descModeMem.zdpReq;
+  ZDO_SecurityGetConfigReq_t *getConfigReq = &zdpReq->req.reqPayload.getConfigReq;
+
+  if(tlvId[0U] == PAN_ID_CONFLICT_REPORT) // Currently only one PAN_ID_CONFLICT_REPORT Allowed, That too in 1s Index
+  {                                       // Modification will be there if more TLV ids are used 
+    zdpReq->ZDO_ZdpResp              = zdpSecurityGetConfigResponse;
+    zdpReq->reqCluster               = SECURITY_GET_CONFIG_CLID; 
+    zdpReq->dstAddrMode              = APS_SHORT_ADDRESS; 
+    zdpReq->dstAddress.shortAddress  = dstaddr;
+    zdpReq->asduPayloadLength = tlvCount+1;
+    getConfigReq->tlvCount = tlvCount;
+    getConfigReq->tlvIds[0U] = PAN_ID_CONFLICT_REPORT;
+    ZDO_ZdpReq(zdpReq);
+  }
+  else
+  {
+    appSnprintf("!!! SecurityGetConfigReq is Invalid, Currently only PAN_ID_CONFLICT_REPORT Id is allowed\n\r");
+  }
+}
+
+/*******************************************************************************
+\brief Sends the Security Set Configuration request
+
+\param[in] dstaddr - nwk address of destination node
+\param[in] tlvCount - TLV count
+\param[in] panIdTlvId - PAN ID TLV ID
+\param[in] panId - PAN ID
+\param[in] channelTlvId - Channel TLV ID
+\param[in] channel - Channel
+\param[in] cfgParamsTlvId - Configuration parameters TLV Id
+\param[in] configParams - Configuration parameters
+*****************************************************************************/
+void zdpSecuritySetConfigReq(ShortAddr_t dstaddr,uint8_t tlvCount,uint8_t panIdTlvId,PanId_t panId,uint8_t channelTlvId,Channel_t channel,uint8_t cfgParamsTlvId,uint16_t configParams)
+{
+  ZDO_ZdpReq_t *zdpReq = &descModeMem.zdpReq;
+  uint8_t *tlvData = (uint8_t *)&zdpReq->req.reqPayload.asduBuffer;
+  uint8_t *nextBufPtr = NULL;
+
+  NextPanIdChangeTlv_t nextPanIdTlv;
+  NextChannelChangeTlv_t nextChannelChangeTlv;
+  ConfigurationParametersTlv_t configParamsTlv;
+
+  zdpReq->ZDO_ZdpResp              = zdpSecuritySetConfigResponse;
+  zdpReq->reqCluster               = SECURITY_SET_CONFIG_CLID;
+  zdpReq->dstAddrMode              = APS_SHORT_ADDRESS;
+  zdpReq->dstAddress.shortAddress  = dstaddr;
+  zdpReq->asduPayloadLength = 0;
+
+  int i = 0, j = 0;
+  uint8_t tlvId[MAX_TLV] = {panIdTlvId, channelTlvId, cfgParamsTlvId};
+
+  for (i = 0;  i < MAX_TLV; i++)
+  {
+    switch (tlvId[i])
+    {
+      case NEXT_PAN_ID_CHANGE:
+        nextPanIdTlv.tagId = panIdTlvId;
+        nextPanIdTlv.length = 1U;
+        nextPanIdTlv.nextPanIdChange = panId;
+        if (nextBufPtr == NULL)
+        {
+          nextBufPtr = TLV_Encode(tlvData, &nextPanIdTlv);
+          zdpReq->asduPayloadLength = TOTAL_TLV_SIZE(nextPanIdTlv.length);
+        }
+        else
+        {
+          nextBufPtr = TLV_Encode(nextBufPtr, &nextPanIdTlv);
+          zdpReq->asduPayloadLength += TOTAL_TLV_SIZE(nextPanIdTlv.length);
+        }
+        break;
+
+      case NEXT_CHANNEL_CHANGE:
+        if ((channel >= RF_MIN_CHANNEL) && (channel <= RF_MAX_CHANNEL))
+        {
+          nextChannelChangeTlv.tagId = channelTlvId;
+          nextChannelChangeTlv.length = 3U;
+          //NOTE: Assuming channel page is '0'
+          nextChannelChangeTlv.channelField = 1 << channel;
+          if (nextBufPtr == NULL)
+          {
+            nextBufPtr = TLV_Encode(tlvData, &nextChannelChangeTlv);
+            zdpReq->asduPayloadLength = TOTAL_TLV_SIZE(nextChannelChangeTlv.length);
+          }
+          else
+          {
+            nextBufPtr = TLV_Encode(nextBufPtr, &nextChannelChangeTlv);
+            zdpReq->asduPayloadLength += TOTAL_TLV_SIZE(nextChannelChangeTlv.length);
+          }
+        }
+        break;
+
+      case CONFIGURATION_PARAMETER:
+        if (configParams <= MAX_CONFIG_PARAMS)
+        {
+          configParamsTlv.tagId = cfgParamsTlvId;
+          configParamsTlv.length = 1U;
+          configParamsTlv.configurationParameters = configParams;
+          if (nextBufPtr == NULL)
+          {
+            nextBufPtr = TLV_Encode(tlvData, &configParamsTlv);
+            zdpReq->asduPayloadLength = TOTAL_TLV_SIZE(configParamsTlv.length);
+          }
+          else
+          {
+            nextBufPtr = TLV_Encode(nextBufPtr, &configParamsTlv);
+            zdpReq->asduPayloadLength += TOTAL_TLV_SIZE(configParamsTlv.length);
+          }
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  ZDO_ZdpReq(zdpReq);
+}
+
+/*******************************************************************************
+\brief Sends the Secrity Decommissioning / Clear all binding request
+
+\param[in] clusterId - command cluster id either security decommissioning
+           request or clear all binding request
+\param[in] dstaddr - nwk Address of Destination node
+\param[in] deviceCount - total number of devices that need to decommissioned 
+           or binding to be cleared
+\param[in] eui64List - pointer to the list of ext address that need to be 
+           decommissioned.
+
+\returns None.
+*****************************************************************************/
+void zdpDecomissioningOrClrBindingReq(uint16_t clusterId, ShortAddr_t dstaddr, uint8_t deviceCount, ExtAddr_t* eui64List)
+{
+  ZDO_ZdpReq_t *zdpReq = &descModeMem.zdpReq;
+  uint8_t *tlvData = (uint8_t *)&zdpReq->req.reqPayload.asduBuffer;
+  DeviceEUI64ListTlv_t deviceEUI64ListTlv;
+  uint8_t argListIndex = 0U;
+  uint8_t tlvListIndex = 0U;
+
+  zdpReq->reqCluster = clusterId;
+  switch(clusterId)
+  {
+    case SECURITY_DECOMMISSIONING_CLID:
+    {
+      zdpReq->ZDO_ZdpResp = zdpSecurityDecommissioningResponse;
+      break;
+    }
+    case CLEAR_ALL_BINDINGS_CLID:
+    {
+      zdpReq->ZDO_ZdpResp = zdpClearAllBindingsResponse;
+      break;
+    }
+    default:
+    {
+      /* Control should not reach */
+      break;
+    }
+       
+  }
+  zdpReq->dstAddrMode              = APS_SHORT_ADDRESS;
+  zdpReq->dstAddress.shortAddress  = dstaddr;
+
+  while(argListIndex < deviceCount)
+  {
+    deviceEUI64ListTlv.extAddrList[tlvListIndex++] = *(eui64List+argListIndex);
+    argListIndex++;
+  }
+
+  deviceEUI64ListTlv.tagId = LOCAL_TLV_TAG_ID;
+  deviceEUI64ListTlv.extAddrCount = deviceCount;
+  deviceEUI64ListTlv.length = deviceCount * sizeof(ExtAddr_t);
+
+  (void)TLV_Encode(tlvData, &deviceEUI64ListTlv);
+  zdpReq->asduPayloadLength = TOTAL_TLV_SIZE(deviceEUI64ListTlv.length);
+
+  ZDO_ZdpReq(zdpReq);
+}
+
+/**************************************************************************//**
+\brief Notify the stack about the trust center loss
+
+\return None.
+******************************************************************************/
+void appNofityTcLoss(void)
+{
+  SYS_PostEvent(BC_EVENT_APS_TC_SWAP, 0);
+}
+#endif //_ZIGBEE_REV_23_SUPPORT_
+
 /*******************************************************************************
 \brief Sends the Node Descriptor request
 
@@ -710,6 +1042,11 @@ void zdpSimpleDescReq(ShortAddr_t addr,uint8_t ep)
 *****************************************************************************/
 void zdpNodeDescReq(ShortAddr_t dstaddr, ShortAddr_t nwkAddrofInterest)
 {
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  uint16_t apsFragmentation = 0U;
+  uint8_t *tlvData = NULL;
+  uint8_t *nextTlvPointer = NULL;
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
   ZDO_ZdpReq_t *zdpReq = &descModeMem.zdpReq;
   ZDO_NodeDescReq_t *nodeDescReq = &zdpReq->req.reqPayload.nodeDescReq;
 
@@ -718,6 +1055,36 @@ void zdpNodeDescReq(ShortAddr_t dstaddr, ShortAddr_t nwkAddrofInterest)
   zdpReq->dstAddrMode              = APS_SHORT_ADDRESS; 
   zdpReq->dstAddress.shortAddress  = dstaddr;
   nodeDescReq->nwkAddrOfInterest = nwkAddrofInterest;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  zdpReq->asduPayloadLength = sizeof(ZDO_NodeDescReq_t);
+  
+  tlvData = ((uint8_t *)nodeDescReq) + sizeof(ZDO_NodeDescReq_t);
+
+  FragmentationParametersTlv_t fragmentationTlv;
+  fragmentationTlv.tagId = FRAGMENTATION_PARAMETER;
+  fragmentationTlv.length = CALC_TLV_LENGTH_VALUE(FRAGMENTATION_PARAMETERS_GLOBAL_TLV_DEFAULT_LENGTH);
+  fragmentationTlv.nodeId = NWK_GetShortAddr();
+  CS_ReadParameter(CS_APS_DATA_FRAGMENTATION_ID, &fragmentationTlv.fragmentationOption);
+  CS_ReadParameter(CS_APS_MAX_SIZE_ASDU_ID, &fragmentationTlv.incomingTransferUnits);
+ 
+  nextTlvPointer = TLV_Encode(tlvData, &fragmentationTlv);
+  zdpReq->asduPayloadLength += TOTAL_TLV_SIZE(fragmentationTlv.length);
+  
+  if(0U == dstaddr)
+  {
+    KeyNegotiationTlv_t keyNegotiationTlv;
+    keyNegotiationTlv.tagId = SUPPORTED_KEY_NEGOTIATION;
+    keyNegotiationTlv.length = CALC_TLV_LENGTH_VALUE(SUPPORTED_KEY_NEGOTIATION_METHODS_GLOBAL_TLV_DEFAULT_LENGTH);
+    CS_ReadParameter(CS_SUPPORTED_KEY_NEGOTIATION_PROTOCOL_ID, &keyNegotiationTlv.keyNegotiationProtocolBitmask);
+    CS_ReadParameter(CS_SUPPORTED_PRE_SHARED_SECRETS_ID, &keyNegotiationTlv.preSharedSecretBitmask);
+    memcpy(&keyNegotiationTlv.sourceDeviceEUI64, MAC_GetExtAddr(), sizeof(ExtAddr_t));
+    
+    TLV_Encode(nextTlvPointer, &keyNegotiationTlv);
+    
+    zdpReq->asduPayloadLength += TOTAL_TLV_SIZE(keyNegotiationTlv.length);
+  }
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
+
   ZDO_ZdpReq(zdpReq);
 }
 
@@ -798,6 +1165,94 @@ static void zdpSimpleDescResponse(ZDO_ZdpResp_t *resp)
   APP_Zigbee_Handler(event);
 }
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+\brief Security get Config response callback
+
+\param[in] resp - response payload
+******************************************************************************/
+static void zdpSecurityGetConfigResponse(ZDO_ZdpResp_t *resp)
+{
+  APP_Zigbee_Event_t event;
+  event.eventGroup = EVENT_ZIGBEE;
+  event.eventId = EVENT_SECURITY_GET_CONFIG_RESPONSE;
+  event.eventData.ParentChildInfo.status = resp->respPayload.status;
+  uint8_t *tlvPointer;
+  tlvPointer = (uint8_t *)&(resp->respPayload.asduBuffer);
+  uint16_t length = TOTAL_TLV_SIZE(*(tlvPointer+1));
+  TLV_Decode_Resp_t decodeResponse = TLV_Decode(tlvPointer, length, SECURITY_GET_CONFIG_CLID);
+  if(decodeResponse.overallStatus == VALIDATION_SUCCESS)
+  {
+    appSnprintf(" TLVDecode SecurityGetConfigReq is Valid\r\n");
+    appSnprintf("--> decode_overallStatus = %d, \r\n", decodeResponse.overallStatus);
+    appSnprintf("-->             tlvCount = %d, \r\n", decodeResponse.tlvCount);    
+    appSnprintf("--> tlvId , length, Value  is   %d, %d, %d \r\n", *tlvPointer, *(tlvPointer+1),*(tlvPointer+2));
+  }
+  else
+  {
+    appSnprintf( " !!!! TLVDecode SecurityGetConfigResponse is Invalid, Status = %d, \r\n", INVALID_TLV);
+  }
+  APP_Zigbee_Handler(event);
+}
+
+/**************************************************************************//**
+\brief Security set Config response callback
+\param[in] resp - response payload
+******************************************************************************/
+static void zdpSecuritySetConfigResponse(ZDO_ZdpResp_t *resp)
+{
+  APP_Zigbee_Event_t event;
+  event.eventGroup = EVENT_ZIGBEE;
+  event.eventId = EVENT_SECURITY_SET_CONFIG_RESPONSE;
+  event.eventData.ParentChildInfo.status = resp->respPayload.status;
+
+  APP_Zigbee_Handler(event);
+}
+
+/**************************************************************************//**
+\brief Clear All Bindings response callback
+\param[in] resp - Response payload
+******************************************************************************/
+static void zdpClearAllBindingsResponse(ZDO_ZdpResp_t *resp)
+{
+  APP_Zigbee_Event_t event;
+  event.eventGroup = EVENT_ZIGBEE;
+  event.eventId = EVENT_CLEAR_ALL_BINDINGS_RESPONSE;
+  event.eventData.ParentChildInfo.status = resp->respPayload.status;
+
+  APP_Zigbee_Handler(event);
+}
+
+/**************************************************************************//**
+\brief Security Decommissioning response callback
+\param[in] resp - Response payload
+******************************************************************************/
+static void zdpSecurityDecommissioningResponse(ZDO_ZdpResp_t *resp)
+{
+  APP_Zigbee_Event_t event;
+  event.eventGroup = EVENT_ZIGBEE;
+  event.eventId = EVENT_SECURITY_DECOMMISSIONING_RESPONSE;
+  event.eventData.ParentChildInfo.status = resp->respPayload.status;
+
+  APP_Zigbee_Handler(event);
+}
+/**************************************************************************//**
+\brief ZDP Beacon Survey response callback
+
+\param[in] resp - response payload
+******************************************************************************/
+static void zdpSurveyBeaconResp(ZDO_ZdpResp_t *resp)
+{
+  APP_Zigbee_Event_t event;
+  event.eventGroup = EVENT_ZIGBEE;
+  event.eventId = EVENT_SURVEY_BEACON_RESPONSE;
+  event.eventData.ParentChildInfo.status = resp->respPayload.status;
+
+  APP_Zigbee_Handler(event);
+}
+
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
+
 /**************************************************************************//**
 \brief Nwk Address response callback
 
@@ -822,15 +1277,16 @@ static void zdpNwkAddrResponse(ZDO_ZdpResp_t *resp)
 static void zdpIeeeAddrResponse(ZDO_ZdpResp_t *resp)
 {
   APP_Zigbee_Event_t event;
-  uint64_t tmpAddr;
-  uint8_t *tmp;
-  COPY_EXT_ADDR(tmpAddr, resp->respPayload.ieeeAddrResp.ieeeAddrRemote);
-  tmp = (uint8_t *)&tmpAddr;
+  uint64_t ieeeAddress;
+
+  COPY_EXT_ADDR(ieeeAddress, resp->respPayload.ieeeAddrResp.ieeeAddrRemote);
+  uint64_t *ieeeAddressPtr = &ieeeAddress;
   event.eventGroup = EVENT_ZIGBEE;
   event.eventId = EVENT_IEEE_ADDRESS_RESPONSE;
   event.eventData.ParentChildInfo.ep = resp->respPayload.activeEPResp.activeEPCount;
   event.eventData.ParentChildInfo.status = resp->respPayload.status;
-  memcpy(&event.eventData.ParentChildInfo.extendedAddress, tmp, 8);
+
+  (void)memcpy(&event.eventData.ParentChildInfo.extendedAddress, ieeeAddressPtr, 8);
 
   APP_Zigbee_Handler(event);
 }
@@ -862,7 +1318,51 @@ static void zdpNodeDescResponse(ZDO_ZdpResp_t *resp)
   event.eventGroup = EVENT_ZIGBEE;
   event.eventId = EVENT_NODE_DESCRIPTOR_RESPONSE;
   event.eventData.ParentChildInfo.status = resp->respPayload.status;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  ZDO_ZdpReq_t* zdpReqPtr;
+  uint8_t* tlvPointer;
+  uint16_t tlvLength;
+  TLV_Decode_Resp_t tlvDecodeResp;
+  zdpReqPtr = GET_PARENT_BY_FIELD(ZDO_ZdpReq_t, resp ,resp);
+  tlvPointer = (uint8_t *)&(resp->respPayload.nodeDescResp);
+  tlvPointer = (uint8_t *)(tlvPointer + sizeof(ZDO_NodeDescResp_t));
+  tlvLength = zdpReqPtr->asduPayloadLength - ZDP_RESP_HEADER_SIZE - NODE_DESCRIPTOR_RESP_SIZE;
 
+  tlvDecodeResp = TLV_Decode(tlvPointer, tlvLength, NODE_DESCRIPTOR_RESP_CLID);
+
+  if((tlvDecodeResp.overallStatus == VALIDATION_SUCCESS) && (tlvDecodeResp.tlvCount > 0U))
+  {
+    const ExtAddr_t *sourceExtAddr = NULL;
+    SelectedKeyNegotiationMethodTlv_t *keyTlv = NULL;
+    FragmentationParametersTlv_t *incomingFragmentationTlv = NULL;
+
+    if(resp->srcAddrMode == APS_SHORT_ADDRESS)
+    {
+      sourceExtAddr = NWK_GetExtByShortAddress(resp->srcAddress.shortAddress);
+    } 
+    else
+    {
+      sourceExtAddr = (const ExtAddr_t *)&(resp->srcAddress.extAddress);
+    }
+
+    (void)APS_UpdateFrameCounterSynchronization(sourceExtAddr, true);
+
+    incomingFragmentationTlv = (FragmentationParametersTlv_t *)TLV_GetTlvByTagId(&tlvDecodeResp, FRAGMENTATION_PARAMETER);
+    if(incomingFragmentationTlv != NULL)
+    {
+      const ExtAddr_t *fragmentationExtAddr;
+      fragmentationExtAddr = NWK_GetExtByShortAddress(incomingFragmentationTlv->nodeId);
+      (void)APS_UpdateFragmentationCacheDetails(fragmentationExtAddr, (bool)(incomingFragmentationTlv->fragmentationOption), 
+                                                incomingFragmentationTlv->incomingTransferUnits);
+    }
+
+    keyTlv = (SelectedKeyNegotiationMethodTlv_t *)TLV_GetTlvByTagId(&tlvDecodeResp, LOCAL_TLV_TAG_ID);
+    if(keyTlv != NULL)
+    {
+      (void)APS_UpdateKeyNegotiationMethod(sourceExtAddr, keyTlv->keyNegotiationProtocol);
+    }
+  }
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
   APP_Zigbee_Handler(event);
 }
 
@@ -891,19 +1391,27 @@ void zdpMatchDescReq(ShortAddr_t addr,uint8_t ep)
     {
       matchDescReq->numInClusters = appBindRequest[epCount]->remoteServersCnt;
       for (uint8_t i = 0; i < appBindRequest[epCount]->remoteServersCnt; i++)
-      matchDescReq->inClusterList[i] = appBindRequest[epCount]->remoteServers[i];
-
-      matchDescReq->numOutClusters = appBindRequest[epCount]->remoteClientsCnt;
+      {
+        matchDescReq->inClusterList[i] = appBindRequest[epCount]->remoteServers[i];
+      }
+        matchDescReq->numOutClusters = appBindRequest[epCount]->remoteClientsCnt;
       for (uint8_t i = 0; i < appBindRequest[epCount]->remoteClientsCnt; i++)
-      matchDescReq->outClusterList[i] = appBindRequest[epCount]->remoteClients[i];
+      {
+        matchDescReq->outClusterList[i] = appBindRequest[epCount]->remoteClients[i];
+      }
       flag++;
       break;
+      
     }
   }
-    if(flag==0)
+    if(flag==0U)
+    {
       appSnprintf("Enter valid EP");
+    }
     else
+    {
       ZDO_ZdpReq(zdpReq);
+    }
 }
 
 /**************************************************************************//**
@@ -942,8 +1450,8 @@ void zdpMgmtLeaveReq(uint16_t dstAddr, ExtAddr_t extAddr, bool rejoin, bool remo
 
   COPY_64BIT_VALUE_A(leavereq->deviceAddr,&extAddr);
 
-  leavereq->rejoin = rejoin;
-  leavereq->removeChildren = removeChildren;
+  leavereq->rejoin = (uint8_t)rejoin;
+  leavereq->removeChildren = (uint8_t)removeChildren;
 
   ZDO_ZdpReq(zdpReq);
 }
@@ -967,7 +1475,7 @@ static void zdpMatchDescResponse(ZDO_ZdpResp_t *resp)
 
 \param[in] conf - pointer to confirmation structure
 ******************************************************************************/
-void NWKf_LeaveConf(NWK_LeaveConf_t *conf)
+static void NWKf_LeaveConf(NWK_LeaveConf_t *conf)
 {
  (void)conf;
 }
@@ -1096,14 +1604,14 @@ void zdpMgmtBindReq(uint16_t shortAddr, uint8_t startIndex)
 /**************************************************************************//**
 \brief Sends ZDP Bind request
 
-\param[in]  mode       - addressing mode;
-\param[in]  addr       - short address of destination mode;
-\param[in]  extAddr    - Extended address of destination mode;
-\param[in]  ep         - endpoint number of destination node;
-\param[in]  srcEp      - endpoint number of source node;
-\param[in]  clusterid  - cluster id
+\param[in]  mode             - addressing mode;
+\param[in]  addr             - short address of destination mode;
+\param[in]  extAddr          - Extended address of destination mode;
+\param[in]  ep               - endpoint number of destination node;
+\param[in]  srcEndpoint      - endpoint number of source node;
+\param[in]  clusterid        - cluster id
 ******************************************************************************/
-void zdpBindReq(APS_AddrMode_t mode, ShortAddr_t addr, ExtAddr_t extAddr, Endpoint_t ep, Endpoint_t srcEp, ClusterId_t clusterId)
+void zdpBindReq(APS_AddrMode_t mode, ShortAddr_t addr, ExtAddr_t extAddr, Endpoint_t ep, Endpoint_t srcEndpoint, ClusterId_t clusterId)
 {
   ZDO_ZdpReq_t *zdpReq = &descModeMem.zdpReq;
   ZDO_BindReq_t *bindreq = &zdpReq->req.reqPayload.bindReq;
@@ -1120,9 +1628,9 @@ void zdpBindReq(APS_AddrMode_t mode, ShortAddr_t addr, ExtAddr_t extAddr, Endpoi
   COPY_EXT_ADDR(bindreq->srcAddr, extAddr);
   bindreq->srcEndpoint = ep;
   bindreq->clusterId = clusterId;
-  bindreq->dstAddrMode = APS_EXT_ADDRESS;
+  bindreq->dstAddrMode = (uint8_t)APS_EXT_ADDRESS;
   COPY_EXT_ADDR(bindreq->dstExtAddr, ownExtAddr);
-  bindreq->dstEndpoint = srcEp;
+  bindreq->dstEndpoint = srcEndpoint;
 
   ZDO_ZdpReq(zdpReq);
 }
@@ -1130,16 +1638,16 @@ void zdpBindReq(APS_AddrMode_t mode, ShortAddr_t addr, ExtAddr_t extAddr, Endpoi
 /**************************************************************************//**
 \brief Sends ZDP Bind request with source address and destination endpoint.
 
-\param[in]  mode       - addressing mode;
-\param[in]  addr       - short address of destination mode;
-\param[in]  extAddr    - Extended address of destination mode;
-\param[in]  extAddrSrc - Extended address of source mode;
-\param[in]  epSrc      - endpoint number of source node;
-\param[in]  epDst      - endpoint number of destination node;
-\param[in]  srcEp      - endpoint number of source node;
-\param[in]  clusterid  - cluster id
+\param[in]  mode             - addressing mode;
+\param[in]  addr             - short address of destination mode;
+\param[in]  extAddr          - Extended address of destination mode;
+\param[in]  extAddrSrc       - Extended address of source mode;
+\param[in]  epSrc            - endpoint number of source node;
+\param[in]  epDst            - endpoint number of destination node;
+\param[in]  srcEndpoint      - endpoint number of source node;
+\param[in]  clusterid        - cluster id
 ******************************************************************************/
-void zdpBindReqWithSrcAddrDestEndpoint(APS_AddrMode_t mode, ShortAddr_t addr, ExtAddr_t extAddr, ExtAddr_t extAddrSrc, Endpoint_t epSrc, Endpoint_t epDst, Endpoint_t srcEp, ClusterId_t clusterId)
+void zdpBindReqWithSrcAddrDestEndpoint(APS_AddrMode_t mode, ShortAddr_t addr, ExtAddr_t extAddr, ExtAddr_t extAddrSrc, Endpoint_t epSrc, Endpoint_t epDst, Endpoint_t srcEndpoint, ClusterId_t clusterId)
 {
   ZDO_ZdpReq_t *zdpReq = &descModeMem.zdpReq;
   ZDO_BindReq_t *bindreq = &zdpReq->req.reqPayload.bindReq;
@@ -1160,17 +1668,17 @@ void zdpBindReqWithSrcAddrDestEndpoint(APS_AddrMode_t mode, ShortAddr_t addr, Ex
   {
   if (mode == APS_GROUP_ADDRESS)
   {
-    bindreq->dstAddrMode = mode;
+    bindreq->dstAddrMode = (uint8_t)mode;
     bindreq->dstGroupAddr = (uint16_t) extAddrSrc;
     COPY_EXT_ADDR(bindreq->srcAddr, extAddr);
   } 
   else //mode == APS_EXT_ADDRESS
   {
-    bindreq->dstAddrMode = mode;
+    bindreq->dstAddrMode = (uint8_t)mode;
     bindreq->dstExtAddr = extAddr;
-    bindreq->dstEndpoint = (epDst==0)?srcEp:epDst;
+    bindreq->dstEndpoint = (epDst==0U)?srcEndpoint:epDst;
     COPY_EXT_ADDR(bindreq->srcAddr, extAddr);
-    COPY_EXT_ADDR(bindreq->dstExtAddr,(extAddrSrc==0)? ownExtAddr:extAddrSrc);
+    COPY_EXT_ADDR(bindreq->dstExtAddr,(extAddrSrc==0U)? ownExtAddr:extAddrSrc);
   }
 
   bindreq->srcEndpoint = epSrc;
@@ -1183,14 +1691,14 @@ void zdpBindReqWithSrcAddrDestEndpoint(APS_AddrMode_t mode, ShortAddr_t addr, Ex
 /**************************************************************************//**
 \brief Sends ZDP Unbind request with source address and destination endpoint.
 
-\param[in]  mode       - addressing mode;
-\param[in]  addr       - short address of destination mode;
-\param[in]  extAddr    - Extended address of destination mode;
-\param[in]  ep         - endpoint number of destination node;
-\param[in]  srcEp      - endpoint number of source node;
-\param[in]  clusterid  - cluster id
+\param[in]  mode             - addressing mode;
+\param[in]  addr             - short address of destination mode;
+\param[in]  extAddr          - Extended address of destination mode;
+\param[in]  ep               - endpoint number of destination node;
+\param[in]  srcEndpoint      - endpoint number of source node;
+\param[in]  clusterid        - cluster id
 ******************************************************************************/
-void zdpUnBindReq(APS_AddrMode_t mode, ShortAddr_t addr, ExtAddr_t extAddr, Endpoint_t ep, Endpoint_t srcEp, ClusterId_t clusterId)
+void zdpUnBindReq(APS_AddrMode_t mode, ShortAddr_t addr, ExtAddr_t extAddr, Endpoint_t ep, Endpoint_t srcEndpoint, ClusterId_t clusterId)
 {
   ZDO_ZdpReq_t *zdpReq = &descModeMem.zdpReq;
   ZDO_UnbindReq_t *Unbindreq = &zdpReq->req.reqPayload.unbindReq;
@@ -1206,9 +1714,9 @@ void zdpUnBindReq(APS_AddrMode_t mode, ShortAddr_t addr, ExtAddr_t extAddr, Endp
   COPY_EXT_ADDR(Unbindreq->srcAddr, extAddr);
   Unbindreq->srcEndpoint = ep;
   Unbindreq->clusterId = clusterId;
-  Unbindreq->dstAddrMode = APS_EXT_ADDRESS;
+  Unbindreq->dstAddrMode = (uint8_t)APS_EXT_ADDRESS;
   COPY_EXT_ADDR(Unbindreq->dstExtAddr, ownExtAddr);
-  Unbindreq->dstEndpoint = srcEp;
+  Unbindreq->dstEndpoint = srcEndpoint;
 
   ZDO_ZdpReq(zdpReq);
 }
@@ -1216,16 +1724,16 @@ void zdpUnBindReq(APS_AddrMode_t mode, ShortAddr_t addr, ExtAddr_t extAddr, Endp
 /**************************************************************************//**
 \brief Sends ZDP Unbind request with source address and destination endpoint.
 
-\param[in]  mode       - addressing mode;
-\param[in]  addr       - short address of destination mode;
-\param[in]  extAddr    - Extended address of destination mode;
-\param[in]  extAddrSrc - Extended address of source mode;
-\param[in]  epSrc      - endpoint number of source node;
-\param[in]  epDst      - endpoint number of destination node;
-\param[in]  srcEp      - endpoint number of source node;
-\param[in]  clusterid  - cluster id
+\param[in]  mode             - addressing mode;
+\param[in]  addr             - short address of destination mode;
+\param[in]  extAddr          - Extended address of destination mode;
+\param[in]  extAddrSrc       - Extended address of source mode;
+\param[in]  epSrc            - endpoint number of source node;
+\param[in]  epDst            - endpoint number of destination node;
+\param[in]  srcEndpoint      - endpoint number of source node;
+\param[in]  clusterid        - cluster id
 ******************************************************************************/
-void zdpUnBindReqWithSrcAddrDestEndpoint(APS_AddrMode_t mode, ShortAddr_t addr, ExtAddr_t extAddr, ExtAddr_t extAddrSrc, Endpoint_t epSrc, Endpoint_t epDst, Endpoint_t srcEp, ClusterId_t clusterId)
+void zdpUnBindReqWithSrcAddrDestEndpoint(APS_AddrMode_t mode, ShortAddr_t addr, ExtAddr_t extAddr, ExtAddr_t extAddrSrc, Endpoint_t epSrc, Endpoint_t epDst, Endpoint_t srcEndpoint, ClusterId_t clusterId)
 {
   ZDO_ZdpReq_t *zdpReq = &descModeMem.zdpReq;
   ZDO_UnbindReq_t *Unbindreq = &zdpReq->req.reqPayload.unbindReq;
@@ -1246,17 +1754,17 @@ void zdpUnBindReqWithSrcAddrDestEndpoint(APS_AddrMode_t mode, ShortAddr_t addr, 
   {
   if (mode == APS_GROUP_ADDRESS)
   {
-    Unbindreq->dstAddrMode = mode;
+    Unbindreq->dstAddrMode = (uint8_t)mode;
     Unbindreq->dstGroupAddr = (uint16_t) extAddrSrc;
     COPY_EXT_ADDR(Unbindreq->srcAddr, extAddr);
   }
   else//mode == APS_EXT_ADDRESS
   {
-    Unbindreq->dstAddrMode = mode;
+    Unbindreq->dstAddrMode = (uint8_t)mode;
     Unbindreq->dstExtAddr = extAddr;
-    Unbindreq->dstEndpoint = (epDst==0)?srcEp:epDst;
+    Unbindreq->dstEndpoint = (epDst==0U)?srcEndpoint:epDst;
     COPY_EXT_ADDR(Unbindreq->srcAddr, extAddr);
-    COPY_EXT_ADDR(Unbindreq->dstExtAddr,(extAddrSrc==0)? ownExtAddr:extAddrSrc);
+    COPY_EXT_ADDR(Unbindreq->dstExtAddr,(extAddrSrc==0U)? ownExtAddr:extAddrSrc);
   }
 
   Unbindreq->srcEndpoint = epSrc;
@@ -1281,29 +1789,33 @@ void sendConfigureReportingToNotify(Endpoint_t srcEndpoint, Endpoint_t dstEndpoi
   ZCL_Request_t *req;
   ZCL_NextElement_t element;
   ZCL_ConfigureReportingReq_t configureReportingReq;
-
-  if (!(req = getFreeCommand()))
+  req = getFreeCommand();
+  if (req == NULL)
+  {
     return;
-
+  }
   configureReportingReq.direction     = ZCL_FRAME_CONTROL_DIRECTION_SERVER_TO_CLIENT;
   configureReportingReq.attributeId   = attrId;
   configureReportingReq.timeoutPeriod = period;
 
   element.payloadLength = 0;
   element.payload       = req->requestPayload;
-  element.id            = ZCL_CONFIGURE_REPORTING_COMMAND_ID;
+  element.id            = (uint8_t)ZCL_CONFIGURE_REPORTING_COMMAND_ID;
   element.content       = &configureReportingReq;
-  ZCL_PutNextElement(&element);
+  (void)ZCL_PutNextElement(&element);
 
-  fillCommandRequest(req, ZCL_CONFIGURE_REPORTING_COMMAND_ID, element.payloadLength, srcEndpoint);
+  fillCommandRequest(req, (uint8_t)ZCL_CONFIGURE_REPORTING_COMMAND_ID, element.payloadLength, srcEndpoint);
   req->endpointId = srcEndpoint;
   fillDstAddressing(&req->dstAddressing, APS_NO_ADDRESS, 0, dstEndpoint, clusterId);
   req->dstAddressing.clusterSide = ZCL_CLUSTER_SIDE_CLIENT;
   if(NULL == configureRespCb)
+  {
     req->ZCL_Notify = ZCL_ConfigureReportingResp;
+  }
   else
+  {
     req->ZCL_Notify = configureRespCb;
-
+  }
   ZCL_CommandManagerSendAttribute(req);
 }
 
@@ -1325,10 +1837,11 @@ void sendConfigureReporting(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep
   ZCL_Request_t *req;
   ZCL_NextElement_t element;
   ZCL_ConfigureReportingReq_t configureReportingReq;
-
-  if (!(req = getFreeCommand()))
+  req = getFreeCommand();
+  if (req == NULL)
+  {
     return;
-
+  }
   configureReportingReq.direction            = ZCL_FRAME_CONTROL_DIRECTION_CLIENT_TO_SERVER;
   configureReportingReq.attributeId          = attrId;
   configureReportingReq.attributeType        = attrType;
@@ -1337,11 +1850,11 @@ void sendConfigureReporting(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep
 
   element.payloadLength = 0;
   element.payload = req->requestPayload;
-  element.id = ZCL_CONFIGURE_REPORTING_COMMAND_ID;
+  element.id = (uint8_t)ZCL_CONFIGURE_REPORTING_COMMAND_ID;
   element.content = &configureReportingReq;
-  ZCL_PutNextElement(&element);
+  (void)ZCL_PutNextElement(&element);
 
-  fillCommandRequest(req, ZCL_CONFIGURE_REPORTING_COMMAND_ID, element.payloadLength,ep);
+  fillCommandRequest(req, (uint8_t)ZCL_CONFIGURE_REPORTING_COMMAND_ID, element.payloadLength,ep);
   fillDstAddressing(&req->dstAddressing, mode, addr, ep, cluster);
   req->ZCL_Notify = ZCL_ConfigureReportingResp2;
 
@@ -1374,21 +1887,21 @@ void tempfuctionsetkey(uint8_t option)
   zclSet.attr.value.linkKeyDesc = &localkeyDesc;
   COPY_EXT_ADDR(localkeyDesc.addr, APS_UNIVERSAL_EXTENDED_ADDRESS);
   
-  if (option == 1)
+  if (option == 1U)
   {
-    memcpy(localkeyDesc.key,&(uint8_t[])DS_LINK_KEY, 16);
+    (void)memcpy(localkeyDesc.key,&(uint8_t[])DS_LINK_KEY, 16);
   }
-  else if (option == 2)
+  else if (option == 2U)
   {
-    memcpy(localkeyDesc.key,&(uint8_t[])TL_LINK_KEY, 16);
+   (void) memcpy(localkeyDesc.key,&(uint8_t[])TL_LINK_KEY, 16);
   }
-  else if (option == 3)
+  else if (option == 3U)
   {
-    memcpy(localkeyDesc.key,&(uint8_t[])IC_LINK_KEY, 16);
+    (void)memcpy(localkeyDesc.key,&(uint8_t[])IC_LINK_KEY, 16);
   }
   else
   {
-    memcpy(localkeyDesc.key,&(uint8_t[])HA_LINK_KEY, 16);
+    (void)memcpy(localkeyDesc.key,&(uint8_t[])HA_LINK_KEY, 16);
   }  
   ZCL_Set(&zclSet);
 }

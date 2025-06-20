@@ -56,7 +56,7 @@
 #if (BSP_SUPPORT == BOARD_SAMR21_ZLLEK)
 #include <printLcd.h>
 #else
-#define dbgLcdMsg(...) while (0) {;}
+#define dbgLcdMsg(...) while (false) {;}
 #endif
 
 #include <z3device/common/include/hs2xy.h>
@@ -81,17 +81,17 @@
 /******************************************************************************
                     Definitions
 ******************************************************************************/
-#define UPDATE_TIMER_INTERVAL    100 // 1/10th of a second as per specification
+#define UPDATE_TIMER_INTERVAL    100U // 1/10th of a second as per specification
 
-#define MIN_HUE_LEVEL             0
-#define MAX_HUE_LEVEL             0xfeff
+#define MIN_HUE_LEVEL             0U
+#define MAX_HUE_LEVEL             0xfeffU
 #define MAX_ENHANCED_HUE_LEVEL    0xffff
 
-#define MIN_SATURATION_LEVEL      0
-#define MAX_SATURATION_LEVEL      0xfe
+#define MIN_SATURATION_LEVEL      0U
+#define MAX_SATURATION_LEVEL      0xfeU
 
-#define MIN_COLOR_LEVEL           0
-#define MAX_COLOR_LEVEL           0xfeff
+#define MIN_COLOR_LEVEL           0U
+#define MAX_COLOR_LEVEL           0xfeffU
 
 #define DEFAULT_SATURATION_LEVEL 110
 #define DEFAULT_TRANSITION_TIME  2
@@ -102,14 +102,14 @@
 #define X_Y_ATTRIBUTES_SUPPORTED    (1 << 3)
 #define COLOR_TEMPERATURE_SUPPORTED (1 << 4)
 
-#define COLOR_LOOP_UPDATE_ACTION    (1 << 0)
-#define COLOR_LOOP_UPDATE_DIRECTION (1 << 1)
-#define COLOR_LOOP_UPDATE_TIME      (1 << 2)
-#define COLOR_LOOP_UPDATE_START_HUE (1 << 3)
+#define COLOR_LOOP_UPDATE_ACTION    (1U << 0)
+#define COLOR_LOOP_UPDATE_DIRECTION (1U << 1)
+#define COLOR_LOOP_UPDATE_TIME      (1U << 2)
+#define COLOR_LOOP_UPDATE_START_HUE (1U << 3)
 
-#define ABS(x)  ((x > 0) ? (x) : -(x))
+#define ABS(x)  (((x) > 0) ? (x) : -(x))
 
-#define ABSOLUTE_MAXIMUM_COLOR_TEMP  0xffff
+#define ABSOLUTE_MAXIMUM_COLOR_TEMP  0xffffU
 
 /******************************************************************************
                     Types
@@ -296,8 +296,10 @@ void lightColorControlClusterInit(void)
 {
 #if APP_Z3_DEVICE_TYPE >= APP_DEVICE_TYPE_COLOR_LIGHT
   ZCL_Cluster_t *cluster =  ZCL_GetCluster(APP_ENDPOINT_LIGHT, COLOR_CONTROL_CLUSTER_ID, ZCL_CLUSTER_SIDE_SERVER);
-  if (cluster)
+  if (cluster != NULL)
+  {
     cluster->ZCL_AttributeEventInd = ZCL_ColorControlAttributeEventInd;
+  }
 #endif //#if APP_Z3_DEVICE_TYPE >= APP_DEVICE_TYPE_EXTENDED_COLOR_LIGHT
 
   if (!PDS_IsAbleToRestore(APP_LIGHT_COLOR_CONTROL_MEM_ID))
@@ -454,7 +456,7 @@ void lightColorControlClusterInit(void)
 #if (APP_Z3_DEVICE_TYPE >= APP_DEVICE_TYPE_COLOR_LIGHT)
   else
   {
-    PDS_Restore(APP_LIGHT_COLOR_CONTROL_MEM_ID);
+    (void)PDS_Restore(APP_LIGHT_COLOR_CONTROL_MEM_ID);
   }
 #endif //(APP_Z3_DEVICE_TYPE >= APP_DEVICE_TYPE_COLOR_LIGHT)
 
@@ -467,7 +469,7 @@ void lightColorControlClusterInit(void)
 #if APP_Z3_DEVICE_TYPE >= APP_DEVICE_TYPE_EXTENDED_COLOR_LIGHT
   lightUpdateStartupColorTemperature();
 
-  SYS_SubscribeToEvent(BC_ZCL_EVENT_ACTION_REQUEST, &lightColorControlWriteAttributeEvent);
+  SYS_SubscribeToEvent((uint8_t)BC_ZCL_EVENT_ACTION_REQUEST, &lightColorControlWriteAttributeEvent);
 #endif //#if APP_Z3_DEVICE_TYPE >= APP_DEVICE_TYPE_EXTENDED_COLOR_LIGHT
 </#if>
 #endif
@@ -482,46 +484,64 @@ void lightColorControlClusterInit(void)
 void colorControlClusterSetExtensionField(Scene_t *scene, uint16_t transitionTime)
 {
   uint8_t proceedWith = 0;
-  setColorMode(scene->colorMode);
+  setColorMode((uint8_t)(scene->colorMode));
 #if (APP_Z3_DEVICE_TYPE == APP_DEVICE_TYPE_COLOR_LIGHT) || (APP_Z3_DEVICE_TYPE == APP_DEVICE_TYPE_EXTENDED_COLOR_LIGHT)
-  if (0xffff == transitionTime || 0 == transitionTime)
+  if (0xffffU == transitionTime || 0U == transitionTime)
   {
     setHue(scene->enhancedCurrentHue);
     setSaturation(scene->currentSaturation);
   }
   else
   {
-    if(prepareMoveToHue(scene->enhancedCurrentHue, 1 , transitionTime, false))
-      proceedWith = HUE;
-    if(prepareMoveToSaturation(scene->currentSaturation, transitionTime, false))
-      proceedWith |= SATURATION;
+    if((uint8_t)(prepareMoveToHue(scene->enhancedCurrentHue, 1 , transitionTime, false)) != 0U)
+    {
+      proceedWith = (uint8_t)HUE;
+    }
+    if((uint8_t)(prepareMoveToSaturation(scene->currentSaturation, transitionTime, false)) != 0U)
+    {
+      proceedWith |= (uint8_t)SATURATION;
+    }
   }
   setColorLoop(scene->colorLoopActive, scene->colorLoopDirection, scene->colorLoopTime);
 #endif // (APP_Z3_DEVICE_TYPE == APP_DEVICE_TYPE_COLOR_LIGHT) || (APP_Z3_DEVICE_TYPE == APP_DEVICE_TYPE_EXTENDED_COLOR_LIGHT)
 #if APP_Z3_DEVICE_TYPE != APP_DEVICE_TYPE_TEMPERATURE_COLOR_LIGHT
-  if (0xffff == transitionTime || 0 == transitionTime)
+  if (0xffffU == transitionTime || 0U == transitionTime)
+  {
     setColor(scene->currentX, scene->currentY);
+  }
   else
+  {
     if(prepareMoveToColor(scene->currentX, scene->currentY, transitionTime))
-      proceedWith |= COLOR;
+    {
+      proceedWith |= (uint8_t)COLOR;
+    }
+  }
 #endif   
 #if APP_Z3_DEVICE_TYPE >= APP_DEVICE_TYPE_EXTENDED_COLOR_LIGHT
-  if (0xffff == transitionTime || 0 == transitionTime)
+  if (0xffffU == transitionTime || 0U == transitionTime)
+  {
     setColorTemperature(scene->colorTemperature);
+  }
   else
+  {
     if(prepareMoveToColorTemperature(scene->colorTemperature, transitionTime, false))
-      proceedWith |= TEMPERATURE;
+    {
+      proceedWith |= (uint8_t)TEMPERATURE;
+    }
+  }
 #endif // APP_Z3_DEVICE_TYPE >= APP_DEVICE_TYPE_EXTENDED_COLOR_LIGHT
-  if (proceedWith)
+  if (proceedWith != 0U)
+  {
     transitionStart((TransitionType_t)proceedWith);
+  }
 }
 
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_PRIMARY1INTENSITY == true) && (CC_CURRENTSATURATION == true)>
 INLINE uint8_t levelControlCalculateIntensity(void)
 {
   // Wrong in general..
-  return lightColorControlClusterServerAttributes.currentSaturation.value == UINT8_MAX ?
-         UINT8_MAX - 1 : lightColorControlClusterServerAttributes.currentSaturation.value;
+  return (lightColorControlClusterServerAttributes.currentSaturation.value == (uint8_t)UINT8_MAX ?
+         (uint8_t)UINT8_MAX - 1U : lightColorControlClusterServerAttributes.currentSaturation.value);
   // Should be something like..
   //return (uint8_t) pow(10.0, ((currentLevel - 1) * 3 / 253 ) - 1);
 }
@@ -536,8 +556,9 @@ static void displayStatus(void)
    * WILL BE PROCESSED but there WILL NOT BE change in LED.
    */
   if (gExecuteIfOff)
+  {
     return;
-
+  }
     // add information about color temperature
 #if APP_Z3_DEVICE_TYPE != APP_DEVICE_TYPE_TEMPERATURE_COLOR_LIGHT
   LCD_PRINT(0, 1, 
@@ -555,24 +576,29 @@ static void displayStatus(void)
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORMODE == true) > 
   switch (lightColorControlClusterServerAttributes.colorMode.value)
   {
-     uint32_t tmpColorX, tmpColorY;
+
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_ENHANCEDCURRENTHUE == true) && (CC_CURRENTSATURATION == true) >        
-    case ZCL_ZLL_CURRENT_HUE_AND_CURRENT_SATURATION:  
+    case (uint8_t)ZCL_ZLL_CURRENT_HUE_AND_CURRENT_SATURATION:
+    {
+      uint32_t tmpColorX, tmpColorY;
       // Get the X and Y values for the required hue and saturation
-      HS2XY((int)lightColorControlClusterServerAttributes.enhancedCurrentHue.value >> 8,
+      HS2XY((int32_t)((uint16_t)(lightColorControlClusterServerAttributes.enhancedCurrentHue.value) >> 8),
         (int)lightColorControlClusterServerAttributes.currentSaturation.value,
         (unsigned int *)&tmpColorX,(unsigned int *)&tmpColorY);        
       // Set the LED color for the X and Y values
-      LEDS_SET_COLOR_XY(tmpColorX,tmpColorY);
+      LEDS_SET_COLOR_XY((uint16_t)tmpColorX,(uint16_t)tmpColorY);
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_CURRENTX == true) >
-      lightColorControlClusterServerAttributes.currentX.value = tmpColorX;
+      lightColorControlClusterServerAttributes.currentX.value = (uint16_t)tmpColorX;
 </#if><#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_CURRENTY == true) >
-      lightColorControlClusterServerAttributes.currentY.value = tmpColorY;
+      lightColorControlClusterServerAttributes.currentY.value = (uint16_t)tmpColorY;
 </#if>
+     }
       break;
 </#if>
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORTEMPMIREDS == true) > 
-    case ZCL_ZLL_COLOR_TEMPERATURE:
+    case (uint8_t)ZCL_ZLL_COLOR_TEMPERATURE:
+    {
+      uint32_t tmpColorX, tmpColorY;
       lightConvertColorToXY(lightColorControlClusterServerAttributes.colorTemperature.value,
         (uint16_t *)&tmpColorX, (uint16_t *)&tmpColorY
       );
@@ -580,6 +606,8 @@ static void displayStatus(void)
       lightColorControlClusterServerAttributes.currentX.value = (uint16_t)tmpColorX;
 </#if><#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_CURRENTY == true) >
       lightColorControlClusterServerAttributes.currentY.value = (uint16_t)tmpColorY;
+    }
+      break;
 </#if>
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_CURRENTX == true) && (CC_CURRENTY == true) >
     // fall through from ZCL_ZLL_COLOR_TEMPERATURE case
@@ -595,9 +623,9 @@ static void displayStatus(void)
 </#if>
 #ifdef _ZCL_REPORTING_SUPPORT_
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_CURRENTX == true) >
-  ZCL_ReportOnChangeIfNeeded(&lightColorControlClusterServerAttributes.currentX);
+  (void)ZCL_ReportOnChangeIfNeeded(&lightColorControlClusterServerAttributes.currentX);
 </#if><#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_CURRENTY == true) >
-  ZCL_ReportOnChangeIfNeeded(&lightColorControlClusterServerAttributes.currentY);
+  (void)ZCL_ReportOnChangeIfNeeded(&lightColorControlClusterServerAttributes.currentY);
 </#if>
 #endif
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORTEMPMIREDS == true) >
@@ -618,10 +646,14 @@ static void setColorMode(uint8_t mode)
 </#if>
 
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORMODE == true) >
-  if (ZCL_ZLL_ENHANCED_CURRENT_HUE_AND_CURRENT_SATURATION == mode)
-    lightColorControlClusterServerAttributes.colorMode.value = ZCL_ZLL_CURRENT_HUE_AND_CURRENT_SATURATION;
+  if ((uint8_t)ZCL_ZLL_ENHANCED_CURRENT_HUE_AND_CURRENT_SATURATION == mode)
+  {
+    lightColorControlClusterServerAttributes.colorMode.value = (uint8_t)ZCL_ZLL_CURRENT_HUE_AND_CURRENT_SATURATION;
+  }
   else
+  {
     lightColorControlClusterServerAttributes.colorMode.value = mode;
+  }
 </#if>
 }
 
@@ -636,12 +668,12 @@ static void setHue(uint16_t hue)
   {
     lightColorControlClusterServerAttributes.enhancedCurrentHue.value = hue;
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_CURRENTHUE == true) >    
-    lightColorControlClusterServerAttributes.currentHue.value = hue >> 8;
+    lightColorControlClusterServerAttributes.currentHue.value = (uint8_t)(hue >> 8);
 </#if>
     lightScenesInvalidate();
     displayStatus();
 #ifdef _ZCL_REPORTING_SUPPORT_
-    ZCL_ReportOnChangeIfNeeded(&lightColorControlClusterServerAttributes.currentHue);
+    (void)ZCL_ReportOnChangeIfNeeded(&lightColorControlClusterServerAttributes.currentHue);
 #endif
   }
 </#if>
@@ -659,7 +691,7 @@ static void setSaturation(uint8_t saturation)
     lightScenesInvalidate();
     displayStatus();
 #ifdef _ZCL_REPORTING_SUPPORT_
-    ZCL_ReportOnChangeIfNeeded(&lightColorControlClusterServerAttributes.currentSaturation);
+    (void)ZCL_ReportOnChangeIfNeeded(&lightColorControlClusterServerAttributes.currentSaturation);
 #endif
   }
 </#if>
@@ -688,8 +720,8 @@ static void setColor(uint16_t x, uint16_t y)
     lightScenesInvalidate();
     displayStatus();
 #ifdef _ZCL_REPORTING_SUPPORT_
-    ZCL_ReportOnChangeIfNeeded(&lightColorControlClusterServerAttributes.currentX);
-    ZCL_ReportOnChangeIfNeeded(&lightColorControlClusterServerAttributes.currentY);
+    (void)ZCL_ReportOnChangeIfNeeded(&lightColorControlClusterServerAttributes.currentX);
+    (void)ZCL_ReportOnChangeIfNeeded(&lightColorControlClusterServerAttributes.currentY);
 #endif
   }
 </#if>
@@ -707,7 +739,7 @@ static void setColorTemperature(uint16_t temperature)
     lightScenesInvalidate();
     displayStatus();
 #ifdef _ZCL_REPORTING_SUPPORT_
-    ZCL_ReportOnChangeIfNeeded(&lightColorControlClusterServerAttributes.colorTemperature);
+    (void)ZCL_ReportOnChangeIfNeeded(&lightColorControlClusterServerAttributes.colorTemperature);
 #endif
   }
 </#if>
@@ -727,8 +759,10 @@ static void setColorLoop(uint8_t colorLoopActive, uint8_t colorLoopDirection, ui
   lightColorControlClusterServerAttributes.colorLoopTime.value      = colorLoopTime;
 </#if>
 
-  if (colorLoopActive)
+  if (colorLoopActive != 0U)
+  {
     startColorLoop(COLOR_LOOP_ACTIVATE_FROM_ECH);
+  }
 }
 
 /**************************************************************************//**
@@ -757,8 +791,10 @@ static void startColorLoop(ZCL_ZllColorLoopAction_t action)
     lightColorControlClusterServerAttributes.enhancedCurrentHue.value;
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORLOOPSTARTENHANCEDHUE == true) >
   if (COLOR_LOOP_ACTIVATE_FROM_ECH == action)
+  {
       lightColorControlClusterServerAttributes.colorLoopStartEnhancedHue.value =
       lightColorControlClusterServerAttributes.enhancedCurrentHue.value;
+   }
 </#if>
 </#if>
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORLOOPACTIVE == true) >
@@ -767,7 +803,7 @@ static void startColorLoop(ZCL_ZllColorLoopAction_t action)
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_REMAININGTIME == true) >
   lightColorControlClusterServerAttributes.remainingTime.value = 0xffff;
 </#if>
-  setColorMode(ZCL_ZLL_ENHANCED_CURRENT_HUE_AND_CURRENT_SATURATION);
+  setColorMode((uint8_t)ZCL_ZLL_ENHANCED_CURRENT_HUE_AND_CURRENT_SATURATION);
   transitionStart(COLOR_LOOP);
 }
 #endif // APP_Z3_DEVICE_TYPE != APP_DEVICE_TYPE_TEMPERATURE_COLOR_LIGHT
@@ -786,7 +822,7 @@ static void handleHueTransition(void)
     hueTransition.current -= hueTransition.delta;
   }
 
-  setHue(hueTransition.current >> 16);
+  setHue((uint16_t)(hueTransition.current >> 16));
 }
 
 /**************************************************************************//**
@@ -808,7 +844,7 @@ static void handleSaturationTransition(void)
     else
     {
       saturationTransition.current += saturationTransition.delta;
-      saturation = saturationTransition.current >> 16;
+      saturation = (uint8_t)(saturationTransition.current >> 16);
     }
   }
   // Down transition
@@ -822,14 +858,16 @@ static void handleSaturationTransition(void)
     else
     {
       saturationTransition.current -= saturationTransition.delta;
-      saturation = saturationTransition.current >> 16;
+      saturation = (uint8_t)(saturationTransition.current >> 16);
     }
   }
 
   setSaturation(saturation);
 
   if (finish)
+  {
     transitionStop(SATURATION);
+  }
 }
 
 /**************************************************************************//**
@@ -852,7 +890,7 @@ static void handleColorTransition(void)
     else
     {
       colorTransition.currentX += colorTransition.deltaX;
-      x = colorTransition.currentX >> 16;
+      x = (uint16_t)(colorTransition.currentX >> 16);
     }
   }
   // X Down transition
@@ -866,7 +904,7 @@ static void handleColorTransition(void)
     else
     {
       colorTransition.currentX -= colorTransition.deltaX;
-      x = colorTransition.currentX >> 16;
+      x = (uint16_t)(colorTransition.currentX >> 16);
     }
   }
 
@@ -881,7 +919,7 @@ static void handleColorTransition(void)
     else
     {
       colorTransition.currentY += colorTransition.deltaY;
-      y = colorTransition.currentY >> 16;
+      y = (uint16_t)(colorTransition.currentY >> 16);
     }
   }
   // Y Down transition
@@ -895,7 +933,7 @@ static void handleColorTransition(void)
     else
     {
       colorTransition.currentY -= colorTransition.deltaY;
-      y = colorTransition.currentY >> 16;
+      y = (uint16_t)(colorTransition.currentY >> 16);
     }
   }
 
@@ -903,7 +941,9 @@ static void handleColorTransition(void)
   setColor(x, y);
 
   if (finishX && finishY)
+  {
     transitionStop(COLOR);
+  }
 }
 
 /**************************************************************************//**
@@ -912,26 +952,37 @@ static void handleColorTransition(void)
 static void handleColorLoopTransition(void)
 {
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORLOOPTIME == true) >
-  uint16_t delta = (MAX_HUE_LEVEL - MIN_HUE_LEVEL) /
-                   (lightColorControlClusterServerAttributes.colorLoopTime.value * 10);
+  uint16_t delta = (uint16_t)((MAX_HUE_LEVEL - MIN_HUE_LEVEL) /
+                   (lightColorControlClusterServerAttributes.colorLoopTime.value * 10U));
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_ENHANCEDCURRENTHUE == true) >
-  int32_t enhancedHue = lightColorControlClusterServerAttributes.enhancedCurrentHue.value;
+  int32_t enhancedHue = (int32_t)(lightColorControlClusterServerAttributes.enhancedCurrentHue.value);
 
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORLOOPDIRECTION == true) >
   // Up transition
-  if (lightColorControlClusterServerAttributes.colorLoopDirection.value)
-    enhancedHue += delta;
+  if ((lightColorControlClusterServerAttributes.colorLoopDirection.value) != 0U)
+  {
+    enhancedHue += (int32_t)delta;
+  }
   // Down transition
   else
-    enhancedHue -= delta;
+  {
+    enhancedHue -= (int32_t)delta;
+  }
 </#if>
 
-  if (enhancedHue < MIN_HUE_LEVEL)
-    enhancedHue = MAX_HUE_LEVEL;
-  else if (MAX_HUE_LEVEL < enhancedHue)
-    enhancedHue = MIN_HUE_LEVEL;
-
-  setHue(enhancedHue);
+  if (enhancedHue < (int32_t)MIN_HUE_LEVEL)
+  {
+    enhancedHue = (int32_t)MAX_HUE_LEVEL;
+  }
+  else if (MAX_HUE_LEVEL < (uint32_t)enhancedHue)
+  {
+    enhancedHue = (int32_t)MIN_HUE_LEVEL;
+  }
+  else
+  {
+        //add else for avoid misra rule 15.7
+  }
+  setHue((uint16_t)enhancedHue);
 </#if>
 </#if>
 }
@@ -955,7 +1006,7 @@ static void handleColorTemperatureTransition(void)
     else
     {
       colorTemperatureTransition.current += colorTemperatureTransition.delta;
-      temp = colorTemperatureTransition.current >> 16;
+      temp = (uint16_t)(colorTemperatureTransition.current >> 16);
     }
   }
   // Temperature Down transition
@@ -969,7 +1020,7 @@ static void handleColorTemperatureTransition(void)
     else
     {
       colorTemperatureTransition.current -= colorTemperatureTransition.delta;
-      temp = colorTemperatureTransition.current >> 16;
+      temp = (uint16_t)(colorTemperatureTransition.current >> 16);
     }
   }
 
@@ -977,7 +1028,9 @@ static void handleColorTemperatureTransition(void)
   setColorTemperature(temp);
 
   if (finish)
+  {
     transitionStop(TEMPERATURE);
+  }
 }
 
 /**************************************************************************//**
@@ -988,22 +1041,22 @@ static void handleColorTemperatureTransition(void)
 void colorControlShowIdentifyEffect(uint16_t enhancedHue)
 {
 #if APP_Z3_DEVICE_TYPE != APP_DEVICE_TYPE_TEMPERATURE_COLOR_LIGHT
-  TransitionType_t proceedWith;
+  uint8_t proceedWith;
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_CURRENTSATURATION == true) >
   bckpSaturation = lightColorControlClusterServerAttributes.currentSaturation.value;
 </#if>
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_ENHANCEDCURRENTHUE == true) >
   bckpEnhacnedHue = lightColorControlClusterServerAttributes.enhancedCurrentHue.value;
 </#if>
-  proceedWith = prepareMoveToHue(enhancedHue,
-    ZCL_ZLL_MOVE_TO_HUE_DIRECTION_SHORTEST_DISTANCE, DEFAULT_TRANSITION_TIME, false);
-  proceedWith |= prepareMoveToSaturation(DEFAULT_SATURATION_LEVEL,
+  proceedWith = (uint8_t)prepareMoveToHue(enhancedHue,
+    (uint8_t)ZCL_ZLL_MOVE_TO_HUE_DIRECTION_SHORTEST_DISTANCE, DEFAULT_TRANSITION_TIME, false);
+  proceedWith |= (uint8_t)prepareMoveToSaturation(DEFAULT_SATURATION_LEVEL,
     DEFAULT_TRANSITION_TIME, false);
 
-  if (proceedWith)
+  if (proceedWith != 0U)
   {
-    setColorMode(ZCL_ZLL_ENHANCED_CURRENT_HUE_AND_CURRENT_SATURATION);
-    transitionStart(proceedWith);
+    setColorMode((uint8_t)ZCL_ZLL_ENHANCED_CURRENT_HUE_AND_CURRENT_SATURATION);
+    transitionStart((TransitionType_t)proceedWith);
   }
 #else
   (void)enhancedHue;
@@ -1016,16 +1069,16 @@ void colorControlShowIdentifyEffect(uint16_t enhancedHue)
 void colorControlStopIdentifyEffect(void)
 {
 #if APP_Z3_DEVICE_TYPE != APP_DEVICE_TYPE_TEMPERATURE_COLOR_LIGHT
-  TransitionType_t proceedWith;
+  uint8_t proceedWith;
 
-  proceedWith = prepareMoveToHue(bckpEnhacnedHue,
-    ZCL_ZLL_MOVE_TO_HUE_DIRECTION_SHORTEST_DISTANCE, DEFAULT_TRANSITION_TIME, false);
-  proceedWith |= prepareMoveToSaturation(bckpSaturation, DEFAULT_TRANSITION_TIME, false);
+  proceedWith = (uint8_t)prepareMoveToHue(bckpEnhacnedHue,
+    (uint8_t)ZCL_ZLL_MOVE_TO_HUE_DIRECTION_SHORTEST_DISTANCE, DEFAULT_TRANSITION_TIME, false);
+  proceedWith |= (uint8_t)prepareMoveToSaturation(bckpSaturation, DEFAULT_TRANSITION_TIME, false);
 
-  if (proceedWith)
+  if (proceedWith != 0U)
   {
-    setColorMode(ZCL_ZLL_ENHANCED_CURRENT_HUE_AND_CURRENT_SATURATION);
-    transitionStart(proceedWith);
+    setColorMode((uint8_t)ZCL_ZLL_ENHANCED_CURRENT_HUE_AND_CURRENT_SATURATION);
+    transitionStart((TransitionType_t)proceedWith);
   }
 #endif // APP_Z3_DEVICE_TYPE != APP_DEVICE_TYPE_TEMPERATURE_COLOR_LIGHT
 }
@@ -1033,15 +1086,17 @@ void colorControlStopIdentifyEffect(void)
 /**************************************************************************//**
 \brief Set target transition value
 ******************************************************************************/
-static void setTargetValue()
+static void setTargetValue(void)
 {
-  if (inTransition & HUE)
+  if (((uint8_t)inTransition & (uint8_t)HUE) != 0U)
+  {
     setHue(hueTransition.target);
-
-  if (inTransition & SATURATION)
+  }
+  if (((uint8_t)inTransition & (uint8_t)SATURATION) != 0U)
+  {
     setSaturation(saturationTransition.target);
-
-  if (inTransition & COLOR)
+  }
+  if (((uint8_t)inTransition & (uint8_t)COLOR) != 0U)
   {
     setColor(colorTransition.targetX, colorTransition.targetY);
 #if APP_Z3_DEVICE_TYPE >= APP_DEVICE_TYPE_EXTENDED_COLOR_LIGHT
@@ -1049,7 +1104,7 @@ static void setTargetValue()
 #endif // APP_Z3_DEVICE_TYPE >= APP_DEVICE_TYPE_EXTENDED_COLOR_LIGHT
   }
 
-  if (inTransition & TEMPERATURE)
+  if (((uint8_t)inTransition & (uint8_t)TEMPERATURE) != 0U)
   {
 #if APP_Z3_DEVICE_TYPE >= APP_DEVICE_TYPE_EXTENDED_COLOR_LIGHT
     uint16_t x, y;
@@ -1071,31 +1126,43 @@ static void updateTransitionState(void)
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_REMAININGTIME == true) >
     lightColorControlClusterServerAttributes.remainingTime.value = 0;
 </#if>
-    HAL_StopAppTimer(&updateTimer);
+    (void)HAL_StopAppTimer(&updateTimer);
     return;
   }
 
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_REMAININGTIME == true) >
-  if (lightColorControlClusterServerAttributes.remainingTime.value < 0xffff)
-    lightColorControlClusterServerAttributes.remainingTime.value--;
-
-  if ((lightColorControlClusterServerAttributes.remainingTime.value > 0) ||
-          (lightColorControlClusterServerAttributes.colorLoopActive.value ==1))
+  if (lightColorControlClusterServerAttributes.remainingTime.value < 0xffffU)
   {
-    if (inTransition & HUE)
+    lightColorControlClusterServerAttributes.remainingTime.value--;
+  }
+  if ((lightColorControlClusterServerAttributes.remainingTime.value > 0U) ||
+          (lightColorControlClusterServerAttributes.colorLoopActive.value ==1U))
+  {
+    if (((uint8_t)inTransition & (uint8_t)HUE) != 0U)
+    {
       handleHueTransition();
-
-    if (inTransition & SATURATION)
+    }
+    if (((uint8_t)inTransition & (uint8_t)SATURATION) != 0U)
+    {
       handleSaturationTransition();
-
-    else if (inTransition & COLOR)
+    }
+    else if (((uint8_t)inTransition & (uint8_t)COLOR) != 0U)
+    {
       handleColorTransition();
-
-    else if (inTransition & COLOR_LOOP)
+    }
+    else if (((uint8_t)inTransition & (uint8_t)COLOR_LOOP) != 0U)
+    {
       handleColorLoopTransition();
+    }
 
-    else if (inTransition & TEMPERATURE)
+    else if (((uint8_t)inTransition & (uint8_t)TEMPERATURE) != 0U)
+    {
       handleColorTemperatureTransition();
+    }
+    else
+    {
+         //add else for avoid misra rule 15.7
+    }
   }
   else
   {
@@ -1113,10 +1180,10 @@ static void transitionStart(TransitionType_t type)
   inTransition |= type;
 
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_REMAININGTIME == true) >
-  if (lightColorControlClusterServerAttributes.remainingTime.value > 0)
+  if (lightColorControlClusterServerAttributes.remainingTime.value > 0U)
   {
-    HAL_StopAppTimer(&updateTimer);
-    HAL_StartAppTimer(&updateTimer);
+    (void)HAL_StopAppTimer(&updateTimer);
+    (void)HAL_StartAppTimer(&updateTimer);
   }
   else
   {
@@ -1137,13 +1204,13 @@ static void transitionStop(TransitionType_t type)
 
   if (NONE == inTransition)
   {
-    HAL_StopAppTimer(&updateTimer);
+    (void)HAL_StopAppTimer(&updateTimer);
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_REMAININGTIME == true) >
     lightColorControlClusterServerAttributes.remainingTime.value = 0;
 </#if>
   }
 
-  PDS_Store(Z3DEVICE_APP_MEMORY_MEM_ID);
+  (void)PDS_Store(Z3DEVICE_APP_MEMORY_MEM_ID);
 }
 
 #if APP_Z3_DEVICE_TYPE != APP_DEVICE_TYPE_TEMPERATURE_COLOR_LIGHT
@@ -1158,7 +1225,9 @@ static TransitionType_t prepareMoveToHue(uint16_t hue, uint8_t direction, uint16
 
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_ENHANCEDCURRENTHUE == true) > 
   if (hue == lightColorControlClusterServerAttributes.enhancedCurrentHue.value)
+  {
     return NONE;
+  }
 </#if>
 
   hueTransition.target = hue;
@@ -1181,15 +1250,17 @@ static TransitionType_t prepareMoveToHue(uint16_t hue, uint8_t direction, uint16
 </#if>
 
     // Check if change in direction is needed
-    if (ZCL_ZLL_MOVE_TO_HUE_DIRECTION_LONGEST_DISTANCE == direction ||
-        (ZCL_ZLL_MOVE_TO_HUE_DIRECTION_UP == direction && false == dir) ||
-        (ZCL_ZLL_MOVE_TO_HUE_DIRECTION_DOWN == direction && true == dir))
+    if ((uint8_t)ZCL_ZLL_MOVE_TO_HUE_DIRECTION_LONGEST_DISTANCE == direction ||
+        ((uint8_t)ZCL_ZLL_MOVE_TO_HUE_DIRECTION_UP == direction && false == dir) ||
+        ((uint8_t)ZCL_ZLL_MOVE_TO_HUE_DIRECTION_DOWN == direction && true == dir))
     {
       dir = !dir;
-      delta = (MAX_HUE_LEVEL - MIN_HUE_LEVEL) - delta;
+      delta = (uint16_t)((MAX_HUE_LEVEL - MIN_HUE_LEVEL) - delta);
     }
-   if(transitionTime)
+   if(transitionTime != 0U)
+   {
      hueTransition.delta = ((uint32_t)delta << 16) / transitionTime;
+   } 
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_ENHANCEDCURRENTHUE == true) >     
     hueTransition.current = (uint32_t)lightColorControlClusterServerAttributes.enhancedCurrentHue.value << 16;
 </#if>
@@ -1208,16 +1279,19 @@ static TransitionType_t prepareMoveToHue(uint16_t hue, uint8_t direction, uint16
 ******************************************************************************/
 static bool prepareMoveHue(uint8_t mode, uint16_t rate)
 {
-  if (ZCL_ZLL_MOVE_HUE_MOVE_MODE_UP == mode)
+  if ((uint8_t)ZCL_ZLL_MOVE_HUE_MOVE_MODE_UP == mode)
+  {
     hueTransition.direction = true;
+  }
   else
+  {
     hueTransition.direction = false;
-
+  }
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_ENHANCEDCURRENTHUE == true) >
   hueTransition.current = (uint32_t)lightColorControlClusterServerAttributes.enhancedCurrentHue.value << 16;
 </#if>
   hueTransition.target = 0;
-  hueTransition.delta = ((uint32_t)rate << 16) / 10;
+  hueTransition.delta = ((uint32_t)rate << 16) / 10U;
   hueTransition.byStep = false;
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_REMAININGTIME == true) >
   lightColorControlClusterServerAttributes.remainingTime.value = 0xffff;
@@ -1237,7 +1311,9 @@ static TransitionType_t prepareMoveToSaturation(uint8_t saturation, uint16_t tra
 
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_CURRENTSATURATION == true) >
   if (saturation == lightColorControlClusterServerAttributes.currentSaturation.value)
+  {
     return NONE;
+  } 
 </#if>
 
   saturationTransition.target = saturation;
@@ -1250,15 +1326,17 @@ static TransitionType_t prepareMoveToSaturation(uint8_t saturation, uint16_t tra
     if (saturation > lightColorControlClusterServerAttributes.currentSaturation.value)
     {
       dir = true;
-      delta = saturation - lightColorControlClusterServerAttributes.currentSaturation.value;
+      delta = (uint8_t)(saturation - lightColorControlClusterServerAttributes.currentSaturation.value);
     }
     else
     {
       dir = false;
-      delta = lightColorControlClusterServerAttributes.currentSaturation.value - saturation;
+      delta = (uint8_t)(lightColorControlClusterServerAttributes.currentSaturation.value - saturation);
     }
-    if(transitionTime)
+    if(transitionTime != 0U)
+    {
       saturationTransition.delta = ((uint32_t)delta << 16) / (uint32_t)transitionTime;
+    }
     saturationTransition.current = (uint32_t)lightColorControlClusterServerAttributes.currentSaturation.value << 16;
     saturationTransition.direction = dir;
 </#if>
@@ -1275,15 +1353,19 @@ static TransitionType_t prepareMoveToSaturation(uint8_t saturation, uint16_t tra
 ******************************************************************************/
 static bool prepareMoveSaturation(uint8_t mode, uint16_t rate)
 {
-  if (ZCL_ZLL_MOVE_HUE_MOVE_MODE_UP == mode)
+  if ((uint8_t)ZCL_ZLL_MOVE_HUE_MOVE_MODE_UP == mode)
+  {
     saturationTransition.direction = true;
+  }
   else
+  {
     saturationTransition.direction = false;
+  }
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_CURRENTSATURATION == true) >
   saturationTransition.current = (uint32_t)lightColorControlClusterServerAttributes.currentSaturation.value << 16;
 </#if>
   saturationTransition.target = 0;
-  saturationTransition.delta = ((uint32_t)rate << 16) / 10;
+  saturationTransition.delta = ((uint32_t)rate << 16) / 10U;
   saturationTransition.byStep = false;
 
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_REMAININGTIME == true) >
@@ -1303,24 +1385,31 @@ static bool prepareMoveToColor(uint16_t x, uint16_t y, uint16_t transitionTime)
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_CURRENTX == true) && (CC_CURRENTY == true)>
   if (x == lightColorControlClusterServerAttributes.currentX.value &&
       y == lightColorControlClusterServerAttributes.currentY.value)
+  {
     return false;
-
+  }
   // Get shortest distance direction and delta
   dirx = x > lightColorControlClusterServerAttributes.currentX.value;
 
   if (dirx)
+  {
     deltax = x - lightColorControlClusterServerAttributes.currentX.value;
+  }
   else
+  {
     deltax = lightColorControlClusterServerAttributes.currentX.value - x;
-
+  }
   diry = y > lightColorControlClusterServerAttributes.currentY.value;
 
   if (diry)
+  {
     deltay = y - lightColorControlClusterServerAttributes.currentY.value;
+  }
   else
+  {
     deltay = lightColorControlClusterServerAttributes.currentY.value - y;
-
-  if(transitionTime)
+  }
+  if(transitionTime != 0U)
   {
     colorTransition.deltaX = ((uint32_t)deltax << 16) / transitionTime;
     colorTransition.deltaY = ((uint32_t)deltay << 16) / transitionTime;
@@ -1345,14 +1434,14 @@ static bool prepareMoveColor(int16_t ratex, int16_t ratey)
 {
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_CURRENTX == true)>
   // X
-  colorTransition.deltaX = ((uint32_t)ABS(ratex) << 16) / 10;
+  colorTransition.deltaX = ((uint32_t)ABS(ratex) << 16U) / 10U;
   colorTransition.currentX = (uint32_t)lightColorControlClusterServerAttributes.currentX.value << 16;
   colorTransition.directionX = ratex > 0;
   colorTransition.targetX = 0;
 </#if>
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_CURRENTY == true)>
   // Y
-  colorTransition.deltaY = ((uint32_t)ABS(ratey) << 16) / 10;
+  colorTransition.deltaY = ((uint32_t)ABS(ratey) << 16U) / 10U;
   colorTransition.currentY = (uint32_t)lightColorControlClusterServerAttributes.currentY.value << 16;
   colorTransition.directionY = ratey > 0;
   colorTransition.targetY = 0;
@@ -1374,8 +1463,9 @@ static bool prepareMoveToColorTemperature(uint16_t temperature, uint16_t transit
 
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORTEMPMIREDS == true) >
   if (temperature == lightColorControlClusterServerAttributes.colorTemperature.value)
+  {
     return false;
-
+  }
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_REMAININGTIME == true) >
   lightColorControlClusterServerAttributes.remainingTime.value = transitionTime;
 </#if>  
@@ -1385,11 +1475,17 @@ static bool prepareMoveToColorTemperature(uint16_t temperature, uint16_t transit
   // Get shortest distance direction and delta
   dirTemp = temperature > lightColorControlClusterServerAttributes.colorTemperature.value;
   if (dirTemp)
+  {
     deltaTemp = temperature - lightColorControlClusterServerAttributes.colorTemperature.value;
+  }
   else
+  {
     deltaTemp = lightColorControlClusterServerAttributes.colorTemperature.value - temperature;
-  if(transitionTime)
+  }
+  if(transitionTime != 0U)
+  {
     colorTemperatureTransition.delta     = ((uint32_t)deltaTemp << 16) / transitionTime;
+  }
   colorTemperatureTransition.current   = (uint32_t)lightColorControlClusterServerAttributes.colorTemperature.value << 16;
   colorTemperatureTransition.direction = dirTemp;
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORTEMPPHYMINMIREDS == true) >
@@ -1407,11 +1503,11 @@ static bool prepareMoveToColorTemperature(uint16_t temperature, uint16_t transit
 ******************************************************************************/
 static bool prepareMoveColorTemperature(uint8_t moveMode, uint16_t rate, uint16_t tempMin, uint16_t tempMax)
 {
-  colorTemperatureTransition.delta     = ((uint32_t)ABS(rate) << 16) / 10;
+  colorTemperatureTransition.delta     = ((uint32_t)ABS((int)rate) << 16) / 10U;
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORTEMPMIREDS == true) >  
   colorTemperatureTransition.current   = (uint32_t)lightColorControlClusterServerAttributes.colorTemperature.value << 16;
 </#if>
-  colorTemperatureTransition.direction = ZCL_ZLL_MOVE_SATURATION_MOVE_MODE_UP == moveMode;
+  colorTemperatureTransition.direction = (uint8_t)ZCL_ZLL_MOVE_SATURATION_MOVE_MODE_UP == moveMode;
   colorTemperatureTransition.target    = 0;
   colorTemperatureTransition.byStep    = false;
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORTEMPPHYMINMIREDS == true) >  
@@ -1452,7 +1548,7 @@ static ZCL_Status_t moveToHueInd(ZCL_Addressing_t *addressing, uint8_t payloadLe
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
     if (payloadLength > sizeof(ZCL_ZllMoveToHueCommand_t))
     {
@@ -1460,7 +1556,7 @@ static ZCL_Status_t moveToHueInd(ZCL_Addressing_t *addressing, uint8_t payloadLe
       ZCL_ZllMoveToHueWithOptionsCommand_t *tmp = (ZCL_ZllMoveToHueWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff & (uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -1469,8 +1565,8 @@ static ZCL_Status_t moveToHueInd(ZCL_Addressing_t *addressing, uint8_t payloadLe
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -1483,10 +1579,10 @@ static ZCL_Status_t moveToHueInd(ZCL_Addressing_t *addressing, uint8_t payloadLe
 #endif
   gExecuteIfOff = executeIfOff;
 
-  hue = ((MAX_HUE_LEVEL >> 8) < payload->hue) ? (MAX_HUE_LEVEL >> 8) : payload->hue;
-  if (prepareMoveToHue(hue << 8, payload->direction, payload->transitionTime, false))
+  hue = (uint16_t)(((MAX_HUE_LEVEL >> 8) < payload->hue) ? (MAX_HUE_LEVEL >> 8) : payload->hue);
+  if ((uint8_t)(prepareMoveToHue(hue << 8, payload->direction, payload->transitionTime, false)) != 0U)
   {
-    setColorMode(ZCL_ZLL_CURRENT_HUE_AND_CURRENT_SATURATION);
+    setColorMode((uint8_t)ZCL_ZLL_CURRENT_HUE_AND_CURRENT_SATURATION);
     transitionStart(HUE);
   } 
 
@@ -1515,7 +1611,7 @@ static ZCL_Status_t moveHueInd(ZCL_Addressing_t *addressing, uint8_t payloadLeng
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
     if (payloadLength > sizeof(ZCL_ZllMoveHueCommand_t))
     {
@@ -1523,7 +1619,7 @@ static ZCL_Status_t moveHueInd(ZCL_Addressing_t *addressing, uint8_t payloadLeng
       ZCL_ZllMoveHueWithOptionsCommand_t *tmp = (ZCL_ZllMoveHueWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff & (uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -1533,8 +1629,8 @@ static ZCL_Status_t moveHueInd(ZCL_Addressing_t *addressing, uint8_t payloadLeng
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -1548,23 +1644,27 @@ static ZCL_Status_t moveHueInd(ZCL_Addressing_t *addressing, uint8_t payloadLeng
 #endif
   gExecuteIfOff = executeIfOff;
 
-  if (ZCL_ZLL_MOVE_HUE_MOVE_MODE_UP == payload->moveMode ||
-      ZCL_ZLL_MOVE_HUE_MOVE_MODE_DOWN == payload->moveMode)
+  if ((uint8_t)ZCL_ZLL_MOVE_HUE_MOVE_MODE_UP == payload->moveMode ||
+      (uint8_t)ZCL_ZLL_MOVE_HUE_MOVE_MODE_DOWN == payload->moveMode)
   {
-    if (!payload->rate)
+    if (!(bool)payload->rate)
+    {
       return ZCL_INVALID_FIELD_STATUS;
-
+    }
     if (prepareMoveHue(payload->moveMode, (uint16_t)payload->rate << 8))
     {
-      setColorMode(ZCL_ZLL_CURRENT_HUE_AND_CURRENT_SATURATION);
+      setColorMode((uint8_t)ZCL_ZLL_CURRENT_HUE_AND_CURRENT_SATURATION);
       transitionStart(HUE);
     }
   }
-  else if (ZCL_ZLL_MOVE_HUE_MOVE_MODE_STOP == payload->moveMode)
+  else if ((uint8_t)ZCL_ZLL_MOVE_HUE_MOVE_MODE_STOP == payload->moveMode)
   {
     transitionStop(ALL);
   }
-
+  else
+  {
+       //add else for avoid misra rule 15.7
+  }
   return ZCL_SUCCESS_STATUS;
 }
 </#if>
@@ -1592,7 +1692,7 @@ static ZCL_Status_t stepHueInd(ZCL_Addressing_t *addressing, uint8_t payloadLeng
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
     if (payloadLength > sizeof(ZCL_ZllStepHueCommand_t))
     {
@@ -1600,7 +1700,7 @@ static ZCL_Status_t stepHueInd(ZCL_Addressing_t *addressing, uint8_t payloadLeng
       ZCL_ZllStepHueWithOptionsCommand_t *tmp = (ZCL_ZllStepHueWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff &(uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -1610,8 +1710,8 @@ static ZCL_Status_t stepHueInd(ZCL_Addressing_t *addressing, uint8_t payloadLeng
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -1628,16 +1728,21 @@ static ZCL_Status_t stepHueInd(ZCL_Addressing_t *addressing, uint8_t payloadLeng
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_ENHANCEDCURRENTHUE == true) >
   hue = lightColorControlClusterServerAttributes.enhancedCurrentHue.value;
 
-  if (ZCL_ZLL_STEP_HUE_STEP_MODE_UP == payload->stepMode)
-    hue += (uint16_t)payload->stepSize << 8;
-  else if (ZCL_ZLL_STEP_HUE_STEP_MODE_DOWN == payload->stepMode)
-    hue -= (uint16_t)payload->stepSize << 8;
-  else
-    return ZCL_SUCCESS_STATUS;
-
-  if (prepareMoveToHue(hue, ZCL_ZLL_MOVE_TO_HUE_DIRECTION_SHORTEST_DISTANCE, payload->transitionTime, true))
+  if ((uint8_t)ZCL_ZLL_STEP_HUE_STEP_MODE_UP == payload->stepMode)
   {
-    setColorMode(ZCL_ZLL_CURRENT_HUE_AND_CURRENT_SATURATION);
+    hue += (uint16_t)payload->stepSize << 8;
+  }
+  else if ((uint8_t)ZCL_ZLL_STEP_HUE_STEP_MODE_DOWN == payload->stepMode)
+  {
+    hue -= (uint16_t)payload->stepSize << 8;
+  }
+  else
+  {
+    return ZCL_SUCCESS_STATUS;
+  }
+  if ((uint8_t)(prepareMoveToHue(hue, (uint8_t)ZCL_ZLL_MOVE_TO_HUE_DIRECTION_SHORTEST_DISTANCE, payload->transitionTime, true)) != 0U)
+  {
+    setColorMode((uint8_t)ZCL_ZLL_CURRENT_HUE_AND_CURRENT_SATURATION);
     transitionStart(HUE);
   }
 </#if>
@@ -1668,7 +1773,7 @@ static ZCL_Status_t moveToSaturationInd(ZCL_Addressing_t *addressing, uint8_t pa
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
     if (payloadLength > sizeof(ZCL_ZllMoveToSaturationCommand_t))
     {
@@ -1676,7 +1781,7 @@ static ZCL_Status_t moveToSaturationInd(ZCL_Addressing_t *addressing, uint8_t pa
       ZCL_ZllMoveToSaturationWithOptionsCommand_t *tmp = (ZCL_ZllMoveToSaturationWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff & (uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -1686,8 +1791,8 @@ static ZCL_Status_t moveToSaturationInd(ZCL_Addressing_t *addressing, uint8_t pa
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -1701,10 +1806,10 @@ static ZCL_Status_t moveToSaturationInd(ZCL_Addressing_t *addressing, uint8_t pa
 #endif
   gExecuteIfOff = executeIfOff;
 
-  saturation = (MAX_SATURATION_LEVEL < payload->saturation) ? MAX_SATURATION_LEVEL : payload->saturation;
-  if (prepareMoveToSaturation(saturation, payload->transitionTime, false))
+  saturation = (uint8_t)((MAX_SATURATION_LEVEL < payload->saturation) ? MAX_SATURATION_LEVEL : payload->saturation);
+  if ((uint8_t)(prepareMoveToSaturation(saturation, payload->transitionTime, false)) != 0U)
   {
-    setColorMode(ZCL_ZLL_CURRENT_HUE_AND_CURRENT_SATURATION);
+    setColorMode((uint8_t)ZCL_ZLL_CURRENT_HUE_AND_CURRENT_SATURATION);
     transitionStart(SATURATION);
   }
   
@@ -1734,7 +1839,7 @@ static ZCL_Status_t moveSaturationInd(ZCL_Addressing_t *addressing, uint8_t payl
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
     if (payloadLength > sizeof(ZCL_ZllMoveSaturationCommand_t))
     {
@@ -1742,7 +1847,7 @@ static ZCL_Status_t moveSaturationInd(ZCL_Addressing_t *addressing, uint8_t payl
       ZCL_ZllMoveSaturationWithOptionsCommand_t *tmp = (ZCL_ZllMoveSaturationWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff & (uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -1752,8 +1857,8 @@ static ZCL_Status_t moveSaturationInd(ZCL_Addressing_t *addressing, uint8_t payl
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -1768,23 +1873,27 @@ static ZCL_Status_t moveSaturationInd(ZCL_Addressing_t *addressing, uint8_t payl
 
   gExecuteIfOff = executeIfOff;
 
-  if (!payload->rate)
+  if (!(bool)(payload->rate))
+  {
     return ZCL_INVALID_FIELD_STATUS;
-
-  if (ZCL_ZLL_MOVE_SATURATION_MOVE_MODE_UP == payload->moveMode ||
-      ZCL_ZLL_MOVE_SATURATION_MOVE_MODE_DOWN == payload->moveMode)
+  }
+  if ((uint8_t)ZCL_ZLL_MOVE_SATURATION_MOVE_MODE_UP == payload->moveMode ||
+      (uint8_t)ZCL_ZLL_MOVE_SATURATION_MOVE_MODE_DOWN == payload->moveMode)
   {
     if (prepareMoveSaturation(payload->moveMode, payload->rate))
     {
-      setColorMode(ZCL_ZLL_CURRENT_HUE_AND_CURRENT_SATURATION);
+      setColorMode((uint8_t)ZCL_ZLL_CURRENT_HUE_AND_CURRENT_SATURATION);
       transitionStart(SATURATION);
     }
   }
-  else if (ZCL_ZLL_MOVE_SATURATION_MOVE_MODE_STOP == payload->moveMode)
+  else if ((uint8_t)ZCL_ZLL_MOVE_SATURATION_MOVE_MODE_STOP == payload->moveMode)
   {
     transitionStop(ALL);
   }
-
+  else
+  {
+       //add else for avoid misra rule 15.7
+  }
   return ZCL_SUCCESS_STATUS;
 }
 </#if>
@@ -1812,7 +1921,7 @@ static ZCL_Status_t stepSaturationInd(ZCL_Addressing_t *addressing, uint8_t payl
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
     if (payloadLength > sizeof(ZCL_ZllStepSaturationCommand_t))
     {
@@ -1820,7 +1929,7 @@ static ZCL_Status_t stepSaturationInd(ZCL_Addressing_t *addressing, uint8_t payl
       ZCL_ZllStepSaturationWithOptionsCommand_t *tmp = (ZCL_ZllStepSaturationWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff & (uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -1830,8 +1939,8 @@ static ZCL_Status_t stepSaturationInd(ZCL_Addressing_t *addressing, uint8_t payl
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -1846,18 +1955,23 @@ static ZCL_Status_t stepSaturationInd(ZCL_Addressing_t *addressing, uint8_t payl
   gExecuteIfOff = executeIfOff;
 
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_CURRENTSATURATION == true) >
-  saturation = lightColorControlClusterServerAttributes.currentSaturation.value;
+  saturation = (int16_t)(lightColorControlClusterServerAttributes.currentSaturation.value);
 
-  if (ZCL_ZLL_STEP_SATURATION_STEP_MODE_UP == payload->stepMode)
-    saturation += payload->stepSize;
-  else if (ZCL_ZLL_STEP_HUE_STEP_MODE_DOWN == payload->stepMode)
-    saturation -= payload->stepSize;
-  else
-    return ZCL_SUCCESS_STATUS;
-
-  if (prepareMoveToSaturation(saturation, payload->transitionTime, true))
+  if ((uint8_t)ZCL_ZLL_STEP_SATURATION_STEP_MODE_UP == payload->stepMode)
   {
-    setColorMode(ZCL_ZLL_CURRENT_HUE_AND_CURRENT_SATURATION);
+    saturation += (int16_t)(payload->stepSize);
+  }
+  else if ((uint8_t)ZCL_ZLL_STEP_HUE_STEP_MODE_DOWN == payload->stepMode)
+  {
+    saturation -= (int16_t)(payload->stepSize);
+  }
+  else
+  {
+    return ZCL_SUCCESS_STATUS;
+  }
+  if ((uint8_t)(prepareMoveToSaturation((uint8_t)saturation, payload->transitionTime, true)) !=0U)
+  {
+    setColorMode((uint8_t)ZCL_ZLL_CURRENT_HUE_AND_CURRENT_SATURATION);
     transitionStart(SATURATION);
   }
 </#if>
@@ -1871,7 +1985,7 @@ static ZCL_Status_t stepSaturationInd(ZCL_Addressing_t *addressing, uint8_t payl
 ******************************************************************************/
 static ZCL_Status_t moveToHueAndSaturationInd(ZCL_Addressing_t *addressing, uint8_t payloadLength, ZCL_ZllMoveToHueAndSaturationCommand_t *payload)
 {
-  TransitionType_t proceedWith;
+  uint8_t proceedWith;
   uint8_t on, type, saturation;
   uint16_t hue;
   ZCL_Status_t status = ZCL_ReadAttributeValue(APP_ENDPOINT_LIGHT, ONOFF_CLUSTER_ID,
@@ -1889,7 +2003,7 @@ static ZCL_Status_t moveToHueAndSaturationInd(ZCL_Addressing_t *addressing, uint
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1 
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
     if (payloadLength > sizeof(ZCL_ZllMoveToHueAndSaturationCommand_t))
     {
@@ -1897,7 +2011,7 @@ static ZCL_Status_t moveToHueAndSaturationInd(ZCL_Addressing_t *addressing, uint
       ZCL_ZllMoveToHueAndSaturationWithOptionsCommand_t *tmp = (ZCL_ZllMoveToHueAndSaturationWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff & (uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -1907,8 +2021,8 @@ static ZCL_Status_t moveToHueAndSaturationInd(ZCL_Addressing_t *addressing, uint
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -1922,16 +2036,16 @@ static ZCL_Status_t moveToHueAndSaturationInd(ZCL_Addressing_t *addressing, uint
 #endif
   gExecuteIfOff = executeIfOff;
 
-  hue = ((MAX_HUE_LEVEL >> 8) < payload->hue) ? (MAX_HUE_LEVEL >> 8) : payload->hue;
-  saturation = (MAX_SATURATION_LEVEL < payload->saturation) ? MAX_SATURATION_LEVEL : payload->saturation;
+  hue = (uint16_t)(((MAX_HUE_LEVEL >> 8) < payload->hue) ? (MAX_HUE_LEVEL >> 8) : payload->hue);
+  saturation = (uint8_t)((MAX_SATURATION_LEVEL < payload->saturation) ? MAX_SATURATION_LEVEL : payload->saturation);
 
-  proceedWith = prepareMoveToHue((uint16_t)hue << 8, ZCL_ZLL_MOVE_TO_HUE_DIRECTION_SHORTEST_DISTANCE, payload->transitionTime, false);
-  proceedWith |= prepareMoveToSaturation(saturation, payload->transitionTime, false);
+  proceedWith = (uint8_t)prepareMoveToHue((uint16_t)hue << 8, (uint8_t)ZCL_ZLL_MOVE_TO_HUE_DIRECTION_SHORTEST_DISTANCE, payload->transitionTime, false);
+  proceedWith |= (uint8_t)prepareMoveToSaturation(saturation, payload->transitionTime, false);
 
-  if (proceedWith)
+  if (proceedWith != 0U)
   {
-    setColorMode(ZCL_ZLL_CURRENT_HUE_AND_CURRENT_SATURATION);
-    transitionStart(proceedWith);
+    setColorMode((uint8_t)ZCL_ZLL_CURRENT_HUE_AND_CURRENT_SATURATION);
+    transitionStart((TransitionType_t)proceedWith);
   }
   return ZCL_SUCCESS_STATUS;
 }
@@ -1959,7 +2073,7 @@ static ZCL_Status_t moveToColorInd(ZCL_Addressing_t *addressing, uint8_t payload
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
     if (payloadLength > sizeof(ZCL_ZllMoveToColorCommand_t))
     {
@@ -1967,7 +2081,7 @@ static ZCL_Status_t moveToColorInd(ZCL_Addressing_t *addressing, uint8_t payload
       ZCL_ZllMoveToColorWithOptionsCommand_t *tmp = (ZCL_ZllMoveToColorWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff & (uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -1977,8 +2091,8 @@ static ZCL_Status_t moveToColorInd(ZCL_Addressing_t *addressing, uint8_t payload
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -1992,12 +2106,12 @@ static ZCL_Status_t moveToColorInd(ZCL_Addressing_t *addressing, uint8_t payload
 #endif
   gExecuteIfOff = executeIfOff;
 
-  x = (MAX_COLOR_LEVEL < payload->colorX) ? MAX_COLOR_LEVEL : payload->colorX;
-  y = (MAX_COLOR_LEVEL < payload->colorY) ? MAX_COLOR_LEVEL : payload->colorY;
+  x = (uint16_t)((MAX_COLOR_LEVEL < payload->colorX) ? MAX_COLOR_LEVEL : payload->colorX);
+  y = (uint16_t)((MAX_COLOR_LEVEL < payload->colorY) ? MAX_COLOR_LEVEL : payload->colorY);
 
   if (prepareMoveToColor(x, y, payload->transitionTime))
   {
-    setColorMode(ZCL_ZLL_CURRENT_X_AND_CURRENT_Y);
+    setColorMode((uint8_t)ZCL_ZLL_CURRENT_X_AND_CURRENT_Y);
     transitionStart(COLOR);
   }
 
@@ -2028,7 +2142,7 @@ static ZCL_Status_t moveColorInd(ZCL_Addressing_t *addressing, uint8_t payloadLe
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
     if (payloadLength > sizeof(ZCL_ZllMoveColorCommand_t))
     {
@@ -2036,7 +2150,7 @@ static ZCL_Status_t moveColorInd(ZCL_Addressing_t *addressing, uint8_t payloadLe
       ZCL_ZllMoveColorWithOptionsCommand_t *tmp = (ZCL_ZllMoveColorWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff & (uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -2046,8 +2160,8 @@ static ZCL_Status_t moveColorInd(ZCL_Addressing_t *addressing, uint8_t payloadLe
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -2063,7 +2177,7 @@ static ZCL_Status_t moveColorInd(ZCL_Addressing_t *addressing, uint8_t payloadLe
 
   if (prepareMoveColor(payload->rateX, payload->rateY))
   {
-    setColorMode(ZCL_ZLL_CURRENT_X_AND_CURRENT_Y);
+    setColorMode((uint8_t)ZCL_ZLL_CURRENT_X_AND_CURRENT_Y);
     transitionStart(COLOR);
   }
 
@@ -2094,7 +2208,7 @@ static ZCL_Status_t stepColorInd(ZCL_Addressing_t *addressing, uint8_t payloadLe
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
     if (payloadLength > sizeof(ZCL_ZllStepColorCommand_t))
     {
@@ -2102,7 +2216,7 @@ static ZCL_Status_t stepColorInd(ZCL_Addressing_t *addressing, uint8_t payloadLe
       ZCL_ZllStepColorWithOptionsCommand_t *tmp = (ZCL_ZllStepColorWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff & (uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -2112,8 +2226,8 @@ static ZCL_Status_t stepColorInd(ZCL_Addressing_t *addressing, uint8_t payloadLe
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -2136,9 +2250,9 @@ static ZCL_Status_t stepColorInd(ZCL_Addressing_t *addressing, uint8_t payloadLe
   x = (int32_t)lightColorControlClusterServerAttributes.currentX.value + payload->stepX;
   y = (int32_t)lightColorControlClusterServerAttributes.currentY.value + payload->stepY;
 
-  if (prepareMoveToColor(x, y, payload->transitionTime))
+  if (prepareMoveToColor((uint16_t)x, (uint16_t)y, payload->transitionTime))
   {
-    setColorMode(ZCL_ZLL_CURRENT_X_AND_CURRENT_Y);
+    setColorMode((uint8_t)ZCL_ZLL_CURRENT_X_AND_CURRENT_Y);
     transitionStart(COLOR);
   }
 
@@ -2168,7 +2282,7 @@ static ZCL_Status_t enhancedMoveToHueInd(ZCL_Addressing_t *addressing, uint8_t p
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
     if (payloadLength > sizeof(ZCL_ZllEnhancedMoveToHueCommand_t))
     {
@@ -2176,7 +2290,7 @@ static ZCL_Status_t enhancedMoveToHueInd(ZCL_Addressing_t *addressing, uint8_t p
       ZCL_ZllEnhancedMoveToHueWithOptionsCommand_t *tmp = (ZCL_ZllEnhancedMoveToHueWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff & (uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -2186,8 +2300,8 @@ static ZCL_Status_t enhancedMoveToHueInd(ZCL_Addressing_t *addressing, uint8_t p
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -2202,8 +2316,8 @@ static ZCL_Status_t enhancedMoveToHueInd(ZCL_Addressing_t *addressing, uint8_t p
   gExecuteIfOff = executeIfOff;
 
   // Check for direction == 1?
-  setColorMode(ZCL_ZLL_ENHANCED_CURRENT_HUE_AND_CURRENT_SATURATION);
-  if (prepareMoveToHue(payload->enhancedHue, payload->direction, payload->transitionTime, false))
+  setColorMode((uint8_t)ZCL_ZLL_ENHANCED_CURRENT_HUE_AND_CURRENT_SATURATION);
+  if ((uint8_t)(prepareMoveToHue(payload->enhancedHue, payload->direction, payload->transitionTime, false)) != 0U)
   {
     transitionStart(HUE);
   }
@@ -2234,7 +2348,7 @@ static ZCL_Status_t enhancedMoveHueInd(ZCL_Addressing_t *addressing, uint8_t pay
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
     if (payloadLength > sizeof(ZCL_ZllEnhancedMoveHueCommand_t))
     {
@@ -2242,7 +2356,7 @@ static ZCL_Status_t enhancedMoveHueInd(ZCL_Addressing_t *addressing, uint8_t pay
       ZCL_ZllEnhancedMoveHueWithOptionsCommand_t *tmp = (ZCL_ZllEnhancedMoveHueWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff & (uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -2252,8 +2366,8 @@ static ZCL_Status_t enhancedMoveHueInd(ZCL_Addressing_t *addressing, uint8_t pay
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -2267,23 +2381,27 @@ static ZCL_Status_t enhancedMoveHueInd(ZCL_Addressing_t *addressing, uint8_t pay
 #endif
   gExecuteIfOff = executeIfOff;
 
-  if (ZCL_ZLL_MOVE_HUE_MOVE_MODE_UP == payload->moveMode ||
-      ZCL_ZLL_MOVE_HUE_MOVE_MODE_DOWN == payload->moveMode)
+  if ((uint8_t)ZCL_ZLL_MOVE_HUE_MOVE_MODE_UP == payload->moveMode ||
+      (uint8_t)ZCL_ZLL_MOVE_HUE_MOVE_MODE_DOWN == payload->moveMode)
   {
-    if (!payload->rate)
+    if (!(bool)(payload->rate))
+    {
       return ZCL_INVALID_FIELD_STATUS;
-
+    }
     if (prepareMoveHue(payload->moveMode, payload->rate))
     {
-      setColorMode(ZCL_ZLL_ENHANCED_CURRENT_HUE_AND_CURRENT_SATURATION);
+      setColorMode((uint8_t)ZCL_ZLL_ENHANCED_CURRENT_HUE_AND_CURRENT_SATURATION);
       transitionStart(HUE);
     }
   }
-  else if (ZCL_ZLL_MOVE_HUE_MOVE_MODE_STOP == payload->moveMode)
+  else if ((uint8_t)ZCL_ZLL_MOVE_HUE_MOVE_MODE_STOP == payload->moveMode)
   {
     transitionStop(ALL);
   }
-
+  else
+  {
+       //add else for avoid misra rule 15.7
+  }
   return ZCL_SUCCESS_STATUS;
 }
 </#if>
@@ -2310,7 +2428,7 @@ static ZCL_Status_t enhancedStepHueInd(ZCL_Addressing_t *addressing, uint8_t pay
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
     if (payloadLength > sizeof(ZCL_ZllEnhancedStepHueCommand_t))
     {
@@ -2318,7 +2436,7 @@ static ZCL_Status_t enhancedStepHueInd(ZCL_Addressing_t *addressing, uint8_t pay
       ZCL_ZllEnhancedStepHueWithOptionsCommand_t *tmp = (ZCL_ZllEnhancedStepHueWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff & (uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -2328,8 +2446,8 @@ static ZCL_Status_t enhancedStepHueInd(ZCL_Addressing_t *addressing, uint8_t pay
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -2345,16 +2463,21 @@ static ZCL_Status_t enhancedStepHueInd(ZCL_Addressing_t *addressing, uint8_t pay
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_ENHANCEDCURRENTHUE == true) >
   hue = lightColorControlClusterServerAttributes.enhancedCurrentHue.value;
 </#if>
-  if (ZCL_ZLL_STEP_HUE_STEP_MODE_UP == payload->stepMode)
-    hue += (uint16_t)payload->stepSize;
-  else if (ZCL_ZLL_STEP_HUE_STEP_MODE_DOWN == payload->stepMode)
-    hue -= (uint16_t)payload->stepSize;
-  else
-    return ZCL_SUCCESS_STATUS;
-
-  if (prepareMoveToHue(hue, ZCL_ZLL_MOVE_TO_HUE_DIRECTION_SHORTEST_DISTANCE, payload->transitionTime, true))
+  if ((uint8_t)ZCL_ZLL_STEP_HUE_STEP_MODE_UP == payload->stepMode)
   {
-    setColorMode(ZCL_ZLL_ENHANCED_CURRENT_HUE_AND_CURRENT_SATURATION);
+    hue += (uint16_t)payload->stepSize;
+  }
+  else if ((uint8_t)ZCL_ZLL_STEP_HUE_STEP_MODE_DOWN == payload->stepMode)
+  {
+    hue -= (uint16_t)payload->stepSize;
+  }
+  else
+  {
+    return ZCL_SUCCESS_STATUS;
+  }
+  if ((uint8_t)(prepareMoveToHue(hue, (uint8_t)ZCL_ZLL_MOVE_TO_HUE_DIRECTION_SHORTEST_DISTANCE, payload->transitionTime, true)) != 0U)
+  {
+    setColorMode((uint8_t)ZCL_ZLL_ENHANCED_CURRENT_HUE_AND_CURRENT_SATURATION);
     transitionStart(HUE);
   }
 
@@ -2367,7 +2490,7 @@ static ZCL_Status_t enhancedStepHueInd(ZCL_Addressing_t *addressing, uint8_t pay
 ******************************************************************************/
 static ZCL_Status_t enhancedMoveToHueAndSaturationInd(ZCL_Addressing_t *addressing, uint8_t payloadLength, ZCL_ZllEnhancedMoveToHueAndSaturationCommand_t *payload)
 {
-  TransitionType_t proceedWith;
+  uint8_t proceedWith;
   uint8_t on, type;
   uint16_t saturation;
   ZCL_Status_t status = ZCL_ReadAttributeValue(APP_ENDPOINT_LIGHT, ONOFF_CLUSTER_ID,
@@ -2386,7 +2509,7 @@ static ZCL_Status_t enhancedMoveToHueAndSaturationInd(ZCL_Addressing_t *addressi
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1 
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
     if (payloadLength > sizeof(ZCL_ZllEnhancedMoveToHueAndSaturationCommand_t))
     {
@@ -2394,7 +2517,7 @@ static ZCL_Status_t enhancedMoveToHueAndSaturationInd(ZCL_Addressing_t *addressi
       ZCL_ZllEnhancedMoveToHueAndSaturationWithOptionsCommand_t *tmp = (ZCL_ZllEnhancedMoveToHueAndSaturationWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff & (uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -2404,8 +2527,8 @@ static ZCL_Status_t enhancedMoveToHueAndSaturationInd(ZCL_Addressing_t *addressi
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -2419,15 +2542,15 @@ static ZCL_Status_t enhancedMoveToHueAndSaturationInd(ZCL_Addressing_t *addressi
 #endif
   gExecuteIfOff = executeIfOff;
 
-  saturation = (MAX_SATURATION_LEVEL < payload->saturation) ? MAX_SATURATION_LEVEL : payload->saturation;
+  saturation = (uint16_t)((MAX_SATURATION_LEVEL < payload->saturation) ? MAX_SATURATION_LEVEL : payload->saturation);
 
-  proceedWith = prepareMoveToHue(payload->enhancedHue, ZCL_ZLL_MOVE_TO_HUE_DIRECTION_SHORTEST_DISTANCE, payload->transitionTime, false);
-  proceedWith |= prepareMoveToSaturation(saturation, payload->transitionTime, false);
+  proceedWith = (uint8_t)prepareMoveToHue(payload->enhancedHue, (uint8_t)ZCL_ZLL_MOVE_TO_HUE_DIRECTION_SHORTEST_DISTANCE, payload->transitionTime, false);
+  proceedWith |= (uint8_t)prepareMoveToSaturation((uint8_t)saturation, payload->transitionTime, false);
 
-  if (proceedWith)
+  if (proceedWith != 0U)
   {
-    setColorMode(ZCL_ZLL_ENHANCED_CURRENT_HUE_AND_CURRENT_SATURATION);
-    transitionStart(proceedWith);
+    setColorMode((uint8_t)ZCL_ZLL_ENHANCED_CURRENT_HUE_AND_CURRENT_SATURATION);
+    transitionStart((TransitionType_t)proceedWith);
   }
 
   return ZCL_SUCCESS_STATUS;
@@ -2457,7 +2580,7 @@ static ZCL_Status_t colorLoopSetInd(ZCL_Addressing_t *addressing, uint8_t payloa
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
     if (payloadLength > sizeof(ZCL_ZllColorLoopSetCommand_t))
     {
@@ -2465,7 +2588,7 @@ static ZCL_Status_t colorLoopSetInd(ZCL_Addressing_t *addressing, uint8_t payloa
       ZCL_ZllColorLoopSetWithOptionsCommand_t *tmp = (ZCL_ZllColorLoopSetWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff & (uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -2475,8 +2598,8 @@ static ZCL_Status_t colorLoopSetInd(ZCL_Addressing_t *addressing, uint8_t payloa
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -2491,28 +2614,34 @@ static ZCL_Status_t colorLoopSetInd(ZCL_Addressing_t *addressing, uint8_t payloa
   gExecuteIfOff = executeIfOff;
 
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORLOOPDIRECTION == true) >
-  if (COLOR_LOOP_UPDATE_DIRECTION & payload->updateFlags)
+  if ((COLOR_LOOP_UPDATE_DIRECTION & payload->updateFlags) != 0U)
+  {
     lightColorControlClusterServerAttributes.colorLoopDirection.value = payload->direction;
+  }
 </#if>
 
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORLOOPTIME == true) >
-  if (COLOR_LOOP_UPDATE_TIME & payload->updateFlags)
-    lightColorControlClusterServerAttributes.colorLoopTime.value = payload->time;
+  if ((COLOR_LOOP_UPDATE_TIME & payload->updateFlags) != 0U)
+  {
+    lightColorControlClusterServerAttributes.colorLoopTime.value = payload->colorLoopTime;
+  }
 </#if>
-
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORLOOPSTARTENHANCEDHUE == true) >
-  if (COLOR_LOOP_UPDATE_START_HUE & payload->updateFlags)
+  if ((COLOR_LOOP_UPDATE_START_HUE & payload->updateFlags) != 0U)
+  {
     lightColorControlClusterServerAttributes.colorLoopStartEnhancedHue.value = payload->startHue;
+  }
 </#if>
-
-  if (COLOR_LOOP_UPDATE_ACTION & payload->updateFlags)
+  if ((COLOR_LOOP_UPDATE_ACTION & payload->updateFlags) != 0U)
   {
     switch (payload->action)
     {
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORLOOPACTIVE == true) >      
       case COLOR_LOOP_DEACTIVATE:
-        if (lightColorControlClusterServerAttributes.colorLoopActive.value)
+        if ((lightColorControlClusterServerAttributes.colorLoopActive.value) != 0U)
+        {
           stopColorLoop();
+        }
         break;
 </#if>
 
@@ -2552,15 +2681,15 @@ static ZCL_Status_t stopMoveStepInd(ZCL_Addressing_t *addressing, uint8_t payloa
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
-    if (payloadLength > 0)
+    if (payloadLength > 0U)
     {
       /* Check for options override */
       ZCL_ZllStopMoveStepWithOptionsCommand_t *tmp = (ZCL_ZllStopMoveStepWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff & (uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -2570,8 +2699,8 @@ static ZCL_Status_t stopMoveStepInd(ZCL_Addressing_t *addressing, uint8_t payloa
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -2638,7 +2767,7 @@ static void ZCL_ColorControlAttributeEventInd(ZCL_Addressing_t *addressing,
       )
 #endif
   {
-    PDS_Store(APP_LIGHT_COLOR_CONTROL_MEM_ID);
+    (void)PDS_Store(APP_LIGHT_COLOR_CONTROL_MEM_ID);
   }
 
 }
@@ -2671,7 +2800,7 @@ static ZCL_Status_t moveToColorTemperatureInd(ZCL_Addressing_t *addressing, uint
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
     if (payloadLength > sizeof(ZCL_ZllMoveToColorTemperatureCommand_t))
     {
@@ -2679,7 +2808,7 @@ static ZCL_Status_t moveToColorTemperatureInd(ZCL_Addressing_t *addressing, uint
       ZCL_ZllMoveToColorTemperatureWithOptionsCommand_t *tmp = (ZCL_ZllMoveToColorTemperatureWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff & (uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -2689,8 +2818,8 @@ static ZCL_Status_t moveToColorTemperatureInd(ZCL_Addressing_t *addressing, uint
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -2723,7 +2852,7 @@ static ZCL_Status_t moveToColorTemperatureInd(ZCL_Addressing_t *addressing, uint
 
   if (prepareMoveToColorTemperature(miredValue, payload->transitionTime, false))
   {
-    setColorMode(ZCL_ZLL_COLOR_TEMPERATURE);
+    setColorMode((uint8_t)ZCL_ZLL_COLOR_TEMPERATURE);
     transitionStart(TEMPERATURE);
   }
 
@@ -2755,7 +2884,7 @@ static ZCL_Status_t moveColorTemperatureInd(ZCL_Addressing_t *addressing, uint8_
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
     if (payloadLength > sizeof(ZCL_ZllMoveColorTemperatureCommand_t))
     {
@@ -2763,7 +2892,7 @@ static ZCL_Status_t moveColorTemperatureInd(ZCL_Addressing_t *addressing, uint8_
       ZCL_ZllMoveColorTemperatureWithOptionsCommand_t *tmp = (ZCL_ZllMoveColorTemperatureWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff & (uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -2773,8 +2902,8 @@ static ZCL_Status_t moveColorTemperatureInd(ZCL_Addressing_t *addressing, uint8_
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -2788,22 +2917,31 @@ static ZCL_Status_t moveColorTemperatureInd(ZCL_Addressing_t *addressing, uint8_
 #endif
   gExecuteIfOff = executeIfOff;
 
-  if (ZCL_ZLL_MOVE_COLOR_TEMPERATURE_MOVE_MODE_STOP != payload->moveMode)
-    if (!payload->rate)
+  if ((uint8_t)ZCL_ZLL_MOVE_COLOR_TEMPERATURE_MOVE_MODE_STOP != payload->moveMode)
+  {
+    if (!(bool)(payload->rate))
+    {
       return ZCL_INVALID_VALUE_STATUS;
-
-  if (ZCL_ZLL_MOVE_COLOR_TEMPERATURE_MOVE_MODE_UP == payload->moveMode ||
-      ZCL_ZLL_MOVE_COLOR_TEMPERATURE_MOVE_MODE_DOWN == payload->moveMode)
+    }
+  }
+  
+  if ((uint8_t)ZCL_ZLL_MOVE_COLOR_TEMPERATURE_MOVE_MODE_UP == payload->moveMode ||
+      (uint8_t)ZCL_ZLL_MOVE_COLOR_TEMPERATURE_MOVE_MODE_DOWN == payload->moveMode)
   {
     if (prepareMoveColorTemperature(payload->moveMode, payload->rate, payload->colorTemperatureMinimum, payload->colorTemperatureMaximum))
     {
-      setColorMode(ZCL_ZLL_COLOR_TEMPERATURE);
+      setColorMode((uint8_t)ZCL_ZLL_COLOR_TEMPERATURE);
       transitionStart(TEMPERATURE);
     }
   }
-   else if(ZCL_ZLL_MOVE_COLOR_TEMPERATURE_MOVE_MODE_STOP == payload->moveMode)
+   else if((uint8_t)ZCL_ZLL_MOVE_COLOR_TEMPERATURE_MOVE_MODE_STOP == payload->moveMode)
+   {
      transitionStop(ALL);
-
+   }
+   else
+   {
+        //add else for avoid misra rule 15.7
+   }
   return ZCL_SUCCESS_STATUS;
 }
 </#if>
@@ -2832,7 +2970,7 @@ static ZCL_Status_t stepColorTemperatureInd(ZCL_Addressing_t *addressing, uint8_
   event.eventData.zclEventData.payload = (uint8_t*)payload;
   APP_Zigbee_Handler(event);
 #if ZLO_CLUSTER_ENHANCEMENTS == 1
-  if (!status && !on)
+  if (!(bool)status && !(bool)on)
   {
     if (payloadLength > sizeof(ZCL_ZllStepColorTemperatureCommand_t))
     {
@@ -2840,7 +2978,7 @@ static ZCL_Status_t stepColorTemperatureInd(ZCL_Addressing_t *addressing, uint8_
       ZCL_ZllStepColorTemperatureWithOptionsCommand_t *tmp = (ZCL_ZllStepColorTemperatureWithOptionsCommand_t *)payload;
 
       executeIfOff = (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsMask);
-      executeIfOff &= (bool)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride);
+      executeIfOff = (bool)((uint8_t)executeIfOff & (uint8_t)(ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK & tmp->optionsOverride));
       if (!executeIfOff)
       {
         return ZCL_SUCCESS_STATUS;
@@ -2850,8 +2988,8 @@ static ZCL_Status_t stepColorTemperatureInd(ZCL_Addressing_t *addressing, uint8_
     else
     {
       /* Check for ExecuteIfOff bit */
-      if (ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
-          lightColorControlClusterServerAttributes.options.value)
+      if ((ZCL_ZLL_OPTIONS_ATTR_EXECUTE_IF_OFF_MASK &
+          lightColorControlClusterServerAttributes.options.value) != 0U)
       {
         executeIfOff = true;
       }
@@ -2865,7 +3003,7 @@ static ZCL_Status_t stepColorTemperatureInd(ZCL_Addressing_t *addressing, uint8_
 #endif
   gExecuteIfOff = executeIfOff;
 
-  if (0 == payload->stepSize)
+  if (0U == payload->stepSize)
   {
     transitionStop(ALL);
     return ZCL_SUCCESS_STATUS;
@@ -2873,38 +3011,51 @@ static ZCL_Status_t stepColorTemperatureInd(ZCL_Addressing_t *addressing, uint8_
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORTEMPMIREDS == true) >
   temperature = lightColorControlClusterServerAttributes.colorTemperature.value;
 
-  if (ZCL_ZLL_STEP_COLOR_TEMPERATURE_STEP_MODE_UP == payload->stepMode)
+  if ((uint8_t)ZCL_ZLL_STEP_COLOR_TEMPERATURE_STEP_MODE_UP == payload->stepMode)
   {
     if (ABSOLUTE_MAXIMUM_COLOR_TEMP - temperature > payload->stepSize)
+    {
       temperature += payload->stepSize;
+    }
     else
+    {
       temperature = ABSOLUTE_MAXIMUM_COLOR_TEMP;
-
+    }
     if (temperature > payload->colorTemperatureMaximum)
+    {
       temperature = payload->colorTemperatureMaximum;
+    }
   }
-  else if (ZCL_ZLL_STEP_COLOR_TEMPERATURE_STEP_MODE_DOWN == payload->stepMode)
+  else if ((uint8_t)ZCL_ZLL_STEP_COLOR_TEMPERATURE_STEP_MODE_DOWN == payload->stepMode)
   {
     if (temperature >= payload->stepSize)
+    {
       temperature -= payload->stepSize;
+    }
     else
+    {
       temperature = 0;
+    }
 
     if (temperature < payload->colorTemperatureMinimum)
+    {
       temperature = payload->colorTemperatureMinimum;
+    }
   }
   else
+  {
     return ZCL_SUCCESS_STATUS;
-
+  }
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORTEMPPHYMINMIREDS == true) && (CC_COLORTEMPPHYMAXMIREDS == true) >
   if (temperature < lightColorControlClusterServerAttributes.colorTempPhysicalMin.value ||
       lightColorControlClusterServerAttributes.colorTempPhysicalMax.value < temperature)
+  {
     return ZCL_INVALID_VALUE_STATUS;
+  }
 </#if>
-
   if (prepareMoveToColorTemperature(temperature, payload->transitionTime, true))
   {
-    setColorMode(ZCL_ZLL_COLOR_TEMPERATURE);
+    setColorMode((uint8_t)ZCL_ZLL_COLOR_TEMPERATURE);
     transitionStart(TEMPERATURE);
   }
 </#if>
@@ -2922,7 +3073,7 @@ static void lightUpdateStartupColorTemperature(void)
 {
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORMODE == true) >    
   /* if the color mode is ColorTemptertaure, startupColormireds decide the startup behaviour */
-  if (ZCL_ZLL_COLOR_TEMPERATURE == lightColorControlClusterServerAttributes.colorMode.value)
+  if ((uint8_t)ZCL_ZLL_COLOR_TEMPERATURE == lightColorControlClusterServerAttributes.colorMode.value)
   {
     if (ZCL_ZLL_STARTUP_COLOR_TEMPERATURE_PREVIOUS !=
         lightColorControlClusterServerAttributes.startUpColorTemperatureMireds.value)
@@ -2937,14 +3088,14 @@ static void lightUpdateStartupColorTemperature(void)
      * restored from PDS */
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORMODE == true) >
     // Set the color mode to colorTemperature
-    lightColorControlClusterServerAttributes.colorMode.value = ZCL_ZLL_COLOR_TEMPERATURE;
+    lightColorControlClusterServerAttributes.colorMode.value = (uint8_t)ZCL_ZLL_COLOR_TEMPERATURE;
 </#if>
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_ENHANCEDCOLORMODE == true) > 
     // Set the enhanced color mode to colorTemperature
-    lightColorControlClusterServerAttributes.enhancedColorMode.value = ZCL_ZLL_COLOR_TEMPERATURE;
+    lightColorControlClusterServerAttributes.enhancedColorMode.value = (uint8_t)ZCL_ZLL_COLOR_TEMPERATURE;
 </#if>
 
-    PDS_Store(APP_LIGHT_COLOR_CONTROL_MEM_ID);
+    (void)PDS_Store(APP_LIGHT_COLOR_CONTROL_MEM_ID);
   }
 }
 </#if>
@@ -2966,8 +3117,8 @@ void lightUpdateCoupledColorTemperature(bool deviceOn, bool updateColorTemp, uin
   if (updateColorTemp)
   {
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORMODE == true) && (CC_ENHANCEDCOLORMODE == true) >    
-    if ((ZCL_ZLL_COLOR_TEMPERATURE == lightColorControlClusterServerAttributes.colorMode.value)
-        || (ZCL_ZLL_COLOR_TEMPERATURE == lightColorControlClusterServerAttributes.enhancedColorMode.value))
+    if (((uint8_t)ZCL_ZLL_COLOR_TEMPERATURE == lightColorControlClusterServerAttributes.colorMode.value)
+        || ((uint8_t)ZCL_ZLL_COLOR_TEMPERATURE == lightColorControlClusterServerAttributes.enhancedColorMode.value))
     {
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORTEMPMIREDS == true) >       
       switch (level)
@@ -2988,7 +3139,7 @@ void lightUpdateCoupledColorTemperature(bool deviceOn, bool updateColorTemp, uin
           tmpColorTempMax = lightColorControlClusterServerAttributes.colorTempPhysicalMax.value -
             lightColorControlClusterServerAttributes.coupleColorTempToLevelMinMireds.value;
 
-          tmpNewColorTemp = tmpColorTempMax - ((tmpColorTempMax / ZCL_LEVEL_CONTROL_MAXIMUM_LEVEL) * level);
+          tmpNewColorTemp = (uint16_t)(tmpColorTempMax - ((tmpColorTempMax / ZCL_LEVEL_CONTROL_MAXIMUM_LEVEL) * level));
           tmpNewColorTemp += lightColorControlClusterServerAttributes.coupleColorTempToLevelMinMireds.value;
 
           lightColorControlClusterServerAttributes.colorTemperature.value = tmpNewColorTemp;
@@ -2999,7 +3150,7 @@ void lightUpdateCoupledColorTemperature(bool deviceOn, bool updateColorTemp, uin
 </#if>     
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORTEMPMIREDS == true) >        
 #ifdef _ZCL_REPORTING_SUPPORT_
-      ZCL_ReportOnChangeIfNeeded(&lightColorControlClusterServerAttributes.colorTemperature);
+      (void)ZCL_ReportOnChangeIfNeeded(&lightColorControlClusterServerAttributes.colorTemperature);
 #endif
 </#if>
       if (deviceOn)
@@ -3008,7 +3159,7 @@ void lightUpdateCoupledColorTemperature(bool deviceOn, bool updateColorTemp, uin
       }
     }
 </#if>
-    PDS_Store(APP_LIGHT_COLOR_CONTROL_MEM_ID);
+    (void)PDS_Store(APP_LIGHT_COLOR_CONTROL_MEM_ID);
   }
 }
 
@@ -3022,17 +3173,19 @@ static void lightColorControlWriteAttributeEventHandler(SYS_EventId_t eventId, S
 {
   BcZCLActionReq_t *const actionReq = (BcZCLActionReq_t*)data;
   
-  if(eventId == BC_ZCL_EVENT_ACTION_REQUEST) 
+  if(eventId == (uint8_t)BC_ZCL_EVENT_ACTION_REQUEST) 
   {
     if (ZCL_ACTION_SPL_WRITE_ATTR_REQUEST == actionReq->action)
     {
       uint16_t attrVal = 0;
       ZCLActionWriteAttrReq_t* zclWriteAttrReqInfo  = (ZCLActionWriteAttrReq_t*)actionReq->context;
-      memcpy(&attrVal, zclWriteAttrReqInfo->attrValue, sizeof(uint16_t));
-      if((COLOR_CONTROL_CLUSTER_ID == zclWriteAttrReqInfo->clusterId) &&
+      (void)memcpy(&attrVal, (uint16_t *)zclWriteAttrReqInfo->attrValue, sizeof(uint16_t));
+      if(((uint16_t)COLOR_CONTROL_CLUSTER_ID == zclWriteAttrReqInfo->clusterId) &&
               (ZCL_ZLL_CLUSTER_STARTUP_COLOR_TEMPERATURE_SERVER_ATTRIBUTE_ID == zclWriteAttrReqInfo->attrId) &&
               (ZCL_ZLL_STARTUP_COLOR_TEMPERATURE_PREVIOUS == attrVal))
+      {
           zclWriteAttrReqInfo->status = ZCL_SUCCESS_STATUS;
+      }
     }
   }
 }

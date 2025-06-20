@@ -44,8 +44,8 @@
 
 
 
-#ifndef _ZCLIASACECLUSTER_H_
-#define _ZCLIASACECLUSTER_H_
+#ifndef ZCLIASACECLUSTER_H_
+#define ZCLIASACECLUSTER_H_
 
 /*******************************************************************************
                    Includes section
@@ -549,4 +549,4 @@ typedef struct PACK
 } ZCL_IasAceClusterClientAttributes_t;
 END_PACK
 
-#endif /* _ZCLIASZONECLUSTER_H_ */
+#endif /* ZCLIASZONECLUSTER_H_ */

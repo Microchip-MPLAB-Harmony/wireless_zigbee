@@ -258,6 +258,14 @@ typedef struct PACK
   uint8_t  status;
 } RNwkDirectJoinConf_t;
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+typedef struct
+{
+  MAC_DataReq_t *macDatareq;
+ SSP_EncryptFrameReq_t *encryptReq;
+}RNwkEncryptMacDataReq_t;
+#endif
+
 typedef struct PACK
 {
   MAC_CapabilityInf_t  capabilityInformation;
@@ -414,6 +422,7 @@ typedef struct PACK
 {
   uint8_t status;
 } RNwkEndDeviceTimeoutConf_t;
+
 
 typedef struct PACK
 {
@@ -666,6 +675,9 @@ typedef struct PACK _RJoinControl_t
   uint8_t discoverNetworks;
   uint8_t annce;
   uint8_t clearNeighborTable;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  uint8_t commissioningType;
+#endif
 } RJoinControl_t;
 
 /*****************************************************************************
@@ -1010,45 +1022,6 @@ typedef struct PACK
   uint8_t activeEPCount;
   uint8_t activeEPList[1];
 } RZdpActiveEPConfirm_t;
-
-typedef struct PACK
-{
-  uint16_t nwkAddrOfInterest;
-} RZdpComplexDescRequest_t;
-
-typedef struct PACK
-{
-  uint8_t status;
-  uint16_t nwkAddrOfInterest;
-  uint8_t length;
-  uint8_t complexDescriptor[1];
-} RZdpComplexDescConfirm_t;
-
-typedef struct PACK
-{
-  uint16_t nwkAddrOfInterest;
-} RZdpUserDescRequest_t;
-
-typedef struct PACK
-{
-  uint8_t status;
-  uint16_t nwkAddrOfInterest;
-  uint8_t length;
-  uint8_t userDescriptor[ZDP_USER_DESC_FIELD_SIZE];
-} RZdpUserDescConfirm_t;
-
-typedef struct PACK
-{
-  uint16_t nwkAddrOfInterest;
-  uint8_t length;
-  uint8_t userDescriptor[ZDP_USER_DESC_FIELD_SIZE];
-} RZdpUserDescSetRequest_t;
-
-typedef struct PACK
-{
-  uint8_t status;
-  uint16_t nwkAddrOfInterest;
-} RZdpUserDescSetConfirm_t;
 
 typedef struct PACK
 {
@@ -1454,6 +1427,9 @@ typedef union
 #ifdef _CHILD_MANAGEMENT_
   NWK_EndDeviceTimeoutReq_t endDeviceTimeoutReq;
 #endif /* _CHILD_MANAGEMENT_ */
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  SSP_EncryptFrameReq_t encryptReq;
+#endif  
 } StackReq_t;
 
 typedef struct

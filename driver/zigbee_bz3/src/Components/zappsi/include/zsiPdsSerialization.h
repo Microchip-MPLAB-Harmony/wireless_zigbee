@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSIPDSSERIALIZATION_H
-#define _ZSIPDSSERIALIZATION_H
+#ifndef ZSIPDSSERIALIZATION_H
+#define ZSIPDSSERIALIZATION_H
 
 /******************************************************************************
                     Includes section
@@ -537,4 +537,4 @@ INLINE uint16_t zsiPDS_DeleteConfLength(const void *const req)
 
 #endif /* ZAPPSI_NP */
 
-#endif /* _ZSIPDSSERIALIZATION_H */
+#endif /* ZSIPDSSERIALIZATION_H */

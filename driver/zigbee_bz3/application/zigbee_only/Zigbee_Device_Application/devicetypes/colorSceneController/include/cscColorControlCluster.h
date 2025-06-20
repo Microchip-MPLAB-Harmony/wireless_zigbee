@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _COLORSCENERCONTROLLER_COLORCONTROLCLUSTER_H
-#define _COLORSCENERCONTROLLER_COLORCONTROLCLUSTER_H
+#ifndef COLORSCENERCONTROLLER_COLORCONTROLCLUSTER_H
+#define COLORSCENERCONTROLLER_COLORCONTROLCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -62,6 +62,6 @@ extern ZCL_ColorControlClusterClientAttributes_t cscColorControlClusterClientAtt
 ******************************************************************************/
 void cscColorControlClusterInit(void);
 
-#endif // _COLORSCENECONTROLLER_COLORCONTROLCLUSTER_H
+#endif // COLORSCENECONTROLLER_COLORCONTROLCLUSTER_H
 
 // eof cscColorControlCluster.h

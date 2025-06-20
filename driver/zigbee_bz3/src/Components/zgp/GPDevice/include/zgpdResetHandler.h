@@ -41,8 +41,8 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#ifndef _ZGPDRESETHANDLER_H
-#define _ZGPDRESETHANDLER_H
+#ifndef ZGPDRESETHANDLER_H
+#define ZGPDRESETHANDLER_H
 // DOM-IGNORE-END
 
 /******************************************************************************
@@ -114,6 +114,6 @@ void ZGP_SetChannel(uint8_t channel);
  ******************************************************************************/
 void ZGP_GetChannel(uint8_t *channel);
 
-#endif // _ZGPDDATAHANDLER_H
+#endif // ZGPDDATAHANDLER_H
 
 // eof zgpdResetHandler.h

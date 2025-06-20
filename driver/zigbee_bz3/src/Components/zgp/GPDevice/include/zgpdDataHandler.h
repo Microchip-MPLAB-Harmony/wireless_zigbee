@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPDDATAHANDLER_H
-#define _ZGPDDATAHANDLER_H
+#ifndef ZGPDDATAHANDLER_H
+#define ZGPDDATAHANDLER_H
 /******************************************************************************
                         Includes  section.
 ******************************************************************************/
@@ -238,6 +238,6 @@ void zgpDataReqHandler(void);
 ZGP_Status_t ZGP_DataReq(ZGP_DataReq_t *zgpDataReq);
 
 void zgpTxReq(MAC_DataReq_t *reqParams);
-#endif // _ZGPDDATAHANDLER_H
+#endif // ZGPDDATAHANDLER_H
 
 // eof zgpdDataHandler.h

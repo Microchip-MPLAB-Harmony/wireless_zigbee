@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSIZDPSERIALIZATION_H_
-#define _ZSIZDPSERIALIZATION_H_
+#ifndef ZSIZDPSERIALIZATION_H
+#define ZSIZDPSERIALIZATION_H
 
 /******************************************************************************
                     Includes section
@@ -1258,4 +1258,4 @@ INLINE uint16_t zsiZdpMgmtBindRespLength(const ZDO_MgmtBindResp_t *const resp)
 
 #endif /* ZAPPSI_NP */
 
-#endif /* _ZSIZDPSERIALIZATION_H_ */
+#endif /* ZSIZDPSERIALIZATION_H */

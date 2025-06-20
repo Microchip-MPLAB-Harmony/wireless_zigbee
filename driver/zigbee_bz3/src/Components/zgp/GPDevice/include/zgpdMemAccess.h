@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPDMEMACCESS_H
-#define _ZGPDMEMACCESS_H
+#ifndef ZGPDMEMACCESS_H
+#define ZGPDMEMACCESS_H
 /******************************************************************************
                         Includes  section.
 ******************************************************************************/
@@ -95,6 +95,6 @@ INLINE void* zgpGetReqParams(void)
                         Prototypes section.
 ******************************************************************************/
 
-#endif //_ZGPDMEMACCESS_H
+#endif //ZGPDMEMACCESS_H
 
 // eof zgpdMemAccess.h

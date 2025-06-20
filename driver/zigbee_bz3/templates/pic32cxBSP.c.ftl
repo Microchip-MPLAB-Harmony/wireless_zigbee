@@ -47,9 +47,7 @@
 /******************************************************************************
                    Local variables section
 ******************************************************************************/
-static void(* readTemperatureDataCallback)(bool error, int16_t data);
-static void(* readLightDataCallback)(bool error, int16_t data);
-static void(* readBatteryDataCallback)(int16_t data);
+
 
 <#if SLEEP_SUPPORTED_DEVICE && RESET_TO_FN_ENABLE>
 static bool userButtonState = false;
@@ -57,7 +55,7 @@ static App_ButtonPressCallback_t userButtonShortPressCallback;
 static uint32_t __attribute__((persistent)) rtcValueDuringButtonPress;
 
 
-<#if PIC32CXBZ3>
+<#if PIC32CXBZ3 || PIC32CXBZ36>
 #define USER_BUTTON_MASK    		(1<<9U)
 </#if>
 <#if PIC32CXBZ2>
@@ -128,7 +126,7 @@ void BSP_OnLed(void)
   event.eventGroup = EVENT_BSP;
   event.eventId = CMD_LED_ON;
   //event.eventData = NULL;
-  memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
+  (void)memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
   APP_Zigbee_Handler(event);
 }
 
@@ -144,12 +142,12 @@ void BSP_OffLed(void)
   event.eventGroup = EVENT_BSP;
   event.eventId = CMD_LED_OFF;
   //event.eventData = 0;
-  memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
+  (void)memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
   APP_Zigbee_Handler(event);
 }
 
 /**************************************************************************//**
-\brief Changes the LED state to opposite.
+\brief Changes theï¿½LED state to opposite.
 
 \param[in]
       id - number of led
@@ -160,7 +158,7 @@ void BSP_ToggleLed(void)
   event.eventGroup = EVENT_BSP;
   event.eventId = CMD_LED_TOGGLE;
   //event.eventData = 0;
-  memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
+  (void)memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
   APP_Zigbee_Handler(event);
 }
 
@@ -172,7 +170,7 @@ void BSP_LedsOpen(void)
   APP_Zigbee_Event_t event;
   event.eventGroup = EVENT_BSP;
   event.eventId = CMD_LED_OPEN;
-  memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
+  (void)memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
   APP_Zigbee_Handler(event);
 }
 
@@ -233,9 +231,10 @@ void BSP_ReadButtonsState(bool buttonRead)
   APP_Zigbee_Event_t event;
   event.eventGroup = EVENT_BSP;
   event.eventId = CMD_BUTTON_READ;
-  memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
+  (void)memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
   APP_Zigbee_Handler(event);
   buttonRead = event.eventData.state;
+  (void)buttonRead;
 }
 
 /**************************************************************************//**
@@ -246,12 +245,12 @@ void BSP_ReadButtonsState(bool buttonRead)
 \param[in]
     None
 ******************************************************************************/
-void BSP_ButtonOpen()
+void BSP_ButtonOpen(void)
 {
   APP_Zigbee_Event_t event;
   event.eventGroup = EVENT_BSP;
   event.eventId = CMD_BUTTON_OPEN;
-  memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
+  (void)memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
   APP_Zigbee_Handler(event);    
 }
 /**************************************************************************//**
@@ -262,12 +261,12 @@ void BSP_ButtonOpen()
 \param[in]
     None
 ******************************************************************************/
-void BSP_TempSensorOpen()
+void BSP_TempSensorOpen(void)
 {
   APP_Zigbee_Event_t event;
   event.eventGroup = EVENT_BSP;
   event.eventId = CMD_SENSOR_OPEN;
-  memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
+  (void)memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
   APP_Zigbee_Handler(event);    
 }
 
@@ -284,7 +283,7 @@ void BSP_ReadTempSensor(uint16_t *measuredValue)
   APP_Zigbee_Event_t event;
   event.eventGroup = EVENT_BSP;
   event.eventId = CMD_SENSOR_READ;
-  memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
+  (void)memset(&event.eventData, 0, sizeof(APP_Zigbee_EventData));
   APP_Zigbee_Handler(event);    
   *measuredValue = event.eventData.data;
 }
@@ -309,7 +308,7 @@ void BSP_InitializeUserButton(App_ButtonPressCallback_t buttonPressCallback)
 <#if PIC32CXBZ2>
     PPS_REGS->PPS_EXTINT0R = 5U;
 </#if>
-<#if PIC32CXBZ3>
+<#if PIC32CXBZ3 || PIC32CXBZ36>
     PPS_REGS->PPS_EXTINT1R = 6U;
 </#if>
 	userButtonShortPressCallback = buttonPressCallback;

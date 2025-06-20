@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSI_NOTIFY_H
-#define _ZSI_NOTIFY_H
+#ifndef ZSI_NOTIFY_H
+#define ZSI_NOTIFY_H
 
 /******************************************************************************
                                 Includes section
@@ -74,5 +74,5 @@ void ZSI_StatusUpdateNotf(ZSI_UpdateNotf_t *notf);
 ******************************************************************************/
 void zsiInitNotifications(void);
 
-#endif // _ZSI_NOTIFY_H
+#endif // ZSI_NOTIFY_H
 // eof zsiNotify.h

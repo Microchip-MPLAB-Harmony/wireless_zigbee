@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSISERIALIZER_H_
-#define _ZSISERIALIZER_H_
+#ifndef ZSISERIALIZER_H
+#define ZSISERIALIZER_H
 
 /******************************************************************************
                     Includes section
@@ -184,4 +184,4 @@ void zsiDeserializeData(ZsiSerializer_t *const serializer, void *const pow,
 void zsiDeserializeToPointer(ZsiSerializer_t *const serializer, uint8_t **const pow,
   uint16_t size);
 
-#endif /* _ZSISERIALIZER_H_ */
+#endif /* ZSISERIALIZER_H */

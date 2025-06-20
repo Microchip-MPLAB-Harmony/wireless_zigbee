@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _DLONOFFCLUSTER_H
-#define _DLONOFFCLUSTER_H
+#ifndef DLONOFFCLUSTER_H
+#define DLONOFFCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -84,6 +84,6 @@ void eclOnOffSetOnOffState(bool state);
 ******************************************************************************/
 bool onOffState(void);
 
-#endif // _DLONOFFCLUSTER_H
+#endif // DLONOFFCLUSTER_H
 
 // eof dlOnOffCluster.h

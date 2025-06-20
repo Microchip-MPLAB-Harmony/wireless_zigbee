@@ -40,8 +40,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#if !defined _APS_KEY_PAIR_SET_H
-#define _APS_KEY_PAIR_SET_H
+#if !defined APS_KEY_PAIR_SET_H
+#define APS_KEY_PAIR_SET_H
 
 #if defined _LINK_SECURITY_
 /******************************************************************************
@@ -49,13 +49,17 @@
  ******************************************************************************/
 #include <aps/include/apsCryptoKeys.h>
 #include <security/serviceprovider/include/sspCommon.h>
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <zdo/include/zdoSecurityStartKeyUpdate.h>
+#include <zdo/include/zdoSecurityGetAuthLevel.h>
+#include <configserver/include/csDefaults.h>
+#endif //_ZIGBEE_REV_23_SUPPORT_
 
 /******************************************************************************
                                Definitions section
  ******************************************************************************/
 /** Size of APS security counter in bytes */
 #define APS_SECURITY_COUNTER_SIZE 4U
-
 /******************************************************************************
                                 Types section
  ******************************************************************************/
@@ -79,6 +83,18 @@ typedef union PACK
        ApsOutFrameCounterTop_t top))
   } part;
 } ApsOutFrameCounterHandle_t;
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/* Structure for APS security Features & Capabilities bitmap. */
+typedef struct PACK
+{
+  LITTLE_ENDIAN_OCTET(2, (
+    /* Denotes the peer device's frame counter synchronization support. */
+    uint8_t   frameCounterSyncSupport : 1,
+    /* Reserved. */
+    uint8_t   reserved               : 7))
+} ApsFeaturesAndCapabilities_t;
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
 END_PACK
 
 /* Type of key-pair descriptor. */
@@ -95,6 +111,44 @@ typedef struct _ApsKeyPairDescriptor_t
   uint8_t initialKey[SECURITY_KEY_SIZE];
   /* The actual value of the link key. */
   uint8_t linkKey[SECURITY_KEY_SIZE];
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  /* Set of secuirty feature flags for APS. */
+  ApsFeaturesAndCapabilities_t securityFeatures;
+  /* Selected key negotiation protocol method */
+  SelectedKeyNegotiationProtocol_t keyNegotiationMethod;
+  /* Selected pre-shared secret. */
+  SelectedPreSharedSecret_t selectedPreSharedSecret;
+  /* Key negotitation state */
+  ApsKeyNegotiationState_t keyNegotiationState;
+  /* Key attributes */
+  ApsKeyAttributes_t keyAttributes;
+  /* Link key type */
+  ApsLinkKeyType_t linkKeyType;
+  /* Pre shared secret. */
+  uint8_t preSharedSecretType;
+  /* Key-pair pass phrase update permission flag. 
+     TRUE: on joining, FALSE: after joining and negotiating a link key. */
+  bool passPhraseUpdateAllowed;
+  /* Key-pair pass phrase */
+  uint8_t passPhrase[PASSPHRASE_MAX_SIZE];
+  /* time out value in seconds, default: 0xFFFF */
+  uint16_t timeOut;  
+  /* Network Key status flag */
+  APS_KeyPairFlags_t nwkKeyStatus;
+  /* TRUE: the value passed to FrameCounter-Value has been verified as the latest.
+     FALSE: the value of FrameCounterValue SHALL be ignored. */
+  bool verifiedFrameCounter;
+  /* Counter used in Challenge response 
+     Reset to 0 on reboot and when outgoing frame counter is incremented ref: 4.6.3.8.2 
+     Increment by 1 when security nonce is generated using this counter. */
+  uint32_t apsChallengeFrameCounter;
+  /* Trust center swap out link key. */
+  uint8_t tcSwapOutLinkKey[SECURITY_KEY_SIZE];
+  /* Indicates initial join method used. */
+  ApsInitialJoinMethod_t initialJoinMethod;  
+  /* Indicates link key update method used after device joined the network. */
+  ApsActiveLinkKeyType_t activeLinkKeyType;  
+#endif //_ZIGBEE_REV_23_SUPPORT_
 } ApsKeyPairDescriptor_t;
 
 /* Type of incoming and outgoing counters. */
@@ -104,6 +158,8 @@ typedef struct _ApsKeyCounters_t
   ApsOutFrameCounterLow_t outCounterLow;
   /* Incoming frame counter value corresponding to DeviceAddress. */
   ApsInFrameCounter_t in;
+  /* Default Incoming frame counter value corresponding to DeviceAddress and default link key. */
+  ApsInFrameCounter_t defaultIn;
 } ApsKeyCounters_t;
 
 /******************************************************************************
@@ -139,6 +195,26 @@ ApsInFrameCounter_t apsGetInFrameCounter(const APS_KeyHandle_t handle);
 APS_PRIVATE bool apsIsGlobalLinkKey(const APS_KeyHandle_t handle);
 
 #endif /* _LINK_SECURITY_ */
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+
+/**************************************************************************//**
+  \brief Set timeout in second for the specified key. When this timeout
+    expires, the key SHALL be marked EXPIRED_KEY in the KeyAttributes
+    and the LinkKey value SHALL not be used for encryption of messages. 
+    A value of 0xFFFF for the Timeout mean the key never expires.
+
+   This function copies value of timeout to APS Key-Pair Set.
+
+  \param[in] deviceAddress - pointer to extended IEEE device address.
+  \param[in] timeout - value in seconds.
+
+  \return True - If timeout is set for the device.
+          False - If timeoutis not updated for the device.
+ ******************************************************************************/
+bool APS_SetTimeout(const ExtAddr_t *const deviceAddress, uint16_t timeOut);
+
+#endif /*  _ZIGBEE_REV_23_SUPPORT_ */
 
 #endif /* _APS_KEY_PAIR_SET_H */
 /** eof apsKeyPairSet.h */

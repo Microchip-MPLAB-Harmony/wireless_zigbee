@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _IASACECLUSTER_H
-#define _IASACECLUSTER_H
+#ifndef IASACECLUSTER_H
+#define IASACECLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -62,6 +62,10 @@
 
   <#elseif (DEVICE == "CLIENT") >
   <#assign customClusterClientCount = customClusterClientCount + 1>
+
+  <#elseif (DEVICE == "BOTH") >
+  <#assign customClusterClientCount = customClusterClientCount + 1>
+  <#assign customClusterServerCount = customClusterServerCount + 1>
 
   </#if>
 
@@ -113,6 +117,6 @@ extern PROGMEM_DECLARE (ZCL_IasACEClusterCommands_t iasACEClusterCommands);
 #ifdef OTAU_CLIENT
 extern void (*iasACEClientClusterInitFunctions[IAS_ACE_CLIENT_CLUSTER_INIT_COUNT])();
 #endif
-#endif // _IASACECLUSTER_H
+#endif // IASACECLUSTER_H
 
 // eof iasACECluster.h

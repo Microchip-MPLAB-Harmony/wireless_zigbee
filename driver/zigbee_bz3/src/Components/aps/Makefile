@@ -40,6 +40,7 @@ modules =              \
   apsGroupTable        \
   apsInterpan          \
   apsKeyPairSet        \
+  apsFragmentationCache        \
   apsMemoryManager     \
   apsRejectDuplicate   \
   apsRemoveDevice      \
@@ -58,12 +59,16 @@ modules =              \
   apsUpdateDevice      \
   apsAIB               \
   apsVerifyKey         \
-  apsConfirmKey
+  apsConfirmKey        \
+  apsRelayCommand      \
+  apsKeyNegotiation
 
 include_path =                        \
   $(BASE_PATH)                        \
   $(KF_INCS)                          \
   $(SSP_PATH)/include                 \
+  $(SSP_PATH)/include/private         \
+  $(SSP_PATH)/../SoftAes              \
   $(SE_PATH)/include                  \
   $(TC_PATH)/include                  \
   $(MAC_PHY_PATH)/include             \
@@ -92,7 +97,8 @@ include_path =                        \
   $(RTOS_CONFIG_PATH)                 \
   $(PARTPACK_PATCH)/include           \
   $(PARTPACK_PATCH)/include/soc       \
-  $(CMIS_PATH)
+  $(CMIS_PATH)                        \
+  $(CRYPTO_PATH)
 
 ifeq ($(COMPILER_TYPE), GCC) # GCC flags -------------------------------
   #CFLAGS += -pedantic -Wextra -Wfatal-errors -Werror

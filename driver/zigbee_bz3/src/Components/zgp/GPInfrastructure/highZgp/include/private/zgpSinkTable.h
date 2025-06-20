@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPSINKTABLE_H
-#define _ZGPSINKTABLE_H
+#ifndef ZGPSINKTABLE_H
+#define ZGPSINKTABLE_H
 
 #ifdef _GREENPOWER_SUPPORT_
 #if APP_ZGP_DEVICE_TYPE == APP_ZGP_DEVICE_TYPE_COMBO_BASIC
@@ -79,6 +79,6 @@ typedef enum _ZgpSinkTableStatus_t
 ******************************************************************************/
 #endif // APP_ZGP_DEVICE_TYPE == APP_ZGP_DEVICE_TYPE_COMBO_BASIC
 #endif // _GREENPOWER_SUPPORT_
-#endif // _ZGPSINKTABLE_H
+#endif // ZGPSINKTABLE_H
 
 // eof zgpSinkTable.h

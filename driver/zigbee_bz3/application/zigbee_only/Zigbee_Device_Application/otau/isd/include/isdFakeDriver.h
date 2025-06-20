@@ -38,8 +38,8 @@
  */
 /* ************************************************************************** */
 
-#ifndef _EXAMPLE_FILE_NAME_H    /* Guard against multiple inclusion */
-#define _EXAMPLE_FILE_NAME_H
+#ifndef EXAMPLE_FILE_NAME_H    /* Guard against multiple inclusion */
+#define EXAMPLE_FILE_NAME_H
 
 
 /* ************************************************************************** */
@@ -113,7 +113,7 @@ void ISD_UpgradeEndReq(ZCL_Addressing_t *addressing, ZCL_OtauUpgradeEndReq_t *da
 }
 #endif
 
-#endif /* _EXAMPLE_FILE_NAME_H */
+#endif /* EXAMPLE_FILE_NAME_H */
 
 /* *****************************************************************************
  End of File

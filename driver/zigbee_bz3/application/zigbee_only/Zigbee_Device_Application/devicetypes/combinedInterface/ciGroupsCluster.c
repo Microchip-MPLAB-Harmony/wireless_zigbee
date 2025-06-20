@@ -92,7 +92,7 @@ PROGMEM_DECLARE(ZCL_GroupsClusterCommands_t ciGroupsCommands) =
                                      getGroupMembershipResponseInd, removeGroupResponseInd)
 };
 
-extern QueueDescriptor_t groupsSubscribers;
+
 
 /******************************************************************************
                     Implementation section

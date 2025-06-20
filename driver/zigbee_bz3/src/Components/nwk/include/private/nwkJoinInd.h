@@ -41,8 +41,8 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#if !defined _NWK_JOININD_H
-#define _NWK_JOININD_H
+#if !defined NWK_JOININD_H
+#define NWK_JOININD_H
 // DOM-IGNORE-END
 
 /******************************************************************************
@@ -54,6 +54,9 @@
 #include <nwk/include/nldeData.h>
 #include <nwk/include/nwkNeighbor.h>
 #include <nwk/include/private/nwkFrame.h>
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <tlv/include/tlv.h>
+#endif
 
 /******************************************************************************
                                Define(s) section
@@ -65,6 +68,11 @@
 #define NWK_ADDR_CONFLICT_JOIN_RESP_TX_PARAMETERS \
   {NWK_TX_DELAY_UNICAST_COMMAND, nwkPrepareJoinRespTx, \
    nwkConfirmAddrConflictJoinRespTx, true}
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#define NWK_COMMISSIONING_RESP_TX_PARAMETERS \
+  {NWK_TX_DELAY_UNICAST_COMMAND, nwkPrepareCommissioningRespTx, nwkConfirmCommissioningRespTx, true}
+#endif
 
 /******************************************************************************
                                  Types section
@@ -83,7 +91,33 @@ typedef struct PACK
    **/
   uint8_t rejoinStatus;
 } NwkRejoinRespCmd_t;
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/** Payload of Network Commissioning Response Command */
+typedef struct PACK
+{
+  /** Command ID  */
+  NwkCommandIdField_t commandId;
+  /** Device Network Address  */
+  ShortAddr_t networkAddr;
+  /** Status  */
+  uint8_t status;
+} NwkCommissioningRespCmd_t;
+#endif
 END_PACK
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/** Service fields of Network Commissioning Response */
+typedef struct _NwkCommissioningResp_t
+{
+  ShortAddr_t newNetworkAddr;
+  ShortAddr_t oldNetworkAddr;
+  ExtAddr_t extendedAddr;
+  bool secureJoin;
+  uint8_t commissioningType;
+  uint8_t status;
+} NwkCommissioningResp_t;
+#endif
 
 /** Service fields of rejoin response */
 typedef struct _NwkRejoinResp_t
@@ -105,6 +139,10 @@ typedef enum _NwkJoinIndObjState_t
   NWK_JOIN_IND_REJOIN_INDICATE_STATE = 0x03,
   NWK_JOIN_IND_SEND_REJOIN_RESPONSE_STATE = 0x04,
   NWK_JOIN_IND_SEND_ASSOC_RESPONSE_STATE = 0x05,
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  NWK_JOIN_IND_SEND_NWK_COMMISSIONING_RESPONSE_STATE = 0x06,
+  NWK_JOIN_IND_NWK_COMMISSIONING_INDICATE_STATE = 0x07,
+#endif
   NWK_JOIN_IND_LAST_STATE
 } NwkJoinIndObjState_t;
 
@@ -117,7 +155,14 @@ typedef struct _NwkJoinIndObj_t
   {
     MAC_AssociateResp_t assoc;
     NwkRejoinResp_t rejoin;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+    NwkCommissioningResp_t nwkCommissioning;
+#endif
   } resp;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+    /** The TLVs of the joining device as relayed during Network Commissioning.*/
+    uint8_t joiningDeviceTLV[JOINING_ENCAPSULATION_TLV_SIZE]; 
+#endif
 } NwkJoinIndObj_t;
 
 /** Type of total amount of join indication objects. */
@@ -143,7 +188,7 @@ typedef struct _NwkJoinInd_t
 
   \return 'true' if continue processing of command packet otherwise 'false'.
  ******************************************************************************/
-NWK_PRIVATE bool nwkRejoinRequestFrameInd(const uint8_t *const payload,const NwkFrameHeader_t *const header, const NwkParseHeader_t *const parse);
+NWK_PRIVATE bool nwkRejoinRequestFrameInd(const uint8_t *const payload, const NwkFrameHeader_t *const header, const NwkParseHeader_t *const parse);
 
 #if defined _RESOLVE_ADDR_CONFLICT_
 /**************************************************************************//**
@@ -190,10 +235,15 @@ NWK_PRIVATE void nwkConfirmJoinRespTx(NwkOutputPacket_t *const outPkt, const NWK
   \param[in] shortAddr - address that device selected for itself,
                          trying to keep it.
   \param[in] capability - MAC capability information.
-
+  \param[in] lqi        - Link Qulality Indication. 
+  \param[in] rssi       - Received Signal Strength index.
+  \param[in] isMACapNeedUpdate - Indicates Mac Capabilities can be updated or not.
+  \param[in] joinStatus - updates & indicates the Join status.
+  
   \return NULL if fail, or pointer to created record otherwise.
  ******************************************************************************/
-NWK_PRIVATE NwkNeighbor_t* nwkAddChild(const ExtAddr_t extAddr, ShortAddr_t shortAddr, const MAC_CapabilityInf_t capability, const Lqi_t lqi, const Rssi_t rssi,    bool isMACapNeedUpdate);
+NWK_PRIVATE NwkNeighbor_t* nwkAddChild(const ExtAddr_t extAddr, ShortAddr_t shortAddr, const MAC_CapabilityInf_t capability, const Lqi_t lqi, const Rssi_t rssi,
+                                            bool isMACapNeedUpdate, uint8_t *joinStatus );
 
 /***************************************************************************//**
   \brief nwkJoinInd idle checking.
@@ -209,6 +259,36 @@ NWK_PRIVATE bool nwkJoinIndIsIdle(void);
   \param[in] status - network status of rejoin response transmission.
  ******************************************************************************/
 NWK_PRIVATE void nwkConfirmAddrConflictJoinRespTx(NwkOutputPacket_t *const outPkt, const NWK_Status_t status);
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+  \brief NWK Commissioning request has been received.
+
+  \param[in] payload - command payload pointer.
+  \param[in] header  - command parameters.
+  \param[in] parse   - source and destination extended address pointers.
+
+  \return 'true' if continue processing of command packet otherwise 'false'.
+ ******************************************************************************/
+NWK_PRIVATE bool nwkCommissioningRequestFrameInd(const uint8_t *const payload,const NwkFrameHeader_t *const header, const NwkParseHeader_t *const parse);
+
+/**************************************************************************//**
+  \brief Prepare header and payload of the NWK Commissioning response command.
+
+  \param[in] outPkt - pointer to output packet.
+  \return None.
+ ******************************************************************************/
+NWK_PRIVATE void nwkPrepareCommissioningRespTx(NwkOutputPacket_t *const outPkt);
+
+/**************************************************************************//**
+  \brief Confirmation of NWK Commissioning response command transmission.
+
+  \param[in] outPkt - pointer to output packet.
+  \param[in] status - network status of NWK commissioning response transmission.
+  \return None.
+ ******************************************************************************/
+NWK_PRIVATE void nwkConfirmCommissioningRespTx(NwkOutputPacket_t *const outPkt, const NWK_Status_t status);
+#endif
 #else
 #define nwkConfirmAddrConflictJoinRespTx NULL
 #endif /* _RESOLVE_ADDR_CONFLICT_ */
@@ -222,8 +302,10 @@ NWK_PRIVATE void nwkConfirmAddrConflictJoinRespTx(NwkOutputPacket_t *const outPk
 #define nwkConfirmJoinRespTx NULL
 #define nwkConfirmAddrConflictJoinRespTx NULL
 #define nwkJoinIndIsIdle NULL
-
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#define nwkCommissioningRequestFrameInd NULL
+#endif
 #endif /* _ROUTER_ or _COORDINATOR_ */
-#endif /* _NWK_JOININD_H */
+#endif /* NWK_JOININD_H */
 /** eof nwkJoinInd.h */
 

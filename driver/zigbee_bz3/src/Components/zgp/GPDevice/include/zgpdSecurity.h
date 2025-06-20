@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPD_SEC_H_
-#define _ZGPD_SEC_H_
+#ifndef ZGPD_SEC_H
+#define ZGPD_SEC_H
 
 /******************************************************************************
                           Header files
@@ -94,6 +94,6 @@ bool zgpIsValidKey(uint8_t *key);
 bool zgpSetLinkKey(uint8_t *key);
 bool zgpSetSecurityKey(uint8_t *key);
 
-#endif //_ZGPD_SEC_H_
+#endif //ZGPD_SEC_H
 
 //eof zgpdSecurity.h

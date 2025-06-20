@@ -287,6 +287,10 @@ void rBufferTestGroupRequestProcess(APS_DataInd_t *ind, uint8_t endpoint)
       for (i = 0; i < reqCommand->length; i++)
         respCommand->octets[i] = i;
     }
+#ifdef _ZIGBEE_REV_23_SUPPORT_   /* Update relay message information */   
+    req->service.relayMsgInfo.isRelayCmd = ind->service.relayMsgInfo.isRelayCmd;
+    req->service.relayMsgInfo.unAuthDevExtAdd = ind->service.relayMsgInfo.unAuthDevExtAdd;
+#endif 
     APS_DataReq(req);
   }
 }
@@ -315,6 +319,10 @@ void rBufferTestRequestProcess(APS_DataInd_t *ind, uint8_t endpoint)
       for (i = 0; i < reqCommand->length; i++)
         respCommand->octets[i] = i;
     }
+#ifdef _ZIGBEE_REV_23_SUPPORT_   /* Update relay message information */ 
+    req->service.relayMsgInfo.isRelayCmd = ind->service.relayMsgInfo.isRelayCmd;
+    req->service.relayMsgInfo.unAuthDevExtAdd = ind->service.relayMsgInfo.unAuthDevExtAdd;
+#endif 
     APS_DataReq(req);
   }
 }
@@ -431,7 +439,7 @@ APS_DataReq_t *rMakeDataReqBasedOnInd(APS_DataInd_t *ind, ClusterId_t clusterId,
 #endif /* _LINK_SECURITY_ */
 
   req->txOptions.useNwkKey = 0;
-  req->txOptions.acknowledgedTransmission = 0;
+  req->txOptions.acknowledgedTransmission = 1;
   req->txOptions.fragmentationPermitted = 0;
   req->txOptions.noRouteDiscovery = 0;
   req->radius = 0x00;
@@ -450,6 +458,10 @@ void rRetrievePacketCountProcess(APS_DataInd_t *ind, uint8_t endpoint)
     req = rMakeDataReqBasedOnInd(ind, CID_PACKET_COUNT_RESPONSE, sizeof (CidPacketCountResponse_t), endpoint);
     command = (CidPacketCountResponse_t *) req->asdu;
     command->packetCount = packetsReceivedCounter;
+#ifdef _ZIGBEE_REV_23_SUPPORT_   /* Update relay message information */   
+    req->service.relayMsgInfo.isRelayCmd = ind->service.relayMsgInfo.isRelayCmd;
+    req->service.relayMsgInfo.unAuthDevExtAdd = ind->service.relayMsgInfo.unAuthDevExtAdd;
+#endif 
     APS_DataReq(req);
   }
 }

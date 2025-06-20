@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _TCAUTHENTICH
-#define _TCAUTHENTICH
+#ifndef TCAUTHENTICH
+#define TCAUTHENTICH
 
 /******************************************************************************
                              Include section.
@@ -58,6 +58,10 @@ typedef enum _TcAuthObjState_t
   TC_AUTHENTIC_OBJ_STATE_TRANSPORTING_MASTER_KEY,
   TC_AUTHENTIC_OBJ_STATE_ESTABLISHING_KEY,
   TC_AUTHENTIC_OBJ_STATE_REMOVING_DEVICE,
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  TC_AUTHENTIC_OBJ_STATE_WAIT_KEY_UPDATE_RESP,
+  TC_AUTHENTIC_OBJ_STATE_WAIT_KEY_NEGOTIATION_REQ,
+#endif
 } TcAuthObjState_t;
 
 /**************************************************************************//**
@@ -70,6 +74,15 @@ typedef struct
 {
   //! Memory to store source address of APS_UpdateDeviceInd command.
   ExtAddr_t updateIndSrcAddr;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  struct
+  {
+    //! Peer device extended address.
+    ExtAddr_t deviceExtAddr;
+    //! Wait timer Timeout value (in secs).
+    uint32_t ttl;
+  }service;
+#endif
   union
   { //! Memory for APS_TransportKeyReq.
     APS_TransportKeyReq_t transportKey;
@@ -84,6 +97,6 @@ typedef struct
   TcAuthObjState_t state;
 } TC_AuthenticObj_t;
 
-#endif // _TCAUTHENTICH
+#endif // TCAUTHENTICH
 
 // eof tcAuthentic.h

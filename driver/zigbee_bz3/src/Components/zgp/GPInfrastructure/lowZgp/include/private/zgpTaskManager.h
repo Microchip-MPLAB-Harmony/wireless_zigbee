@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGP_TASK_MANAGER_H
-#define  _ZGP_TASK_MANAGER_H
+#ifndef ZGP_TASK_MANAGER_H
+#define  ZGP_TASK_MANAGER_H
 
 #ifdef _GREENPOWER_SUPPORT_
 
@@ -87,6 +87,6 @@ void zgpDstubTxTaskHandler(void);
  ******************************************************************************/
 void zgpDstubRxIndicationHandler(void);
 #endif  //GREENPOWER_SUPPORT
-#endif /* _ZGP_DSTUB_TASK_MANAGER_H */
+#endif /* ZGP_DSTUB_TASK_MANAGER_H */
 /** eof zgpDstubTaskManager.h */
 

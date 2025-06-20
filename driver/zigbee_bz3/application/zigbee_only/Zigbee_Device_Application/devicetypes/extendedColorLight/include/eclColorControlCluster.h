@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _LIGHTCOLORCONTROLCLUSTER_H
-#define _LIGHTCOLORCONTROLCLUSTER_H
+#ifndef LIGHTCOLORCONTROLCLUSTER_H
+#define LIGHTCOLORCONTROLCLUSTER_H
 
 /******************************************************************************
                     Includes
@@ -74,6 +74,6 @@ void colorControlShowIdentifyEffect(uint16_t enhancedHue);
 ******************************************************************************/
 void colorControlStopIdentifyEffect(void);
 
-#endif // _LIGHTCOLORCONTROLCLUSTER_H
+#endif // LIGHTCOLORCONTROLCLUSTER_H
 
 // eof lightColorControlCluster.h

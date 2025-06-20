@@ -12,6 +12,7 @@ include $(COMPONENTS_PATH)/Makerules
 
 ifneq ($(BUILD_TARGET), TARGET_HAL_SE)
   LIBS_TO_INCLUDE = $(MAC_PHY_PATH)/lib/lib$(MAC_PHY_LIB).a
+  LIBS_TO_INCLUDE += $(TLV_PATH)/lib/lib$(TLV_LIB).a
   ifneq ($(BUILD_TARGET), TARGET_MAC)
     LIBS_TO_INCLUDE += $(NWK_PATH)/lib/lib$(NWK_LIB).a
     ifneq ($(BUILD_TARGET), TARGET_NWK)
@@ -75,19 +76,19 @@ layers: se_make
 endif
 
 ifeq ($(BUILD_TARGET), TARGET_MAC)
-layers: mac_phy_make se_make
+layers: mac_phy_make se_make tlv_make
 endif
 
 ifeq ($(BUILD_TARGET), TARGET_NWK)
-layers: mac_phy_make se_make nwk_make ssp_make tc_make
+layers: mac_phy_make se_make tlv_make nwk_make ssp_make tc_make
 endif
 
 ifneq (, $(findstring $(BUILD_TARGET), TARGET_ZIGBEE_STACK))
-layers: mac_phy_make nwk_make aps_make zcl_make zdo_make ssp_make tc_make 
+layers: mac_phy_make tlv_make nwk_make aps_make zcl_make zdo_make ssp_make tc_make 
 endif
 
 ifneq (, $(findstring $(BUILD_TARGET), TARGET_ZIGBEE_BDB_STACK))
-layers: mac_phy_make nwk_make aps_make zcl_make zdo_make bdb_make ssp_make tc_make 
+layers: mac_phy_make tlv_make nwk_make aps_make zcl_make zdo_make bdb_make ssp_make tc_make
 endif
 
 ifeq ($(MAKERULES_ONLY), FALSE)
@@ -117,6 +118,9 @@ zdo_make:
 bdb_make:
 	$(Q)$(MAKE) -j1 all -C $(BDB_PATH)
 
+tlv_make:
+	$(Q)$(MAKE) -j1 all -C $(TLV_PATH)
+
 ssp_make:
 ifneq ($(SECURITY_MODE), NO_SECURITY_MODE)
 	$(Q)$(MAKE) -j1 all -C $(SSP_PATH)
@@ -135,7 +139,7 @@ zcl_make:mac_phy_make
 zdo_make:mac_phy_make
 ssp_make:mac_phy_make
 tc_make:mac_phy_make
-
+tlv_make:mac_phy_make
 endif
 
 zappsi_make:
@@ -324,6 +328,7 @@ ifneq ($(BUILD_TARGET), TARGET_HAL_SE)
 	@echo 'MAC_HWI_PATH = $$''(COMPONENTS_PATH)/'$(MAC_HWI_PATH) >> $(MAKERULES)
   ifneq ($(BUILD_TARGET), TARGET_MAC)
 		@echo 'NWK_PATH     = $$''(COMPONENTS_PATH)/'$(NWK_PATH) >> $(MAKERULES)
+		@echo 'TLV_PATH     = $$''(COMPONENTS_PATH)/'$(TLV_PATH) >> $(MAKERULES)
 		@echo 'APS_PATH     = $$''(COMPONENTS_PATH)/'$(APS_PATH) >> $(MAKERULES)
 		@echo 'ZCL_PATH     = $$''(COMPONENTS_PATH)/'$(ZCL_PATH) >> $(MAKERULES)
 		@echo 'ZDO_PATH     = $$''(COMPONENTS_PATH)/'$(ZDO_PATH) >> $(MAKERULES)
@@ -351,6 +356,7 @@ clean_stack:
 ifneq ($(BUILD_TARGET), TARGET_HAL_SE)
 	$(Q)$(MAKE) -j1 clean -C $(MAC_PHY_PATH)
   ifneq ($(BUILD_TARGET), TARGET_MAC)
+		$(Q)$(MAKE) -j1 clean -C $(TLV_PATH)
 		$(Q)$(MAKE) -j1 clean -C $(NWK_PATH)
 		$(Q)$(MAKE) -j1 clean -C $(APS_PATH)
 		$(Q)$(MAKE) -j1 clean -C $(ZCL_PATH)
@@ -358,6 +364,7 @@ ifneq ($(BUILD_TARGET), TARGET_HAL_SE)
 		$(Q)$(MAKE) -j1 clean -C $(SSP_PATH)
 		$(Q)$(MAKE) -j1 clean -C $(TC_PATH)
 		$(Q)$(MAKE) -j1 clean -C $(BDB_PATH)
+
   endif
 endif
 	@echo All components libraries cleaning is done!

@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _DLGROUPSCLUSTER_H
-#define _DLGROUPSCLUSTER_H
+#ifndef DLGROUPSCLUSTER_H
+#define DLGROUPSCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -129,6 +129,6 @@ void groupsClusterInit(void);
 ******************************************************************************/
 // void groupsSendAddGroupIfIdentifying(APS_AddrMode_t mode, ShortAddr_t addr, Endpoint_t ep,
 //   uint16_t group);
-#endif // _DLGROUPSCLUSTER_H
+#endif // DLGROUPSCLUSTER_H
 
 // eof dlGroupsCluster.h

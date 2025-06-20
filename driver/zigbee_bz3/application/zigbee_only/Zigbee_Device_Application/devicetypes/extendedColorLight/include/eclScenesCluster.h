@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _DLSCENESCLUSTER_H
-#define _DLSCENESCLUSTER_H
+#ifndef DLSCENESCLUSTER_H
+#define DLSCENESCLUSTER_H
 
 /******************************************************************************
                     Includes section

@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPLOWSINK_H
-#define _ZGPLOWSINK_H
+#ifndef ZGPLOWSINK_H
+#define ZGPLOWSINK_H
 
 #ifdef _GREENPOWER_SUPPORT_
 /******************************************************************************
@@ -105,6 +105,6 @@ bool zgpAddExtendSinkTableEntry(ZGP_SinkTableEntry_t *currEntry, ZGP_SinkTableEn
 void zgpFillGpdInfoOfSinkTableEntry(ZGP_SinkTableEntry_t *currEntry, ZGP_SinkTableEntry_t *sinkTableEntry);
 
 #endif // _GREENPOWER_SUPPORT_
-#endif //_ZGPLOWSINK_H
+#endif //ZGPLOWSINK_H
 
 // eof zgpLowSink.h

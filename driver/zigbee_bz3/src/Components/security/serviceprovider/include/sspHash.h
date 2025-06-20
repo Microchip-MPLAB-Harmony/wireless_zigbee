@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _SSPHASH_H
-#define _SSPHASH_H
+#ifndef SSPHASH_H
+#define SSPHASH_H
 
 #include <systemenvironment/include/sysTypes.h>
 #include <security/serviceprovider/include/private/sspHashHandler.h>
@@ -93,8 +93,7 @@ typedef struct
   // Confirm handler pointer
   void (*SSP_KeyedHashMacConf)(SSP_KeyedHashMacConf_t *conf);
 
-  SSP_KeyedHashMacConf_t confirm;
-
+  SSP_KeyedHashMacConf_t confirm; 
 } SSP_KeyedHashMacReq_t;
 
 
@@ -116,6 +115,6 @@ void sspKeyedHashReqHandler(void);
 ******************************************************************************/
 int SSP_BcbHash(unsigned char *digest, unsigned long sz, unsigned char *data);
 
-#endif //#ifndef _SSPHASH_H
+#endif //#ifndef SSPHASH_H
 
 //eof sspHash.h

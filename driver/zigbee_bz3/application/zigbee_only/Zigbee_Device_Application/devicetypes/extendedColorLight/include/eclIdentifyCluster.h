@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _DLIDENTIFYCLUSTER_H
-#define _DLIDENTIFYCLUSTER_H
+#ifndef DLIDENTIFYCLUSTER_H
+#define DLIDENTIFYCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -115,6 +115,6 @@ void identifyStop(void);
 
 void identifyStartIdentifyingCb(uint16_t time, void (*cb)(void));
 
-#endif // _DLIDENTIFYCLUSTER_H
+#endif // DLIDENTIFYCLUSTER_H
 
 // eof dlIdentifyCluster.h

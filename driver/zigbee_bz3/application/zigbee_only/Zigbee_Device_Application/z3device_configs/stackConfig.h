@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _STACK_CONFIG_H_
-#define _STACK_CONFIG_H_
+#ifndef STACK_CONFIG_H
+#define STACK_CONFIG_H
 
 #if (BDB_SUPPORT == 1)
 
@@ -539,4 +539,4 @@
 #endif
 
 
-#endif // _STACK_CONFIG_H_
+#endif // STACK_CONFIG_H

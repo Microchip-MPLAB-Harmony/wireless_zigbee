@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSIAPSSERIALIZATION_H_
-#define _ZSIAPSSERIALIZATION_H_
+#ifndef ZSIAPSSERIALIZATION_H
+#define ZSIAPSSERIALIZATION_H
 
 /******************************************************************************
                     Includes section
@@ -1765,4 +1765,4 @@ zsiAPS_DataIndLength(const APS_DataInd_t *const ind)
 
 #endif /* ZAPPSI_NP */
 
-#endif /* _ZSIAPSSERIALIZATION_H_ */
+#endif /* ZSIAPSSERIALIZATION_H */

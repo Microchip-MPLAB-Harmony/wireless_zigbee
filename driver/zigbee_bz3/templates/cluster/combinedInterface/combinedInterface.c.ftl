@@ -46,14 +46,21 @@
 ******************************************************************************/
 #include <z3device/combinedInterface/include/ciClusters.h>
 #include <z3device/combinedInterface/include/ciIdentifyCluster.h>
+<#if (ONOFF_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciOnOffCluster.h>
+</#if><#if (LEVELCONTROL_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciLevelControlCluster.h>
+</#if>
 #include <z3device/combinedInterface/include/ciCommissioningCluster.h>
 #include <z3device/combinedInterface/include/ciBasicCluster.h>
 #include <z3device/combinedInterface/include/ciGroupsCluster.h>
+<#if (OCCUPANCYSENSING_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciOccupancySensingCluster.h>
+</#if><#if (ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciIlluminanceMeasurementCluster.h>
+</#if><#if (SCENES_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciScenesCluster.h>
+</#if>
 #include <zcl/clusters/include/identifyCluster.h>
 #include <z3device/clusters/include/basicCluster.h>
 #include <z3device/common/include/z3Device.h>
@@ -62,21 +69,43 @@
 #include <zcl/include/zclCommandManager.h>
 #include <z3device/common/include/otauService.h>
 #include <mac_phy/include/mac.h>
+<#if (TEMPERATUREMEASUREMENT_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciTemperatureMeasurementCluster.h>
+</#if><#if (WATERCONTENTMEASUREMENT_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciHumidityMeasurementCluster.h>
+</#if><#if (COLORCONTROL_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciColorControlCluster.h>
+</#if><#if (THERMOSTAT_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciThermostatCluster.h>
+</#if><#if (TIME_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciTimeCluster.h>
+</#if><#if (IASACE_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciIasACECluster.h>
+</#if><#if (IASZONE_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciIasZoneCluster.h>
+</#if>
 
 #ifdef OTAU_SERVER
 #include <zcl/include/zclOTAUCluster.h>
 #endif
 
+<#compress>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  <#assign devicetype = DEVICE_TYPE_FILE_PATH >
+#include <z3device/${devicetype}/include/${deviceTypeFunctionPrefix + clusterName}Cluster.h>
+#include <zcl/include/zcl${clusterName}Cluster.h>
+
+  </#list>
+  
+</#compress>
+
 /*******************************************************************************
                     Static functions section
 *******************************************************************************/
+void ciFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterId_t clusterId);
 #ifdef OTAU_SERVER
 static void ciAddOTAUServerCluster(void);
 #endif //OTAU_SERVER
@@ -104,16 +133,34 @@ static ClusterId_t ciClientClusterToBindIds[] =
 {
   BASIC_CLUSTER_ID,
   IDENTIFY_CLUSTER_ID,
+  <#if (ONOFF_CLUSTER_ENABLE == true) >
   ONOFF_CLUSTER_ID,
+  </#if><#if (LEVELCONTROL_CLUSTER_ENABLE == true) >
   LEVEL_CONTROL_CLUSTER_ID,
+  </#if>
   GROUPS_CLUSTER_ID,
+  <#if (SCENES_CLUSTER_ENABLE == true) >
   SCENES_CLUSTER_ID,
+  </#if><#if (OCCUPANCYSENSING_CLUSTER_ENABLE == true) >
   OCCUPANCY_SENSING_CLUSTER_ID,
+  </#if><#if (ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE == true) >
   ILLUMINANCE_MEASUREMENT_CLUSTER_ID,
+  </#if><#if (TEMPERATUREMEASUREMENT_CLUSTER_ENABLE == true) >
   TEMPERATURE_MEASUREMENT_CLUSTER_ID,
+  </#if><#if (WATERCONTENTMEASUREMENT_CLUSTER_ENABLE == true) >
   HUMIDITY_MEASUREMENT_CLUSTER_ID,
+  </#if><#if (COLORCONTROL_CLUSTER_ENABLE == true) >
   COLOR_CONTROL_CLUSTER_ID,
+  </#if><#if (IASZONE_CLUSTER_ENABLE == true) >
   IAS_ZONE_CLUSTER_ID,
+  </#if>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >  
+  ${clusterName?upper_case}_CLUSTER_ID,
+  </#if>
+  </#list>  
 };
 
 static ClusterId_t ciServerClusterToBindIds[] =
@@ -121,7 +168,16 @@ static ClusterId_t ciServerClusterToBindIds[] =
   BASIC_CLUSTER_ID,
   IDENTIFY_CLUSTER_ID,
   GROUPS_CLUSTER_ID,
+  <#if (IASACE_CLUSTER_ENABLE == true) >
   IAS_ACE_CLUSTER_ID,
+  </#if>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+  <#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >  
+  ${clusterName?upper_case}_CLUSTER_ID,
+  </#if>
+  </#list>
 };
 
 static AppBindReq_t ciBindReq =
@@ -132,7 +188,7 @@ static AppBindReq_t ciBindReq =
   .remoteClientsCnt  = ARRAY_SIZE(ciServerClusterToBindIds),
   .groupId           = 0xffff,
   .srcEndpoint       = APP_ENDPOINT_COMBINED_INTERFACE,
-  .callback          = NULL,
+  .callback          = ciFindingBindingFinishedForACluster,
   .startIdentifyingFn= ciIdetifyStartIdentifyingCb
 };
 
@@ -162,25 +218,46 @@ void appDeviceInit(void)
   ZCL_CommandManagerInit();
   ciBasicClusterInit();
   ciIdentifyClusterInit();
+  <#if (ONOFF_CLUSTER_ENABLE == true) >
   ciOnOffClusterInit();
+  </#if><#if (LEVELCONTROL_CLUSTER_ENABLE == true) >
   ciLevelControlClusterInit();
+  </#if>
   ciGroupsClusterInit();
+  <#if (SCENES_CLUSTER_ENABLE == true) >
   ciScenesClusterInit();
+  </#if><#if (OCCUPANCYSENSING_CLUSTER_ENABLE == true) >
   ciOccupancySensingClusterInit();
+  </#if><#if (ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE == true) >
   ciIlluminanceMeasurementClusterInit();
+  </#if><#if (TEMPERATUREMEASUREMENT_CLUSTER_ENABLE == true) >
   ciTemperatureMeasurementClusterInit();
+  </#if><#if (WATERCONTENTMEASUREMENT_CLUSTER_ENABLE == true) >
   ciHumidityMeasurementClusterInit();
+  </#if>
   ciCommissioningClusterInit();
+  <#if (COLORCONTROL_CLUSTER_ENABLE == true) >
   ciColorControlClusterInit();
+  </#if><#if (THERMOSTAT_CLUSTER_ENABLE == true) >
   ciThermostatClusterInit();
+  </#if><#if (TIME_CLUSTER_ENABLE == true) >
   ciTimeClusterInit();
+  </#if><#if (IASACE_CLUSTER_ENABLE == true) >
   ciIasACEClusterInit();
+  </#if><#if (IASZONE_CLUSTER_ENABLE == true) >
   ciIasZoneClusterInit();
+  </#if>
 
 #ifdef OTAU_SERVER
   ciAddOTAUServerCluster();
   startOtauServer();
 #endif //OTAU_SERVER
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+<#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+<#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  ${deviceTypeFunctionPrefix}${clusterName}Init();
+</#list>
+
 }
 
 /**************************************************************************//**
@@ -236,6 +313,43 @@ void appSecurityInit(void)
 void appDeviceTaskHandler(void)
 {
  /* Do nothing */
+}
+
+/*******************************************************************************
+\brief callback called on the finishing of binding of one cluster
+********************************************************************************/
+<#function hasReportableServerCluster>
+
+
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+
+  <#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
+
+  <#assign prefixAttribute  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_" + "SERVER" + "_ATTRIBUTES_">
+
+  <#list 0..<(prefixAttribute  + "NO")?eval as attributeIndex>
+      <#if (prefixAttribute +"PROP_REPORTABLE_"+attributeIndex)?eval>
+          <#return true>
+      </#if>
+  </#list>
+
+  </#if>
+
+</#list>
+
+  <#return false>
+
+</#function>
+void ciFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterId_t clusterId)
+{
+  <#if (hasReportableServerCluster())>
+  ZCL_StartReporting();
+
+  </#if>
+  (void)ResponentEp;
+  (void)clusterId;
 }
 
 #ifdef OTAU_SERVER

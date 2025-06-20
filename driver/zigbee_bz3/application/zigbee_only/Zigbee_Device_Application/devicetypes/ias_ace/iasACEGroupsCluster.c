@@ -91,7 +91,7 @@ PROGMEM_DECLARE(ZCL_GroupsClusterCommands_t         iasACEGroupsCommands) =
                                      removeGroupInd, removeAllGroupsInd, addGroupIfIdentifyingInd,
                                      addGroupResponseInd, viewGroupResponseInd, getGroupMembershipResponseInd, removeGroupResponseInd)
 };
-extern QueueDescriptor_t groupsSubscribers;
+
 /******************************************************************************
                     Implementation section
 ******************************************************************************/

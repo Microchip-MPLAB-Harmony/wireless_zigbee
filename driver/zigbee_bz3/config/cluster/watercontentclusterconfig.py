@@ -46,6 +46,13 @@ def customWaterContentMeasurementClusterEnableCheck(symbol, event):
     else:
         symbol.setEnabled(False)
 
+def combinedInterfaceWaterContentMeasurementClusterEnableCheck(symbol, event):
+    if ((zigbeeDeviceType.getValue() == 'ZIGBEE_COMBINED_INTERFACE') and (waterContentMeasurementCluster.getValue() == True)):
+        symbol.setEnabled(True)
+    else:
+        symbol.setEnabled(False)
+
+
 def waterContentMeasurementClusterClientCheck(symbol, event):
     if ((waterContentMeasurementCluster.getValue() == False) or waterContentMeasurementClusterCS.getValue() == "SERVER"):
         symbol.setVisible(False)
@@ -76,7 +83,7 @@ def waterContentMeasurementClusterHandling():
     elif ((getDevice == "ZIGBEE_COMBINED_INTERFACE")):
         waterContentMeasurementCluster.setVisible(True)
         waterContentMeasurementCluster.setValue(True)
-        waterContentMeasurementCluster.setReadOnly(True)
+        waterContentMeasurementCluster.setReadOnly(False)
         waterContentMeasurementClusterCS.setValue("CLIENT")
         waterContentMeasurementClusterCS.setReadOnly(True)
     elif ((getDevice == "ZIGBEE_MULTI_SENSOR")):
@@ -94,7 +101,10 @@ def waterContentMeasurementClusterHandling():
     elif ((getDevice == "ZIGBEE_CUSTOM")):
         waterContentMeasurementCluster.setVisible(True)
         waterContentMeasurementCluster.setValue(True)
-        waterContentMeasurementClusterCS.setValue("BOTH")
+        waterContentMeasurementClusterCS.setValue("SERVER")
+        waterContentMeasurementClusterCS.setVisible(True)
+        waterContentMeasurementClusterClientMenu.setVisible(False) 
+        waterContentMeasurementClusterServerMenu.setVisible(True)
     else:
         waterContentMeasurementCluster.setVisible(False)
 
@@ -139,12 +149,14 @@ waterContentMeasurementClusterCS.setDefaultValue("BOTH")
 waterContentMeasurementClusterCS.setDescription("WaterContent Measurement Cluster Supported Implementation- Select the option")
 waterContentMeasurementClusterCS.setDependencies(waterContentMeasurementClusterCsCheck,["WATERCONTENTMEASUREMENT_CLUSTER_ENABLE"])
 
+global waterContentMeasurementClusterClientMenu
 waterContentMeasurementClusterClientMenu = drvZigbeeComponent.createMenuSymbol("WATERCONTENTMEASUREMENT_CLUSTER_CLIENT_MENU", waterContentMeasurementCluster)
 waterContentMeasurementClusterClientMenu.setLabel("Client")
 #waterContentMeasurementClusterClientMenu.setVisible(False)
 waterContentMeasurementClusterClientMenu.setDescription("WATERCONTENT MEASUREMENT CLUSTER CLIENT")
 waterContentMeasurementClusterClientMenu.setDependencies(waterContentMeasurementClusterClientCheck,["WATERCONTENTMEASUREMENT_CLUSTER_CS","WATERCONTENTMEASUREMENT_CLUSTER_ENABLE"])
 
+global waterContentMeasurementClusterServerMenu
 waterContentMeasurementClusterServerMenu = drvZigbeeComponent.createMenuSymbol("WATERCONTENTMEASUREMENT_CLUSTER_SERVER_MENU", waterContentMeasurementCluster)
 waterContentMeasurementClusterServerMenu.setLabel("Server")
 #waterContentMeasurementClusterServerMenu.setVisible(False)
@@ -279,7 +291,18 @@ waterContentMeasClusterConfSrc.setProjectPath("config/" + configName + "/zigbee/
 waterContentMeasClusterConfSrc.setType("SOURCE")
 waterContentMeasClusterConfSrc.setOverwrite(True)
 waterContentMeasClusterConfSrc.setMarkup(True)
-waterContentMeasClusterConfSrc.setEnabled(checkDevTypeCombInterface)
+waterContentMeasClusterConfSrc.setEnabled(checkDevTypeCombInterface and waterContentMeasurementCluster.getValue())
+waterContentMeasClusterConfSrc.setDependencies(combinedInterfaceWaterContentMeasurementClusterEnableCheck, ["WATERCONTENTMEASUREMENT_CLUSTER_ENABLE"])
+
+waterContentMeasClusterConfInc = drvZigbeeComponent.createFileSymbol("CIHUMIDITYMEASUREMENTCLUSTER_H", None)
+waterContentMeasClusterConfInc.setSourcePath("/driver/zigbee" + suffix + "/application/zigbee_only/Zigbee_Device_Application/devicetypes/combinedInterface/include/ciHumidityMeasurementCluster.h")
+waterContentMeasClusterConfInc.setOutputName("ciHumidityMeasurementCluster.h")
+waterContentMeasClusterConfInc.setDestPath("/zigbee/z3device/combinedInterface/include")
+waterContentMeasClusterConfInc.setProjectPath("config/" + configName + "/zigbee/z3device/combinedInterface/include/")
+waterContentMeasClusterConfInc.setType("HEADER")
+waterContentMeasClusterConfInc.setOverwrite(True)
+waterContentMeasClusterConfInc.setEnabled(checkDevTypeCombInterface and waterContentMeasurementCluster.getValue())
+waterContentMeasClusterConfInc.setDependencies(combinedInterfaceWaterContentMeasurementClusterEnableCheck,["WATERCONTENTMEASUREMENT_CLUSTER_ENABLE"])
 
 # WATER CONTENT MEASUREMENT CLUSTER - Multi Sensor
 waterContentMeasClusterConfSrc = drvZigbeeComponent.createFileSymbol("ZIGBEE_WATERCONTENTMEASUREMENT_CLUSTER_CONF_SRC_MS", None)

@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZSIBDBSERIALIZATION_H
-#define _ZSIBDBSERIALIZATION_H
+#ifndef ZSIBDBSERIALIZATION_H
+#define ZSIBDBSERIALIZATION_H
 
 /******************************************************************************
                     Includes section
@@ -200,4 +200,4 @@ INLINE uint16_t zsiBDB_SetBdbNodeIsOnANetworkConfLength(const void *const req)
 #define zsiDeserializeBDB_SetBdbNodeIsOnANetworkConf NULL
 #endif /* ZAPPSI_NP */
 
-#endif /* _ZSIPDSSERIALIZATION_H */
+#endif /* ZSIPDSSERIALIZATION_H */

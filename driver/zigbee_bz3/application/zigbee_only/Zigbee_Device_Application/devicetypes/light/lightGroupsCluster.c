@@ -94,7 +94,6 @@ PROGMEM_DECLARE(ZCL_GroupsClusterCommands_t         lightGroupsCommands) =
 };
 
 extern Scene_t lightSceneTable[];
-extern QueueDescriptor_t groupsSubscribers;
 
 /******************************************************************************
                     Implementation section

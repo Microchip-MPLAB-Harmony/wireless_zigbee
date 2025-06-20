@@ -60,13 +60,25 @@
 ZDO_PRIVATE void zdoZdpDiscoveryRequestCreate(ZDO_ZdpReq_t *zdpReq);
 
 /******************************************************************************
-  \brief Process ZDP Discovery request.
+  \brief Prepare ZDP request to be sent for reserved/unsupported clusters.
+  \param[in] zdpReq - the pointer to the ZDP request's structure for ZDP Reserved Cluster Requests.
+  \return None.
+ ******************************************************************************/
+ZDO_PRIVATE void zdoZdpCreateRequestForReservedClusters(ZDO_ZdpReq_t *zdpReq);
 
-  \param[in] apsDataInd - pointer to APSDE-DATA indication structure of
-                          the received ZDP command.
+/******************************************************************************
+  \brief Process ZDP Discovery request.
+  \param[in] apsDataInd - pointer to APSDE-DATA indication structure of the received ZDP command.
   \return None.
  ******************************************************************************/
 ZDO_PRIVATE void zdoZdpDiscoveryMessageInd(const APS_DataInd_t *const apsDataInd);
+
+/******************************************************************************
+  \brief Process ZDP request for reserved/unsupported clusters
+  \param[in] apsDataInd - pointer to APSDE-DATA indication structure of the received ZDP command.
+  \return None.
+ ******************************************************************************/
+ZDO_PRIVATE void zdoZdpMessageIndForReservedClusters(const APS_DataInd_t *const apsDataInd);
 
 /******************************************************************************
   \brief Process ZDP Device Annce command.

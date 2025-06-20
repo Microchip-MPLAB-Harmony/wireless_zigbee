@@ -69,6 +69,12 @@ ZCL_HumidityMeasurementClusterClientAttributes_t customHumidityMeasurementCluste
 };
 </#if>
 
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+<#if ((WATERCONTENTMEASUREMENT_CLUSTER_ENABLE == true) && ((WATERCONTENTMEASUREMENT_CLUSTER_CS != "CLIENT") || (WATERCONTENTMEASUREMENT_CLUSTER_CS == "BOTH")))>
+    ZCL_HumidityMeasurementClusterServerAttributes_t __attribute__((persistent)) backupCstmHumidityMeasurementClusterServerAttributes;
+</#if>
+</#if>
+
 /******************************************************************************
                     Prototypes section
 ******************************************************************************/
@@ -194,6 +200,22 @@ static void customHumidityAttributeEventInd(ZCL_Addressing_t *addressing, ZCL_At
   }
 
 }
+</#if>
+/*********************************************************************************
+*********************************************************************************/
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+<#if ((WATERCONTENTMEASUREMENT_CLUSTER_ENABLE == true) && ((WATERCONTENTMEASUREMENT_CLUSTER_CS != "CLIENT") || (WATERCONTENTMEASUREMENT_CLUSTER_CS == "BOTH")))>
+void CDhsBackupHsAttributes(void)
+{
+   memcpy4ByteAligned(&backupCstmHumidityMeasurementClusterServerAttributes,&customHumidityMeasurementClusterServerAttributes, sizeof(ZCL_HumidityMeasurementClusterServerAttributes_t));
+}
+</#if>
+<#if ((WATERCONTENTMEASUREMENT_CLUSTER_ENABLE == true) && ((WATERCONTENTMEASUREMENT_CLUSTER_CS != "CLIENT") || (WATERCONTENTMEASUREMENT_CLUSTER_CS == "BOTH")))>
+void CDhsRestoreHsAttributes(void)
+{
+  memcpy4ByteAligned(&customHumidityMeasurementClusterServerAttributes, &backupCstmHumidityMeasurementClusterServerAttributes, sizeof(ZCL_HumidityMeasurementClusterServerAttributes_t));
+}
+</#if>
 </#if>
 #endif // APP_DEVICE_TYPE_CUSTOM_DEVICE
 

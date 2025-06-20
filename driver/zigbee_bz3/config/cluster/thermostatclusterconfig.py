@@ -46,6 +46,12 @@ def customThermostatClusterEnabledCheck(symbol, event):
     else:
         symbol.setEnabled(False)
 
+def combinedInterfaceThermostatClusterEnabledCheck(symbol, event):
+    if ((zigbeeDeviceType.getValue() == 'ZIGBEE_COMBINED_INTERFACE') and (thermostatCluster.getValue() == True)):
+        symbol.setEnabled(True)
+    else:
+        symbol.setEnabled(False)
+
 def thermostatClusterClientCheck(symbol, event):
     if ((thermostatCluster.getValue() == False) or thermostatClusterCS.getValue() == "SERVER"):
         symbol.setVisible(False)
@@ -77,7 +83,7 @@ def thermostatClusterHandling():
     elif ((getDevice == "ZIGBEE_COMBINED_INTERFACE")):
         thermostatCluster.setVisible(True)
         thermostatCluster.setValue(True)
-        thermostatCluster.setReadOnly(True)
+        thermostatCluster.setReadOnly(False)
         thermostatClusterCS.setValue("CLIENT")
         thermostatClusterCS.setReadOnly(True)
     elif ((getDevice == "ZIGBEE_THERMOSTAT")):
@@ -89,7 +95,10 @@ def thermostatClusterHandling():
     elif ((getDevice == "ZIGBEE_CUSTOM")):
         thermostatCluster.setVisible(True)
         thermostatCluster.setValue(True)
-        thermostatClusterCS.setValue("BOTH")
+        thermostatClusterCS.setValue("SERVER")
+        thermostatClusterCS.setVisible(True)
+        thermostatClusterClientMenu.setVisible(False) 
+        thermostatClusterServerMenu.setVisible(True)
     else:
         thermostatCluster.setVisible(False)
 
@@ -147,6 +156,8 @@ def thermostatClusterServerAttributeCountUpdate(symbol, event):
         count += 1
     if (thermostatClusterServerAttributeClusterRevision.getValue()):
         count += 1
+    if (thermostatClusterServerAttributeThermostatRunningState.getValue()):
+        count += 1
     thermostatClusterServerAttributeCount.setValue(count) 
     return count
 
@@ -179,17 +190,19 @@ thermostatCluster.setReadOnly(False)
 global thermostatClusterCS
 thermostatClusterCS = drvZigbeeComponent.createComboSymbol("THERMOSTAT_CLUSTER_CS",  thermostatCluster, ["CLIENT","SERVER", "BOTH"])
 thermostatClusterCS.setLabel("Supported Implementation")
-thermostatClusterCS.setDefaultValue("BOTH")
+thermostatClusterCS.setDefaultValue("SERVER")
 #thermostatClusterCS.setVisible(False)
 thermostatClusterCS.setDescription("Thermostat Cluster Supported Implementation- Select the option")
 thermostatClusterCS.setDependencies(thermostatClusterCsCheck,["THERMOSTAT_CLUSTER_ENABLE"])
 
+global thermostatClusterClientMenu
 thermostatClusterClientMenu = drvZigbeeComponent.createMenuSymbol("THERMOSTAT_CLUSTER_CLIENT_MENU", thermostatCluster)
 thermostatClusterClientMenu.setLabel("Client")
 #thermostatClusterClientMenu.setVisible(False)
 thermostatClusterClientMenu.setDescription("THERMOSTAT CLUSTER CLIENT")
 thermostatClusterClientMenu.setDependencies(thermostatClusterClientCheck,["THERMOSTAT_CLUSTER_CS","THERMOSTAT_CLUSTER_ENABLE"])
 
+global thermostatClusterServerMenu
 thermostatClusterServerMenu = drvZigbeeComponent.createMenuSymbol("THERMOSTAT_CLUSTER_SERVER_MENU", thermostatCluster)
 thermostatClusterServerMenu.setLabel("Server")
 #thermostatClusterServerMenu.setVisible(False)
@@ -233,62 +246,92 @@ thermostatClusterServerAttributeLocalTemperature.setReadOnly(True)
 global thermostatClusterServerAttributeOutdoorTemperature
 thermostatClusterServerAttributeOutdoorTemperature = drvZigbeeComponent.createBooleanSymbol("TC_OUTDOORTEMP", thermostatClusterServerAttributes)
 thermostatClusterServerAttributeOutdoorTemperature.setLabel("0x0001 OutdoorTemperature")
-thermostatClusterServerAttributeOutdoorTemperature.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeOutdoorTemperature.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeOutdoorTemperature.setDefaultValue(True)
 thermostatClusterServerAttributeOutdoorTemperature.setDescription("OutdoorTemperature - check the box to enable")
 
 global thermostatClusterServerAttributeOccupancy
 thermostatClusterServerAttributeOccupancy = drvZigbeeComponent.createBooleanSymbol("TC_OCCUPANCY", thermostatClusterServerAttributes)
 thermostatClusterServerAttributeOccupancy.setLabel("0x0002 Occupancy")
-thermostatClusterServerAttributeOccupancy.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeOccupancy.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeOccupancy.setDefaultValue(True)
 thermostatClusterServerAttributeOccupancy.setDescription("Occupancy - check the box to enable")
 
 global thermostatClusterServerAttributeAbsMinHeatSetpointLimit
 thermostatClusterServerAttributeAbsMinHeatSetpointLimit = drvZigbeeComponent.createBooleanSymbol("TC_ABSMINHEATSETPOINTLIMIT", thermostatClusterServerAttributes)
 thermostatClusterServerAttributeAbsMinHeatSetpointLimit.setLabel("0x0003 AbsMinHeatSetpointLimit")
-thermostatClusterServerAttributeAbsMinHeatSetpointLimit.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeAbsMinHeatSetpointLimit.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeAbsMinHeatSetpointLimit.setDefaultValue(True)
 thermostatClusterServerAttributeAbsMinHeatSetpointLimit.setDescription("AbsMinHeatSetpointLimit - check the box to enable")
 
 global thermostatClusterServerAttributeAbsMaxHeatSetpointLimit
 thermostatClusterServerAttributeAbsMaxHeatSetpointLimit = drvZigbeeComponent.createBooleanSymbol("TC_ABSMAXHEATSETPOINTLIMIT", thermostatClusterServerAttributes)
 thermostatClusterServerAttributeAbsMaxHeatSetpointLimit.setLabel("0x0004 AbsMaxHeatSetpointLimit")
-thermostatClusterServerAttributeAbsMaxHeatSetpointLimit.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeAbsMaxHeatSetpointLimit.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeAbsMaxHeatSetpointLimit.setDefaultValue(True)
 thermostatClusterServerAttributeAbsMaxHeatSetpointLimit.setDescription("AbsMaxHeatSetpointLimit - check the box to enable")
 
 global thermostatClusterServerAttributeAbsMinCoolSetpointLimit
 thermostatClusterServerAttributeAbsMinCoolSetpointLimit = drvZigbeeComponent.createBooleanSymbol("TC_ABSMINCOOLSETPOINTLIMIT", thermostatClusterServerAttributes)
 thermostatClusterServerAttributeAbsMinCoolSetpointLimit.setLabel("0x0005 AbsMinCoolSetpointLimit")
-thermostatClusterServerAttributeAbsMinCoolSetpointLimit.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeAbsMinCoolSetpointLimit.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeAbsMinCoolSetpointLimit.setDefaultValue(True)
 thermostatClusterServerAttributeAbsMinCoolSetpointLimit.setDescription("AbsMinCoolSetpointLimit - check the box to enable")
 
 global thermostatClusterServerAttributeAbsMaxCoolSetpointLimit
 thermostatClusterServerAttributeAbsMaxCoolSetpointLimit = drvZigbeeComponent.createBooleanSymbol("TC_ABSMAXCOOLSETPOINTLIMIT", thermostatClusterServerAttributes)
 thermostatClusterServerAttributeAbsMaxCoolSetpointLimit.setLabel("0x0006 AbsMaxCoolSetpointLimit ")
-thermostatClusterServerAttributeAbsMaxCoolSetpointLimit.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeAbsMaxCoolSetpointLimit.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeAbsMaxCoolSetpointLimit.setDefaultValue(True)
 thermostatClusterServerAttributeAbsMaxCoolSetpointLimit.setDescription("AbsMaxCoolSetpointLimit  - check the box to enable")
 
 global thermostatClusterServerAttributePICoolingDemand
 thermostatClusterServerAttributePICoolingDemand = drvZigbeeComponent.createBooleanSymbol("TC_PICOOLINGDEMAND", thermostatClusterServerAttributes)
 thermostatClusterServerAttributePICoolingDemand.setLabel("0x0007 PICoolingDemand")
-thermostatClusterServerAttributePICoolingDemand.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributePICoolingDemand.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributePICoolingDemand.setDefaultValue(True)
 thermostatClusterServerAttributePICoolingDemand.setDescription("PICoolingDemand - check the box to enable")
 
 global thermostatClusterServerAttributePIHeatingDemand
 thermostatClusterServerAttributePIHeatingDemand = drvZigbeeComponent.createBooleanSymbol("TC_PIHEATINGDEMAND", thermostatClusterServerAttributes)
 thermostatClusterServerAttributePIHeatingDemand.setLabel("0x0008 PIHeatingDemand")
-thermostatClusterServerAttributePIHeatingDemand.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributePIHeatingDemand.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributePIHeatingDemand.setDefaultValue(True)
 thermostatClusterServerAttributePIHeatingDemand.setDescription("PIHeatingDemand - check the box to enable")
 
 global thermostatClusterServerAttributeHVACSystemTypeConfiguration
 thermostatClusterServerAttributeHVACSystemTypeConfiguration = drvZigbeeComponent.createBooleanSymbol("TC_HVACSYSTEMCONFIG", thermostatClusterServerAttributes)
 thermostatClusterServerAttributeHVACSystemTypeConfiguration.setLabel("0x0009 HVACSystemTypeConfiguration")
-thermostatClusterServerAttributeHVACSystemTypeConfiguration.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeHVACSystemTypeConfiguration.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeHVACSystemTypeConfiguration.setDefaultValue(True)
 thermostatClusterServerAttributeHVACSystemTypeConfiguration.setDescription("HVACSystemTypeConfiguration - check the box to enable")
 
 ## Thermostat Settings Attribute Set
 global thermostatClusterServerAttributeLocalTempCalib
 thermostatClusterServerAttributeLocalTempCalib = drvZigbeeComponent.createBooleanSymbol("TC_LOCALTEMPCALIBRATION", thermostatClusterServerAttributes)
 thermostatClusterServerAttributeLocalTempCalib.setLabel("0x0010 LocalTemperatureCalibration")
-thermostatClusterServerAttributeLocalTempCalib.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeLocalTempCalib.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeLocalTempCalib.setDefaultValue(True)
 thermostatClusterServerAttributeLocalTempCalib.setDescription("LocalTemperatureCalibration - check the box to enable")
 
 global thermostatClusterServerAttributeOccupiedCoolingSetpoint
@@ -308,49 +351,73 @@ thermostatClusterServerAttributeOccupiedHeatingSetpoint.setReadOnly(True)
 global thermostatClusterServerAttributeUnoccupiedCoolingSetpoint
 thermostatClusterServerAttributeUnoccupiedCoolingSetpoint = drvZigbeeComponent.createBooleanSymbol("TC_UNOCCUPIEDCOOLINGSETPOINT", thermostatClusterServerAttributes)
 thermostatClusterServerAttributeUnoccupiedCoolingSetpoint.setLabel("0x0013 UnoccupiedCoolingSetpoint")
-thermostatClusterServerAttributeUnoccupiedCoolingSetpoint.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeUnoccupiedCoolingSetpoint.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeUnoccupiedCoolingSetpoint.setDefaultValue(True)
 thermostatClusterServerAttributeUnoccupiedCoolingSetpoint.setDescription("UnoccupiedCoolingSetpoint - check the box to enable")
 
 global thermostatClusterServerAttributeUnoccupiedHeatingSetpoint
 thermostatClusterServerAttributeUnoccupiedHeatingSetpoint = drvZigbeeComponent.createBooleanSymbol("TC_UNOCCUPIEDHEATINGSETPOINT", thermostatClusterServerAttributes)
 thermostatClusterServerAttributeUnoccupiedHeatingSetpoint.setLabel("0x0014 UnoccupiedHeatingSetpoint")
-thermostatClusterServerAttributeUnoccupiedHeatingSetpoint.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeUnoccupiedHeatingSetpoint.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeUnoccupiedHeatingSetpoint.setDefaultValue(True)
 thermostatClusterServerAttributeUnoccupiedHeatingSetpoint.setDescription("UnoccupiedHeatingSetpoint - check the box to enable")
 
 global thermostatClusterServerAttributeMinHeatSetpointLimit
 thermostatClusterServerAttributeMinHeatSetpointLimit = drvZigbeeComponent.createBooleanSymbol("TC_MINHEATSETPOINTLIMIT", thermostatClusterServerAttributes)
 thermostatClusterServerAttributeMinHeatSetpointLimit.setLabel("0x0015 MinHeatSetpointLimit")
-thermostatClusterServerAttributeMinHeatSetpointLimit.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeMinHeatSetpointLimit.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeMinHeatSetpointLimit.setDefaultValue(True)
 thermostatClusterServerAttributeMinHeatSetpointLimit.setDescription("MinHeatSetpointLimit  - check the box to enable")
 
 global thermostatClusterServerAttributeMaxHeatSetpointLimit
 thermostatClusterServerAttributeMaxHeatSetpointLimit = drvZigbeeComponent.createBooleanSymbol("TC_MAXHEATSETPOINTLIMIT", thermostatClusterServerAttributes)
 thermostatClusterServerAttributeMaxHeatSetpointLimit.setLabel("0x0016 MaxHeatSetpointLimit")
-thermostatClusterServerAttributeMaxHeatSetpointLimit.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeMaxHeatSetpointLimit.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeMaxHeatSetpointLimit.setDefaultValue(True)
 thermostatClusterServerAttributeMaxHeatSetpointLimit.setDescription("MaxHeatSetpointLimit  - check the box to enable")
 
 global thermostatClusterServerAttributeMinCoolSetpointLimit
 thermostatClusterServerAttributeMinCoolSetpointLimit = drvZigbeeComponent.createBooleanSymbol("TC_MINCOOLSETPOINTLIMIT", thermostatClusterServerAttributes)
 thermostatClusterServerAttributeMinCoolSetpointLimit.setLabel("0x0017 MinCoolSetpointLimit")
-thermostatClusterServerAttributeMinCoolSetpointLimit.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeMinCoolSetpointLimit.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeMinCoolSetpointLimit.setDefaultValue(True)
 thermostatClusterServerAttributeMinCoolSetpointLimit.setDescription("MinCoolSetpointLimit - check the box to enable")
 
 global thermostatClusterServerAttributeMaxCoolSetpointLimit
 thermostatClusterServerAttributeMaxCoolSetpointLimit = drvZigbeeComponent.createBooleanSymbol("TC_MAXCOOLSETPOINTLIMIT", thermostatClusterServerAttributes)
 thermostatClusterServerAttributeMaxCoolSetpointLimit.setLabel("0x0018 MaxCoolSetpointLimit")
-thermostatClusterServerAttributeMaxCoolSetpointLimit.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeMaxCoolSetpointLimit.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeMaxCoolSetpointLimit.setDefaultValue(True)
 thermostatClusterServerAttributeMaxCoolSetpointLimit.setDescription("MaxCoolSetpointLimit - check the box to enable")
 
 global thermostatClusterServerAttributeMinSetpointDeadBand
 thermostatClusterServerAttributeMinSetpointDeadBand = drvZigbeeComponent.createBooleanSymbol("TC_MINSETPOINTDEADBAND", thermostatClusterServerAttributes)
 thermostatClusterServerAttributeMinSetpointDeadBand.setLabel("0x0019 MinSetpointDeadBand")
-thermostatClusterServerAttributeMinSetpointDeadBand.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeMinSetpointDeadBand.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeMinSetpointDeadBand.setDefaultValue(True)
 thermostatClusterServerAttributeMinSetpointDeadBand.setDescription("MinSetpointDeadBand - check the box to enable")
 
 global thermostatClusterServerAttributeRemoteSensing
 thermostatClusterServerAttributeRemoteSensing = drvZigbeeComponent.createBooleanSymbol("TC_REMOTESENSING", thermostatClusterServerAttributes)
 thermostatClusterServerAttributeRemoteSensing.setLabel("0x001A RemoteSensing")
-thermostatClusterServerAttributeRemoteSensing.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeRemoteSensing.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeRemoteSensing.setDefaultValue(True)
 thermostatClusterServerAttributeRemoteSensing.setDescription("RemoteSensing  - check the box to enable")
 
 global thermostatClusterServerAttributeControlSequenceOfOperation
@@ -370,14 +437,29 @@ thermostatClusterServerAttributeSystemMode.setReadOnly(True)
 global thermostatClusterServerAttributeAlarmMask
 thermostatClusterServerAttributeAlarmMask = drvZigbeeComponent.createBooleanSymbol("TC_ALARMMASK", thermostatClusterServerAttributes)
 thermostatClusterServerAttributeAlarmMask.setLabel("0x001D AlarmMask")
-thermostatClusterServerAttributeAlarmMask.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeAlarmMask.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeAlarmMask.setDefaultValue(True)
 thermostatClusterServerAttributeAlarmMask.setDescription("AlarmMask - check the box to enable")
 
 global thermostatClusterServerAttributeThermostatRunningMode
 thermostatClusterServerAttributeThermostatRunningMode  = drvZigbeeComponent.createBooleanSymbol("TC_THERMOSTATRUNNINGMODE", thermostatClusterServerAttributes)
 thermostatClusterServerAttributeThermostatRunningMode.setLabel("0x001E ThermostatRunningMode")
-thermostatClusterServerAttributeThermostatRunningMode.setDefaultValue(True)
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeThermostatRunningMode.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeThermostatRunningMode.setDefaultValue(True)
 thermostatClusterServerAttributeThermostatRunningMode.setDescription("ThermostatRunningMode - check the box to enable")
+
+global thermostatClusterServerAttributeThermostatRunningState
+thermostatClusterServerAttributeThermostatRunningState = drvZigbeeComponent.createBooleanSymbol("TC_THERMOSTATRUNNINGSTATE", thermostatClusterServerAttributes)
+thermostatClusterServerAttributeThermostatRunningState.setLabel("0x0026 ThermostatRunningState")
+if (zigbeeDeviceType.getValue() == 'ZIGBEE_CUSTOM'):
+    thermostatClusterServerAttributeThermostatRunningState.setDefaultValue(False)
+else:
+    thermostatClusterServerAttributeThermostatRunningState.setDefaultValue(True)
+thermostatClusterServerAttributeThermostatRunningState.setDescription("ThermostatRunningState - check the box to enable")
 
 # ## Thermostat Schedule & HVAC Relay Attribute Set
 # thermostatClusterServerAttributeStartOfWeek  = drvZigbeeComponent.createBooleanSymbol("TC_STARTOFWEEK", thermostatClusterServerAttributes)
@@ -410,10 +492,7 @@ thermostatClusterServerAttributeThermostatRunningMode.setDescription("Thermostat
 # thermostatClusterServerAttributeThermostatProgrammingOpMode.setDefaultValue(True)
 # thermostatClusterServerAttributeThermostatProgrammingOpMode.setDescription("ThermostatProgrammingOperationMode - check the box to enable")
 
-# thermostatClusterServerAttributeThermostatRunningState = drvZigbeeComponent.createBooleanSymbol("TC_THERMOSTATRUNNINGSTATE", thermostatClusterServerAttributes)
-# thermostatClusterServerAttributeThermostatRunningState.setLabel("0x0026 ThermostatRunningState")
-# thermostatClusterServerAttributeThermostatRunningState.setDefaultValue(True)
-# thermostatClusterServerAttributeThermostatRunningState.setDescription("ThermostatRunningState - check the box to enable")
+
 
 # ## Thermostat Setpoint Change Tracking Attribute Set
 # thermostatClusterServerAttributeSetpointChangeSource = drvZigbeeComponent.createBooleanSymbol("TC_SETPOINTCHANGESOURCE", thermostatClusterServerAttributes)
@@ -523,7 +602,7 @@ thermostatClusterServerAttributeCount.setDefaultValue(thermostatClusterServerAtt
 thermostatClusterServerAttributeCount.setVisible(True)
 thermostatClusterServerAttributeCount.setDescription("Attributes Count")
 thermostatClusterServerAttributeCount.setReadOnly(True)
-thermostatClusterServerAttributeCount.setDependencies(thermostatClusterServerAttributeCountUpdate,["THC_CLUSTERREVISION","TC_THERMOSTATRUNNINGMODE","TC_ALARMMASK","TC_SYSTEMMODE","TC_CONTROLSEQOPERATION","TC_REMOTESENSING","TC_MINSETPOINTDEADBAND","TC_MAXCOOLSETPOINTLIMIT","TC_MINCOOLSETPOINTLIMIT","TC_MAXHEATSETPOINTLIMIT","TC_MINHEATSETPOINTLIMIT","TC_UNOCCUPIEDCOOLINGSETPOINT","TC_OCCUPIEDHEATINGSETPOINT","TC_OCCUPIEDCOOLINGSETPOINT","TC_LOCALTEMPCALIBRATION","TC_HVACSYSTEMCONFIG","TC_PIHEATINGDEMAND","TC_PICOOLINGDEMAND","TC_ABSMAXCOOLSETPOINTLIMIT","TC_ABSMINCOOLSETPOINTLIMIT","TC_ABSMAXHEATSETPOINTLIMIT","TC_ABSMINHEATSETPOINTLIMIT","TC_OCCUPANCY","TC_OUTDOORTEMP","TC_LOCALTEMP"])
+thermostatClusterServerAttributeCount.setDependencies(thermostatClusterServerAttributeCountUpdate,["TC_THERMOSTATRUNNINGSTATE","THC_CLUSTERREVISION","TC_THERMOSTATRUNNINGMODE","TC_ALARMMASK","TC_SYSTEMMODE","TC_CONTROLSEQOPERATION","TC_REMOTESENSING","TC_MINSETPOINTDEADBAND","TC_MAXCOOLSETPOINTLIMIT","TC_MINCOOLSETPOINTLIMIT","TC_MAXHEATSETPOINTLIMIT","TC_MINHEATSETPOINTLIMIT","TC_UNOCCUPIEDCOOLINGSETPOINT","TC_OCCUPIEDHEATINGSETPOINT","TC_OCCUPIEDCOOLINGSETPOINT","TC_LOCALTEMPCALIBRATION","TC_HVACSYSTEMCONFIG","TC_PIHEATINGDEMAND","TC_PICOOLINGDEMAND","TC_ABSMAXCOOLSETPOINTLIMIT","TC_ABSMINCOOLSETPOINTLIMIT","TC_ABSMAXHEATSETPOINTLIMIT","TC_ABSMINHEATSETPOINTLIMIT","TC_OCCUPANCY","TC_OUTDOORTEMP","TC_LOCALTEMP"])
 
 
 #################               Server Commands                                 ###############
@@ -631,7 +710,18 @@ thermostatClusterConfSrc.setProjectPath("config/" + configName + "/zigbee/z3devi
 thermostatClusterConfSrc.setType("SOURCE")
 thermostatClusterConfSrc.setOverwrite(True)
 thermostatClusterConfSrc.setMarkup(True)
-thermostatClusterConfSrc.setEnabled(checkDevTypeCombInterface)
+thermostatClusterConfSrc.setEnabled(checkDevTypeCombInterface and thermostatCluster.getValue())
+thermostatClusterConfSrc.setDependencies(combinedInterfaceThermostatClusterEnabledCheck, ["THERMOSTAT_CLUSTER_ENABLE"])
+
+thermostatClusterConfInc = drvZigbeeComponent.createFileSymbol("CITHERMOSTATCLUSTER_H", None)
+thermostatClusterConfInc.setSourcePath("/driver/zigbee" + suffix + "/application/zigbee_only/Zigbee_Device_Application/devicetypes/combinedInterface/include/ciThermostatCluster.h")
+thermostatClusterConfInc.setOutputName("ciThermostatCluster.h")
+thermostatClusterConfInc.setDestPath("/zigbee/z3device/combinedInterface/include")
+thermostatClusterConfInc.setProjectPath("config/" + configName + "/zigbee/z3device/combinedInterface/include/")
+thermostatClusterConfInc.setType("HEADER")
+thermostatClusterConfInc.setOverwrite(True)
+thermostatClusterConfInc.setEnabled(checkDevTypeCombInterface and thermostatCluster.getValue())
+thermostatClusterConfInc.setDependencies(combinedInterfaceThermostatClusterEnabledCheck,["THERMOSTAT_CLUSTER_ENABLE"])
 
 # THERMOSTAT CLUSTER - Thermostat
 thermostatClusterConfSrc = drvZigbeeComponent.createFileSymbol("ZIGBEE_THERMOSTAT_CLUSTER_CONF_SRC_THPDT", None)

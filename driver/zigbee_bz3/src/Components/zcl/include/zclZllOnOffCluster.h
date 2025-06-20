@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZCLZLLONOFFCLUSTER_H
-#define	_ZCLZLLONOFFCLUSTER_H
+#ifndef ZCLZLLONOFFCLUSTER_H
+#define	ZCLZLLONOFFCLUSTER_H
 
 /*!
 Attributes and commands for determining basic information about a device,
@@ -368,5 +368,5 @@ typedef struct
     .length = sizeof(uint8_t), \
     .onOffValue = value
 
-#endif	/* _ZCLZLLONOFFCLUSTER_H */
+#endif	/* ZCLZLLONOFFCLUSTER_H */
 

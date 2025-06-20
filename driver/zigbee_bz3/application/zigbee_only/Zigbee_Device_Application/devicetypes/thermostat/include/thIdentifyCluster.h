@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _THIDENTIFYCLUSTER_H
-#define _THIDENTIFYCLUSTER_H
+#ifndef THIDENTIFYCLUSTER_H
+#define THIDENTIFYCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -87,6 +87,6 @@ void thIdentifyStart(uint16_t identifyTime);
 ******************************************************************************/
 void thIdentifyStop(void);
 
-#endif // _THIDENTIFYCLUSTER_H
+#endif // THIDENTIFYCLUSTER_H
 
 // eof thIdentifyCluster.h

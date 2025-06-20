@@ -41,8 +41,8 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#if !defined _APS_COMMON_H
-#define _APS_COMMON_H
+#if !defined APS_COMMON_H
+#define APS_COMMON_H
 // DOM-IGNORE-END
 
 /******************************************************************************
@@ -251,6 +251,10 @@ typedef enum
   APS_INVALID_EP_STATUS                  = 0x82,
   /** A transmit request has failed since the ASDU is too large and fragmentation
    * is not supported. */
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  //! Request is not authorized from this device
+  APS_NOT_AUTHORIZED_STATUS              = 0x8D,
+#endif
   APS_ASDU_TOO_LONG_STATUS               = 0xa0,
   /** A received fragmented frame can not be defragmented currently. */
   APS_DEFRAG_DEFERRED_STATUS             = 0xa1,
@@ -450,6 +454,6 @@ typedef enum
   APS_MAC_SUPERFRAME_OVERLAP_STATUS      = 0xFD
 } APS_Status_t;
 
-#endif /* _APS_COMMON_H */
+#endif /* APS_COMMON_H */
 /** eof apsCommon.h */
 

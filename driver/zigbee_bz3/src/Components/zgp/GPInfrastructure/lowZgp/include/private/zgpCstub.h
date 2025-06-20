@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPCSTUB_H
-#define _ZGPCSTUB_H
+#ifndef ZGPCSTUB_H
+#define ZGPCSTUB_H
 
 #ifdef _GREENPOWER_SUPPORT_
 /******************************************************************************
@@ -80,6 +80,6 @@ void zgpCstubInit(void);
 void zgpCstubGpDataIndRegisterCallback(zgpCstubDataIndCallback_t callback);
 
 #endif
-#endif //_ZGPCSTUB_H
+#endif //ZGPCSTUB_H
 
 //eof zgpCstub.h

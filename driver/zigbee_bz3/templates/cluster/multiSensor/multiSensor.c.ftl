@@ -253,6 +253,15 @@ void APP_BackupZCLAttributes(void)
 #ifdef APP_SENSOR_TYPE_HUMIDITY_SENSOR
     hsBackupHsAttributes();
 #endif
+
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+    <#assign DEVICE = ("ZCC" + customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval>
+      <#if (DEVICE == "SERVER")||(DEVICE == "BOTH")>
+    ${deviceTypeFunctionPrefix}ccZCC${(customClusterIndex)?eval}BackupAttribute();
+    </#if>
+  </#list>
+</#if>
 }
 /**************************************************************************//**
 \brief Restore ZCL attributes
@@ -273,7 +282,18 @@ static void APP_RestoreZCLAttributes(void)
 
 #ifdef APP_SENSOR_TYPE_HUMIDITY_SENSOR
     hsRestoreHsAttributes();
-#endif    
+#endif
+
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+    <#assign DEVICE = ("ZCC" + customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval>
+    <#if (DEVICE == "SERVER")||(DEVICE == "BOTH")>
+    ${deviceTypeFunctionPrefix}ccZCC${(customClusterIndex)?eval}RestoreAttribute();
+    </#if>
+  </#list> 
+</#if>
+
+
        
 }
 #if ZB_COMMISSIONING_ON_STARTUP == 1  

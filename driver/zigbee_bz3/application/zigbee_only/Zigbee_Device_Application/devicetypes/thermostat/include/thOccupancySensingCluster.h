@@ -39,7 +39,7 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _THOCCUPANCYSENSINGCLUSTER_H
+#ifndef THOCCUPANCYSENSINGCLUSTER_H
 #define THOCCUPANCYSENSINGCLUSTER_H
 
 /******************************************************************************
@@ -87,6 +87,6 @@ void occupancySensingSetSensorType(uint8_t sensorType);
 ******************************************************************************/
 void occupancySensingSetSensorTypeBitmap(uint8_t sensorType);
 
-#endif // _THOCCUPANCYSENSINGCLUSTER_H
+#endif // THOCCUPANCYSENSINGCLUSTER_H
 
 // eof thOccupancySensingCluster.h

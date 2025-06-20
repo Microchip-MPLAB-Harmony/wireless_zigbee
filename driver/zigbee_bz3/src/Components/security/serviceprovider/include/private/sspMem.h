@@ -52,6 +52,10 @@
 #include <sspSkkeHandler.h>
 #include <sspSfpHandler.h>
 #include <sspCcmHandler.h>
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <sspCurve25519Handler.h>
+#include <sspSha256Handler.h>
+#endif //_ZIGBEE_REV_23_SUPPORT_
 
 /******************************************************************************
                         Types section.
@@ -62,6 +66,10 @@ typedef struct
   // For Manager needs.
   SspManagerMem_t managerMem;
   SspAesMem_t     aes;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  SspCurve25519Mem_t     curve25519;
+  SspSha256HashHandlerMem_t sha256HandlerMem;
+#endif //_ZIGBEE_REV_23_SUPPORT_
   union
   {
 #ifdef _LINK_SECURITY_
@@ -256,7 +264,31 @@ INLINE SspCcmHandlerMem_t* sspGetCcmHandlerMem(void)
 {
   return &sspMem.ccmHandlerMem;
 }
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/******************************************************************************
+  Gets pointer to the Sha256 handler memory.
+  Parameters:
+    none.
+  returns:
+    pointer to the sha256 handler memory.
+******************************************************************************/
+INLINE SspSha256HashHandlerMem_t* sspGetSha256HandlerMem(void)
+{
+  return &sspMem.sha256HandlerMem;
+}
 
+/******************************************************************************
+  Gets pointer to the memory for Curve25519 link key generation procedure.
+  Parameters:
+    none.
+  returns:
+    pointer to the memory for Curve25519 link key generation encryption procedure.
+******************************************************************************/
+INLINE SspCurve25519Mem_t* SspGetCurve25519LinkkeyMem(void)
+{
+  return &sspMem.curve25519;
+}
+#endif //_ZIGBEE_REV_23_SUPPORT_
 
 //#endif // _SSP_USE_STATIC_MEM_
 

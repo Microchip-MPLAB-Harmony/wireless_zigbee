@@ -41,8 +41,8 @@
 
 #if APP_USE_OTAU == 1 && defined(_ZCL_SUPPORT_) && defined(OTAU_CLIENT)
 
-#ifndef _ZCLOTAUCLIENT_H
-#define _ZCLOTAUCLIENT_H
+#ifndef ZCLOTAUCLIENT_H
+#define ZCLOTAUCLIENT_H
 
 /******************************************************************************
                    Includes section
@@ -305,5 +305,5 @@ void otauRestartBlockRxTimer (void);
 #endif // (ZCL_SUPPORT == 1) && (APP_USE_OTAU == 1)
 void ZCL_RestoreOtauparams(void);
 void ZCL_BackupOtauparams(void);
-#endif // _ZCLOTAUCLIENT_H
+#endif // ZCLOTAUCLIENT_H
 //eof zclOtauClient.h

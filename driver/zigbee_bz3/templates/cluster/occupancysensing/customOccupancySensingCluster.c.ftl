@@ -74,6 +74,12 @@ ZCL_OccupancySensingClusterClientAttributes_t customOccupancySensingClusterClien
   ZCL_DEFINE_OCCUPANCY_SENSING_CLUSTER_CLIENT_ATTRIBUTES()
 };
 </#if>
+//###########################################################################
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+<#if ((OCCUPANCYSENSING_CLUSTER_ENABLE == true) && ((OCCUPANCYSENSING_CLUSTER_CS != "CLIENT") || (OCCUPANCYSENSING_CLUSTER_CS == "BOTH")))>
+  ZCL_OccupancySensingClusterServerAttributes_t __attribute__((persistent)) backupCstmOccupancySensingClusterServerAttributes;
+</#if>
+</#if>
 /*******************************************************************************
                    Types section
 *******************************************************************************/
@@ -495,6 +501,24 @@ static void customOccupancySensorReportInd(ZCL_Addressing_t *addressing, uint8_t
   APP_Zigbee_Handler(eventItem);
 }
 </#if>
+
+/*********************************************************************************
+*********************************************************************************/
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+<#if ((OCCUPANCYSENSING_CLUSTER_ENABLE == true) && ((OCCUPANCYSENSING_CLUSTER_CS != "CLIENT") || (OCCUPANCYSENSING_CLUSTER_CS == "BOTH")))>
+void CDosBackupOsAttributes(void)
+{
+   memcpy4ByteAligned(&backupCstmOccupancySensingClusterServerAttributes,&customOccupancySensingClusterServerAttributes, sizeof(ZCL_OccupancySensingClusterServerAttributes_t));
+}
+</#if>
+<#if ((OCCUPANCYSENSING_CLUSTER_ENABLE == true) && ((OCCUPANCYSENSING_CLUSTER_CS != "CLIENT") || (OCCUPANCYSENSING_CLUSTER_CS == "BOTH")))>
+void CDosRestoreOsAttributes(void)
+{
+  memcpy4ByteAligned(&customOccupancySensingClusterServerAttributes, &backupCstmOccupancySensingClusterServerAttributes, sizeof(ZCL_OccupancySensingClusterServerAttributes_t));
+}
+</#if>
+</#if>
+
 
 #endif // APP_DEVICE_TYPE_CUSTOM_DEVICE
 

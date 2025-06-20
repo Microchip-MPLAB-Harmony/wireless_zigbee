@@ -50,23 +50,40 @@
 #include <z3device/clusters/include/haClusters.h>
 #include <zcl/clusters/include/identifyCluster.h>
 #include <z3device/clusters/include/commissioningCluster.h>
+<#if (COLORCONTROL_CLUSTER_ENABLE == true) >
 #include <z3device/clusters/include/colorControlCluster.h>
+</#if>
 #include <z3device/combinedInterface/include/ciBasicCluster.h>
 #include <z3device/combinedInterface/include/ciIdentifyCluster.h>
+<#if (ONOFF_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciOnOffCluster.h>
+</#if><#if (LEVELCONTROL_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciLevelControlCluster.h>
+</#if>
 #include <z3device/combinedInterface/include/ciGroupsCluster.h>
+<#if (SCENES_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciScenesCluster.h>
+</#if><#if (OCCUPANCYSENSING_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciOccupancySensingCluster.h>
+</#if>
 #include <z3device/combinedInterface/include/ciCommissioningCluster.h>
+<#if (COLORCONTROL_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciColorControlCluster.h>
+</#if><#if (ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciIlluminanceMeasurementCluster.h>
+</#if><#if (TEMPERATUREMEASUREMENT_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciTemperatureMeasurementCluster.h>
+</#if><#if (THERMOSTAT_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciThermostatCluster.h>
+</#if><#if (TIME_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciTimeCluster.h>
+</#if><#if (ALARMS_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciAlarmsCluster.h>
+</#if><#if (IASACE_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciIasACECluster.h>
+</#if><#if (IASZONE_CLUSTER_ENABLE == true) >
 #include <z3device/combinedInterface/include/ciIasZoneCluster.h>
+</#if>
 #include <z3device/common/include/z3Device.h>
 #include <pds/include/wlPdsMemIds.h>
 #include <zdo/include/zdo.h>
@@ -84,13 +101,33 @@
 #include <bdb/include/bdb.h>
 #include <bdb/include/bdbInstallCode.h>
 #include <zcl/clusters/include/groupsCluster.h>
+<#if (SCENES_CLUSTER_ENABLE == true) >
 #include <z3device/clusters/include/scenesCluster.h>
+</#if><#if (ONOFF_CLUSTER_ENABLE == true) >
 #include <z3device/clusters/include/onOffCluster.h>
+</#if><#if (LEVELCONTROL_CLUSTER_ENABLE == true) >
 #include <z3device/clusters/include/levelControlCluster.h>
+</#if>
 
 #ifdef OTAU_SERVER
 #include <zcl/include/zclOTAUCluster.h>
 #endif
+
+<#compress>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+
+  <#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
+
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  <#assign devicetype = DEVICE_TYPE_FILE_PATH >
+#include <z3device/${devicetype}/include/${deviceTypeFunctionPrefix + clusterName}Cluster.h>
+  </#if>
+
+  </#list>
+  
+</#compress>
 
 /******************************************************************************
                     Defines section
@@ -105,6 +142,9 @@ static void processGetDeviceTypeCmd(const ScanValue_t *args);
 
 #if BDB_COMMANDS_IN_CONSOLE == 1
 static void processSetInstallCodeCmd(const ScanValue_t *args);
+#if defined _ZIGBEE_REV_23_SUPPORT_
+static void processSetInstallCodePassphraseCmd(const ScanValue_t *args);
+#endif //_ZIGBEE_REV_23_SUPPORT_
 #ifndef ZAPPSI_HOST
 #if defined (_LINK_SECURITY_) && defined (_TRUST_CENTRE_)
 static void processSetAllowRemoteTCpolicyChange(const ScanValue_t *args);
@@ -126,31 +166,43 @@ static void processResetToFactoryDefaultsCmd(const ScanValue_t *args);
 #endif // ZLO_EXTRA_CLUSTERS_SUPPORT == 1
 static void processIdentifyCmd(const ScanValue_t *args);
 static void processIdentifyQueryCmd(const ScanValue_t *args);
+<#if (ONOFF_CLUSTER_ENABLE == true) >
 static void processOnOffToggleCmd(const ScanValue_t *args);
+</#if><#if (SCENES_CLUSTER_ENABLE == true) >
 static void processAddSceneToDimmableLightCmd(const ScanValue_t *args);
 static void processAddSceneToThermostatCmd(const ScanValue_t *args);
 static void processGetSceneMembershipCmd(const ScanValue_t *args);
+</#if><#if (LEVELCONTROL_CLUSTER_ENABLE == true) >
 static void processMoveCmd(const ScanValue_t *args);
 static void processMoveToLevelCmd(const ScanValue_t *args);
+</#if><#if (ONOFF_CLUSTER_ENABLE == true) >
 static void processOffWithEffectCmd(const ScanValue_t *args);
 static void processOnWithRecallGlobalSceneCmd(const ScanValue_t *args);
 static void processOnWithTimedOffCmd(const ScanValue_t *args);
+</#if><#if (SCENES_CLUSTER_ENABLE == true) >
 static void processRecallSceneCmd(const ScanValue_t *args);
 static void processRemoveAllScenesCmd(const ScanValue_t *args);
 static void processRemoveSceneCmd(const ScanValue_t *args);
+</#if><#if (LEVELCONTROL_CLUSTER_ENABLE == true) >
 static void processStepCmd(const ScanValue_t *args);
 static void processStopCmd(const ScanValue_t *args);
+</#if><#if (SCENES_CLUSTER_ENABLE == true) >
 static void processStoreSceneCmd(const ScanValue_t *args);
+</#if>
 static void processTriggerEffectCmd(const ScanValue_t *args);
+<#if (SCENES_CLUSTER_ENABLE == true) >
 static void processViewSceneCmd(const ScanValue_t *args);
+</#if><#if (IASZONE_CLUSTER_ENABLE == true) >
 static void processZoneInitiateNormalOperatingModeCommand(const ScanValue_t *args);
 static void processZoneInitiateTestModeCommand(const ScanValue_t *args);
+</#if>
 #if BDB_COMMANDS_IN_CONSOLE == 1
 static void processSetbdbJoinUsesInstallCodeKey(const ScanValue_t *args);
 #endif
 #ifdef OTAU_SERVER
 static void processImageNotifyCmd(const ScanValue_t *args);
 #endif
+<#if (COLORCONTROL_CLUSTER_ENABLE == true) >
 // Color Control cluster commands
 static void processMoveToHueCmd(const ScanValue_t *args);
 static void processMoveHueCmd(const ScanValue_t *args);
@@ -171,34 +223,173 @@ static void processColorLoopSetCmd(const ScanValue_t *args);
 static void processStopMoveStepCmd(const ScanValue_t *args);
 static void processMoveColorTemperatureCmd(const ScanValue_t *args);
 static void processStepColorTemperatureCmd(const ScanValue_t *args);
-
-//IAS Zone and ACE cluster
+</#if><#if (IASACE_CLUSTER_ENABLE == true) >
+//IAS ACE cluster
 static void processACEGetPanelStatusChangedCommand(const ScanValue_t *args);
 static void processACEGetZoneStatusChangedCommand(const ScanValue_t *args);
+
+</#if><#if (IASZONE_CLUSTER_ENABLE == true) >
+//IAS ZONE cluster
 static void processInitiateZoneEnrollmentProc(const ScanValue_t *args);
 
+</#if><#if (SCENES_CLUSTER_ENABLE == true) >
 //SCENES CLUSTER
 static void processEnhancedAddSceneCmd(const ScanValue_t *args);
 static void processEnhancedAddSceneToThermostatCmd(const ScanValue_t *args);
 static void processCopySceneCmd(const ScanValue_t *args);
 static void processEnhancedViewSceneCmd(const ScanValue_t *args);
 
+</#if>
 // Touchlink Commissioning cluster
 static void processSendEndpointInfoCmd(const ScanValue_t *args);
 static void processGetGroupIdentifiersCmd(const ScanValue_t *args);
 static void processGetEndpointListCmd(const ScanValue_t *args);
 
+<#if (THERMOSTAT_CLUSTER_ENABLE == true) >
 // Thermostat cluster command
 static void processSetPointChange(const ScanValue_t *args);
 
+</#if><#if (TIME_CLUSTER_ENABLE == true) >
 //Time cluster
 static void processSetTimeStatus(const ScanValue_t *args);
 
+</#if><#if (ALARMS_CLUSTER_ENABLE == true) >
 //Alarms Cluster
 static void processResetAlarmCmd(const ScanValue_t *args);
 static void processResetAllAlarmsCmd(const ScanValue_t *args);
 static void processResetAlarmLogCmd(const ScanValue_t *args);
 static void processGetAlarmCmd(const ScanValue_t *args);
+</#if>
+
+<#-- All ftl functions used inside the FTL file are defined here  -->
+<#-- Helper functions ---------------------------------------------->
+<#function getParametersLength prefix commandIndex>
+<#return (prefix + "PARAM_NO_" + commandIndex)?eval>
+</#function>
+
+<#function parameterVariableType prefix commandIndex parameterIndex>
+<#-- [ BLOCK scanUnionType] -->
+        <#assign scanUnionType = "uint64" >
+        <#switch (prefix + "CLASSTYPE_" + commandIndex + "_" + parameterIndex)?eval>
+        <#case "General Data">
+            <#assign scanUnionType = "uint"+( prefix + "TYPE_GENERAL_" + commandIndex + "_" + parameterIndex)?eval?remove_beginning("data")  >
+            <#break>
+        <#case "Enumeration">
+            <#assign scanUnionType = "uint8" >
+            <#break>
+        <#case "Unsigned Integer">
+            <#assign scanUnionType = (prefix + "TYPE_UNSIGNED_" + commandIndex + "_" + parameterIndex)?eval >
+            <#break>
+        <#case "Bitmap">
+            <#assign scanUnionType = "uint8">
+            <#break>
+        <#case "Signed Integer">
+            <#assign scanUnionType = (prefix + "TYPE_SIGNED_" + commandIndex + "_" + parameterIndex)?eval >
+            <#break>
+        <#case "Boolean">
+            <#assign scanUnionType = "uint8" >
+            <#break>
+        <#case "String">
+            <#assign scanUnionType = "str">
+            <#break>
+        <#case "Array">
+            <#assign scanUnionType = "str">
+            <#break>
+        <#default>      
+                  
+        </#switch>
+<#assign argumentIndex = parameterIndex + 3 > <#-- We account for the first three parameters in the process Console functions -->
+
+<#return "args[" + argumentIndex + "]." + scanUnionType >
+
+</#function>
+<#-- Helper functions --------------------------------------------->
+
+
+<#-- File specific functions -------------------------------------->
+
+<#macro addPrototype customClusterIndex >
+<#compress>
+    <#assign prefixCommands  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_CLIENT_COMMANDS_">
+
+    <#list 0..<(prefixCommands + "NO")?eval as commandIndex >
+      <#assign CommandName = (prefixCommands+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
+      static void processSend${CommandName}(const ScanValue_t *args);
+    </#list>
+</#compress>
+</#macro>
+
+<#macro addHelpEntry customClusterIndex >
+<#compress>
+    <#assign prefix  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_CLIENT_COMMANDS_">
+   
+    <#list 0..<(prefix + "NO")?eval as commandIndex >
+      
+      <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
+
+      <#assign parameterDataList = "sdd" >
+      <#assign parameterNameList = "[addrMode][addr][ep]" >
+
+      <#assign parametersLength = getParametersLength(prefix, commandIndex) >
+
+      <#list 0..<parametersLength as parameterIndex> <#-- iterate through parameters -->
+
+        <#assign classType = (prefix + "CLASSTYPE_" + commandIndex + "_" + parameterIndex)?eval >
+        <#if (classType == "String") || (classType == "Array") >
+            <#assign parameterDataList = parameterDataList + 's' >
+        <#else>
+            <#assign parameterDataList = parameterDataList + 'd' >
+        </#if>
+
+        <#assign parameterName = (prefix + "PARAMNAME_" + commandIndex + "_" + parameterIndex)?eval >
+
+        <#assign parameterNameList = parameterNameList + "[" + parameterName + "]" >
+
+      </#list>
+      {"${CommandName}", "${parameterDataList}", processSend${CommandName}, "${parameterNameList}\r\n"},
+    </#list>
+</#compress>
+</#macro>
+
+<#macro addDefinition customClusterIndex>
+
+    <#assign prefix  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_CLIENT_COMMANDS_">
+    <#list 0..<(prefix + "NO")?eval as commandIndex >
+      <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
+      <#assign parametersLength = getParametersLength(prefix, commandIndex) >
+/**************************************************************************//**
+\brief Processes Sends ${CommandName} command
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processSend${CommandName}(const ScanValue_t *args)
+{
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  ${deviceTypeFunctionPrefix}Send${CommandName}(determineAddressMode(args), args[1].uint16, args[2].uint8, srcEp<#if (parametersLength == 0) >);
+  <#else>${''}
+    <#list 0..<parametersLength as parameterIndex >,${parameterVariableType(prefix,commandIndex,parameterIndex)} </#list>);
+  </#if>
+
+}
+</#list>
+
+</#macro>
+
+<#macro loopClientCommands >
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+    <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+    <#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
+      <#nested customClusterIndex>
+    </#if>
+</#list>
+</#macro>
+
+<#-- File specific functions -------------------------------------->
+
+<@loopClientCommands ;customClusterIndex> <#-- We pass customClusterIndex from the loopClientCommands macro to addPrototype Macro -->
+  <@addPrototype customClusterIndex=customClusterIndex/>
+</@loopClientCommands>
+
 
 #endif // ZCL_COMMANDS_IN_CONSOLE == 1
 
@@ -244,6 +435,9 @@ const ConsoleCommand_t commissioningHelpCmds[]=
   {"formAndSteer", "", processFormAndSteerCmd, "-> forms network and steers\r\n"},
   {"formSteerAndFB", "", processFormSteerAndFBCmd, "-> forms network ,steers and FB\r\n"},
   {"SetInstallCode", "dds", processSetInstallCodeCmd, "-> Sets IC [extAddr][code]\r\n"},
+#if defined _ZIGBEE_REV_23_SUPPORT_  
+  {"SetInstallCodePassphrase", "s", processSetInstallCodePassphraseCmd, "-> Sets IC [code]\r\n"},
+#endif //  _ZIGBEE_REV_23_SUPPORT_
 #ifndef ZAPPSI_HOST
 #if defined (_LINK_SECURITY_) && defined (_TRUST_CENTRE_)
   {"SetAllowRemoteTCpolicyChange", "d", processSetAllowRemoteTCpolicyChange, "-> Sets TCPolicy[enable/disable]\r\n"},
@@ -300,29 +494,40 @@ const ConsoleCommand_t zclHelpCmds[]=
   {"resetToFactoryDefaults", "sdd", processResetToFactoryDefaultsCmd, "-> reset all cluster attributes to factory defaults command:resetToFactoryDefaults [addrMode][addr][ep]\r\n"},
 #endif // #if ZLO_EXTRA_CLUSTERS_SUPPORT == 1
   {"disableDefaultResp", "d",  processDisableDefaultResponseBitCmd, "->Disable/Enable default response for ZCL command: disableDefaultResp [value - 0 for enable or 1 for disable]\r\n"},
+  <#if (SCENES_CLUSTER_ENABLE == true) >
   {"addSceneToDL", "sddddddd", processAddSceneToDimmableLightCmd, "->Send Add Scene command to Dimmable Light: addScene [addrMode][addr][ep][groupId][sceneId][transitionTime][onOff][level]\r\n"},
   {"addSceneToTH", "sdddddddd", processAddSceneToThermostatCmd,  "->Send Add Scene command to Thermostat: addScene [addrMode][addr][ep][groupId][sceneId][transitionTime][occupiedCoolingSetpoint][occupiedHeatingSetpoint][systemMode]\r\n"},
   {"getSceneMembership", "sddd", processGetSceneMembershipCmd, "->Send Get Scene Membership command: getSceneMembership [addrMode][addr][ep][groupId]\r\n"},
+  </#if><#if (LEVELCONTROL_CLUSTER_ENABLE == true) >
   {"move", "sddddddd", processMoveCmd, "->Send Move (with On/Off) command: move [addrMode][addr][ep][mode][rate][onOff][optMask][optOvrd]\r\n"},
   {"moveToLevel", "sddddddd", processMoveToLevelCmd, "->Send Move To Level (with On/Off) command: moveToLevel [addrMode][addr][ep][level][transitionTime][onOff][optMask][optOvrd]\r\n"},
+  </#if><#if (ONOFF_CLUSTER_ENABLE == true) >
   {"offWithEffect", "sdddd", processOffWithEffectCmd, "->Send Off With Effect command: offWithEffect [addrMode][addr][ep][effectId][effectVariant]\r\n"},
   {"onWithRecallGlobalScene", "sdd", processOnWithRecallGlobalSceneCmd, "->Send On With Recall Global Scene command: onWithRecallGlobalScene [addrMode][addr][ep]\r\n"},
   {"onWithTimedOff", "sddddd", processOnWithTimedOffCmd, "->Send On With Timed off command: onWithTimedOff [addrMode][mode][ep][onOffCtrl][onTime][offWaitTime]\r\n"},
+  </#if><#if (SCENES_CLUSTER_ENABLE == true) >
   {"recallScene", "sddddd", processRecallSceneCmd, "->Send Recall Scene command: recallScene [addrMode][addr][ep][groupId][sceneId][transitionTime]\r\n"},
   {"removeAllScenes", "sddd", processRemoveAllScenesCmd, "->Send Remove All Scenes command: removeAllScenes [addrMode][addr][ep][groupId]\r\n"},
   {"removeScene", "sdddd", processRemoveSceneCmd, "->Send Remove Scene command: removeScene [addrMode][addr][ep][groupId][sceneId]\r\n"},
+  </#if><#if (LEVELCONTROL_CLUSTER_ENABLE == true) >
   {"step", "sdddddddd", processStepCmd, "->Send Step (with On/Off) command: step [addrMode][addr][ep][mode][stepSize][transitionTime][onOff][optMask][optOvrd]\r\n"},
   {"stop", "sddddd", processStopCmd, "->Send Stop (with On/Off) command: stop [addrMode][addr][ep][onOff][optMask][optOvrd]\r\n"},
+  </#if><#if (SCENES_CLUSTER_ENABLE == true) >
   {"storeScene", "sdddd", processStoreSceneCmd, "->Send Store Scene command: storeScene [addrMode][addr][ep][groupId][sceneId]\r\n"},
+  </#if>
   {"triggerEffect", "sdddd", processTriggerEffectCmd, "->Send TriggerEffect command: triggerEffect [addrMode][addr][ep][effectId][effectVariant]"},
+  <#if (SCENES_CLUSTER_ENABLE == true) >
   {"viewScene", "sdddd", processViewSceneCmd, "->Send View Scene command: viewScene [addrMode][addr][ep][groupId][sceneId]\r\n"},
+  </#if><#if (ONOFF_CLUSTER_ENABLE == true) >
   {"onOff", "sdds", processOnOffToggleCmd, "Sends On/Off command: onOff [addrMode][addr][ep][onOff: -on for On, -off for Off]\r\n"},
+  </#if>
   {"identify", "sddd", processIdentifyCmd, "->Send Identify command: identify [addrMode][addr][ep][idTime]\r\n"},
   {"identifyQuery", "sdd", processIdentifyQueryCmd, "->Send Identify Query command: identifyQuery [addrMode][addr][ep]\r\n"},
 #ifdef OTAU_SERVER
   {"imageNotify", "dddddddd", processImageNotifyCmd, "Sends Image Notify cmd: imageNotify [ucastFlag] [dstEp] [shortAddress] [payloadType] [Qjitter][manuId][imageType] [fwVersion]\r\n"},
 #endif
   // Color Control cluster commands
+  <#if (COLORCONTROL_CLUSTER_ENABLE == true) >
   {"moveToHue", "sddddddd", processMoveToHueCmd,"[addrMode][addr][ep][hue][direction][transitTime][optMask][optOvrd]\r\n"},
   {"moveHue", "sdddddd", processMoveHueCmd,"[addrMode][addr][ep][moveMode][rate][optMask][optOvrd]\r\n"},
   {"stepHue", "sddddddd", processStepHueCmd, "[addrMode][addr][ep][stepMode][stepSize][transitTime][optMask][optOvrd]\r\n"},
@@ -346,28 +551,39 @@ const ConsoleCommand_t zclHelpCmds[]=
   {"enhancedAddSceneToTH", "sdddddddd", processEnhancedAddSceneToThermostatCmd,  "[addrMode][addr][ep][groupId][sceneId][transitionTime][occupiedCoolingSetpoint][occupiedHeatingSetpoint][systemMode]\r\n"},
   {"copyScene", "sddddddd", processCopySceneCmd, "[addrMode][addr][ep][mode][groupFrom][sceneFrom][groupTo][sceneTo]\r\n"},
   {"enhancedViewScene", "sdddd", processEnhancedViewSceneCmd, "[addrMode][addr][ep][groupId][sceneId]\r\n"},
+  </#if>
   // Commissioning cluster commands
   {"sendEndpointInfo", "dd"  , processSendEndpointInfoCmd, "->Send Endpoint Info command: sendEndpointInfo [shortAddr][ep]\r\n"},
   {"getGroupIdentifiers", "ddd" , processGetGroupIdentifiersCmd, "->Send getGroupsIdentifiers command: getGroupIdentifiers [shortAddr][ep][startIndex]\r\n"},
   {"getEndpointList", "ddd" , processGetEndpointListCmd, "->Send getEndpointList command: getGroupIdentifiers [shortAddr][ep][startIndex]\r\n"},
+  <#if (TIME_CLUSTER_ENABLE == true) >
   {"setTimeStatus", "dddd", processSetTimeStatus, "-> setTimeStatus [master][synchronized][masterZoneDst][superseding]\r\n"},
+  </#if><#if (IASACE_CLUSTER_ENABLE == true) >
   {"IasAceGetPanelStatusChangedCommand", "sdddddd",processACEGetPanelStatusChangedCommand,
     "->Panel StatusChanged Command Sent:[addrMode][addr][ep][panel_status][seconds_remaining][audible_noti][alarmstatus]\r\n"},
-  {"IasAceZoneStatusChangedCommand", "sdddddd",processACEGetZoneStatusChangedCommand,
+  {"IasAceZoneStatusChangedCommand", "sdddddd",processACEGetZoneStatusChangedCommand,  
     "->Zone StatusChanged Command Sent:[addrMode][addr][ep][zoneId][zone_status][audible][zone_label]\r\n"},
+  </#if><#if (IASZONE_CLUSTER_ENABLE == true) >
   {"ZoneInitiateNormalOperatingModeCommand", "sdd",processZoneInitiateNormalOperatingModeCommand,
     "->Send ZoneInitiateNormalOperatingModeCommand:[addrMode][addr][ep]\r\n"},
   {"ZoneInitiateTestModeCommand", "sdddd",processZoneInitiateTestModeCommand,
     "->Send ZoneInitiateTestModeCommand:[addrMode][addr][ep][Test_Mode_Duration ][Current_Zone_Sensitivity Level]\r\n"},
    {"IasAceInitiateZoneEnrollment", "sddd", processInitiateZoneEnrollmentProc, "->Enrolment procedure update: [addrMode][addr][CieAttrValue][enrolmentType]\r\n"},
+  </#if><#if (THERMOSTAT_CLUSTER_ENABLE == true) >
   // Thermostat cluster command
   {"setPointChange", "sdddd", processSetPointChange, "[addrMode][addr][ep][setpointmode][amount]\r\n"},
+  </#if><#if (ALARMS_CLUSTER_ENABLE == true) >
   // Alarm Cluster Commands
   {"resetAlarm", "sdddd", processResetAlarmCmd, "Sends Reset alarm command:  [addrMode][addr][ep][alarmId][clusterID]\r\n"},
   {"resetAllAlarms", "sdd", processResetAllAlarmsCmd, "Sends resetAllAlarms command: resetAllAlarms [addrMode][addr][ep]\r\n"},
   {"resetAlarmLog", "sdd", processResetAlarmLogCmd, "Sends resetAlarmLog command: resetAlarmLog [addrMode][addr][ep]\r\n"},
   {"getAlarm", "sdd", processGetAlarmCmd, "Sends get alarm command: getAlarm [addrMode][addr][ep]\r\n"},
+  </#if>
 
+  <@loopClientCommands ;customClusterIndex> <#-- We pass customClusterIndex from the loopClientCommands macro to addHelpEntry Macro -->
+  <@addHelpEntry customClusterIndex=customClusterIndex/>
+  </@loopClientCommands>
+  
 #endif // #if ZCL_COMMANDS_IN_CONSOLE == 1
   {0,0,0,0},
 };
@@ -446,6 +662,22 @@ static void processSetInstallCodeCmd(const ScanValue_t *args)
   BDB_ConfigureInstallCode(extAddr, icode, myICCallback);
   (void)args;
 }
+
+#if defined _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+\brief Processes InstallCode Passphrase command
+
+\param[in] args - array of command arguments
+******************************************************************************/;
+static void processSetInstallCodePassphraseCmd(const ScanValue_t *args)
+{
+  uint8_t icode[18];
+  hexStrTouint8array(args[0].str, icode, 18U);
+  APS_SetInstallCodePassphrase(icode);
+  (void)args;
+}
+#endif //_ZIGBEE_REV_23_SUPPORT_
+
 #ifndef ZAPPSI_HOST
 #if defined (_LINK_SECURITY_) && defined (_TRUST_CENTRE_)
 /**************************************************************************//**
@@ -609,6 +841,7 @@ static void processResetToFactoryDefaultsCmd(const ScanValue_t *args)
 
 #endif // #if ZLO_EXTRA_CLUSTERS_SUPPORT == 1
 
+<#if (LEVELCONTROL_CLUSTER_ENABLE == true) >
 /**************************************************************************//**
 \brief Processes Move to level command
 
@@ -623,7 +856,8 @@ static void processMoveToLevelCmd(const ScanValue_t *args)
   appSnprintf("Cmd Not Supported\r\n");
 </#if>
 }
-
+</#if>
+<#if (ONOFF_CLUSTER_ENABLE == true) >
 /**************************************************************************//**
 \brief Processes Off with Effect command
 
@@ -638,6 +872,7 @@ static void processOffWithEffectCmd(const ScanValue_t *args)
   appSnprintf("Cmd Not Supported\r\n");
 </#if>	
 }
+
 
 /**************************************************************************//**
 \brief Processes On with recall global scene command
@@ -667,7 +902,8 @@ static void processOnWithTimedOffCmd(const ScanValue_t *args)
   appSnprintf("Cmd Not Supported\r\n");
 </#if>	
 }
-
+</#if>
+<#if (LEVELCONTROL_CLUSTER_ENABLE == true) >
 /**************************************************************************//**
 \brief Processes Move command
 
@@ -712,7 +948,9 @@ static void processStopCmd(const ScanValue_t *args)
   appSnprintf("Cmd Not Supported\r\n");
 </#if>	
 }
+</#if>
 
+<#if (SCENES_CLUSTER_ENABLE == true) >
 /**************************************************************************//**
 \brief Processes Add Scene command to DL
 
@@ -757,7 +995,9 @@ static void processViewSceneCmd(const ScanValue_t *args)
   appSnprintf("Cmd Not Supported\r\n");
 </#if>	
 }
+</#if>
 
+<#if (IASZONE_CLUSTER_ENABLE == true) >
 /**************************************************************************//**
 \brief Processes Zone Initiate Normal Operating Mode Command
 
@@ -797,7 +1037,9 @@ static void processInitiateZoneEnrollmentProc(const ScanValue_t *args)
 {
   aceZoneEnrollmentProcInitiateCmd(determineAddressMode(args), args[1].uint16, srcEp, (void *)&args[2].uint8, args[3].uint8);
 }
+</#if>
 
+<#if (SCENES_CLUSTER_ENABLE == true) >
 /**************************************************************************//**
 \brief Processes Remove group command
 
@@ -872,6 +1114,7 @@ static void processGetSceneMembershipCmd(const ScanValue_t *args)
   appSnprintf("Cmd Not Supported\r\n");
 </#if>	
 }
+</#if>
 
 /**************************************************************************//**
 \brief Processes Trigger Effect command
@@ -904,7 +1147,7 @@ static void processIdentifyQueryCmd(const ScanValue_t *args)
 {
   identifySendIdentifyQuery(determineAddressMode(args), args[1].uint16, args[2].uint8, srcEp);
 }
-
+<#if (ONOFF_CLUSTER_ENABLE == true) >
 /**************************************************************************//**
 \brief Processes On/Off/Toggle command
 
@@ -927,7 +1170,7 @@ static void processOnOffToggleCmd(const ScanValue_t *args)
   appSnprintf("Cmd Not Supported\r\n");
 </#if>  
 }
-
+</#if>
 #ifdef OTAU_SERVER
 /**************************************************************************//**
 \brief Processes image notify command
@@ -963,6 +1206,7 @@ static void processImageNotifyCmd(const ScanValue_t *args)
 }
 #endif
 
+<#if (COLORCONTROL_CLUSTER_ENABLE == true) >
 /**************************************************************************//**
 \brief Processes Color Control: MoveToHue command
 
@@ -1413,6 +1657,7 @@ static void processStepColorTemperatureCmd(const ScanValue_t *args)
   appSnprintf("Cmd Not Supported\r\n");
 </#if>
 }
+</#if>
 
 /**************************************************************************//**
 \brief Processes sendEndpointInfo command
@@ -1451,7 +1696,7 @@ static void processGetEndpointListCmd(const ScanValue_t *args)
                                  args[2].uint8   /* start index */
                                 );
 }
-
+<#if (THERMOSTAT_CLUSTER_ENABLE == true) >
 /**************************************************************************//**
 \brief Processes EnhancedViewScene command
 
@@ -1462,7 +1707,8 @@ static void processSetPointChange(const ScanValue_t *args)
   ciSendSetpointRaiseLowerCommand(determineAddressMode(args), args[1].uint16, args[2].uint8,
     srcEp, args[3].int8, args[4].int8);
 }
-
+</#if>
+<#if (IASACE_CLUSTER_ENABLE == true) >
 /**************************************************************************//**
 \brief Processes ACE Get Panel Status Change Command
 
@@ -1484,7 +1730,8 @@ static void processACEGetZoneStatusChangedCommand(const ScanValue_t *args)
     aceZoneStatusChangedCommand(determineAddressMode(args), args[1].uint16, args[2].uint8, srcEp,
     args[3].uint8, args[4].uint8, (ZCL_AudibleNotification_t)args[5].uint8, args[6].str);  
 }
-
+</#if>
+<#if (SCENES_CLUSTER_ENABLE == true) >
 /**************************************************************************//**
 \brief Processes EnhancedAddScene command
 
@@ -1563,7 +1810,6 @@ static void processCopySceneCmd(const ScanValue_t *args)
 </#if>    
 }
 
-
 /**************************************************************************//**
 \brief Processes EnhancedViewScene command
 
@@ -1578,6 +1824,8 @@ static void processEnhancedViewSceneCmd(const ScanValue_t *args)
   appSnprintf("Cmd Not Supported\r\n");
 </#if>  
 }
+</#if>
+<#if (TIME_CLUSTER_ENABLE == true) >
 /**************************************************************************//**
 \brief Process set time status bits
 
@@ -1587,7 +1835,9 @@ static void processSetTimeStatus(const ScanValue_t *args)
 {
   timeSetTimeStatus(args[0].uint8, args[1].uint8, args[2].uint8, args[3].uint8);
 }
+</#if>
 
+<#if (ALARMS_CLUSTER_ENABLE == true) >
 /**************************************************************************//**
 \brief Processes processResetAlarmCmd command
 
@@ -1595,7 +1845,7 @@ static void processSetTimeStatus(const ScanValue_t *args)
 ******************************************************************************/
 static void processResetAlarmCmd(const ScanValue_t *args)
 {
-<#if (ALARMS_CLUSTER_CS != "SERVER")  && (AC_RESETALARM == true)>  
+<#if (ALARMS_CLUSTER_ENABLE == true) && (ALARMS_CLUSTER_CS != "SERVER")  && (AC_RESETALARM == true)>  
   alarmsSendResetAlarm(determineAddressMode(args), args[1].uint16, args[2].uint8,
     srcEp, args[3].uint16, args[4].uint16);
 <#else>
@@ -1610,7 +1860,7 @@ static void processResetAlarmCmd(const ScanValue_t *args)
 ******************************************************************************/
 static void processResetAllAlarmsCmd(const ScanValue_t *args)
 {
-<#if (ALARMS_CLUSTER_CS != "SERVER")  && (AC_RESETALLALARMS == true)>  
+<#if (ALARMS_CLUSTER_ENABLE == true) && (ALARMS_CLUSTER_CS != "SERVER")  && (AC_RESETALLALARMS == true)>  
   alarmsSendResetAllAlarms(determineAddressMode(args), args[1].uint16, args[2].uint8, srcEp);
 <#else>
    appSnprintf("Cmd Not Supported\r\n");
@@ -1624,7 +1874,7 @@ static void processResetAllAlarmsCmd(const ScanValue_t *args)
 ******************************************************************************/
 static void processResetAlarmLogCmd(const ScanValue_t *args)
 {
-<#if (ALARMS_CLUSTER_CS != "SERVER")  && (AC_RESETALLALARMS == true)>
+<#if (ALARMS_CLUSTER_ENABLE == true) && (ALARMS_CLUSTER_CS != "SERVER")  && (AC_RESETALLALARMS == true)>
   alarmsSendResetAlarmLog(determineAddressMode(args), args[1].uint16, args[2].uint8, srcEp);
 <#else>
    appSnprintf("Cmd Not Supported\r\n");
@@ -1638,12 +1888,17 @@ static void processResetAlarmLogCmd(const ScanValue_t *args)
 ******************************************************************************/
 static void processGetAlarmCmd(const ScanValue_t *args)
 {
-<#if (ALARMS_CLUSTER_CS != "SERVER")  && (AC_GETALARM == true)>  
+<#if (ALARMS_CLUSTER_ENABLE == true) && (ALARMS_CLUSTER_CS != "SERVER")  && (AC_GETALARM == true)>  
   alarmsSendGetAlarm(determineAddressMode(args), args[1].uint16, args[2].uint8, srcEp);
 <#else>
    appSnprintf("Cmd Not Supported\r\n");
 </#if>  
 }
+</#if>
+
+<@loopClientCommands ;customClusterIndex> <#-- We pass customClusterIndex from the loopClientCommands macro to addPrototype Macro -->
+  <@addDefinition customClusterIndex=customClusterIndex/>
+</@loopClientCommands>
 
 #endif // #if ZCL_COMMANDS_IN_CONSOLE == 1
 

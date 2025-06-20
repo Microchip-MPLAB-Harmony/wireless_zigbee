@@ -93,6 +93,13 @@ void iasFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterId_t cl
 static void configureImageKeyDone(void);
 static void iasAddOTAUClientCluster(void);
 #endif
+
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+/******************************************************************************
+                    Static functions section
+******************************************************************************/
+static void APP_RestoreZCLAttributes(void);
+</#if>
 /******************************************************************************
                     Local variables section
 ******************************************************************************/
@@ -118,7 +125,7 @@ static ClusterId_t iasACEClientClusterToBindIds[] =
   IAS_ACE_CLUSTER_ID,
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "CLIENT")  >
+  <#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -134,7 +141,7 @@ static ClusterId_t iasACEServerClusterToBindIds[] =
   GROUPS_CLUSTER_ID,
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "SERVER")  >
+  <#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -165,6 +172,9 @@ static SYS_EventReceiver_t zdoBusyPollCheck = { .func = isBusyOrPollCheck};
 ******************************************************************************/
 void appDeviceInit(void)
 {
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+  uint8_t deepSleepWakeupSrc = 0U;
+</#if>
 #if APP_ENABLE_CONSOLE == 1
   initConsole();
 #endif
@@ -180,6 +190,14 @@ void appDeviceInit(void)
 #ifdef OTAU_CLIENT
   iasAddOTAUClientCluster();
 #endif //OTAU_CLIENT
+
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+  CS_ReadParameter(CS_DEVICE_DEEP_SLEEP_WAKEUP_SRC_ID, &deepSleepWakeupSrc);
+
+  /* Execute only if it is wakenup from deep sleep. */
+  if(deepSleepWakeupSrc > 0U)
+    APP_RestoreZCLAttributes();
+</#if>
 
 #if defined (_SLEEP_WHEN_IDLE_)
 #if (ZB_COMMISSIONING_ON_STARTUP  == 1)
@@ -243,7 +261,7 @@ void appDeviceTaskHandler(void)
 
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
 
-  <#if DEVICE == "SERVER">
+  <#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
 
   <#assign prefixAttribute  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_" + "SERVER" + "_ATTRIBUTES_">
 
@@ -276,7 +294,30 @@ void iasFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterId_t cl
 void APP_BackupZCLAttributes(void)
 {
 	//Add implementation here to backup zcl attributes if any.
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+    <#assign DEVICE = ("ZCC" + customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval>
+      <#if (DEVICE == "SERVER")||(DEVICE == "BOTH")>
+    ${deviceTypeFunctionPrefix}ccZCC${(customClusterIndex)?eval}BackupAttribute();
+    </#if>
+  </#list>
+</#if>
 }
+
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+/******************************************************************************
+                    Static functions section
+******************************************************************************/
+static void APP_RestoreZCLAttributes(void)
+{ 
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+    <#assign DEVICE = ("ZCC" + customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval>
+    <#if (DEVICE == "SERVER")||(DEVICE == "BOTH")>
+    ${deviceTypeFunctionPrefix}ccZCC${(customClusterIndex)?eval}RestoreAttribute();
+    </#if>
+  </#list>   
+}
+</#if>
 
 /**************************************************************************//**
 \brief Stops identifying on endpoints

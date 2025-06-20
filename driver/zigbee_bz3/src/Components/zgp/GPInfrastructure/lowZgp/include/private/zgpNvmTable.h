@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPNVMTABLE_H
-#define _ZGPNVMTABLE_H
+#ifndef ZGPNVMTABLE_H
+#define ZGPNVMTABLE_H
 
 #ifdef _GREENPOWER_SUPPORT_
 /******************************************************************************
@@ -181,6 +181,6 @@ typedef struct _ZgpEntryNvmFormat_t
 zgpBankInfo_t * zgpTableGetBankInfo(void);
 
 #endif // GREENPOWER_SUPPORT
-#endif // _ZGPNVMTABLE_H
+#endif // ZGPNVMTABLE_H
 
 // eof zgpNvmTable.h

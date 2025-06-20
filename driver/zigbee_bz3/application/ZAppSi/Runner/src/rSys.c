@@ -41,6 +41,7 @@
 #include <nwk/include/nwkEndDeviceTimeout.h>
 #include <zigbee/ZAppSi/z3commonfiles/include/errH.h>
 #include <pds/include/bcPDS.h>
+#include <nwk/include/nwk.h>
 
 /******************************************************************************
                    Defines section
@@ -248,6 +249,28 @@ void rSysGetRequestProcess(ZS_CommandBuffer_t *commandBuffer)
           break;
 #endif // _PARENT_ANNCE_
 #endif //#ifdef _CHILD_MANAGEMENT_
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_      
+    case ZS_MAC_DATA_POLL_RETRIES_ATTR_ID:
+      frameLength += sizeof (uint8_t);
+      CS_ReadParameter(CS_NWK_EXTRA_MAC_POLL_RETRIES_ID, &attributeValue);
+      break;
+
+    case ZS_SUPPORTED_KEY_NEGOTIATION_PROTOCOL_ATTR_ID:
+      frameLength += sizeof (uint8_t);
+      CS_ReadParameter(CS_SUPPORTED_KEY_NEGOTIATION_PROTOCOL_ID, &attributeValue);
+      break;  
+
+    case ZS_SUPPORTED_PRE_SHARED_SECRETS_ATTR_ID:
+      frameLength += sizeof (uint8_t);
+      CS_ReadParameter(CS_SUPPORTED_PRE_SHARED_SECRETS_ID, &attributeValue);
+      break;            
+
+    case ZS_SET_NWK_HUB_CONNECTIVITY_ATTR_ID:
+      frameLength += sizeof (bool);
+      CS_ReadParameter(CS_NWK_HUB_CONNECTIVITY_ID, &attributeValue);
+      break;
+#endif //#ifdef _ZIGBEE_REV_23_SUPPORT_ 
 
     default:
       status = ZS_UNSUPPORTED_ATTRIBUTE_STATUS;
@@ -927,7 +950,9 @@ void rSysSetRequestProcess(ZS_CommandBuffer_t *commandBuffer)
         else
         {
           NWK_JoinControl_t joinCtrl;
-
+#ifdef _ZIGBEE_REV_23_SUPPORT_      
+          joinCtrl.commissioningType = attributeValue.joinCtrl.commissioningType;
+#endif
           joinCtrl.method = (NWK_JoinMethod_t)attributeValue.joinCtrl.method;
           joinCtrl.secured = attributeValue.joinCtrl.secured? true: false;
           joinCtrl.discoverNetworks = attributeValue.joinCtrl.discoverNetworks? true: false;
@@ -936,6 +961,20 @@ void rSysSetRequestProcess(ZS_CommandBuffer_t *commandBuffer)
           CS_WriteParameter(CS_JOIN_CONTROL_ID, &joinCtrl);
         }
       break;
+#ifdef _ZIGBEE_REV_23_SUPPORT_      
+      case ZS_SET_ENDDEVICE_CAPACITY_ID:
+        predictedFrameLength += sizeof(uint8_t);
+        if (predictedFrameLength != frameLength)
+          status = ZS_INVALID_PARAMETER_STATUS;
+        else
+        {
+         NwkBeaconPayload_t payloads;
+         CS_ReadParameter(CS_SET_ENDDEVICE_CAPACITY_ID, &(payloads.field));
+         payloads.field.endDeviceCapacity = attributeValue.bl;
+         CS_WriteParameter(CS_SET_ENDDEVICE_CAPACITY_ID, &(payloads.field));
+        }
+      break;
+#endif //#ifdef _ZIGBEE_REV_23_SUPPORT_
 #ifdef _ZCL_SUPPORT_ 
     case ZS_GET_LAST_MESSAGE_RETURN_VALUE_ATTR_ID:
       rSetGetLastMessageReturnValue(attributeValue.u8);
@@ -960,6 +999,67 @@ void rSysSetRequestProcess(ZS_CommandBuffer_t *commandBuffer)
       NWK_SetParentInformation((uint8_t)attributeValue.u8);
       break;
 #endif //#ifdef _CHILD_MANAGEMENT_
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_     
+    case ZS_MAC_DATA_POLL_RETRIES_ATTR_ID:
+      predictedFrameLength += sizeof (uint8_t);
+      if (predictedFrameLength != frameLength)
+      {
+        status = ZS_INVALID_PARAMETER_STATUS;
+      }
+      else
+      {
+        CS_WriteParameter(CS_NWK_EXTRA_MAC_POLL_RETRIES_ID, &attributeValue);
+      }
+      break;
+    case ZS_SUPPORTED_KEY_NEGOTIATION_PROTOCOL_ATTR_ID:
+      predictedFrameLength += sizeof (uint8_t);
+      if (predictedFrameLength != frameLength)
+      {
+        status = ZS_INVALID_PARAMETER_STATUS;
+      }
+      else
+      {
+        CS_WriteParameter(CS_SUPPORTED_KEY_NEGOTIATION_PROTOCOL_ID, &attributeValue);
+      }
+      break; 
+
+    case ZS_SUPPORTED_PRE_SHARED_SECRETS_ATTR_ID:
+      predictedFrameLength += sizeof (uint8_t);
+      if (predictedFrameLength != frameLength)
+      {
+        status = ZS_INVALID_PARAMETER_STATUS;
+      }
+      else
+      {
+        CS_WriteParameter(CS_SUPPORTED_PRE_SHARED_SECRETS_ID, &attributeValue);
+      }
+      break;
+      
+    case ZS_R23_JOIN_ATTR_ID:
+      predictedFrameLength += sizeof (bool);
+      if (predictedFrameLength != frameLength)
+      {
+        status = ZS_INVALID_PARAMETER_STATUS;
+      }
+      else
+      {
+        CS_WriteParameter(CS_R23_JOIN_ID, &attributeValue);
+      }
+      break; 
+
+    case ZS_SET_NWK_HUB_CONNECTIVITY_ATTR_ID:
+      predictedFrameLength += sizeof (bool);
+      if (predictedFrameLength != frameLength)
+      {
+        status = ZS_INVALID_PARAMETER_STATUS;
+      }
+      else
+      {
+        NWK_SetHubConnectivity(attributeValue.bl);
+      }
+      break;
+#endif //#ifdef _ZIGBEE_REV_23_SUPPORT_
 
     default:
       status = ZS_UNSUPPORTED_ATTRIBUTE_STATUS;

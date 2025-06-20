@@ -1,5 +1,5 @@
-#ifndef _CUSTOMCLUSTER_H
-#define _CUSTOMCLUSTER_H
+#ifndef CUSTOMCLUSTER_H
+#define CUSTOMCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -20,6 +20,10 @@
 
   <#elseif (DEVICE == "CLIENT") >
   <#assign customClusterClientCount = customClusterClientCount + 1>
+
+  <#elseif (DEVICE == "BOTH") >
+  <#assign customClusterClientCount = customClusterClientCount + 1>
+  <#assign customClusterServerCount = customClusterServerCount + 1> 
 
   </#if>
 
@@ -57,6 +61,6 @@ extern ClusterId_t customClientClusterIds[CUSTOM_CLIENT_CLUSTERS_COUNT];
 extern void (*customClientClusterInitFunctions[CUSTOM_CLIENT_CLUSTER_INIT_COUNT])();
 
 
-#endif // _CUSTOMCLUSTER_H
+#endif // CUSTOMCLUSTER_H
 
 // eof customClusters.h

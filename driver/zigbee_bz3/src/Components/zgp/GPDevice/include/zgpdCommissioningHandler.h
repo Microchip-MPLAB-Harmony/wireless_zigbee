@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPDCOMMISSIONINGHANDLER_H
-#define _ZGPDCOMMISSIONINGHANDLER_H
+#ifndef ZGPDCOMMISSIONINGHANDLER_H
+#define ZGPDCOMMISSIONINGHANDLER_H
 
 /******************************************************************************
                     Includes section
@@ -344,6 +344,6 @@ void zgpMakeIEEEAddrFromSrcAddr(ExtAddr_t *ieeeAddr, uint32_t *srcIDMsb, uint32_
 void zgpFillEncryptReq(uint8_t *pdu, uint8_t headerLen, uint8_t payloadLen);
 #endif //ZGP_SECURITY_ENABLE
 
-#endif //_ZGPDCOMMISSIONINGHANDLER_H
+#endif //ZGPDCOMMISSIONINGHANDLER_H
 
 //eof zgpdCommissioninghandler.h

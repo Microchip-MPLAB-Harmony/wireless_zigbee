@@ -41,8 +41,8 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#if !defined _APS_H
-#define _APS_H
+#if !defined APS_H
+#define APS_H
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
@@ -75,6 +75,11 @@
 #include <aps/include/apsmeVerifyKey.h>
 #include <aps/include/apsmeConfirmKey.h>
 #include <aps/include/intrpData.h>
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <aps/include/apsFragmentationCache.h>
+#include <aps/include/apsmeKeyNegotiate.h>
+
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
 
 /******************************************************************************
                                 Types section
@@ -159,6 +164,30 @@ typedef struct
   void (*APS_StopConf)(APS_StopConf_t *conf);
   APS_StopConf_t confirm;
 } APS_StopReq_t;
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/** Type for APS Key pair backup data. */
+BEGIN_PACK
+typedef struct PACK
+{
+  /* Device extended address. */
+  ExtAddr_t deviceExtAddr;
+  /* APS Key attributes. */
+  ApsKeyAttributes_t keyAttributes;
+  /* The actual value of the initial key. */
+  uint8_t initialJoinKey[SECURITY_KEY_SIZE];
+  /* APS Selected key negotiation protocol method. */
+  SelectedKeyNegotiationProtocol_t keyNegotiationMethod;
+  /* APS Key-pair pass phrase. */
+  uint8_t passPhrase[PASSPHRASE_MAX_SIZE];
+  /* APS Key-pair flags. */
+  uint8_t flagBits;
+  /* APS Trust center swap out link key. */
+  uint8_t tcSwapOutLinkKey[SECURITY_KEY_SIZE];
+} APS_BackupData_t;
+END_PACK
+
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
 
 /******************************************************************************
                               Prototypes section
@@ -252,6 +281,45 @@ INLINE void apsUpdateNullIEEEaddr(NWK_DataReq_t *const req)
 }
 #endif
 
-#endif  /* _APS_H */
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+  \brief Retrieve the APS key pair value of the particular index and store
+         it in the backup buffer.
+
+  \param[in] keyPairIndex - index value of the APS key pair set
+  \param[out] backupBuffer - pointer to the buffer to which the data to be 
+                             copied.
+
+  \return - The no of bytes written into the backup buffer.
+ ******************************************************************************/
+uint16_t APS_FillBackup(APS_KeyPairIndex_t keyPairIndex, uint8_t *backupBuffer);
+
+/**************************************************************************//**
+  \brief Restore the Trust center aps key pair table from the backup data.
+
+  \param[in] keyPairIndex - index position of the key pair table to where the
+                            data to be restored.
+  \param[in] backupBuffer - pointer to the buffer from where the data can
+                            be copied.
+
+  \return True - If the restore is successful.
+          False - Otherwise.
+ ******************************************************************************/
+bool APS_RestoreBackup(APS_KeyPairIndex_t keyPairIndex, uint8_t *restoreBuffer);
+
+/**************************************************************************//**
+  \brief Update the aps key pair record of the trust cetner.
+
+  \param[in] previousTcAddress - Extended address of old trust center.
+  \param[in] newTcAddress - Extended address of new trust center.
+  \param[in] updateLinkKey - Flag to decide whether to update the link key
+                             or not.
+
+  \return APS Key Handle of swapout tc record.
+ ******************************************************************************/
+APS_KeyHandle_t APS_UpdateTcSwapRecord(const ExtAddr_t *const previousTcAddress, const ExtAddr_t *const newTcAddress, bool updateLinkKey);
+
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
+#endif  /* APS_H */
 /** eof aps.h */
 

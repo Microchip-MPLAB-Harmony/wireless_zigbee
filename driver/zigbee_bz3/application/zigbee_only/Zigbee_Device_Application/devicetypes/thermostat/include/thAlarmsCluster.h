@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _THALARMSCLUSTER_H
-#define _THALARMSCLUSTER_H
+#ifndef THALARMSCLUSTER_H
+#define THALARMSCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -93,6 +93,6 @@ void removeAlarmID(uint8_t alarmCode, ClusterId_t clusterId);
 
 
 
-#endif // _THALARMSCLUSTER_H
+#endif // THALARMSCLUSTER_H
 
 // eof thAlarmsCluster.h

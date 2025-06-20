@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _LIGHTCOMMISSIONINGCLUSTER_H
-#define _LIGHTCOMMISSIONINGCLUSTER_H
+#ifndef LIGHTCOMMISSIONINGCLUSTER_H
+#define LIGHTCOMMISSIONINGCLUSTER_H
 
 /******************************************************************************
                     Includes
@@ -60,6 +60,6 @@ void commissioningClusterInit(void);
 
 void commissioningSendEndpointInformation(ShortAddr_t addr, Endpoint_t ep);
 
-#endif // _LIGHTCOMMISSIONINGCLUSTER_H
+#endif // LIGHTCOMMISSIONINGCLUSTER_H
 
 // eof lightCommissioningCluster.h

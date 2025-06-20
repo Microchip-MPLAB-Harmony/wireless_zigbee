@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _BRIDGECOMMISSIONINGCLUSTER_H
-#define _BRIDGECOMMISSIONINGCLUSTER_H
+#ifndef BRIDGECOMMISSIONINGCLUSTER_H
+#define BRIDGECOMMISSIONINGCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -69,6 +69,6 @@ void cbCommissioningServerClusterInit(void);
 ******************************************************************************/
 void cbCommissioningClientClusterInit(void);
 
-#endif // _BRIDGECOMMISSIONINGCLUSTER_H
+#endif // BRIDGECOMMISSIONINGCLUSTER_H
 
 // eof cbCommissioningCluster.h

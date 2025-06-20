@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _THTEMPERATUREMEASUREMENTCLUSTER_H
-#define _THTEMPERATUREMEASUREMENTCLUSTER_H
+#ifndef THTEMPERATUREMEASUREMENTCLUSTER_H
+#define THTEMPERATUREMEASUREMENTCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -82,6 +82,6 @@ void thTemperatureMeasurementClusterInit(void);
 ******************************************************************************/
 void thTempeartureMeasurementUpdateMeasuredValue(void);
 
-#endif // _THTEMPERATUREMEASUREMENTCLUSTER_H
+#endif // THTEMPERATUREMEASUREMENTCLUSTER_H
 
 // eof thTemperatureMeasurementCluster.h

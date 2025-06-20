@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPCLUSTERGENERIC_H
-#define _ZGPCLUSTERGENERIC_H
+#ifndef ZGPCLUSTERGENERIC_H
+#define ZGPCLUSTERGENERIC_H
 
 #ifdef _GREENPOWER_SUPPORT_
 /******************************************************************************
@@ -183,6 +183,6 @@ void zgpTransRemoveAndAddEventHandler(zgpPairingProcType_t pairingType, ZGP_Sink
                                       ZGP_GpdAppInfo_t *appInfo, uint8_t noOfEndPoints, uint8_t *endPointList);
 #endif // _GREENPOWER_SUPPORT_
 
-#endif // _ZGPCLUSTERGENERIC_H
+#endif // ZGPCLUSTERGENERIC_H
 
 // eof zgpClusterGeneric.h

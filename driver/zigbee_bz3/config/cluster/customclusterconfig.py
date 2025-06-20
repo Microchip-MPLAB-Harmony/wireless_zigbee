@@ -31,7 +31,8 @@ devicename = Variables.get("__PROCESSOR")
 #Condition to enable custom cluster in device
 enableCustomCluster = ( 
     devicename in pic32cx_bz2_family or
-    devicename in pic32cx_bz3_family
+    devicename in pic32cx_bz3_family or
+    devicename in pic32cx_bz36_family
 )
             
 
@@ -946,7 +947,7 @@ for cli in range(MAX_CLUSTER_SIZE):
     customClusterName.setDependencies(customClusterLabel,['ZCC'+str(cli) + "_" + "CUSTOM_CLUSTER_NAME",])
 
     global customClusterCS
-    customClusterCS = drvZigbeeComponent.createComboSymbol('ZCC'+str(cli) + "_" + "CUSTOM_CLUSTER_CS",  customCluster, ["CLIENT","SERVER"])
+    customClusterCS = drvZigbeeComponent.createComboSymbol('ZCC'+str(cli) + "_" + "CUSTOM_CLUSTER_CS",  customCluster, ["CLIENT","SERVER", "BOTH"])
     customClusterCS.setLabel("Supported Implementation")
     customClusterCS.setDefaultValue("CLIENT")
     customClusterCS.setVisible(customCluster.getValue())
@@ -963,12 +964,14 @@ for cli in range(MAX_CLUSTER_SIZE):
     customClusterReportInterval.setLabel("Report interval minimum")
     customClusterReportInterval.setDefaultValue(0)
     customClusterReportInterval.setMin(0)   
+    customClusterReportInterval.setMax(65535)
     customClusterReportInterval.setVisible(False)
 
     customClusterReportInterval = drvZigbeeComponent.createIntegerSymbol('ZCC'+str(cli) + "_" + "CUSTOM_CLUSTER_REPORT_MAX", customCluster)
     customClusterReportInterval.setLabel("Report interval maximum")
     customClusterReportInterval.setDefaultValue(0)
     customClusterReportInterval.setMin(0)
+    customClusterReportInterval.setMax(65535)
     customClusterReportInterval.setVisible(False)
 
     customClusterClientMenu = drvZigbeeComponent.createMenuSymbol('ZCC'+str(cli) + "_" + "CUSTOM_CLUSTER_CLIENT_MENU", customCluster)
@@ -1129,7 +1132,9 @@ for cli in range(MAX_CLUSTER_SIZE):
             customClusterClientAttributesSymDType.setVisible(False)
 
             typeN = 'ZCC'+str(cli) + "_" + "CUSTOM_CLUSTER_CLIENT_ATTRIBUTES_TYPE_ARRAY_" + str(attributeIndex) 
-            customClusterClientAttributesSymDType = drvZigbeeComponent.createIntegerSymbol(typeN, customClusterClientAttributesSym)  
+            customClusterClientAttributesSymDType = drvZigbeeComponent.createIntegerSymbol(typeN, customClusterClientAttributesSym)
+            customClusterClientAttributesSymDType.setMin(1)  
+            customClusterClientAttributesSymDType.setMax(256)
             customClusterClientAttributesSymDType.setVisible(False)
 
             # DATA TYPE END
@@ -1142,6 +1147,7 @@ for cli in range(MAX_CLUSTER_SIZE):
             propN = 'ZCC'+str(cli)+"_" + "CUSTOM_CLUSTER_CLIENT_ATTRIBUTES_PROP_REPORTABLE_"""+str(attributeIndex)
             customClusterClientAttributesSymProp = drvZigbeeComponent.createBooleanSymbol(propN, customClusterClientAttributesSym)  
             customClusterClientAttributesSymProp.setVisible(False)
+            customClusterClientAttributesSymProp.setReadOnly(True)
             customClusterClientAttributesSymProp.setDependencies(customClusterReportableInterval, [propN,])
 
             propN = 'ZCC'+str(cli) + "_" + "CUSTOM_CLUSTER_CLIENT_ATTRIBUTES_PROP_BOUNDARY_" + str(attributeIndex)
@@ -1238,6 +1244,8 @@ for cli in range(MAX_CLUSTER_SIZE):
 
             typeN = 'ZCC'+str(cli) + "_" + "CUSTOM_CLUSTER_SERVER_ATTRIBUTES_TYPE_ARRAY_" + str(attributeIndex)
             customClusterServerAttributesSymDType = drvZigbeeComponent.createIntegerSymbol(typeN, customClusterServerAttributesSym)  
+            customClusterServerAttributesSymDType.setMin(1)
+            customClusterServerAttributesSymDType.setMax(256)
             customClusterServerAttributesSymDType.setVisible(False)
             
             # DATA TYPE END
@@ -1363,7 +1371,9 @@ for cli in range(MAX_CLUSTER_SIZE):
                 customClusterClientAttributesSymDType.setVisible(False)
 
                 typeN = 'ZCC'+str(cli) + "_" + "CUSTOM_CLUSTER_CLIENT_COMMANDS_TYPE_ARRAY_" + str(commandIndex) + '_' + str(paramIndex)
-                customClusterClientAttributesSymDType = drvZigbeeComponent.createIntegerSymbol(typeN, customClusterClientCommandsSymP)  
+                customClusterClientAttributesSymDType = drvZigbeeComponent.createIntegerSymbol(typeN, customClusterClientCommandsSymP)
+                customClusterClientAttributesSymDType.setMin(1)  
+                customClusterClientAttributesSymDType.setMax(256)
                 customClusterClientAttributesSymDType.setVisible(False)
 
                 # DATA TYPE END
@@ -1467,6 +1477,8 @@ for cli in range(MAX_CLUSTER_SIZE):
 
                 typeN = 'ZCC'+str(cli) + "_" + "CUSTOM_CLUSTER_SERVER_COMMANDS_TYPE_ARRAY_" + str(commandIndex) + '_' + str(paramIndex)
                 customClusterServerAttributesSymDType = drvZigbeeComponent.createIntegerSymbol(typeN, customClusterServerCommandsSymP)
+                customClusterServerAttributesSymDType.setMin(1)
+                customClusterServerAttributesSymDType.setMax(256)
                 customClusterServerAttributesSymDType.setVisible(False)
 
               

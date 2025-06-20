@@ -46,6 +46,12 @@ def customIasZoneClusterEnableCheck(symbol, event):
     else:
         symbol.setEnabled(False)
 
+def combinedInterfaceIasZoneClusterEnableCheck(symbol, event):
+    if ((zigbeeDeviceType.getValue() == 'ZIGBEE_COMBINED_INTERFACE') and (iasZoneCluster.getValue() == True)):
+        symbol.setEnabled(True)
+    else:
+        symbol.setEnabled(False)
+
 def iasZoneClusterClientCheck(symbol, event):
     if ((iasZoneCluster.getValue() == False) or iasZoneClusterCS.getValue() == "SERVER"):
         symbol.setVisible(False)
@@ -89,7 +95,9 @@ def iasZoneClusterHandling():
     elif ((getDevice == "ZIGBEE_CUSTOM")):
         iasZoneCluster.setVisible(True)
         iasZoneCluster.setValue(False)
-        iasZoneClusterCS.setValue("BOTH")
+        iasZoneClusterCS.setValue("SERVER")
+        iasZoneClusterClientMenu.setVisible(False) 
+        iasZoneClusterServerMenu.setVisible(True)
     else:
         iasZoneCluster.setVisible(False)
 
@@ -170,12 +178,14 @@ iasZoneClusterCS.setDefaultValue("BOTH")
 iasZoneClusterCS.setDescription("IAS ZONE Cluster Supported Implementation- Select the option")
 iasZoneClusterCS.setDependencies(iasZoneClusterCsCheck,["IASZONE_CLUSTER_ENABLE"])
 
+global iasZoneClusterClientMenu
 iasZoneClusterClientMenu = drvZigbeeComponent.createMenuSymbol("IASZONE_CLUSTER_CLIENT_MENU", iasZoneCluster)
 iasZoneClusterClientMenu.setLabel("Client")
 #iasZoneClusterClientMenu.setVisible(False)
 iasZoneClusterClientMenu.setDescription("IAS ZONE CLUSTER CLIENT")
 iasZoneClusterClientMenu.setDependencies(iasZoneClusterClientCheck,["IASZONE_CLUSTER_CS","IASZONE_CLUSTER_ENABLE"])
 
+global iasZoneClusterServerMenu
 iasZoneClusterServerMenu = drvZigbeeComponent.createMenuSymbol("IASZONE_CLUSTER_SERVER_MENU", iasZoneCluster)
 iasZoneClusterServerMenu.setLabel("Server")
 #iasZoneClusterServerMenu.setVisible(False)
@@ -410,7 +420,18 @@ iasZoneClusterConfSrc.setProjectPath("config/" + configName + "/zigbee/z3device/
 iasZoneClusterConfSrc.setType("SOURCE")
 iasZoneClusterConfSrc.setOverwrite(True)
 iasZoneClusterConfSrc.setMarkup(True)
-iasZoneClusterConfSrc.setEnabled(checkDevTypeCombInterface)
+iasZoneClusterConfSrc.setEnabled(checkDevTypeCombInterface and iasZoneCluster.getValue())
+iasZoneClusterConfSrc.setDependencies(combinedInterfaceIasZoneClusterEnableCheck, ["IASZONE_CLUSTER_ENABLE"])
+
+iasZoneClusterConfInc = drvZigbeeComponent.createFileSymbol("CIIASZONECLUSTER_H", None)
+iasZoneClusterConfInc.setSourcePath("/driver/zigbee" + suffix + "/application/zigbee_only/Zigbee_Device_Application/devicetypes/combinedInterface/include/ciIasZoneCluster.h")
+iasZoneClusterConfInc.setOutputName("ciIasZoneCluster.h")
+iasZoneClusterConfInc.setDestPath("/zigbee/z3device/combinedInterface/include")
+iasZoneClusterConfInc.setProjectPath("config/" + configName + "/zigbee/z3device/combinedInterface/include/")
+iasZoneClusterConfInc.setType("HEADER")
+iasZoneClusterConfInc.setOverwrite(True)
+iasZoneClusterConfInc.setEnabled(checkDevTypeCombInterface and iasZoneCluster.getValue())
+iasZoneClusterConfInc.setDependencies(combinedInterfaceIasZoneClusterEnableCheck,["IASZONE_CLUSTER_ENABLE"])
 
 # IAS ZONE CLUSTER - IAS ACE
 iasZoneClusterConfSrc = drvZigbeeComponent.createFileSymbol("ZIGBEE_IASZONE_CLUSTER_CONF_SRC_IASACE", None)

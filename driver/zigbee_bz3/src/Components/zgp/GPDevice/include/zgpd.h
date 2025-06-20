@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPD_H_
-#define _ZGPD_H_
+#ifndef ZGPD_H
+#define ZGPD_H
 /******************************************************************************
                     Includes section
 ******************************************************************************/
@@ -51,6 +51,6 @@
 #include <zgp/GPDevice/include/zgpdChannelConfig.h>
 
 
-#endif /*_ZGPD_H_*/
+#endif /*ZGPD_H*/
 
 //eof zgpd.h

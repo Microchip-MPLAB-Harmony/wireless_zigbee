@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _COLORSCENECONTROLLER_LEVELCONTROLCLUSTER_H
-#define _COLORSCENECONTROLLER_LEVELCONTROLCLUSTER_H
+#ifndef COLORSCENECONTROLLER_LEVELCONTROLCLUSTER_H
+#define COLORSCENECONTROLLER_LEVELCONTROLCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -62,6 +62,6 @@ extern ZCL_LevelControlClusterClientAttributes_t cscLevelControlClusterClientAtt
 ******************************************************************************/
 void cscLevelControlClusterInit(void);
 
-#endif // _COLORSCENECONTROLLER_LEVELCONTROLCLUSTER_H
+#endif // COLORSCENECONTROLLER_LEVELCONTROLCLUSTER_H
 
 // eof cscLevelControlCluster.h

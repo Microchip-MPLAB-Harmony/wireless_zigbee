@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _CSBUFFERS_H_
-#define _CSBUFFERS_H_
+#ifndef CSBUFFERS_H_
+#define CSBUFFERS_H_
 
 /******************************************************************************
                     Includes section
@@ -61,6 +61,9 @@
 #ifdef _LINK_SECURITY_
 #include <security/TrustCentre/include/tcKeyEstablish.h>
 #include <aps/include/private/apsKeyPairSet.h>
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <aps/include/apsFragmentationCache.h>
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
 #endif /* _LINK_SECURITY_ */
 
 #ifdef _ZCL_SUPPORT_ 
@@ -111,6 +114,11 @@ typedef struct _CS_StackBuffers_t
 #if CS_ADDRESS_MAP_TABLE_SIZE > 0
   NwkAddressMapEntry_t csAddressMapTable[CS_ADDRESS_MAP_TABLE_SIZE];
 #endif
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#if CS_NWK_DISCOVERY_TABLE_SIZE > 0
+  NwkDiscoveryTableEntry_t csNwkDiscoveryTable[CS_NWK_DISCOVERY_TABLE_SIZE];
+#endif
+#endif //#ifdef _ZIGBEE_REV_23_SUPPORT_
 #if CS_NWK_BTT_SIZE > 0
   NWK_BTTTableEntry_t csBTR[CS_NWK_BTT_SIZE];
 #endif
@@ -127,6 +135,11 @@ typedef struct _CS_StackBuffers_t
   /* APS buffers */
 #if CS_APS_DATA_REQ_BUFFERS_AMOUNT > 0
   ApsDataBuffer_t csApsDataReqBuffer[CS_APS_DATA_REQ_BUFFERS_AMOUNT];
+#endif
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#if CS_APS_CMD_REQ_BUFFERS_AMOUNT > 0
+  ApsCmdBuffer_t csApsCmdReqBuffer[CS_APS_CMD_REQ_BUFFERS_AMOUNT];
+#endif
 #endif
 #if CS_APS_ACK_FRAME_BUFFERS_AMOUNT > 0
   ApsAckBuffer_t csApsAckFrameBuffer[CS_APS_ACK_FRAME_BUFFERS_AMOUNT];
@@ -159,6 +172,10 @@ typedef struct _CS_StackBuffers_t
   #endif /* _LINK_SECURITY_ */
 #endif /* _SECURITY_ */
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  ApsFragmentationCacheDescriptor_t csApsFragCacheDescriptor[CS_APS_KEY_PAIR_DESCRIPTORS_AMOUNT];
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
+
 #if defined(_PERMISSIONS_) && (CS_PERMISSIONS_TABLE_SIZE > 0)
   ZdoPermissionsRecord_t csPermissionsTable[CS_PERMISSIONS_TABLE_SIZE];
 #endif
@@ -190,5 +207,5 @@ typedef struct _CS_StackBuffers_t
 
 } CS_StackBuffers_t;
 
-#endif /* _CSBUFFERS_H_ */
+#endif /* CSBUFFERS_H_ */
 /* eof csBuffers.h */

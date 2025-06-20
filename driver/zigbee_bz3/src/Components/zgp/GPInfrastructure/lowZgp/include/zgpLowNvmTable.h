@@ -41,8 +41,8 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#ifndef _ZGPLOWNVMTABLEINTERFACE_H
-#define _ZGPLOWNVMTABLEINTERFACE_H
+#ifndef ZGPLOWNVMTABLEINTERFACE_H
+#define ZGPLOWNVMTABLEINTERFACE_H
 
 #ifdef _GREENPOWER_SUPPORT_
 // DOM-IGNORE-END
@@ -369,6 +369,6 @@ bool ZGPL_AddSinkGroupEntry(ZGP_SinkTableEntry_t *currEntry, ZGP_SinkGroup_t *gr
  ******************************************************************************/
 void ZGPL_ResetTableToFN(void);
 #endif // GREENPOWER_SUPPORT
-#endif //_ZGPLOWNVMTABLE_H
+#endif //ZGPLOWNVMTABLE_H
 
 //eof zgpNvmTable.h

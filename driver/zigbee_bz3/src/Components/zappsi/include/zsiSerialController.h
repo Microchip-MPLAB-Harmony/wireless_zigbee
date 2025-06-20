@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSISERIALCONTROLLER_H
-#define _ZSISERIALCONTROLLER_H
+#ifndef ZSISERIALCONTROLLER_H
+#define ZSISERIALCONTROLLER_H
 
 /*****************************************************************************
                               Includes section
@@ -196,5 +196,5 @@ void zsiMediumSendingDone(void);
  ******************************************************************************/
 void zsiSerialStoreTxCmd(const ZsiCommandFrame_t *const cmdFrame);
 
-#endif /* _ZSISERIALCONTROLLER_H */
+#endif /* ZSISERIALCONTROLLER_H */
 /* eof zsiSerialController.h */

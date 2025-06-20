@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _WLPDS_TYPESCONVERTER
-#define _WLPDS_TYPESCONVERTER
+#ifndef WLPDS_TYPESCONVERTER
+#define WLPDS_TYPESCONVERTER
 
 /******************************************************************************
                    Includes section
@@ -67,8 +67,9 @@
 #define GROUP_TABLE_ITEM_SIZE         (CS_GROUP_TABLE_SIZE * sizeof(NWK_GroupTableEntry_t))
 #define RREQ_IDENTIFIER_ITEM_SIZE     (sizeof(uint8_t))
 #define BC_STACK_VESRION_ITEM_SIZE   (sizeof(csSIB.csStackVersion))
-
-
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#define FRAGMENTATION_CACHE_DESCRIPTOR_ITEM_SIZE (CS_APS_KEY_PAIR_DESCRIPTORS_AMOUNT * sizeof(ApsFragmentationCacheDescriptor_t))
+#endif
 
 /******************************************************************************
                    Types section
@@ -78,7 +79,7 @@ be stored in the non-volatile memory and identified via BC_EXT_GEN_MEMORY_MEM_ID
 typedef struct
 {
   uint64_t         csUid;
-  uint8_t          txPower;
+  int8_t           txPower;
   uint64_t         extPanId;
   uint32_t         channelMask;
   uint8_t          channelPage;
@@ -134,5 +135,5 @@ bool pdsIsItemUnderSecurityControl(S_Nv_ItemId_t id);
 void fillExtendedBcSet(void);
 
 
-#endif // _WLPDS_TYPESCONVERTER
+#endif // WLPDS_TYPESCONVERTER
 /* eof wlPdsTypesConverter.h */

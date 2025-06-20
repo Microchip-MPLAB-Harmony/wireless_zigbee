@@ -41,8 +41,8 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#if !defined _ZDO_COMMANDS_H
-#define _ZDO_COMMANDS_H
+#if !defined ZDO_COMMANDS_H
+#define ZDO_COMMANDS_H
 // DOM-IGNORE-END
 
 /******************************************************************************
@@ -54,9 +54,6 @@
                              Definitions section
  ******************************************************************************/
 // DOM-IGNORE-BEGIN
-#define ZDP_RESP_HEADER_SIZE 2U /*!< ZDO status + Transaction Sequence Number */
-#define ZDP_REQ_HEADER_SIZE  1U /*!< Transaction Sequence Number */
-
 #define DEVICE_ANNCE_REQ_SIZE 11
 #define NWK_ADDR_REQ_SIZE 10
 #define IEEE_ADDR_REQ_SIZE 4
@@ -81,7 +78,6 @@
 #define NWK_ADDR_RESP_SIZE 10
 #define IEEE_ADDR_RESP_SIZE 10
 #define SYSTEM_SERVER_DISCOVERY_RESP_SIZE 2
-#define NODE_DESCRIPTOR_RESP_SIZE 15
 #define POWER_DESCRIPTOR_RESP_SIZE 4
 #define ACTIVE_EP_RESP_SIZE 3
 #define SIMPLE_DESCRIPTOR_RESP_SIZE 3
@@ -113,6 +109,10 @@ typedef struct _ZdoCommand_t
     NWK_EDScanReq_t edScan;
     /** ZdoResetRequest to reset the Stack */
     ZDO_ResetNetworkReq_t resetNetworkReq;
+#ifdef _ZIGBEE_REV_23_SUPPORT_	
+    /** ZdoSurveyScanRequest to the Stack */
+    ZDO_MgmtBeaconSurveyScanReq_t surveyScanReq;
+#endif	
   } req;
   /** The flag indicates that the command is used or not. */
   bool busy;
@@ -206,5 +206,5 @@ ZDO_PRIVATE void zdoPrepareResponseParameters(const APS_DataInd_t *const apsData
  ******************************************************************************/
 ZDO_PRIVATE void zdoZdpResponseConf(APS_DataConf_t *apsDataConf);
 
-#endif /* _ZDO_COMMANDS_H */
+#endif /* ZDO_COMMANDS_H */
 /** eof zdoCommands.h */

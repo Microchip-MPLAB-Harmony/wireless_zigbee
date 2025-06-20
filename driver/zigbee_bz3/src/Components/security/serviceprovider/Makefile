@@ -57,13 +57,16 @@ CFLAGS +=                        \
   -I$(RTOS_CONFIG_PATH)            \
   -I$(PARTPACK_PATCH)/include      \
   -I$(PARTPACK_PATCH)/include/soc \
-  -I$(CMIS_PATH)  
+  -I$(CMIS_PATH)  \
+  -I$(OSAL_PATH)
 
 #***************************** Object files ************************************
 objects_ssp =                              \
   $(SSP_PATH)/objs/sspManager.o            \
   $(SSP_PATH)/objs/sspMem.o                \
   $(SSP_PATH)/objs/sspAesHandler.o         \
+  $(SSP_PATH)/objs/sspCurve25519Handler.o  \
+  $(SSP_PATH)/objs/sspSha256Handler.o      \
   $(SSP_PATH)/objs/sspHashHandler.o        \
   $(SSP_PATH)/objs/sspCcmHandler.o         \
   $(SSP_PATH)/objs/sspSfpHandler.o         \
@@ -99,6 +102,8 @@ $(SSP_PATH)/objs/sspAuthenticHandler.o:    $(SSP_PATH)/src/sspAuthenticHandler.c
 $(SSP_PATH)/objs/sspChallengeGenHandler.o: $(SSP_PATH)/src/sspChallengeGenHandler.c
 $(SSP_PATH)/objs/sspHash.o:                $(SSP_PATH)/src/sspHash.c
 $(SSP_PATH)/objs/sspReset.o:               $(SSP_PATH)/src/sspReset.c
+$(SSP_PATH)/objs/sspCurve25519Handler.o:   $(SSP_PATH)/src/sspCurve25519Handler.c
+$(SSP_PATH)/objs/sspSha256Handler.o:       $(SSP_PATH)/src/sspSha256Handler.c
 
 $(lib_ssp): $(objects_ssp)
 	$(AR_MSG)

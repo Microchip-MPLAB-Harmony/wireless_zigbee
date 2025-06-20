@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSIZGPSERIALIZATION_H_
-#define _ZSIZGPSERIALIZATION_H_
+#ifndef ZSIZGPSERIALIZATION_H
+#define ZSIZGPSERIALIZATION_H
 
 #if APP_ZGP_DEVICE_TYPE >= APP_ZGP_DEVICE_TYPE_PROXY_BASIC
 /******************************************************************************
@@ -863,4 +863,4 @@ ZsiProcessingResult_t zsiDeserializeZGPL_GpdfDataReqReq(void *memory,
 #endif
 
 #endif // APP_ZGP_DEVICE_TYPE >= APP_ZGP_DEVICE_TYPE_PROXY_BASIC
-#endif /* _ZSIZGPSERIALIZATION_H_ */
+#endif /* ZSIZGPSERIALIZATION_H */

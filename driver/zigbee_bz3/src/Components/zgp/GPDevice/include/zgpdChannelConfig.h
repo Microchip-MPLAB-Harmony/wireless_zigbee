@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPDCHANNELCONFIG_H
-#define _ZGPDCHANNELCONFIG_H
+#ifndef ZGPDCHANNELCONFIG_H
+#define ZGPDCHANNELCONFIG_H
 /******************************************************************************
                         Includes section.
 ******************************************************************************/
@@ -120,5 +120,5 @@ ZGP_Status_t ZGP_ChannelReq(ZGP_ChannelReq_t *zgpChannelReq);
   \return   none.
 ******************************************************************************/
 void zgpChannelConfigInd(ZGP_DataInd_t *zgpChannelConfigInd);
-#endif // _ZGPDCHANNELCONFIG_H
+#endif // ZGPDCHANNELCONFIG_H
 //eof zgpdChannelConfig.h

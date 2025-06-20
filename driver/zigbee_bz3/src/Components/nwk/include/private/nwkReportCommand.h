@@ -58,6 +58,8 @@
 #define NWK_MAX_REPORT_PANID 16U
 /** Types of report information command. */
 #define NWK_REPORT_TYPE_PANID_CONFLICT 0U
+#define NWK_REPORT_TYPE_LINK_KEY_INFO 6U
+
 /** Minimum size of the report command payload without
  * report information field. */
 #define NWK_SIZE_OF_MIN_REPORT_CMD_PAYLOD 10U
@@ -80,7 +82,14 @@ typedef enum _NwkReportCommandState_t
   NWK_REPORT_TIMEOUT_STATE = 0x55,
   NWK_REPORT_LAST_STATE
 } NwkReportCommandState_t;
-
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/** Report info to annouce link key in report command */
+typedef struct _NwkReportInfo_t
+{
+  uint8_t reportTypeId;
+  uint8_t linkkey[16];
+}NwkReportInfo_t;
+#endif
 /** Internal variables of the report command component. */
 typedef struct _NwkReportCommand_t
 {
@@ -91,6 +100,9 @@ typedef struct _NwkReportCommand_t
     /** MLME-SCAN request primitive's parameters */
     MAC_ScanReq_t macScan;
     HAL_AppTimer_t timer;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+    NwkReportInfo_t reportInfo;
+#endif
   } req;
 } NwkReportCommand_t;
 

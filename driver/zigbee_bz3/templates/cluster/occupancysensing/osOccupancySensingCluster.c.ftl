@@ -94,7 +94,7 @@ static ClusterId_t osClientClusterToBindIds[] =
 <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "CLIENT") && (ENDPOINT == "OCCUPANCY") >
+  <#if ( (DEVICE == "CLIENT") || (DEVICE == "BOTH") ) && (ENDPOINT == "OCCUPANCY") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -109,7 +109,7 @@ static ClusterId_t osServerClusterToBindIds[] =
 <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "SERVER") && (ENDPOINT == "OCCUPANCY") >
+  <#if ( (DEVICE == "SERVER") || (DEVICE == "BOTH") ) && (ENDPOINT == "OCCUPANCY") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -205,7 +205,7 @@ void occupancySensingToggleOccupancy(void)
 
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "SERVER") && (ENDPOINT == "OCCUPANCY")>
+  <#if ( (DEVICE == "SERVER") || (DEVICE == "BOTH") ) && (ENDPOINT == "OCCUPANCY")>
 
   <#assign prefixAttribute  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_" + "SERVER" + "_ATTRIBUTES_">
 

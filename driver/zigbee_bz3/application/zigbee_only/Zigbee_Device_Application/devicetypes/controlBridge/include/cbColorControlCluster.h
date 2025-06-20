@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _CBCOLORCONTROLCLUSTER_H
-#define _CBCOLORCONTROLCLUSTER_H
+#ifndef CBCOLORCONTROLCLUSTER_H
+#define CBCOLORCONTROLCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -59,6 +59,6 @@ extern PROGMEM_DECLARE(ZCL_ColorControlClusterCommands_t cbColorControlCommands)
 ******************************************************************************/
 void cbColorControlClusterInit(void);
 
-#endif // _CBCOLORCONTROLCLUSTER_H
+#endif // CBCOLORCONTROLCLUSTER_H
 
 // eof cbColorControlCluster.h

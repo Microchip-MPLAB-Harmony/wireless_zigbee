@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#if !defined _NWK_ADDRESS_RESOLV_H
-#define _NWK_ADDRESS_RESOLV_H
+#if !defined NWK_ADDRESS_RESOLV_H
+#define NWK_ADDRESS_RESOLV_H
 
 /******************************************************************************
                                Includes section
@@ -70,6 +70,16 @@ bool NWK_LinkShortAndExtAddress(const ShortAddr_t shortAddr,
 void NWK_RemoveFromAddressMap(const ExtAddr_t *const extAddr);
 
 /**************************************************************************//**
+  \brief Check whether entry is present in the address map.
+
+  \param[in] extAddr - pointer to a extended address.
+  
+  \return True - If address map entry is present.
+          False - Otherwise
+ ******************************************************************************/
+bool NWK_IsAddressMapEntryPresent(const ExtAddr_t *const extAddr);
+
+/**************************************************************************//**
   \brief Searching a extended address by the short address.
 
   \param[in] shortAddr - a short address.
@@ -87,6 +97,6 @@ const ExtAddr_t* NWK_GetExtByShortAddress(const ShortAddr_t shortAddr);
  ******************************************************************************/
 const ShortAddr_t* NWK_GetShortByExtAddress(const ExtAddr_t *const extAddr);
 
-#endif /* _NWK_ADDRESS_RESOLV_H */
+#endif /* NWK_ADDRESS_RESOLV_H */
 /** eof nwkAddressResolv.h */
 

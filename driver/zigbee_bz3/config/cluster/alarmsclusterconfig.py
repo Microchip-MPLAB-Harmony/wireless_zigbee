@@ -46,6 +46,12 @@ def customAlarmsClusterEnableCheck(symbol, event):
     else:
         symbol.setEnabled(False)
 
+def combinedInterfaceAlarmsClusterEnableCheck(symbol, event):
+    if ((zigbeeDeviceType.getValue() == 'ZIGBEE_COMBINED_INTERFACE') and (alarmsCluster.getValue() == True)):
+        symbol.setEnabled(True)
+    else:
+        symbol.setEnabled(False)
+
 def alarmsClusterClientCheck(symbol, event):
     if ((alarmsCluster.getValue() == False) or alarmsClusterCS.getValue() == "SERVER"):
         symbol.setVisible(False)
@@ -77,7 +83,7 @@ def alarmsClusterHandling():
     elif ((getDevice == "ZIGBEE_COMBINED_INTERFACE")):
         alarmsCluster.setVisible(True)
         alarmsCluster.setValue(True)
-        alarmsCluster.setReadOnly(True)
+        alarmsCluster.setReadOnly(False)
         alarmsClusterCS.setValue("CLIENT")
         alarmsClusterCS.setReadOnly(True)
     elif ((getDevice == "ZIGBEE_THERMOSTAT")):
@@ -89,7 +95,10 @@ def alarmsClusterHandling():
     elif ((getDevice == "ZIGBEE_CUSTOM")):
         alarmsCluster.setVisible(True)
         alarmsCluster.setValue(True)
-        alarmsClusterCS.setValue("BOTH")
+        alarmsClusterCS.setValue("SERVER")
+        alarmsClusterCS.setVisible(True)
+        alarmsClusterClientMenu.setVisible(False)
+        alarmsClusterServerMenu.setVisible(True)
     else:
         alarmsCluster.setVisible(False)
 
@@ -162,12 +171,14 @@ alarmsClusterCS.setDefaultValue("BOTH")
 alarmsClusterCS.setDescription("Alarms Cluster Supported Implementation- Select the option")
 alarmsClusterCS.setDependencies(alarmsClusterCsCheck,["ALARMS_CLUSTER_ENABLE"])
 
+global alarmsClusterClientMenu
 alarmsClusterClientMenu = drvZigbeeComponent.createMenuSymbol("ALARMS_CLUSTER_CLIENT_MENU", alarmsCluster)
 alarmsClusterClientMenu.setLabel("Client")
 #alarmsClusterClientMenu.setVisible(False)
 alarmsClusterClientMenu.setDescription("ALARMS CLUSTER CLIENT")
 alarmsClusterClientMenu.setDependencies(alarmsClusterClientCheck,["ALARMS_CLUSTER_CS","ALARMS_CLUSTER_ENABLE"])
 
+global alarmsClusterServerMenu
 alarmsClusterServerMenu = drvZigbeeComponent.createMenuSymbol("ALARMS_CLUSTER_SERVER_MENU", alarmsCluster)
 alarmsClusterServerMenu.setLabel("Server")
 #alarmsClusterServerMenu.setVisible(False)
@@ -380,8 +391,20 @@ alarmsClusterConfSrc.setProjectPath("config/" + configName + "/zigbee/z3device/c
 alarmsClusterConfSrc.setType("SOURCE")
 alarmsClusterConfSrc.setOverwrite(True)
 alarmsClusterConfSrc.setMarkup(True)
-alarmsClusterConfSrc.setEnabled(checkDevTypeCombInterface)
+alarmsClusterConfSrc.setEnabled(checkDevTypeCombInterface and alarmsCluster.getValue())
+alarmsClusterConfSrc.setDependencies(combinedInterfaceAlarmsClusterEnableCheck,["ALARMS_CLUSTER_ENABLE"])
 
+alarmsClusterConfInc = drvZigbeeComponent.createFileSymbol("CIALARMSCLUSTER_H", None)
+alarmsClusterConfInc.setSourcePath("/driver/zigbee" + suffix + "/application/zigbee_only/Zigbee_Device_Application/devicetypes/combinedInterface/include/ciAlarmsCluster.h")
+alarmsClusterConfInc.setOutputName("ciAlarmsCluster.h")
+alarmsClusterConfInc.setDestPath("/zigbee/z3device/combinedInterface/include")
+alarmsClusterConfInc.setProjectPath("config/" + configName + "/zigbee/z3device/combinedInterface/include/")
+alarmsClusterConfInc.setType("HEADER")
+alarmsClusterConfInc.setOverwrite(True)
+alarmsClusterConfInc.setEnabled(checkDevTypeCombInterface and alarmsCluster.getValue())
+alarmsClusterConfInc.setDependencies(combinedInterfaceAlarmsClusterEnableCheck,["ALARMS_CLUSTER_ENABLE"])
+
+    
 # ALARMS CLUSTER - Thermostat
 alarmsClusterConfSrc = drvZigbeeComponent.createFileSymbol("ZIGBEE_ALARMS_CLUSTER_CONF_SRC_TH", None)
 alarmsClusterConfSrc.setSourcePath("/driver/zigbee" + suffix + "/templates/cluster/alarms/thAlarmsCluster.c.ftl")

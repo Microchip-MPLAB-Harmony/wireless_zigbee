@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _COLORSCENECONTROLLER_CLUSTERS_H
-#define _COLORSCENECONTROLLER_CLUSTERS_H
+#ifndef COLORSCENECONTROLLER_CLUSTERS_H
+#define COLORSCENECONTROLLER_CLUSTERS_H
 
 /******************************************************************************
                     Includes section
@@ -77,6 +77,6 @@ extern void (*cscServerClusterInitFunctions[CSC_SERVER_CLUSTER_INIT_COUNT])();
 extern ZCL_Cluster_t cscServerClusters[CSC_SERVER_CLUSTERS_COUNT];
 extern ClusterId_t cscServerClusterIds[CSC_SERVER_CLUSTERS_COUNT];
 
-#endif // _COLORSCENECONTROLLER_CLUSTERS_H
+#endif // COLORSCENECONTROLLER_CLUSTERS_H
 
 // eof cscClusters.h

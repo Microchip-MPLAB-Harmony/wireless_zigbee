@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSIKESERIALIZATION_H_
-#define _ZSIKESERIALIZATION_H_
+#ifndef ZSIKESERIALIZATION_H
+#define ZSIKESERIALIZATION_H
 
 /******************************************************************************
                     Includes section
@@ -572,4 +572,4 @@ void zsiZgpDecryptFrameConf(SSP_ZgpDecryptFrameConf_t *conf);
 #define zsiDeserializeSSP_ZgpDecryptFrameConf        NULL
 #endif /* ZAPPSI_NP */
 
-#endif /* _ZSIKESERIALIZATION_H_ */
+#endif /* ZSIKESERIALIZATION_H */

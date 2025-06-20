@@ -42,8 +42,8 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#if !defined _APSME_VERIFY_KEY_H
-#define _APSME_VERIFY_KEY_H
+#if !defined APSME_VERIFY_KEY_H
+#define APSME_VERIFY_KEY_H
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
@@ -59,6 +59,14 @@
 #include <aps/include/apsCommon.h>
 
 #if defined _SECURITY_ && defined _LINK_SECURITY_
+
+/******************************************************************************
+                               Define(s) section
+ ******************************************************************************/
+/** Buffer required for Keyed hash function */
+// Buffer = SECURITY_KEY_SIZE + 1 + SECURITY_KEY_SIZE + SECURITY_KEY_SIZE = 50 (approx)
+#define KEY_HASH_BUFF_SIZE 50U
+
 /******************************************************************************
                                 Types section
  ******************************************************************************/
@@ -69,6 +77,7 @@
     */
 typedef enum
 {
+  APS_VERIFY_APP_LINK_KEY_TYPE = 0x03,
   APS_VERIFY_TC_LINK_KEY_TYPE = 0x04,
 } APS_VerifyKeyType_t;
 
@@ -106,7 +115,7 @@ typedef struct
     /** Request to send APS Verify Key command. */
     ApsCommandReq_t commandReq;
     uint32_t ttl;
-    uint8_t text[SECURITY_KEY_SIZE + 1 + SECURITY_KEY_SIZE];
+    uint8_t text[KEY_HASH_BUFF_SIZE];
     bool confirmKeyReceived;
     bool verifyKeySent;
   } service;
@@ -126,6 +135,12 @@ typedef struct
   APS_VerifyKeyConf_t confirm;
   /** Callback function pointer as a handler of corresponding
    * confirm primitive. Must not be set to NULL. */
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  /* Flag for Relay Command. */
+  uint8_t relayCmd;
+  /** Extended Address of Device to Authorise */
+  ExtAddr_t unAuthDevExtAdd;
+#endif // _ZIGBEE_REV_23_SUPPORT_
   void (*APS_VerifyKeyConf)(APS_VerifyKeyConf_t *conf);
 } APS_VerifyKeyReq_t;
 
@@ -145,6 +160,15 @@ typedef struct
   APS_VerifyKeyType_t keyType;
   /* The status of the TCLK verification done by TC */
   APS_VerifyKeyStatus_t status;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  struct
+  {
+    /** Flag for indicating the given request to be process and send via APS Relay Command */
+    uint8_t isRelayCmd;
+    /** Extended Address of Device to Authorise */
+    ExtAddr_t unAuthDevExtAdd;
+  } relayMsgInfo;
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */ 
 } APS_ConfirmKeyInd_t;
 
 /******************************************************************************
@@ -182,6 +206,6 @@ void APS_ConfirmKeyInd(APS_ConfirmKeyInd_t *indParams);
 
 #endif /* _SECURITY_ and _LINK_SECURITY_ */
 
-#endif /* _APSME_VERIFY_KEY_H */
+#endif /* APSME_VERIFY_KEY_H */
 /** eof apsmeVerifyKey.h */
 

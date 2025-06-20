@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPPROXYBASIC_H
-#define _ZGPPROXYBASIC_H
+#ifndef ZGPPROXYBASIC_H
+#define ZGPPROXYBASIC_H
 
 #ifdef _GREENPOWER_SUPPORT_
 /******************************************************************************
@@ -91,6 +91,6 @@ ZCL_Status_t zgpProxyDataHandling(zgpProxyDataFrameType_t dataFrameType, void *d
 void zgpProxyDstubDataInd(const ZGP_LowDataInd_t *const ind);
 
 #endif // _GREENPOWER_SUPPORT_
-#endif // _ZGPPROXYBASIC_H
+#endif // ZGPPROXYBASIC_H
 
 // eof zgpProxyBasic.h

@@ -62,6 +62,19 @@
  ******************************************************************************/
 NWK_PRIVATE bool nwkIsEncryptionRequired(NwkOutputPacket_t *const outPkt);
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+  \brief Request to encrypt an output network packet.
+
+  \param[in] encryptReq - encrypt frame primitive's parameters structure.
+  \param[in] macDataReq - MCPS-DATA request primitive's parameters structure.
+  \param[in] encryptConfCallback - conf calllback
+  \return None.
+ ******************************************************************************/
+void nwkEncryptOutputPacket(SSP_EncryptFrameReq_t *const encryptReq,
+  const MAC_DataReq_t *const macDataReq, NWK_EncryptFrameConfirm_t encryptConfCallback);
+  
+#else
 /**************************************************************************//**
   \brief Request to encrypt an output network packet.
 
@@ -69,9 +82,10 @@ NWK_PRIVATE bool nwkIsEncryptionRequired(NwkOutputPacket_t *const outPkt);
   \param[in] macDataReq - MCPS-DATA request primitive's parameters structure.
   \return None.
  ******************************************************************************/
-NWK_PRIVATE void nwkEncryptOutputPacket(SSP_EncryptFrameReq_t *const encryptReq,
+void nwkEncryptOutputPacket(SSP_EncryptFrameReq_t *const encryptReq,
   const MAC_DataReq_t *const macDataReq);
-
+  
+ #endif 
 /**************************************************************************//**
   \brief Is decrypting of output packet required?
 

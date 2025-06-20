@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPCLUSTERSTRUCTURE_H
-#define _ZGPCLUSTERSTRUCTURE_H
+#ifndef ZGPCLUSTERSTRUCTURE_H
+#define ZGPCLUSTERSTRUCTURE_H
 
 /*!
 Attributes and commands for determining basic information about a device,
@@ -460,5 +460,5 @@ typedef struct PACK
 } ZGP_ReportDescriptor_t;
 
 END_PACK
-#endif /* _ZGPCLUSTERSTRUCTURE_H */
+#endif /* ZGPCLUSTERSTRUCTURE_H */
 #endif

@@ -44,8 +44,8 @@
 
 
 
-#ifndef _ZCLHUMIDITYMEASUREMENTCLUSTER_H_
-#define _ZCLHUMIDITYMEASUREMENTCLUSTER_H_
+#ifndef ZCLHUMIDITYMEASUREMENTCLUSTER_H_
+#define ZCLHUMIDITYMEASUREMENTCLUSTER_H_
 
 /*******************************************************************************
                    Includes section
@@ -203,4 +203,4 @@ typedef struct PACK
 END_PACK
 
 
-#endif /* _ZCLHUMIDITYMEASUREMENTCLUSTER_H_ */
+#endif /* ZCLHUMIDITYMEASUREMENTCLUSTER_H_ */

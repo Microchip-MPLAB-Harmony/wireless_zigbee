@@ -117,7 +117,6 @@ PROGMEM_DECLARE(ZCL_GroupsClusterCommands_t         customGroupsCommands) =
 extern Scene_t customSceneTable[];
 </#if>
 </#if>
-extern QueueDescriptor_t groupsSubscribers;
 
 /******************************************************************************
                     Implementation section

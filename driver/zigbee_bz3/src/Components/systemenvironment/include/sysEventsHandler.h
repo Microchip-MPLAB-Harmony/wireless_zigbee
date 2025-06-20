@@ -41,8 +41,8 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#ifndef _SYS_EVENTS_HANDLER_H
-#define _SYS_EVENTS_HANDLER_H
+#ifndef SYS_EVENTS_HANDLER_H
+#define SYS_EVENTS_HANDLER_H
 // DOM-IGNORE-END
 
 #include <systemenvironment/include/sysTypes.h>
@@ -54,8 +54,11 @@
  *************************************************************************/
 /** The maximum number of events that can be defined in the System Environment.
 Any event ID must not be greater than this value.  */
-#define SYS_MAX_EVENTS 91U
-
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#define SYS_MAX_EVENTS (95U)
+#else
+#define SYS_MAX_EVENTS (93U)
+#endif
 #define SYS_EVENTS_MASK_SIZE CEIL(SYS_MAX_EVENTS, sizeof(sysEvWord_t) * 8U)
 
 /******************************************************************************
@@ -174,5 +177,5 @@ bool SYS_IsEventSubscriber(SYS_EventId_t id, SYS_EventReceiver_t *recv);
 void SYS_ClearEvents(void);
 
 
-#endif  // _SYS_EVENTS_HANDLER_H
+#endif  // SYS_EVENTS_HANDLER_H
 /** eof sysEventsHandler.h */

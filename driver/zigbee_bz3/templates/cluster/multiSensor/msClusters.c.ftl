@@ -111,9 +111,9 @@ ZCL_Cluster_t osServerClusters[OS_SERVER_CLUSTERS_COUNT] =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "SERVER") && (ENDPOINT == "OCCUPANCY") >
+  <#if ( (DEVICE == "SERVER")|| (DEVICE == "BOTH") ) && (ENDPOINT == "OCCUPANCY") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
-  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_SERVER_CLUSTER_TYPE, &${clusterName?lower_case}${DEVICE?capitalize}ClusterAttributes, &${clusterName?lower_case}${DEVICE?capitalize}ClusterCommands),
+  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_SERVER_CLUSTER_TYPE, &${clusterName?lower_case}${"SERVER"?capitalize}ClusterAttributes, &${clusterName?lower_case}ClusterCommands),
   </#if>
   </#list>
 };
@@ -126,7 +126,7 @@ ClusterId_t osServerClusterIds[OS_SERVER_CLUSTERS_COUNT] =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "SERVER") && (ENDPOINT == "OCCUPANCY") >
+  <#if ( (DEVICE == "SERVER") || (DEVICE == "BOTH") ) && (ENDPOINT == "OCCUPANCY") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -141,9 +141,9 @@ ZCL_Cluster_t osClientClusters[OS_CLIENT_CLUSTERS_COUNT] =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "CLIENT") && (ENDPOINT == "OCCUPANCY") >
+  <#if ( (DEVICE == "CLIENT") || (DEVICE == "BOTH") ) && (ENDPOINT == "OCCUPANCY") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
-  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_CLIENT_CLUSTER_TYPE, &${clusterName?lower_case}${DEVICE?capitalize}ClusterAttributes, &${clusterName?lower_case}${DEVICE?capitalize}ClusterCommands),
+  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_CLIENT_CLUSTER_TYPE, &${clusterName?lower_case}${"CLIENT"?capitalize}ClusterAttributes, &${clusterName?lower_case}ClusterCommands),
   </#if>
   </#list>
 };
@@ -155,7 +155,7 @@ ClusterId_t osClientClusterIds[OS_CLIENT_CLUSTERS_COUNT] =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "CLIENT") && (ENDPOINT == "OCCUPANCY") >
+  <#if ( (DEVICE == "CLIENT") || (DEVICE == "BOTH") ) && (ENDPOINT == "OCCUPANCY") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -170,7 +170,7 @@ void (*osClientClusterInitFunctions[OS_CLIENT_CLUSTERS_COUNT])() =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "CLIENT") && (ENDPOINT == "OCCUPANCY") >
+  <#if ( (DEVICE == "CLIENT") || (DEVICE == "BOTH") ) && (ENDPOINT == "OCCUPANCY") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${deviceTypeFunctionPrefix}${clusterName}Init,
@@ -186,7 +186,7 @@ void (*osServerClusterInitFunctions[OS_SERVER_CLUSTERS_COUNT])() =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "SERVER") && (ENDPOINT == "OCCUPANCY") >
+  <#if ( (DEVICE == "SERVER") || (DEVICE == "BOTH") ) && (ENDPOINT == "OCCUPANCY") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${deviceTypeFunctionPrefix}${clusterName}Init,
@@ -206,9 +206,9 @@ ZCL_Cluster_t lsServerClusters[LS_SERVER_CLUSTERS_COUNT] =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "SERVER") && (ENDPOINT == "ILLUMINANCE") >
+  <#if ( (DEVICE == "SERVER") || (DEVICE == "BOTH") ) && (ENDPOINT == "ILLUMINANCE") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
-  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_SERVER_CLUSTER_TYPE, &${clusterName?lower_case}${DEVICE?capitalize}ClusterAttributes, &${clusterName?lower_case}${DEVICE?capitalize}ClusterCommands),
+  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_SERVER_CLUSTER_TYPE, &${clusterName?lower_case}${"SERVER"?capitalize}ClusterAttributes, &${clusterName?lower_case}ClusterCommands),
   </#if>
   </#list>
 };
@@ -221,7 +221,7 @@ ClusterId_t lsServerClusterIds[LS_SERVER_CLUSTERS_COUNT] =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "SERVER") && (ENDPOINT == "ILLUMINANCE") >
+  <#if ( (DEVICE == "SERVER") || (DEVICE == "BOTH") ) && (ENDPOINT == "ILLUMINANCE") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -237,7 +237,7 @@ void (*lsServerClusterInitFunctions[LS_SERVER_CLUSTERS_COUNT])() =
     <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "SERVER") && (ENDPOINT == "ILLUMINANCE") >
+  <#if ( (DEVICE == "SERVER") || (DEVICE == "BOTH") ) && (ENDPOINT == "ILLUMINANCE") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${deviceTypeFunctionPrefix}${clusterName}Init,
@@ -252,9 +252,9 @@ ZCL_Cluster_t lsClientClusters[LS_CLIENT_CLUSTERS_COUNT] =
     <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "CLIENT") && (ENDPOINT == "ILLUMINANCE") >
+  <#if ( (DEVICE == "CLIENT") || (DEVICE == "BOTH") ) && (ENDPOINT == "ILLUMINANCE") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
-  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_CLIENT_CLUSTER_TYPE, &${clusterName?lower_case}${DEVICE?capitalize}ClusterAttributes, &${clusterName?lower_case}${DEVICE?capitalize}ClusterCommands),
+  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_CLIENT_CLUSTER_TYPE, &${clusterName?lower_case}${"CLIENT"?capitalize}ClusterAttributes, &${clusterName?lower_case}ClusterCommands),
   </#if>
   </#list>
 };
@@ -266,7 +266,7 @@ ClusterId_t lsClientClusterIds[LS_CLIENT_CLUSTERS_COUNT] =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "CLIENT") && (ENDPOINT == "ILLUMINANCE") >
+  <#if ( (DEVICE == "CLIENT") || (DEVICE == "BOTH") ) && (ENDPOINT == "ILLUMINANCE") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -281,7 +281,7 @@ void (*lsClientClusterInitFunctions[LS_CLIENT_CLUSTERS_COUNT])() =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "CLIENT") && (ENDPOINT == "ILLUMINANCE") >
+  <#if ( (DEVICE == "CLIENT") || (DEVICE == "BOTH") ) && (ENDPOINT == "ILLUMINANCE") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${deviceTypeFunctionPrefix}${clusterName}Init,
@@ -300,9 +300,9 @@ ZCL_Cluster_t tsServerClusters[TS_SERVER_CLUSTERS_COUNT] =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "SERVER") && (ENDPOINT == "TEMPERATURE") >
+  <#if ( (DEVICE == "SERVER") || (DEVICE == "BOTH") ) && (ENDPOINT == "TEMPERATURE") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
-  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_SERVER_CLUSTER_TYPE, &${clusterName?lower_case}${DEVICE?capitalize}ClusterAttributes, &${clusterName?lower_case}${DEVICE?capitalize}ClusterCommands),
+  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_SERVER_CLUSTER_TYPE, &${clusterName?lower_case}${"SERVER"?capitalize}ClusterAttributes, &${clusterName?lower_case}ClusterCommands),
   </#if>
   </#list>
 };
@@ -315,7 +315,7 @@ ClusterId_t tsServerClusterIds[TS_SERVER_CLUSTERS_COUNT] =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "SERVER") && (ENDPOINT == "TEMPERATURE") >
+  <#if ( (DEVICE == "SERVER") || (DEVICE == "BOTH") ) && (ENDPOINT == "TEMPERATURE") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -330,9 +330,9 @@ ZCL_Cluster_t tsClientClusters[TS_CLIENT_CLUSTERS_COUNT] =
     <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "CLIENT") && (ENDPOINT == "TEMPERATURE") >
+  <#if ( (DEVICE == "CLIENT") || (DEVICE == "BOTH") ) && (ENDPOINT == "TEMPERATURE") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
-  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_CLIENT_CLUSTER_TYPE, &${clusterName?lower_case}${DEVICE?capitalize}ClusterAttributes, &${clusterName?lower_case}${DEVICE?capitalize}ClusterCommands),
+  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_CLIENT_CLUSTER_TYPE, &${clusterName?lower_case}${"CLIENT"?capitalize}ClusterAttributes, &${clusterName?lower_case}ClusterCommands),
   </#if>
   </#list>
 };
@@ -344,7 +344,7 @@ ClusterId_t tsClientClusterIds[TS_CLIENT_CLUSTERS_COUNT] =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "CLIENT") && (ENDPOINT == "TEMPERATURE") >
+  <#if ( (DEVICE == "CLIENT") || (DEVICE == "BOTH") ) && (ENDPOINT == "TEMPERATURE") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -359,7 +359,7 @@ void (*tsClientClusterInitFunctions[TS_CLIENT_CLUSTERS_COUNT])() =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "CLIENT") && (ENDPOINT == "TEMPERATURE") >
+  <#if ( (DEVICE == "CLIENT") || (DEVICE == "BOTH") ) && (ENDPOINT == "TEMPERATURE") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${deviceTypeFunctionPrefix}${clusterName}Init,
@@ -375,7 +375,7 @@ void (*tsServerClusterInitFunctions[TS_SERVER_CLUSTERS_COUNT])() =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "SERVER") && (ENDPOINT == "TEMPERATURE") >
+  <#if ( (DEVICE == "SERVER") || (DEVICE == "BOTH") ) && (ENDPOINT == "TEMPERATURE") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${deviceTypeFunctionPrefix}${clusterName}Init,
@@ -394,9 +394,9 @@ ZCL_Cluster_t hsServerClusters[HS_SERVER_CLUSTERS_COUNT] =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "SERVER") && (ENDPOINT == "HUMIDITY") >
+  <#if ( (DEVICE == "SERVER") || (DEVICE == "BOTH") ) && (ENDPOINT == "HUMIDITY") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
-  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_SERVER_CLUSTER_TYPE, &${clusterName?lower_case}${DEVICE?capitalize}ClusterAttributes, &${clusterName?lower_case}${DEVICE?capitalize}ClusterCommands),
+  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_SERVER_CLUSTER_TYPE, &${clusterName?lower_case}${"SERVER"?capitalize}ClusterAttributes, &${clusterName?lower_case}ClusterCommands),
   </#if>
   </#list>
 };
@@ -409,7 +409,7 @@ ClusterId_t hsServerClusterIds[HS_SERVER_CLUSTERS_COUNT] =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "SERVER") && (ENDPOINT == "HUMIDITY") >
+  <#if ( (DEVICE == "SERVER") || (DEVICE == "BOTH") ) && (ENDPOINT == "HUMIDITY") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -424,9 +424,9 @@ ZCL_Cluster_t hsClientClusters[HS_CLIENT_CLUSTERS_COUNT] =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "CLIENT") && (ENDPOINT == "HUMIDITY") >
+  <#if ( (DEVICE == "CLIENT") || (DEVICE == "BOTH") ) && (ENDPOINT == "HUMIDITY") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
-  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_CLIENT_CLUSTER_TYPE, &${clusterName?lower_case}${DEVICE?capitalize}ClusterAttributes, &${clusterName?lower_case}${DEVICE?capitalize}ClusterCommands),
+  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_CLIENT_CLUSTER_TYPE, &${clusterName?lower_case}${"CLIENT"?capitalize}ClusterAttributes, &${clusterName?lower_case}ClusterCommands),
   </#if>
   </#list>
 };
@@ -438,7 +438,7 @@ ClusterId_t hsClientClusterIds[HS_CLIENT_CLUSTERS_COUNT] =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "CLIENT") && (ENDPOINT == "HUMIDITY") >
+  <#if ( (DEVICE == "CLIENT") || (DEVICE == "BOTH") ) && (ENDPOINT == "HUMIDITY") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -453,7 +453,7 @@ void (*hsClientClusterInitFunctions[HS_CLIENT_CLUSTERS_COUNT])() =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "CLIENT") && (ENDPOINT == "HUMIDITY") >
+  <#if ( (DEVICE == "CLIENT")|| (DEVICE == "BOTH") ) && (ENDPOINT == "HUMIDITY") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${deviceTypeFunctionPrefix}${clusterName}Init,
@@ -469,7 +469,7 @@ void (*hsServerClusterInitFunctions[HS_SERVER_CLUSTERS_COUNT])() =
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
   <#assign ENDPOINT = ("ZCC"+ customClusterIndex +"_MULTI_SENSOR_ENDPOINT")?eval >
-  <#if (DEVICE == "SERVER") && (ENDPOINT == "HUMIDITY") >
+  <#if ( (DEVICE == "SERVER") || (DEVICE == "BOTH") ) && (ENDPOINT == "HUMIDITY") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${deviceTypeFunctionPrefix}${clusterName}Init,

@@ -39,14 +39,14 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#if !defined _NWK_H
-#define _NWK_H
+#if !defined NWK_H
+#define NWK_H
 
 /******************************************************************************
                                  Includes section
  ******************************************************************************/
 #include <nwk/include/nwkCommon.h>
-
+#include <nwk/include/nwkDiscoveryTable.h>
 #include <nwk/include/nldeData.h>
 #include <nwk/include/nlmeDirectJoin.h>
 #include <nwk/include/nlmeEdScan.h>
@@ -70,6 +70,12 @@
 #include <nwk/include/nwkRouteInfo.h>
 #include <nwk/include/nwkGroup.h>
 #include <nwk/include/nwkRouteTable.h>
+/******************************************************************************
+                              typedef section
+ ******************************************************************************/
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+typedef void (*NWK_EncryptFrameConfirm_t)(SSP_EncryptFrameConf_t *conf);
+#endif
 
 /******************************************************************************
                               Prototypes section
@@ -127,6 +133,13 @@ void NWK_ForceChangeOwnAddr(void);
 void NWK_SetPassiveAckThreshold(uint8_t thresholdValue);
 #endif /* _CUSTOM_PASSIVE_ACK_THRESHOLD_ */
 
+/******************************************************************************
+  \brief nwkReportCommand idle checking.
+
+  \return true, if nwkReportCommand performs no activity, false - otherwise.
+ ******************************************************************************/
+void NWK_ReportLinkKeyCommand(uint8_t* linkKey);
+
 #ifdef _CUSTOM_SUPPRESS_RETRANSMISSION_
 /**************************************************************************//**
   \brief Enable or disable broadcast retransmissions
@@ -154,6 +167,48 @@ void NWK_ConfigureRouteRequestRetransmission(bool value);
 
 #endif /* _CUSTOM_SUPPRESS_RETRANSMISSION_ */
 
-#endif  /* _NWK_H */
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+  \brief Set NWK Hub connectivity of local device
+
+  \param[in] value - Boolean value 'true' value means there is connectivity, and
+      'false' means there is no current Hub connectivity.
+  \return None.
+ ******************************************************************************/
+void NWK_SetHubConnectivity(bool hubConnectivity);
+
+/**************************************************************************//**
+  \brief Getting an output packet to be encrypted from outside for certification
+
+  \param[in] encryptReq - pointer to encrypt frame
+                          primitive's parameters structure.
+  \param[in] macDataReq - pointer to MCPS-DATA request
+                          primitive's parameters structure.
+  \param[in] encryptConfCallback - Conf Callback
+  \return None.
+ ******************************************************************************/
+void NWK_EncryptOutputPacket(SSP_EncryptFrameReq_t *const encryptReq,
+  const MAC_DataReq_t *const macDataReq, NWK_EncryptFrameConfirm_t encryptConfCallback);
+
+/**************************************************************************//**
+  \brief Set Swapout status occurance flag
+
+  \param[in] swapStatus - boolean value respresent status of swapout occurance.
+  
+  \return None.
+ ******************************************************************************/
+void NWK_SetSwapoutStatus(bool swapStatus);
+
+/**************************************************************************//**
+  \brief Get the status of swapout status.
+
+  \return True if swapout occured.
+          False otherwise.
+******************************************************************************/
+bool NWK_GetSwapoutStatus(void);
+  
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
+
+#endif  /* NWK_H */
 /** eof nwk.h */
 

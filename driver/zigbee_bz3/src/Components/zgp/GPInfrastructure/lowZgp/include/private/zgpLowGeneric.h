@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPLOWGENERIC_H
-#define _ZGPLOWGENERIC_H
+#ifndef ZGPLOWGENERIC_H
+#define ZGPLOWGENERIC_H
 
 #ifdef _GREENPOWER_SUPPORT_
 /******************************************************************************
@@ -118,6 +118,6 @@ void zgpGenericSecRequest(ZGP_LowDataInd_t *dstubDataInd, zgpDstubSecResponse_t 
 
 #endif // _GREENPOWER_SUPPORT_
 
-#endif // _ZGPLOWGENERIC_H
+#endif // ZGPLOWGENERIC_H
 
 // eof zgpLowGeneric.h

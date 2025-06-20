@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSINWKSERIALIZATION_H_
-#define _ZSINWKSERIALIZATION_H_
+#ifndef ZSINWKSERIALIZATION_H
+#define ZSINWKSERIALIZATION_H
 
 /******************************************************************************
                     Includes section
@@ -1192,4 +1192,4 @@ ZsiProcessingResult_t zsiDeserializeNWK_ForceChangeOwnAddrReq(void *memory,
 
 #endif /* ZAPPSI_NP */
 
-#endif /* _ZSIAPSSERIALIZATION_H_ */
+#endif /* ZSIAPSSERIALIZATION_H */

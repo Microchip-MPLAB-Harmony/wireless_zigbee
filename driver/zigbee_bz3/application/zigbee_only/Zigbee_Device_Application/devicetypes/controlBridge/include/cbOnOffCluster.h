@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _CBONOFFCLUSTER_H
-#define _CBONOFFCLUSTER_H
+#ifndef CBONOFFCLUSTER_H
+#define CBONOFFCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -64,7 +64,7 @@ extern ZCL_OnOffClusterClientAttributes_t cbOnOffClusterClientAttributes;
 ******************************************************************************/
 void cbOnOffClusterInit(void);
 
-#endif // _CBONOFFCLUSTER_H
+#endif // CBONOFFCLUSTER_H
 
 // eof cbOnOffCluster.h
 

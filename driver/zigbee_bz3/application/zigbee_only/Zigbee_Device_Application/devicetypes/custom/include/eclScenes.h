@@ -16,8 +16,8 @@
     11.12.12 N. Fomin - Created.
     24.09.15 Karthik.P_u - Copied, Modified.
 ******************************************************************************/
-#ifndef _ECLSCENES_H
-#define _ECLSCENES_H
+#ifndef ECLSCENES_H
+#define ECLSCENES_H
 
 /******************************************************************************
                     Includes section
@@ -107,6 +107,6 @@ Scene_t *findSceneBySceneAndGroup(uint16_t group, uint8_t scene);
 ******************************************************************************/
 uint8_t removeScenesByGroup(uint16_t group);
 
-#endif // _DLSCENES_H
+#endif // ECLSCENES_H
 
 // eof dlScenesCluster.h

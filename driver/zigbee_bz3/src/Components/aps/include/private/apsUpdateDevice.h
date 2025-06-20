@@ -48,7 +48,9 @@
 #include <private/apsCommand.h>
 #include <nwk.h>
 #include <private/apsFrames.h>
-
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <tlv/include/tlv.h>
+#endif
 #if defined _SECURITY_
 /******************************************************************************
                                  Types section

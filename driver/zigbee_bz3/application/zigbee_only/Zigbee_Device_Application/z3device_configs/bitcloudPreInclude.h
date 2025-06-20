@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _BIT_CLOUD_CONFIG_H_
-#define _BIT_CLOUD_CONFIG_H_
+#ifndef BIT_CLOUD_CONFIG_H
+#define BIT_CLOUD_CONFIG_H
 
 #define BDB_SUPPORT 1
 
@@ -303,4 +303,4 @@
 
 #include <stackConfig.h>
 
-#endif // _BIT_CLOUD_CONFIG_H_
+#endif // BIT_CLOUD_CONFIG_H

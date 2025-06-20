@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSISYSSERIALIZATION_H_
-#define _ZSISYSSERIALIZATION_H_
+#ifndef ZSISYSSERIALIZATION_H
+#define ZSISYSSERIALIZATION_H
 
 /******************************************************************************
                     Includes section
@@ -432,4 +432,4 @@ INLINE uint8_t zsiGetBcEventAccessReqContextSize(SYS_EventId_t id, BcAction_t ac
 #define zsiDeserializeSYS_PseudoPowerOffConf NULL
 #endif /* ZAPPSI_NP */
 
-#endif /* _ZSISYSSERIALIZATION_H_ */
+#endif /* ZSISYSSERIALIZATION_H */

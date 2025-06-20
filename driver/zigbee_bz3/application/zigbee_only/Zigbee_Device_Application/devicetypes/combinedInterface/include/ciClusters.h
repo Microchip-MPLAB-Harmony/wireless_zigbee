@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _CICLUSTER_H
-#define _CICLUSTER_H
+#ifndef CICLUSTER_H
+#define CICLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -72,6 +72,6 @@ extern void (*ciClientClusterInitFunctions[CI_CLIENT_CLUSTER_INIT_COUNT])();
 extern ClusterId_t   ciServerClusterIds[CI_SERVER_CLUSTERS_COUNT];
 extern ClusterId_t   ciClientClusterIds[CI_CLIENT_CLUSTERS_COUNT];
 
-#endif // _CICLUSTER_H
+#endif // CICLUSTER_H
 
 // eof ciClusters.h

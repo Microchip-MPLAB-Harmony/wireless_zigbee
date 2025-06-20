@@ -69,6 +69,12 @@
 #include "zllplatform/ZLL/N_Connection/include/N_Connection_Internal.h"
 #include "zllplatform/ZLL/N_LinkTarget/include/N_LinkTarget.h"
 
+#ifdef _LINK_SECURITY_
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <security/TrustCentre/include/tcKeyEstablish.h>
+#endif
+#endif // _LINK_SECURITY_
+
 #ifdef _GREENPOWER_SUPPORT_
 #if APP_ZGP_DEVICE_TYPE >= APP_ZGP_DEVICE_TYPE_PROXY_BASIC
 #include <z3device/common/include/zgpAppInterface.h>
@@ -90,7 +96,7 @@
   #define APP_COMMISSIONING_FINDING_AND_BINDING 0
 #endif
 
-//Table 4 – Bits of the bdbCommissioningMode attribute
+//Table 4 ï¿½ Bits of the bdbCommissioningMode attribute
 //5.3.2 bdbCommissioningMode attribute
 #define BDB_COMMISSIONING_TOUCHLINK       0 //(1)
 #define BDB_COMMISSIONING_NWK_STEERING    1 // (2)
@@ -168,7 +174,10 @@ static bool parentLost = false;
 static void visualizationTimerFired(void);
 
 static void networkEventsHandler(SYS_EventId_t eventId, SYS_EventData_t data);
-
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+static void accessRequestEventsHandler(SYS_EventId_t eventId, SYS_EventData_t data);
+static SYS_EventReceiver_t accessRequestEventListener  = { .func = accessRequestEventsHandler};
+#endif
 static SYS_EventReceiver_t networkEventsListener  = { .func = networkEventsHandler};
 
 static HAL_AppTimer_t visualizationTimer =
@@ -604,6 +613,34 @@ static void networkEventsHandler(SYS_EventId_t eventId, SYS_EventData_t data)
   (void)data;
 }
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+\brief Listen access request event
+
+\param[in] eventId - id of raised event;
+\param[in] data    - event's data.
+******************************************************************************/
+static void accessRequestEventsHandler(SYS_EventId_t eventId, SYS_EventData_t data)
+{
+  if (BC_EVENT_ACCESS_REQUEST == eventId)
+  {
+    BcAccessReq_t *const accessReq = (BcAccessReq_t*)data;
+    if (BC_PERFORM_DEVICE_INTERVIEW_ACTION == accessReq->action)
+    {
+      bool performDeviceInterviewProcedure = false;
+      CS_ReadParameter(CS_APS_PERFORM_DEVICE_INTERVIEW_ID, &performDeviceInterviewProcedure);
+
+      /* Check and perform device interview */
+      if (performDeviceInterviewProcedure)
+      {
+        accessReq->denied = 1U;
+        BcDeviceInterviewReq_t* context = (BcDeviceInterviewReq_t*)accessReq->context;
+        TC_PerformDeviceInterview(context);
+      }
+    }
+  }
+}
+#endif
 
 /**************************************************************************
 \brief To Handle steeringfailure from application
@@ -958,6 +995,9 @@ static void initApp(void)
 
   epIndex = 0;
  
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  SYS_SubscribeToEvent(BC_EVENT_ACCESS_REQUEST, &accessRequestEventListener);
+#endif
 
 #if ZB_COMMISSIONING_ON_STARTUP == 1
   SYS_SubscribeToEvent(BC_EVENT_LEAVE_COMMAND_RECEIVED, &networkEventsListener);

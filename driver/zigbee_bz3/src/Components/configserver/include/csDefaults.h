@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _CSDEFAULTS_H
-#define _CSDEFAULTS_H
+#ifndef CSDEFAULTS_H
+#define CSDEFAULTS_H
 
 /******************************************************************************
                     Includes section
@@ -256,6 +256,18 @@ data frames. The default value must not be changed by the user.
 #define CS_MAC_FRAME_RX_BUFFER_SIZE            133
 #endif
 
+//! \brief The maximum additional mec data poll retries
+/*!
+This indicates that the network layer will perform additional attempts
+upon receipt of a MAC Data poll failure.
+
+<b>C-type:</b> uint8_t \n
+<b>Can be set:</b> at any time \n
+*/
+#ifndef CS_NWK_EXTRA_MAC_POLL_RETRIES
+#define CS_NWK_EXTRA_MAC_POLL_RETRIES            3
+#endif
+
 //! \brief CCA Mode configuration
 /*!
 The parameter specifies the CCA Mode in register PHY_CC_CCA.
@@ -411,10 +423,10 @@ over the amount of child devices possible for the node.
 <b>Can be set:</b> at compile time only \n
 */
 #ifndef CS_NEIB_TABLE_SIZE
-  #define CS_NEIB_TABLE_SIZE                  7
+  #define CS_NEIB_TABLE_SIZE                  (7)
 #elif CS_NEIB_TABLE_SIZE == 0
   #undef  CS_NEIB_TABLE_SIZE
-  #define CS_NEIB_TABLE_SIZE                  1
+  #define CS_NEIB_TABLE_SIZE                  (1)
   #warning  CS_NEIB_TABLE_SIZE was set to 1
 #endif
 
@@ -648,7 +660,7 @@ the frame is stored. Otherwise, the frame is dropped.
     #define CS_ENCRYPTION_TIME 119    // SW encryption
   #endif
 #else
-  #define CS_ENCRYPTION_TIME 0ul
+  #define CS_ENCRYPTION_TIME 0UL
 #endif
 #endif
 
@@ -895,6 +907,15 @@ the corresponding short address. If it fails to find the short address, an error
   #warning CS_ADDRESS_MAP_TABLE_SIZE was set to 1
 #endif
 
+#ifndef CS_NWK_DISCOVERY_TABLE_SIZE
+#define CS_NWK_DISCOVERY_TABLE_SIZE             6
+#endif
+#if CS_NWK_DISCOVERY_TABLE_SIZE == 0
+  #undef  CS_NWK_DISCOVERY_TABLE_SIZE
+  #define CS_NWK_DISCOVERY_TABLE_SIZE           1
+  #warning CS_NWK_DISCOVERY_TABLE_SIZE was set to 1
+#endif
+
 //! \brief The maximum number of records in the NWK route discovery table
 /*!
 The parameter specifies the size of the route discovery table used by NWK to store
@@ -1119,7 +1140,21 @@ use and a new data request appears, it is kept in a queue until a buffer is rele
     #define CS_APS_DATA_REQ_BUFFERS_AMOUNT       2
   #endif // _SECURITY_
 #endif
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+//! \brief The number of buffers for data requests on the APS layer.
+/*!
+The parameter specifies the number of buffers that are allocated by APS
+to store command requests parameters. The parameter puts an upper bound to the number of
+command requests that can be processed by APS simultaneously. If all buffers are in
+use and a new command request appears, it is kept in a queue until a buffer is released.
 
+<b>C-type:</b> uint8_t \n
+<b>Can be set:</b> at compile time only \n
+*/
+#ifndef CS_APS_CMD_REQ_BUFFERS_AMOUNT
+  #define CS_APS_CMD_REQ_BUFFERS_AMOUNT         2
+#endif
+#endif
 //! \brief The number of buffers for acknowledgement messages sent by APS
 /*!
 This parameter determines the amount of memory that needs to be allocated for a special type
@@ -1160,6 +1195,18 @@ require APS Acknowledgement.
   #undef  CS_APS_MAX_FRAME_RETRIES
   #define CS_APS_MAX_FRAME_RETRIES     1
   #warning CS_APS_MAX_FRAME_RETRIES was set to 0
+#endif
+
+//! \brief The maximum size of joined unfragmented TLVs
+/*!
+This indicates that maximum amount of unfragmented data which can be
+transferred devices. Refererence Table 2-23 of R23
+
+<b>C-type:</b> uint8_t \n
+<b>Can be set:</b> at start-up time \n
+*/
+#ifndef CS_APS_JOINER_TLVS_UNFRAGMENTED_MAX_SIZE
+  #define CS_APS_JOINER_TLVS_UNFRAGMENTED_MAX_SIZE     79U
 #endif
 
 //! \brief Allows the stack to be waked up by the DTR line of the UART interface
@@ -1312,6 +1359,18 @@ portion of frames are sent and so on.
   #endif
 #endif
 
+#ifndef CS_APS_CHALLENGE_PERIOD_TIMEOUT_SEC
+  #define CS_APS_CHALLENGE_PERIOD_TIMEOUT_SEC  5
+#endif
+
+#ifndef CS_APS_CHALLENGE_VALUE
+  #define CS_APS_CHALLENGE_VALUE  0
+#endif
+
+#ifndef CS_APS_CHALLENGE_TARGET_EUI64
+  #define CS_APS_CHALLENGE_TARGET_EUI64  NULL
+#endif
+
 #endif /* _APS_FRAGMENTATION_  */
 
 
@@ -1363,7 +1422,7 @@ specify a value in the \c 0x123456789ABCDEFLL format. \n
 <b>Can be set:</b> at any time before network start \n
 */
 #ifndef CS_APS_TRUST_CENTER_ADDRESS
-#define CS_APS_TRUST_CENTER_ADDRESS           0xAAAAAAAAAAAAAAAALL
+#define CS_APS_TRUST_CENTER_ADDRESS           0xAAAAAAAAAAAAAAAAULL
 #endif
 
 //! \brief Default short address of the trust center
@@ -1389,16 +1448,22 @@ be used only when the real trust center address is known for sure.
 #ifndef CS_TC_PERMISSIONS_ALLOWREMOTETCPOLICYCHANGE
 #define CS_TC_PERMISSIONS_ALLOWREMOTETCPOLICYCHANGE          true
 #endif
+
 #ifdef _TC_ALLOW_REJOIN_WITH_GLOBAL_LINK_KEY_
 #ifndef CS_TC_PERMISSIONS_ALLOWREJOINS
 #define CS_TC_PERMISSIONS_ALLOWREJOINS        true
 #endif 
 #endif
+
 #ifndef CS_TC_PERMISSIONS_ALLOWINSTALLCODES
 #define CS_TC_PERMISSIONS_ALLOWINSTALLCODES  false
 #endif
 
-
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#ifndef CS_TC_PERMISSIONS_REQUIREINSTALLCODESORPRESETPASSPHRASE
+#define CS_TC_PERMISSIONS_REQUIREINSTALLCODESORPRESETPASSPHRASE  0x00
+#endif
+#endif
 
 //! \brief ZDO security status
 /*!
@@ -1746,14 +1811,14 @@ The parameter is valid only for OTAU clients.
 <b>Can be set:</b> at any time before an OTAU start \n
 */
 #ifndef CS_ZCL_OTAU_DEFAULT_UPGRADE_SERVER_IEEE_ADDRESS
-  #define CS_ZCL_OTAU_DEFAULT_UPGRADE_SERVER_IEEE_ADDRESS          0xFFFFFFFFFFFFFFFFull
+  #define CS_ZCL_OTAU_DEFAULT_UPGRADE_SERVER_IEEE_ADDRESS          0xFFFFFFFFFFFFFFFFULL
 #endif
 
 /** \brief The default OTAU image type to be upgraded
 
 The parameter is valid only for OTAU clients.
 
-<b>Value range:</b> 0x0000 – 0xffbf Manufacturer Specific \n
+<b>Value range:</b> 0x0000 â€“ 0xffbf Manufacturer Specific \n
 <b>C-type:</b> uint16_t \n
 <b>Can be set:</b> at any time before an OTAU start \n
 */
@@ -1770,7 +1835,7 @@ The parameter is valid only for OTAU clients.
 <b>Can be set:</b> at any time before an OTAU start \n
 */
 #ifndef CS_ZCL_OTAU_SERVER_DISCOVERY_PERIOD
-  #define CS_ZCL_OTAU_SERVER_DISCOVERY_PERIOD                      60000ul
+  #define CS_ZCL_OTAU_SERVER_DISCOVERY_PERIOD                      60000UL
 #endif
 /** \brief The interval in milliseconds between two attempts to send QueryNextImageRequest
 
@@ -1781,7 +1846,7 @@ The parameter is valid only for OTAU clients.
 <b>Can be set:</b> at any time before an OTAU start \n
 */
 #ifndef CS_ZCL_OTAU_QUERY_INTERVAL
-  #define CS_ZCL_OTAU_QUERY_INTERVAL                               5000ul
+  #define CS_ZCL_OTAU_QUERY_INTERVAL                               5000UL
 #endif
 /** \brief The number of maximum retry attempts for commands (OTAU cluster, ZDO and APS) used for OTAU
 
@@ -1901,7 +1966,7 @@ command frame received by the local device is accepted. */
   #define CS_ZGPD_SPECIFIC_ENABLE               false
 #endif
 /** \brief This will be used by ZGP device
-    <b>Value range:</b> 0x00000000 – 0xffffffff \n 
+    <b>Value range:</b> 0x00000000 â€“ 0xffffffff \n 
 */
 #ifndef CS_ZGP_SRCID
   #define CS_ZGP_SRCID                     0x12345678
@@ -2185,9 +2250,9 @@ secondary Channel set Configuration
 #endif
 
 //! \brief secondary Channel mask
-/*!
+/*
 Max no. of Nodes to be stored in Trust Center node table
-//Increase it to accommodate more nodes in Centralized network
+Increase it to accommodate more nodes in Centralized network
 
 <b>C-type:</b> uint8_t \n
 <b>Can be set:</b> at compile time only \n
@@ -2214,6 +2279,13 @@ Max no. of Nodes to be stored in Trust Center node table
 <b>Can be set:</b> at compile time only \n*/
 #ifndef CS_DEFAULT_TOUCHLINK_PRECONFIGURED_LINK_KEY
   #define CS_DEFAULT_TOUCHLINK_PRECONFIGURED_LINK_KEY {0xc0, 0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xcA, 0xcb, 0xcc, 0xcd, 0xce, 0xcf}
+#endif
+
+/** \brief default variable length passphrase 
+<b>C-type:</b> uint8_t array \n
+<b>Can be set:</b> at compile time only \n*/
+#ifndef CS_DEFAULT_VARIABLE_LENGTH_PASSCODE
+  #define CS_DEFAULT_VARIABLE_LENGTH_PASSCODE {0x52, 0x8F, 0x0A, 0x31, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
 #endif
 
 /** \brief Radioo arbiter mode  
@@ -2271,14 +2343,79 @@ CS_DEVICE_POWER_LPA    (0x0B)
 #define CS_TX_ANTENNA_GAIN    (0x03)
 #endif
 
+//! \brief Supported Key Negotiation Methods
+/*! Each bit represents a key negotiation methods supported. If bit is set as 1, method is supported otherwise not supported
+    Bit 0: Static Key Request (Zigbee 3.0 Mechanism)
+    Bit 1: SPEKE using Curve25519 with Hash AES-MMO-128
+    Bit 2: SPEKE using Curve25519 with Hash SHA-256
+
+<b>C-type:</b> uint8_t \n
+<b>Can be set:</b> at compile time only \n
+ */
+#ifndef CS_SUPPORTED_KEY_NEGOTIATION_PROTOCOL
+#define CS_SUPPORTED_KEY_NEGOTIATION_PROTOCOL   (0x06)
+#endif
+
+//! \brief Supported Pre-shared Secrets
+/*! Each bit represents supported pre shared secrets. If bit is set as 1, means it is supported otherwise not supported
+    Bit 0: Symmetric Authentication Token
+    Bit 1: Install Code Key
+    Bit 2: Passcode Key
+    Bit 3: Basic Access Key
+    Bit 4: Administrative Access Key
+
+<b>C-type:</b> uint8_t \n
+<b>Can be set:</b> at compile time only \n
+ */
+#ifndef CS_SUPPORTED_PRE_SHARED_SECRETS
+#define CS_SUPPORTED_PRE_SHARED_SECRETS         (0x04)
+#endif
+
+//! \brief NWK Hub Connectivity
+/*! This indicates the state of nwkHubConnectivity from the NIB of the local device.
+    It advertises whether the router has connectivity to a Hub device as defined by
+    the higher-level application layer.
+
+<b>Value range:</b> \c true or \c false \n
+<b>C-type:</b> bool \n
+<b>Can be set:</b> at any time \n
+
+ */
+#ifndef CS_NWK_HUB_CONNECTIVITY
+#define CS_NWK_HUB_CONNECTIVITY         true
+#endif
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**Flag to enable the R23 Join procedure(temp chanage) 
+<b>C-type:</b> uint8_t \n
+<b>Can be set:</b> at compile time only \n
+<b>Value range: \n
+  R22_JOIN_TCLK            0
+  R23_JOIN_DLK_OFFNWK      1
+  R23_JOIN_DLK_ONNWK       2
+*/
+#ifndef CS_R23_JOIN_FLAG
+#define CS_R23_JOIN_FLAG   0
+#endif
+
+
+/**Flag to enable the device interview procedure during DLK
+<b>C-type:</b> bool \n
+<b>Can be set:</b> at compile time only \n
+*/
+#ifndef CS_APS_PERFORM_DEVICE_INTERVIEW
+#define CS_APS_PERFORM_DEVICE_INTERVIEW   false
+#endif
+#endif
+
 /******************************************************************************
                    Types section
 ******************************************************************************/
 
 typedef struct PACK
 {
-  uint8_t extMacDevAddrValid  :1;               /**< Set TRUE if extMacDevAddrValid field is valid. */
-  uint16_t antennaGainValid  :1;              /**< Set TRUE if antennaGain field is valid. */  
+  BitField_t extMacDevAddrValid  :1;               /**< Set TRUE if extMacDevAddrValid field is valid. */
+  BitField_t antennaGainValid  :1;              /**< Set TRUE if antennaGain field is valid. */  
 } ZB_CS_SYS_DataValidity_t;
 
 typedef struct PACK _ZB_CS_SYS_IBData_t
@@ -2299,7 +2436,7 @@ typedef struct PACK _ZB_CS_SYS_IBData_t
 ******************************************************************************/
 void csSetToDefault(ZB_CS_SYS_IBData_t *zgbIBdata);
 
-#endif  // _CSDEFAULTS_H
+#endif  // CSDEFAULTS_H
 /* eof cdDefaults.h*/
-_CSDEFAULTS_H
+CSDEFAULTS_H
 /* eof cdDefaults.h*/

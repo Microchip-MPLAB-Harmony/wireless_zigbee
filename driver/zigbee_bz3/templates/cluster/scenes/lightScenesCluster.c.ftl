@@ -101,11 +101,12 @@ Scene_t lightSceneTable[MAX_SCENES_AMOUNT];
 ******************************************************************************/
 void lightScenesClusterInit(void)
 {
-  memset(lightSceneTable, 0, sizeof(Scene_t) * MAX_SCENES_AMOUNT);
+  (void)memset(lightSceneTable, 0, sizeof(Scene_t) * MAX_SCENES_AMOUNT);
 
   for (uint8_t i = 0; i < MAX_SCENES_AMOUNT; i++)
+  {
       lightSceneTable[i].free = true;
-
+  }
 <#if (SCENES_CLUSTER_CS != "CLIENT")  && (SC_SCENECOUNT == true) >
   lightScenesClusterServerAttributes.sceneCount.value   = 0;
 </#if>
@@ -169,7 +170,7 @@ static ZCL_Status_t addSceneInd(ZCL_Addressing_t *addressing, uint8_t payloadLen
   status = processAddSceneCommand(false, addressing, payloadLength, payload, APP_ENDPOINT_LIGHT, lightSceneTable, &lightScenesClusterServerAttributes.sceneCount.value);
   if (ZCL_SUCCESS_STATUS == status)
   {
-    PDS_Store(APP_LIGHT_SCENES_MEM_ID);
+    (void)PDS_Store(APP_LIGHT_SCENES_MEM_ID);
   }
   APP_Zigbee_Handler(event);
   return status;
@@ -220,7 +221,7 @@ static ZCL_Status_t enhancedAddSceneInd(ZCL_Addressing_t *addressing, uint8_t pa
 
   if (ZCL_SUCCESS_STATUS == status)
   {
-     PDS_Store(APP_LIGHT_SCENES_MEM_ID);
+     (void)PDS_Store(APP_LIGHT_SCENES_MEM_ID);
   }
   APP_Zigbee_Handler(event);
   return status;
@@ -270,7 +271,7 @@ static ZCL_Status_t removeSceneInd(ZCL_Addressing_t *addressing, uint8_t payload
 
   if (ZCL_SUCCESS_STATUS == status)
   {
-    PDS_Store(APP_LIGHT_SCENES_MEM_ID);
+    (void)PDS_Store(APP_LIGHT_SCENES_MEM_ID);
   }
 
   APP_Zigbee_Handler(event);
@@ -301,8 +302,9 @@ static ZCL_Status_t removeAllScenesInd(ZCL_Addressing_t *addressing, uint8_t pay
 
   // Update scenes in non-volatile memory
   if (ZCL_SUCCESS_STATUS == status)
-    PDS_Store(APP_LIGHT_SCENES_MEM_ID);
-  
+  {
+    (void)PDS_Store(APP_LIGHT_SCENES_MEM_ID);
+  }
   APP_Zigbee_Handler(event);
   return status;
 }
@@ -331,7 +333,9 @@ static ZCL_Status_t storeSceneInd(ZCL_Addressing_t *addressing, uint8_t payloadL
 
   // Update scenes in non-volatile memory
   if (ZCL_SUCCESS_STATUS == status)
-    PDS_Store(APP_LIGHT_SCENES_MEM_ID);
+  {
+    (void)PDS_Store(APP_LIGHT_SCENES_MEM_ID);
+  }
   APP_Zigbee_Handler(event);
   return status;
 }
@@ -359,8 +363,9 @@ static ZCL_Status_t recallSceneInd(ZCL_Addressing_t *addressing, uint8_t payload
 
   status = recallScene(payload, APP_ENDPOINT_LIGHT, lightSceneTable, &lightScenesClusterServerAttributes);
   if (ZCL_SUCCESS_STATUS == status)
-    PDS_Store(APP_LIGHT_SCENES_MEM_ID);
-
+  {
+    (void)PDS_Store(APP_LIGHT_SCENES_MEM_ID);
+  }
   APP_Zigbee_Handler(event);
   return status;
 }
@@ -400,25 +405,26 @@ static ZCL_Status_t getSceneMembershipInd(ZCL_Addressing_t *addressing, uint8_t 
 
 \returns status of scene storing
 ******************************************************************************/
-ZCL_Status_t storeScene(ZCL_StoreScene_t *storeScene, Endpoint_t srcEp, Scene_t* scenePool, ZCL_SceneClusterServerAttributes_t* scenesAttributes)
+ZCL_Status_t storeScene(ZCL_StoreScene_t *storeSceneReq, Endpoint_t srcEp, Scene_t* scenePool, ZCL_SceneClusterServerAttributes_t* scenesAttributes)
 {
   ZCL_Status_t status;
 
-  if (groupsIsValidGroup(storeScene->groupId, srcEp))
+  if (groupsIsValidGroup(storeSceneReq->groupId, srcEp))
   {
     Scene_t *scene;
 
-    scene = findSceneBySceneAndGroup(storeScene->groupId, storeScene->sceneId, scenePool);
+    scene = findSceneBySceneAndGroup(storeSceneReq->groupId, storeSceneReq->sceneId, scenePool);
 
-    if (!scene)
+    if (scene == NULL)
+    {
       scene = allocateScene(scenePool, &scenesAttributes->sceneCount.value);
-
-    if (scene)
+    }
+    if (scene != NULL)
     {
       status = ZCL_SUCCESS_STATUS;
 
-      scene->sceneId = storeScene->sceneId;
-      scene->groupId = storeScene->groupId;
+      scene->sceneId = storeSceneReq->sceneId;
+      scene->groupId = storeSceneReq->groupId;
 
       scene->onOff = onOffState();
 #if APP_Z3_DEVICE_TYPE >= APP_DEVICE_TYPE_ON_OFF_LIGHT
@@ -452,7 +458,9 @@ ZCL_Status_t storeScene(ZCL_StoreScene_t *storeScene, Endpoint_t srcEp, Scene_t*
       scenesAttributes->sceneValid.value = true;
     }
     else
+    {
       status = ZCL_INSUFFICIENT_SPACE_STATUS;
+    }
   }
   else
   {
@@ -482,7 +490,9 @@ static ZCL_Status_t copySceneInd(ZCL_Addressing_t *addressing, uint8_t payloadLe
 
   // Update scenes in non-volatile memory
   if (ZCL_SUCCESS_STATUS == status)
-    PDS_Store(APP_LIGHT_SCENES_MEM_ID);
+  {
+    (void)PDS_Store(APP_LIGHT_SCENES_MEM_ID);
+  }
   APP_Zigbee_Handler(event);
   return status;
 }

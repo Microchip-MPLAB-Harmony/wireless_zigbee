@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#if !defined _NLME_NWK_STATUS_H
-#define _NLME_NWK_STATUS_H
+#if !defined NLME_NWK_STATUS_H
+#define NLME_NWK_STATUS_H
 
 /******************************************************************************
                                 Includes section
@@ -50,7 +50,56 @@
 /******************************************************************************
                                  Types section
  ******************************************************************************/
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/** Status Codes for network status command frame. */
+typedef enum _NWK_StatusIndErrorCodes_t
+{
+  /* Route discovery and/or repair has been attempted and no route to
+   the intended destination address has been discovered. */
+  NWK_NO_ROUTE_AVAILABLE            =  0x00, /* TODO: Naming to be changed for R23 after routing chnages */
+  /* The routing failure occurred as a result of the failure of an attempt
+   to route the frame along the tree. */
+  NWK_LEGACY_LINK_FAILURE             =  0x01,
+  /** The routing failure did not occur as a result of an attempt to route along
+   * the tree. */
+  NWK_LINK_FAILURE         =  0x02,
+  /* 0x03-0x08 Deprecated in R23 Refer Table 3-52 session 3.4.3.3.1*/
+  /* The failure occurred as a result of a failure in the RF link to
+    the device's parent. This status is only used locally on a device
+    to indicate loss of communication with the parent. */
+                  
+  NWK_NO_ROUTING_CAPACITY           =  0x04, /* TODO: This status to be removed in R23 after routing improvements done */
+  NWK_PARENT_LINK_FAILURE           =  0x09,
+  /* 0x0A Deprecated Refer Table 3-52 session 3.4.3.3.1*/
+  /** Source routing has failed, probably indicating a link failure in one of
+   * the source route's links. */
+  NWK_SOURCE_ROUTE_FAILURE          =  0x0B,
+  /** A route established as a result of a many-to-one route request has failed.
+   **/
+  NWK_MANY_TO_ONE_ROUTE_FAILURE     =  0x0C,
+  /** The address in the destination address field has been determined to be
+   * in use by two or more devices. */
+  NWK_ADDRESS_CONFLICT              =  0x0D,
+  /* 0x0E Deprecated Refer Table 3-52 session 3.4.3.3.1*/
+  /** The operational network PAN identifier of the device has been updated. */
+  NWK_PAN_IDENTIFIER_UPDATE         =  0x0F,
+  /** The network address of the device has been updated. */
+  NWK_NETWORK_ADDRESS_UPDATE        =  0x10,
+  /** A frame counter reported in a received frame had a value less than or
+   * equal to that stored in nwkSecurityMaterialSet. */
+  NWK_BAD_FRAME_COUNTER             =  0x11,
+  /** The key sequence number reported in a received frame did not match
+   * that of nwkActiveKeySeqNumber. */
+  NWK_PARENT_LINK_SUCCESS           =  0x13,
+  NWK_BAD_LINK                      =  0x14,
+  NWK_STATIC_ADDRESS_CONFLICT       =  0x15,
+  /** If the security material cannot be obtained, security processing shall indicate a failure
+   * to the next higher layer with a status of 'frame security failed' and no further
+   * security processing shall be done on this frame. ZigBee spec r20, 4.3.1.2, page 435 */
+  NWK_FRAME_SECURITY_FAILED         =  0x16
+} NWK_StatusIndErrorCodes_t;
 
+#else //_ZIGBEE_REV_23_SUPPORT_
 /** Status Codes for network status command frame. */
 typedef enum _NWK_StatusIndErrorCodes_t
 {
@@ -121,6 +170,7 @@ typedef enum _NWK_StatusIndErrorCodes_t
   NWK_FRAME_SECURITY_FAILED         =  0x16
 } NWK_StatusIndErrorCodes_t;
 
+#endif //_ZIGBEE_REV_23_SUPPORT_
 /** NLME-NWK-STATUS indication primitive's parameters structure. Zigbee Specification r17, 3.2.2.30 NLME-NWK-STATUS.indication, page 302. */
 typedef struct _NWK_NwkStatusInd_t
 {
@@ -141,6 +191,6 @@ typedef struct _NWK_NwkStatusInd_t
  ******************************************************************************/
 extern void NWK_NwkStatusInd(NWK_NwkStatusInd_t *ind);
 
-#endif /* _NLME_NWK_STATUS_H */
+#endif /* NLME_NWK_STATUS_H */
 /** eof nlmeNwkStatus.h */
 

@@ -46,6 +46,12 @@ def customOccupancySensingClusterEnableCheck(symbol, event):
     else:
         symbol.setEnabled(False)
 
+def combinedInterfaceOccupancySensingClusterEnableCheck(symbol, event):
+    if ((zigbeeDeviceType.getValue() == 'ZIGBEE_COMBINED_INTERFACE') and (occupancySensingCluster.getValue() == True)):
+        symbol.setEnabled(True)
+    else:
+        symbol.setEnabled(False)
+
 def occupancySensingClusterClientCheck(symbol, event):
     if ((occupancySensingCluster.getValue() == False) or occupancySensingClusterCS.getValue() == "SERVER"):
         symbol.setVisible(False)
@@ -76,7 +82,7 @@ def occupancySensingClusterHandling():
     elif ((getDevice == "ZIGBEE_COMBINED_INTERFACE")):
         occupancySensingCluster.setVisible(True)
         occupancySensingCluster.setValue(True)
-        occupancySensingCluster.setReadOnly(True)
+        occupancySensingCluster.setReadOnly(False)
         occupancySensingClusterCS.setValue("CLIENT")
         occupancySensingClusterCS.setReadOnly(True)
     elif ((getDevice == "ZIGBEE_MULTI_SENSOR")):
@@ -94,7 +100,10 @@ def occupancySensingClusterHandling():
     elif ((getDevice == "ZIGBEE_CUSTOM")):
         occupancySensingCluster.setVisible(True)
         occupancySensingCluster.setValue(True)
-        occupancySensingClusterCS.setValue("BOTH")
+        occupancySensingClusterCS.setValue("SERVER")
+        occupancySensingClusterCS.setVisible(True)
+        occupancySensingClusterClientMenu.setVisible(False) 
+        occupancySensingClusterServerMenu.setVisible(True)
     else:
         occupancySensingCluster.setVisible(False)
 
@@ -155,12 +164,14 @@ occupancySensingClusterCS.setDefaultValue("BOTH")
 occupancySensingClusterCS.setDescription("occupancySensing Cluster Supported Implementation- Select the option")
 occupancySensingClusterCS.setDependencies(occupancySensingClusterCsCheck,["OCCUPANCYSENSING_CLUSTER_ENABLE"])
 
+global occupancySensingClusterClientMenu
 occupancySensingClusterClientMenu = drvZigbeeComponent.createMenuSymbol("OCCUPANCYSENSING_CLUSTER_CLIENT_MENU", occupancySensingCluster)
 occupancySensingClusterClientMenu.setLabel("Client")
 #occupancySensingClusterClientMenu.setVisible(False)
 occupancySensingClusterClientMenu.setDescription("OCCUPANCYSENSING CLUSTER CLIENT")
 occupancySensingClusterClientMenu.setDependencies(occupancySensingClusterClientCheck,["OCCUPANCYSENSING_CLUSTER_CS","OCCUPANCYSENSING_CLUSTER_ENABLE"])
 
+global occupancySensingClusterServerMenu
 occupancySensingClusterServerMenu = drvZigbeeComponent.createMenuSymbol("OCCUPANCYSENSING_CLUSTER_SERVER_MENU", occupancySensingCluster)
 occupancySensingClusterServerMenu.setLabel("Server")
 #occupancySensingClusterServerMenu.setVisible(False)
@@ -343,7 +354,18 @@ occupancySensingClusterConfSrc.setProjectPath("config/" + configName + "/zigbee/
 occupancySensingClusterConfSrc.setType("SOURCE")
 occupancySensingClusterConfSrc.setOverwrite(True)
 occupancySensingClusterConfSrc.setMarkup(True)
-occupancySensingClusterConfSrc.setEnabled(checkDevTypeCombInterface)
+occupancySensingClusterConfSrc.setEnabled(checkDevTypeCombInterface and occupancySensingCluster.getValue())
+occupancySensingClusterConfSrc.setDependencies(combinedInterfaceOccupancySensingClusterEnableCheck, ["OCCUPANCYSENSING_CLUSTER_ENABLE"])
+
+occupancySensingClusterConfInc = drvZigbeeComponent.createFileSymbol("CIOCCUPANCYSENSINGCLUSTER_H", None)
+occupancySensingClusterConfInc.setSourcePath("/driver/zigbee" + suffix + "/application/zigbee_only/Zigbee_Device_Application/devicetypes/combinedInterface/include/ciOccupancySensingCluster.h")
+occupancySensingClusterConfInc.setOutputName("ciOccupancySensingCluster.h")
+occupancySensingClusterConfInc.setDestPath("/zigbee/z3device/combinedInterface/include")
+occupancySensingClusterConfInc.setProjectPath("config/" + configName + "/zigbee/z3device/combinedInterface/include/")
+occupancySensingClusterConfInc.setType("HEADER")
+occupancySensingClusterConfInc.setOverwrite(True)
+occupancySensingClusterConfInc.setEnabled(checkDevTypeCombInterface and occupancySensingCluster.getValue())
+occupancySensingClusterConfInc.setDependencies(combinedInterfaceOccupancySensingClusterEnableCheck,["OCCUPANCYSENSING_CLUSTER_ENABLE"])
 
 # OCCUPANCYSENSING CLUSTER - Multi Sensor
 occupancySensingClusterConfSrc = drvZigbeeComponent.createFileSymbol("ZIGBEE_OCCUPANCYSENSING_CLUSTER_CONF_SRC_MS", None)

@@ -42,8 +42,8 @@
 /************************************************************
 zigbeeAppDeviceSelect.h
 ************************************************************/
-#ifndef _Z3_DEVICETYPE_CONFIG_H_
-#define _Z3_DEVICETYPE_CONFIG_H_
+#ifndef Z3_DEVICETYPE_CONFIG_H
+#define Z3_DEVICETYPE_CONFIG_H
 
 /* Application Device Types Definitions - Do Not Change */
 #define APP_DEVICE_TYPE_COLOR_SCENE_CONTROLLER  1

@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZCLTHERMOSTATCLUSTER_H
-#define _ZCLTHERMOSTATCLUSTER_H
+#ifndef ZCLTHERMOSTATCLUSTER_H
+#define ZCLTHERMOSTATCLUSTER_H
 
 /*!
 Attributes and commands for determining basic information about a device,
@@ -124,7 +124,18 @@ to factory defaults.
 *******************************************************************************/
 
 #define ZCL_THERMOSTAT_CLUSTER_SETPOINT_RAISE_LOWER_COMMAND_ID            0x00
+
+<#if ((THERMOSTAT_CLUSTER_CS != "CLIENT")  && ((TC_OUTDOORTEMP == true) || (TC_ABSMINHEATSETPOINTLIMIT == true) 
+                                                || (TC_ABSMINCOOLSETPOINTLIMIT == true) || (TC_ABSMAXCOOLSETPOINTLIMIT == true) 
+                                                || (TC_PICOOLINGDEMAND == true) || (TC_PIHEATINGDEMAND == true) 
+                                                || (TC_HVACSYSTEMCONFIG == true) || (TC_LOCALTEMPCALIBRATION == true) 
+                                                || (TC_UNOCCUPIEDCOOLINGSETPOINT == true) || (TC_UNOCCUPIEDHEATINGSETPOINT == true) 
+                                                || (TC_MINHEATSETPOINTLIMIT == true) || (TC_MAXHEATSETPOINTLIMIT == true) 
+                                                || (TC_MINCOOLSETPOINTLIMIT == true) || (TC_MAXCOOLSETPOINTLIMIT == true) 
+                                                || (TC_MINSETPOINTDEADBAND == true) || (TC_REMOTESENSING == true) 
+                                                || (TC_ALARMMASK == true) || (TC_THERMOSTATRUNNINGMODE == true) || (TC_THERMOSTATRUNNINGSTATE == true)))> 
 #define ZCL_THERMOSTAT_CLUSTER_INCLUDE_OPTIONAL_ATTRIBUTES
+</#if>
 /***************************************************************************//**
 \brief Thermostat Cluster attributes default definitions
 *******************************************************************************/
@@ -192,8 +203,8 @@ to factory defaults.
     DEFINE_ATTRIBUTE_WITH_BOUNDARY(minSetpointDeadBand, ZCL_READWRITE_ATTRIBUTE, ZCL_THERMOSTAT_CLUSTER_MIN_SETPOINT_DEADBAND_SERVER_ATTRIBUTE_ID, ZCL_S8BIT_DATA_TYPE_ID, 0x0a, 0x19), </#if><#if (THERMOSTAT_CLUSTER_CS != "CLIENT")  && (TC_REMOTESENSING == true)>\
     DEFINE_ATTRIBUTE_WITH_BOUNDARY(remoteSensing, ZCL_READWRITE_ATTRIBUTE, ZCL_THERMOSTAT_CLUSTER_REMOTE_SENSING_SERVER_ATTRIBUTE_ID, ZCL_8BIT_BITMAP_DATA_TYPE_ID, 0x00, 0x07), </#if><#if (THERMOSTAT_CLUSTER_CS != "CLIENT")  && (TC_ALARMMASK == true)>\
     DEFINE_ATTRIBUTE_WITH_BOUNDARY(alarmMask, ZCL_READONLY_ATTRIBUTE, ZCL_THERMOSTAT_CLUSTER_ALARM_MASK_SERVER_ATTRIBUTE_ID, ZCL_8BIT_BITMAP_DATA_TYPE_ID, 0x00, 0x07),</#if><#if (THERMOSTAT_CLUSTER_CS != "CLIENT")  && (TC_THERMOSTATRUNNINGMODE == true)>\
-    DEFINE_ATTRIBUTE_WITH_BOUNDARY(thermostatRunningMode, ZCL_READONLY_ATTRIBUTE, ZCL_THERMOSTAT_CLUSTER_THERMOSTAT_RUNNING_MODE_SERVER_ATTRIBUTE_ID, ZCL_8BIT_ENUM_DATA_TYPE_ID, 0x00, 0x04),</#if>\
-    DEFINE_ATTRIBUTE_WITH_BOUNDARY(thermostatRunningState, ZCL_READONLY_ATTRIBUTE, ZCL_THERMOSTAT_CLUSTER_THERMOSTAT_RUNNING_STATE_SERVER_ATTRIBUTE_ID, ZCL_16BIT_BITMAP_DATA_TYPE_ID, 0x00, 0x7f)
+    DEFINE_ATTRIBUTE_WITH_BOUNDARY(thermostatRunningMode, ZCL_READONLY_ATTRIBUTE, ZCL_THERMOSTAT_CLUSTER_THERMOSTAT_RUNNING_MODE_SERVER_ATTRIBUTE_ID, ZCL_8BIT_ENUM_DATA_TYPE_ID, 0x00, 0x04),</#if><#if (THERMOSTAT_CLUSTER_CS != "CLIENT")  && (TC_THERMOSTATRUNNINGSTATE == true)>\
+    DEFINE_ATTRIBUTE_WITH_BOUNDARY(thermostatRunningState, ZCL_READONLY_ATTRIBUTE, ZCL_THERMOSTAT_CLUSTER_THERMOSTAT_RUNNING_STATE_SERVER_ATTRIBUTE_ID, ZCL_16BIT_BITMAP_DATA_TYPE_ID, 0x00, 0x7f)</#if>
 #endif /*ZCL_THERMOSTAT_CLUSTER_INCLUDE_OPTIONAL_ATTRIBUTES*/
 /***************************************************************************//**
 \brief Thermostat Cluster define commands macros
@@ -268,14 +279,14 @@ to factory defaults.
 /******************************************************************************
                     Types section
 ******************************************************************************/
-typedef enum _ZCL_ThSetPointMode_t
+typedef enum ZCL_ThSetPointMode_
 {
   ZCL_ADJUST_HEAT_SETPOINT,
   ZCL_ADJUST_COOL_SETPOINT,
   ZCL_ADJUST_HEAT_AND_COOL_SETPOINT,
 }ZCL_ThSetPointMode_t;
 
-typedef enum _ZCL_ThSystemMode_t
+typedef enum ZCL_ThSystemMode_
 {
   ZCL_SYS_MODE_OFF = 0,
   ZCL_SYS_MODE_AUTO,
@@ -289,65 +300,65 @@ typedef enum _ZCL_ThSystemMode_t
   ZCL_SYS_MODE_SLEEP
 }ZCL_ThSystemMode_t;
 
-typedef enum _ZCL_ThOccupancy_t
+typedef enum ZCL_ThOccupancy_
 {
   ZCL_NOT_OCCUPIED = 0,
   ZCL_OCCUPIED = 1,  
 }ZCL_ThOccupancy_t;
 
-typedef enum _ZCL_ThHvacSystemTypeConfigCoolstage_t
+typedef enum ZCL_ThHvacSystemTypeConfigCoolstage_
 {
   ZCL_HVAC_COOL_STAGE_1 = 0,
   ZCL_HVAC_COOL_STAGE_2,
   ZCL_HVAC_COOL_STAGE_3
 }ZCL_ThHvacSystemTypeConfigCoolstage_t;
 
-typedef enum _ZCL_ThHvacSystemTypeConfigHeatStage_t
+typedef enum ZCL_ThHvacSystemTypeConfigHeatStage_
 {
   ZCL_HVAC_HEAT_STAGE_1 = 0,
   ZCL_HVAC_HEAT_STAGE_2,
   ZCL_HVAC_HEAT_STAGE_3
 }ZCL_ThHvacSystemTypeConfigHeatStage_t;
 
-typedef enum _ZCL_ThHvacSystemTypeConfigHeatType_t
+typedef enum ZCL_ThHvacSystemTypeConfigHeatType_
 {
   ZCL_HVAC_TYPE_CONVENTIONAL = 0,
   ZCL_HVAC_TYPE_PUMP,
 }ZCL_ThHvacSystemTypeConfigHeatType_t;
 
-typedef enum _ZCL_ThHvacSystemTypeConfigHeatSource_t
+typedef enum ZCL_ThHvacSystemTypeConfigHeatSource_
 {
   ZCL_HVAC_SOURCE_ELECTRIC = 0,
   ZCL_HVAC_SOURCE_GAS,
 }ZCL_ThHvacSystemTypeConfigHeatSource_t;
 
-typedef enum _ZCL_ThRemoteSensing_t
+typedef enum ZCL_ThRemoteSensing_
 {
   ZCL_SENSE_INTERNALLY = 0,
   ZCL_SENSE_EXTERNALLY = 1,
 }ZCL_ThRemoteSensing_t;
 
-typedef enum _ZCL_ThAlarmMaskState_t
+typedef enum ZCL_ThAlarmMaskState_
 {
   ZCL_TH_ALARM_DISABLED = 0,
   ZCL_TH_ALARM_ENABLED = 1,
 }ZCL_ThAlarmMaskState_t;
 
-typedef enum _ZCL_ThAlarmMaskBitPos_t
+typedef enum ZCL_ThAlarmMaskBitPos_
 {
   ZCL_INIT_FAILURE_BIT_POS,
   ZCL_HARDWARE_FAILURE_BIT_POS,
   ZCL_SELF_CALIBRATION_FAILURE_BIT_POS,
 }ZCL_ThAlarmMaskBitPos_t;
 
-typedef enum _ZCL_ThRunningMode_t
+typedef enum ZCL_ThRunningMode_
 {
   ZCL_RUNNING_MODE_OFF = 0,
   ZCL_RUNNING_MODE_COOL = 3,
   ZCL_RUNNING_MODE_HEAT = 4,
 }ZCL_ThRunningMode_t;
 
-typedef enum _ZCL_ThControlSeqOfOperation_t
+typedef enum ZCL_ThControlSeqOfOperation_
 {
   ZCL_COOL_ONLY,
   ZCL_COOL_WITH_REHEAT,
@@ -357,13 +368,13 @@ typedef enum _ZCL_ThControlSeqOfOperation_t
   ZCL_COOL_HEAT_4PIPES_REHEAT
 }ZCL_ThControlSeqOfOperation_t;
 
-typedef enum _ZCL_ThRunningState_t
+typedef enum ZCL_ThRunningState_
 {
   ZCL_RUNNING_STATE_OFF = 0,
   ZCL_RUNNING_STATE_ON = 1,
 }ZCL_ThRunningState_t;
 
-typedef enum _ZCL_ThRunningStateBit_t
+typedef enum ZCL_ThRunningStateBit_
 {
   ZCL_HEAT_STATE_BIT_POS,
   ZCL_COOL_STATE_BIT_POS,
@@ -374,7 +385,7 @@ typedef enum _ZCL_ThRunningStateBit_t
   ZCL_FAN_STAGE3_STATE_BIT_POS,
 }ZCL_ThRunningStateBit_t;
 
-typedef enum _ZclThermostatAlarmCode_t
+typedef enum ZclThermostatAlarmCode_
 {
   ZCL_INIT_FAILURE,
   ZCL_HARDWARE_FAILURE,
@@ -445,8 +456,8 @@ typedef struct PACK
     struct PACK                           
     {
       LITTLE_ENDIAN_OCTET(2,(
-        uint8_t occupied    :1, //!<Occupied bit 0 (1 - Occupied, 0 - Not Occupied)
-        uint8_t reserved    :7
+        BitField_t occupied    :1, //!<Occupied bit 0 (1 - Occupied, 0 - Not Occupied)
+        BitField_t reserved    :7
       ))
     } value;
     uint8_t minVal;
@@ -533,11 +544,11 @@ typedef struct PACK
     struct PACK 
     {
       LITTLE_ENDIAN_OCTET(5,(
-        uint8_t coolingStage    :2,
-        uint8_t heatingStage    :2,
-        uint8_t heatingType        :1,
-        uint8_t heatingFuelSource  :1,
-        uint8_t reserved        :2
+        BitField_t coolingStage    :2,
+        BitField_t heatingStage    :2,
+        BitField_t heatingType        :1,
+        BitField_t heatingFuelSource  :1,
+        BitField_t reserved        :2
       ))
     } value;
     uint8_t minVal;
@@ -657,10 +668,10 @@ typedef struct PACK
     struct PACK 
     {
       LITTLE_ENDIAN_OCTET(4,(
-        uint8_t localTemperature    :1,
-        uint8_t outdoorTemperature  :1,
-        uint8_t occupancySense      :1,        
-        uint8_t reserved            :5
+        BitField_t localTemperature    :1,
+        BitField_t outdoorTemperature  :1,
+        BitField_t occupancySense      :1,        
+        BitField_t reserved            :5
       ))
     } value;
     uint8_t minVal;
@@ -700,10 +711,10 @@ typedef struct PACK
     struct PACK 
     {
       LITTLE_ENDIAN_OCTET(4,(
-        uint8_t initFailure    :1,
-        uint8_t hardwareFailure  :1,
-        uint8_t selfCalibrationFailure      :1,
-        uint8_t reserved            :5
+        BitField_t initFailure    :1,
+        BitField_t hardwareFailure  :1,
+        BitField_t selfCalibrationFailure      :1,
+        BitField_t reserved            :5
       ))
     } value;
     uint8_t minVal;
@@ -719,7 +730,7 @@ typedef struct PACK
     uint8_t minVal;
     uint8_t maxVal;
   } thermostatRunningMode;              //! <Attr ID 0x001e>
-</#if>
+</#if><#if (THERMOSTAT_CLUSTER_CS != "CLIENT")  && (TC_THERMOSTATRUNNINGSTATE == true)>
   struct PACK
   {
     ZCL_AttributeId_t id;
@@ -729,6 +740,7 @@ typedef struct PACK
     uint16_t minVal;
     uint16_t maxVal;
   } thermostatRunningState;              //! <Attr ID 0x0029>  
+  </#if>
  #endif
 } ZCL_ThermostatClusterServerAttributes_t;
 
@@ -772,5 +784,5 @@ typedef struct
 </#if>  
 } ZCL_ThermostatClusterCommands_t;
 
-#endif /* _ZCLTHERMOSTATCLUSTER_H */
+#endif /* ZCLTHERMOSTATCLUSTER_H */
 

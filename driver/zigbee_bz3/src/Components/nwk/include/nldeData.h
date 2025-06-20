@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#if !defined _NLDE_DATA_H
-#define _NLDE_DATA_H
+#if !defined NLDE_DATA_H
+#define NLDE_DATA_H
 
 /******************************************************************************
                                Includes section
@@ -295,6 +295,15 @@ typedef struct _NWK_DataInd_t
   {
     QueueElement_t qelem; /**< link used for queuing */
     ZDO_ResolveAddrReq_t resolveAddrReq; /*!< Is used for address resolving */
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+    struct
+    {
+      /** Flag for indicating the given request to be process and send via APS Relay Command */
+      uint8_t isRelayCmd;
+      /** Extended Address of Device to Authorise */
+      ExtAddr_t unAuthDevExtAdd;
+    } relayMsgInfo;
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
   } service;
 
   /** The type of destination address supplied by the DstAddr parameter.
@@ -462,6 +471,6 @@ void NWK_FreeDataReq(NWK_DataReq_t *const req);
 NWK_DataReq_t* NWK_DataTransformIndToReq(NWK_DataInd_t *ind, const bool secure);
 
 #endif /* _NWK_ALLOCATOR_ */
-#endif /* _NLDE_DATA_H */
+#endif /* NLDE_DATA_H */
 /** eof nldeData.h */
 

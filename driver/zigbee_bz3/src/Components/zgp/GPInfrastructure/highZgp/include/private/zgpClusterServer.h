@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPCLUSTERSERVER_H
-#define _ZGPCLUSTERSERVER_H
+#ifndef ZGPCLUSTERSERVER_H
+#define ZGPCLUSTERSERVER_H
 
 #ifdef _GREENPOWER_SUPPORT_
 #if APP_ZGP_DEVICE_TYPE == APP_ZGP_DEVICE_TYPE_COMBO_BASIC
@@ -282,6 +282,6 @@ void zgpServerFreeReportDataDescBufer(ZGP_ReportDescriptor_t *reportDesc);
 void zgpServerFreeSessionEntry(uint8_t sessionEntryIndex);
 #endif // APP_ZGP_DEVICE_TYPE == APP_ZGP_DEVICE_TYPE_COMBO_BASIC
 #endif // _GREENPOWER_SUPPORT_
-#endif // _ZGPCLUSTERSERVER_H
+#endif // ZGPCLUSTERSERVER_H
 
 // eof zgpClusterServer.h

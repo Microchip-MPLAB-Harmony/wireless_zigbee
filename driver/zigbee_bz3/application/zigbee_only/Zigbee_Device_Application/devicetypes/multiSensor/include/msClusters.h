@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _MSCLUSTER_H
-#define _MSCLUSTER_H
+#ifndef MSCLUSTER_H
+#define MSCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -164,7 +164,7 @@ extern void (*hsServerClusterInitFunctions[HS_SERVER_CLUSTERS_COUNT])();
 
 #endif
 
-#endif // _MSCLUSTER_H
+#endif // MSCLUSTER_H
 
 // eof msClusters.h
 

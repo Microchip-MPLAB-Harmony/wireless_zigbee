@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _CONSOLE_H
-#define _CONSOLE_H
+#ifndef CONSOLE_H
+#define CONSOLE_H
 
 /******************************************************************************
                     Includes section
@@ -168,4 +168,4 @@ void initConsole(void);
 ******************************************************************************/
 void processConsole(uint16_t length);
 
-#endif // _CONSOLE_H
+#endif // CONSOLE_H

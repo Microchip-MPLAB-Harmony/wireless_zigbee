@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _MACENVPIB_H
-#define _MACENVPIB_H
+#ifndef MACENVPIB_H
+#define MACENVPIB_H
 
 /******************************************************************************
                     Includes section
@@ -304,6 +304,18 @@ INLINE bool macenvGetAssociationPermit(void)
 {
   return csPIB.macAttr.associationPermit;
 }
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+  \brief Gets max frame transmission time attribute value.
+
+  \return Max frame transmission time attribute value.
+ ******************************************************************************/
+INLINE bool MAC_GetAssociationPermit(void)
+{
+  return macenvGetAssociationPermit();
+}
+#endif
 #endif
 
 /**************************************************************************//**
@@ -480,6 +492,6 @@ INLINE uint8_t MAC_GetChannel(void)
   return csPIB.phyAttr.channel;
 }
 
-#endif /* _MACENVPIB_H */
+#endif /* MACENVPIB_H */
 
 // eof macenvPib.h

@@ -1,47 +1,5 @@
 <#assign DEVICE = (NAME + "_CUSTOM_CLUSTER_CS")?eval>
-<#assign prefix = NAME + "_CUSTOM_CLUSTER_" + DEVICE + "_COMMANDS_">
 <#assign clusterName = (NAME + "_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','')>
-<#global arraySize = "">
-<#function type commandIndex paramIndex>
-
-    <#assign arraySize = "">
-    <#switch (prefix + "CLASSTYPE_" + commandIndex + "_" + paramIndex)?eval>
-        <#case "General Data">
-            <#assign datatype = "uint"+(prefix + "TYPE_GENERAL_" + commandIndex + "_" + paramIndex)?eval?remove_beginning("data") + "_t" >
-            <#break>
-        <#case "Enumeration">
-            <#assign datatype = "uint8_t" >
-            <#break>
-        <#case "Unsigned Integer">
-            <#assign datatype = (prefix + "TYPE_UNSIGNED_" + commandIndex + "_" + paramIndex)?eval + "_t">
-            <#break>
-        <#case "Bitmap">
-            <#assign datatype = "uint8_t">
-            <#break>
-        <#case "Signed Integer">
-            <#assign datatype = (prefix + "TYPE_SIGNED_" + commandIndex + "_" + paramIndex)?eval + "_t">
-            <#break>
-        <#case "Boolean">
-            <#assign datatype = "bool" >
-            <#break>
-        <#case "String">
-            <#assign datatype = "uint8_t">
-            <#if (prefix + "TYPE_STRING_" + commandIndex + "_" + paramIndex)?eval?contains("16")>
-                <#assign datatype = "uint16_t">
-            </#if>
-            <#assign arraySize = "[32]"> <#-- the suffix for array types -->
-            <#break>
-        <#case "Array">
-            <#assign datatype = "uint8_t">
-            <#assign arraySize = "["+ (prefix + "TYPE_ARRAY_" + commandIndex + "_" + paramIndex)?eval + "]">
-            <#break>
-    <#default>            
-        <#assign datatype = "uint8_t">
-    </#switch>
-
-    <#return datatype>
-</#function>
-
 
 <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
 /*******************************************************************************
@@ -98,39 +56,125 @@
 #define ${clusterName?upper_case}_MAX_REPORT_PERIOD ${(NAME + "_CUSTOM_CLUSTER_REPORT_MAX")?eval}
 
 /*******************************************************************************
+
                     Prototypes section
 *******************************************************************************/
 
-<#if (DEVICE == "CLIENT")>
-    <#assign commandSuffix = "">
-    <#assign commandPrefix = "Send">
-    <#assign ClientArguments = "APS_AddrMode_t addressMode, ShortAddr_t shortAddress, Endpoint_t endPoint, Endpoint_t sourceEndPoint\n\t">
-    
-<#else>
-    <#assign commandSuffix = "Ind">
-    <#assign commandPrefix = "">
-    <#assign ClientArguments = "">
-</#if>
 void ${deviceTypeFunctionPrefix}${clusterName}Init(void);
-<#list 0..<(prefix+"NO")?eval as commandIndex>
-<#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
-<#if (commandSuffix == "Ind")>  <#-- SERVER -->
-<#assign ClientArguments = "ZCL_Addressing_t *addressing, uint8_t payloadLength, ZCL_"+ CommandName + "_t *payload">
-<#t>ZCL_Status_t ${deviceTypeFunctionPrefix + CommandName + commandPrefix}Command${commandSuffix}(${ClientArguments});
+
+<#function getParametersLength prefix commandIndex>
+<#return (prefix + "PARAM_NO_" + commandIndex)?eval>
+</#function>
+
+<#function parameterVariable prefix commandIndex parameterIndex>
+<#-- [ BLOCK datatype] -->
+        <#assign arraySize = "">
+        <#switch (prefix + "CLASSTYPE_" + commandIndex + "_" + parameterIndex)?eval>
+        <#case "General Data">
+            <#assign datatype = "uint"+( prefix + "TYPE_GENERAL_" + commandIndex + "_" + parameterIndex)?eval?remove_beginning("data") + "_t" >
+            <#break>
+        <#case "Enumeration">
+            <#assign datatype = "uint8_t" >
+            <#break>
+        <#case "Unsigned Integer">
+            <#assign datatype = (prefix + "TYPE_UNSIGNED_" + commandIndex + "_" + parameterIndex)?eval + "_t">
+            <#break>
+        <#case "Bitmap">
+            <#assign datatype = "uint8_t">
+            <#break>
+        <#case "Signed Integer">
+            <#assign datatype = (prefix + "TYPE_SIGNED_" + commandIndex + "_" + parameterIndex)?eval + "_t">
+            <#break>
+        <#case "Boolean">
+            <#assign datatype = "bool" >
+            <#break>
+        <#case "String">
+            <#assign datatype = "uint8_t">
+            <#if (prefix + "TYPE_STRING_" + commandIndex + "_" + parameterIndex)?eval?contains("16")>
+                <#assign datatype = "uint16_t">
+            </#if>
+            <#assign arraySize = "[32]"> <#-- the suffix for array types -->
+            <#break>
+        <#case "Array">
+            <#assign datatype = "uint8_t">
+            <#assign arraySize = "["+ (prefix + "TYPE_ARRAY_" + commandIndex + "_" + parameterIndex)?eval + "]">
+            <#break>
+        <#default>      
+                  
+        </#switch>
+
+    <#assign parameterName = (prefix + "PARAMNAME_" + commandIndex + "_" + parameterIndex)?eval >
+
+<#return datatype + " " + parameterName?replace(" ","") + arraySize>
+
+</#function>
+
+<#--//FUNCTION PROTOTYPES -->
+<#if (DEVICE == "SERVER") || (DEVICE == "BOTH")>
+    <#--//SERVER -->
+    <#-- Function prototypes for the send commands and indications -->
+    <#assign prefix = NAME + "_CUSTOM_CLUSTER_" + "SERVER" + "_COMMANDS_">
+    <#list 0..<(prefix+"NO")?eval as commandIndex>
+        <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
+        <#assign parametersLength = getParametersLength(prefix, commandIndex) >
+ZCL_Status_t ${deviceTypeFunctionPrefix}Send${CommandName}(APS_AddrMode_t addressMode, ShortAddr_t shortAddress, Endpoint_t endPoint, Endpoint_t sourceEndPoint<#if (parametersLength == 0) >);
+<#else>${''}
+    <#list 0..<parametersLength as parameterIndex >,${parameterVariable(prefix,commandIndex,parameterIndex)} </#list>);
 </#if>
-<#if (commandSuffix == "")>   <#-- CLIENT -->
-<#t>ZCL_Status_t ${deviceTypeFunctionPrefix + CommandName + commandPrefix}Command${commandSuffix}(${ClientArguments}<#list 0..<(prefix+"PARAM_NO_"+commandIndex)?eval as paramIndex>, ${type(commandIndex,paramIndex)} ${((prefix + "PARAMNAME_" + commandIndex + "_" + paramIndex)?eval?capitalize?replace(' ','')!"param") + arraySize }</#list>);
+    </#list>
+    <#assign prefix = NAME + "_CUSTOM_CLUSTER_" + "CLIENT" + "_COMMANDS_">
+    <#list 0..<(prefix+"NO")?eval as commandIndex>
+        <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
+ZCL_Status_t ${deviceTypeFunctionPrefix}${CommandName}CommandInd(ZCL_Addressing_t *addressing, uint8_t payloadLength, ZCL_${CommandName}_t *payload);
+    </#list>
 </#if>
-</#list>
+<#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
+    <#--//CLIENT -->
+    <#-- Function prototypes for the send commands and indications -->
+    <#assign prefix = NAME + "_CUSTOM_CLUSTER_" + "SERVER" + "_COMMANDS_">
+    <#list 0..<(prefix+"NO")?eval as commandIndex>
+        <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
+ZCL_Status_t ${deviceTypeFunctionPrefix}${CommandName}CommandInd(ZCL_Addressing_t *addressing, uint8_t payloadLength, ZCL_${CommandName}_t *payload);
+    </#list>
+    <#assign prefix = NAME + "_CUSTOM_CLUSTER_" + "CLIENT" + "_COMMANDS_">
+    <#list 0..<(prefix+"NO")?eval as commandIndex>
+        <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
+        <#assign parametersLength = getParametersLength(prefix, commandIndex) >
+ZCL_Status_t ${deviceTypeFunctionPrefix}Send${CommandName}(APS_AddrMode_t addressMode, ShortAddr_t shortAddress, Endpoint_t endPoint, Endpoint_t sourceEndPoint<#if (parametersLength == 0) >);
+<#else>${''} 
+    <#list 0..<parametersLength as parameterIndex >,${parameterVariable(prefix,commandIndex,parameterIndex)} </#list>);
+</#if>
+    </#list>
+</#if>
 
 /******************************************************************************
                     Global variables
 ******************************************************************************/
 
+<#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
 //Custom Cluster Attributes
-extern ZCL_${clusterName?capitalize}Cluster${DEVICE?capitalize}Attributes_t ${clusterName?lower_case}${DEVICE?capitalize}ClusterAttributes;
+extern ZCL_${clusterName?capitalize}Cluster${"SERVER"?capitalize}Attributes_t ${clusterName?lower_case}${"SERVER"?capitalize}ClusterAttributes;
+</#if>
+
+<#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
+//Custom Cluster Attributes
+extern ZCL_${clusterName?capitalize}Cluster${"CLIENT"?capitalize}Attributes_t ${clusterName?lower_case}${"CLIENT"?capitalize}ClusterAttributes;
+</#if>
+
 //Custom Cluster Commands
-extern PROGMEM_DECLARE (ZCL_${clusterName?capitalize}ClusterCommands_t ${clusterName?lower_case}${DEVICE?capitalize}ClusterCommands);
+extern PROGMEM_DECLARE (ZCL_${clusterName?capitalize}ClusterCommands_t ${clusterName?lower_case}ClusterCommands);
 
 
 
+// Custom Cluster`s backup & Restore Function Declaration
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+    <#if (DEVICE == "SERVER") || (DEVICE == "BOTH")>
+    void ${deviceTypeFunctionPrefix}cc${NAME}BackupAttribute(void);
+    </#if>
+</#if>
+
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+    <#if (DEVICE == "SERVER") || (DEVICE == "BOTH")>
+void ${deviceTypeFunctionPrefix}cc${NAME}RestoreAttribute(void);
+    </#if>
+</#if>

@@ -358,6 +358,7 @@ def instantiateComponent(drvZigbeeComponent):
         ['aps/include/aps.h',                        condAlways],
         ['aps/include/apsAIB.h',                     condAlways],
         ['aps/include/apsCommandReq.h',              condAlways],
+        ['aps/include/apsRelayCommandReq.h',         condAlways],
         ['aps/include/apsCommon.h',                  condAlways],
         ['aps/include/apsConfigServer.h',            condAlways],
         ['aps/include/apsCryptoKeys.h',              condAlways],
@@ -375,6 +376,7 @@ def instantiateComponent(drvZigbeeComponent):
         ['aps/include/apsmeUpdateDevice.h',          condAlways],
         ['aps/include/apsmeVerifyKey.h',             condAlways],
         ['aps/include/intrpData.h',                  condAlways],
+        ['aps/include/apsmeKeyNegotiate.h',          condAlways],
         ['aps/include/private/apsAuthenticate.h',    condAlways],
         ['aps/include/private/apsBinding.h',         condAlways],
         ['aps/include/private/apsCommand.h',         condAlways],
@@ -386,6 +388,7 @@ def instantiateComponent(drvZigbeeComponent):
         ['aps/include/private/apsFrames.h',          condAlways],
         ['aps/include/private/apsGroup.h',           condAlways],
         ['aps/include/private/apsKeyPairSet.h',      condAlways],
+        ['aps/include/apsFragmentationCache.h',      condAlways],
         ['aps/include/private/apsMemoryManager.h',   condAlways],
         ['aps/include/private/apsRejectDuplicate.h', condAlways],
         ['aps/include/private/apsRemoveDevice.h',    condAlways],
@@ -722,6 +725,12 @@ def instantiateComponent(drvZigbeeComponent):
         ['zdo/include/private/zdoTaskManager.h',       condAlways],
         ['zdo/include/private/zdoZdpReq.h',            condAlways],
         ['zdo/include/private/zdoZib.h',               condAlways],
+        ['zdo/include/zdoSecurityStartKeyUpdate.h',         condAlways],
+        ['zdo/include/private/zdoSecurityServiceManager.h',     condAlways],
+        ['zdo/include/zdoSecurityStartKeyNegotiation.h',    condAlways],
+        ['zdo/include/zdoRetrieveAuthenticationToken.h',    condAlways],
+        ['zdo/include/zdoSecurityChallenge.h',    condAlways],
+        ['zdo/include/zdoSecurityGetAuthLevel.h',     condAlways],
     ]
 
     zdrvStackHALIncFiles = [
@@ -749,6 +758,7 @@ def instantiateComponent(drvZigbeeComponent):
         #['hal/cortexm4/pic32cx/include/hri_aes_e54.h',           condAlways],
         ['hal/cortexm4/pic32cx/include/halAes.h',                condAlways],
         ['hal/cortexm4/pic32cx/include/Pic32cx_Miscellaneous.h', condAlways],
+        ['hal/cortexm4/pic32cx/include/Curve25519.h',            condAlways],
     ]
 
     zdrvStackZCLIncFiles = [
@@ -1023,6 +1033,7 @@ def instantiateComponent(drvZigbeeComponent):
         ['application/zigbee_only/Zigbee_Device_Application/common/include/zgb_task.h',                        condAlways],
         ['application/zigbee_only/Zigbee_Device_Application/common/include/zgpAppConfig.h',                    condAlways],
         ['application/zigbee_only/Zigbee_Device_Application/common/include/zgpAppInterface.h',                 condAlways],
+        ['application/zigbee_only/Zigbee_Device_Application/common/include/app_tcSwapout.h',                 condDevCombInterface],
     ]
 
     # cmsisIncFiles = [
@@ -1207,6 +1218,7 @@ def instantiateComponent(drvZigbeeComponent):
         ['aps/src/apsAIB.c',                  condAlways],
         ['aps/src/apsAuthenticate.c',         condAlways],
         ['aps/src/apsCommand.c',              condAlways],
+        ['aps/src/apsRelayCommand.c',         condAlways],
         ['aps/src/apsBinding.c',              condAlways],
         ['aps/src/apsBindingTable.c',         condAlways],
         ['aps/src/apsConfirmKey.c',           condAlways],
@@ -1216,6 +1228,7 @@ def instantiateComponent(drvZigbeeComponent):
         ['aps/src/apsGroupTable.c',           condAlways],
         ['aps/src/apsInterpan.c',             condAlways],
         ['aps/src/apsKeyPairSet.c',           condAlways],
+        ['aps/src/apsFragmentationCache.c',   condAlways],
         ['aps/src/apsMemoryManager.c',        condAlways],
         ['aps/src/apsRejectDuplicate.c',      condAlways],
         ['aps/src/apsRemoveDevice.c',         condAlways],
@@ -1285,6 +1298,7 @@ def instantiateComponent(drvZigbeeComponent):
         ['nwk/src/nwkManyToOne.c',               condAlways],
         ['nwk/src/nwkMem.c',                     condAlways],
         ['nwk/src/nwkNeighborTable.c',           condAlways],
+        ['nwk/src/nwkDiscoveryTable.c',          condAlways],
         ['nwk/src/nwkOrphan.c',                  condAlways],
         ['nwk/src/nwkPacket.c',                  condAlways],
         ['nwk/src/nwkPassiveAck.c',              condAlways],
@@ -1904,6 +1918,7 @@ def instantiateComponent(drvZigbeeComponent):
         ['/src/Components/security/serviceprovider/include',                   condAlways],
         ['/src/Components/security/serviceprovider/include/private',           condAlways],
         ['/src/Components/security/SoftAes',                                   condAlways],
+        ['/src/Components/security/Curve25519',                                condAlways],
         ['/src/Components/security/TrustCentre/include',                       condAlways],
         ['/src/Components/security/TrustCentre/include/private',               condAlways],
         ['/src/Components/systemenvironment/include',                          condAlways],

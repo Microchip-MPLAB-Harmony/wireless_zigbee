@@ -44,8 +44,8 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#ifndef _ZDOSECURITYMANAGER_H
-#define _ZDOSECURITYMANAGER_H
+#ifndef ZDOSECURITYMANAGER_H
+#define ZDOSECURITYMANAGER_H
 // DOM-IGNORE-END
 
 /******************************************************************************
@@ -114,10 +114,28 @@ typedef struct
 /* Confirmation callback for Key Verification */
 typedef void(*ZDO_VerifyKeyConf_t)(APS_VerifyKeyConf_t *conf);
 
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_ 
+typedef enum
+{
+  ZDO_VERIFY_APP_LINK_KEY_TYPE = 0x03,
+  ZDO_VERIFY_TC_LINK_KEY_TYPE = 0x04,
+} ZDO_VerifyKeyType_t;
+#endif //_ZIGBEE_REV_23_SUPPORT_
+
 /* Request for key verification */
 typedef struct _ZDO_VerifiKeyReq_t_
 {
   uint32_t timeout;
+#ifdef _ZIGBEE_REV_23_SUPPORT_  
+  /* Flag for Relay Command. */
+  uint8_t relayCmd;
+  ZDO_VerifyKeyType_t keyType;
+  /* Extended Address of Device to Authorise */
+  ExtAddr_t unAuthDevExtAdd;
+  /* Extended Address of Destination Device */
+  ExtAddr_t destAddress;
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
   void(*verifyKeyConf)(APS_VerifyKeyConf_t *conf);
   APS_VerifyKeyConf_t conf;
 }ZDO_VerifiKeyReq_t;
@@ -183,7 +201,21 @@ void zdoKeyHashMacConf(SSP_KeyedHashMacConf_t *conf);
   \return None
  ******************************************************************************/
 void ZDO_VerifyKeyReq(ZDO_VerifiKeyReq_t *zdoVerifyKeyReq);
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************/ /**
+ \brief Sends ZDP Node Descriptor Request Command to Trust Center 0x0000
+
+  \param[in] destAddr             - Destination device address
+  \param[in] nwkAddrofInterest    - NWK address for the request
+  \param[in] pDeviceInterviewReq  - pointer device interview request parameters.
+
+  \return None
+******************************************************************************/
+void ZDO_SendNodeDescriptorRequest(ShortAddr_t destAddr, ShortAddr_t nwkAddrofInterest, BcDeviceInterviewReq_t *pDeviceInterviewReq);
+#endif
+
 #endif //#if defined _SECURITY_ && defined _LINK_SECURITY_
-#endif // _ZDOSECURITYMANAGER_H
+#endif // ZDOSECURITYMANAGER_H
 
 // eof zdoSecurityManager.h

@@ -40,6 +40,12 @@ def loadModule():
                           'WBZ350',
                           }
 
+    pic32cx_bz36_family = {'PIC32CX5109BZ36048',
+                           'PIC32CX5109BZ36032',
+                           'PIC32WM_BZ3601',
+                           'PIC32WM_BZ3602',
+                          }
+
     pic32cx_bz6_family = {  'PIC32CX2051BZ62132',
                             'PIC32CX2051BZ62064',
                             'PIC32CX2051BZ66048',
@@ -58,7 +64,7 @@ def loadModule():
     if( processor in pic32cx_bz2_family):
         ## PIC32CX-BZ Radio stacks
         execfile(Module.getPath() + '/config/module_zigbee_bz2.py')
-    elif( processor in pic32cx_bz3_family):
+    elif( (processor in pic32cx_bz3_family)or (processor in pic32cx_bz36_family)):
         execfile(Module.getPath() + '/config/module_zigbee_bz3.py')
     elif( processor in pic32cx_bz6_family):
         execfile(Module.getPath() + '/config/module_zigbee_bz6.py')

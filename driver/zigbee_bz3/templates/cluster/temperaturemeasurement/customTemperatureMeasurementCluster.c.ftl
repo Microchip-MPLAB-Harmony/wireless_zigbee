@@ -74,6 +74,14 @@ ZCL_TemperatureMeasurementClusterClientAttributes_t customTemperatureMeasurement
 };
 </#if>
 
+//###########################################################################
+
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+<#if ((TEMPERATUREMEASUREMENT_CLUSTER_ENABLE == true) && ((TEMPERATUREMEASUREMENT_CLUSTER_CS != "CLIENT") || (TEMPERATUREMEASUREMENT_CLUSTER_CS == "BOTH")))>
+    ZCL_TemperatureMeasurementClusterServerAttributes_t __attribute__((persistent)) backupCstmTemperatureyMeasurementClusterServerAttributes;
+</#if>
+</#if>
+
 /******************************************************************************
                     Local variables section
 ******************************************************************************/
@@ -213,6 +221,24 @@ static void customTemperatureMeasurementReportInd(ZCL_Addressing_t *addressing, 
   APP_Zigbee_Handler(event);
 }
 </#if>
+
+/*********************************************************************************
+*********************************************************************************/
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+<#if ((TEMPERATUREMEASUREMENT_CLUSTER_ENABLE == true) && ((TEMPERATUREMEASUREMENT_CLUSTER_CS != "CLIENT") || (TEMPERATUREMEASUREMENT_CLUSTER_CS == "BOTH")))>
+void CDtrBackupTrAttributes(void)
+{
+   memcpy4ByteAligned(&backupCstmTemperatureyMeasurementClusterServerAttributes,&customTemperatureMeasurementClusterServerAttributes, sizeof(ZCL_TemperatureMeasurementClusterServerAttributes_t));
+}
+</#if>
+<#if ((TEMPERATUREMEASUREMENT_CLUSTER_ENABLE == true) && ((TEMPERATUREMEASUREMENT_CLUSTER_CS != "CLIENT") || (TEMPERATUREMEASUREMENT_CLUSTER_CS == "BOTH")))>
+void CDtrRestoreTrAttributes(void)
+{
+  memcpy4ByteAligned(&customTemperatureMeasurementClusterServerAttributes, &backupCstmTemperatureyMeasurementClusterServerAttributes, sizeof(ZCL_TemperatureMeasurementClusterServerAttributes_t));
+}
+</#if>
+</#if>
+
 
 #endif
 // eof customTemperatureMeasurementCluster.c

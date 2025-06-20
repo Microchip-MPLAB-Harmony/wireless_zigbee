@@ -84,9 +84,9 @@ ZCL_Cluster_t cscServerClusters[CSC_SERVER_CLUSTERS_COUNT] =
   DEFINE_COMMISSIONING_CLUSTER(ZCL_SERVER_CLUSTER_TYPE, &cscCommissioningClusterServerAttributes, &cscCommissioningClusterCommands),  
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "SERVER")  >
+  <#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
-  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_SERVER_CLUSTER_TYPE, &${clusterName?lower_case}${DEVICE?capitalize}ClusterAttributes, &${clusterName?lower_case}${DEVICE?capitalize}ClusterCommands),
+  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_SERVER_CLUSTER_TYPE, &${clusterName?lower_case}${"SERVER"?capitalize}ClusterAttributes, &${clusterName?lower_case}ClusterCommands),
   </#if>
   </#list>
 };
@@ -99,7 +99,7 @@ void (*cscServerClusterInitFunctions[CSC_SERVER_CLUSTER_INIT_COUNT])() =
   cscCommissioningServerClusterInit,  
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "SERVER")  >
+  <#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${deviceTypeFunctionPrefix}${clusterName}Init,
@@ -136,9 +136,9 @@ ZCL_Cluster_t cscClientClusters[CSC_CLIENT_CLUSTERS_COUNT] =
  // OTAU  
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "CLIENT")  >
+  <#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
-  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_CLIENT_CLUSTER_TYPE, &${clusterName?lower_case}${DEVICE?capitalize}ClusterAttributes, &${clusterName?lower_case}${DEVICE?capitalize}ClusterCommands),
+  DEFINE_${(clusterName)?upper_case}_CLUSTER(ZCL_CLIENT_CLUSTER_TYPE, &${clusterName?lower_case}${"CLIENT"?capitalize}ClusterAttributes, &${clusterName?lower_case}ClusterCommands),
   </#if>
   </#list> 
 };
@@ -150,7 +150,7 @@ ClusterId_t cscServerClusterIds[CSC_SERVER_CLUSTERS_COUNT] =
   ZLL_COMMISSIONING_CLUSTER_ID,  
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "SERVER")  >
+  <#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -172,7 +172,7 @@ ClusterId_t cscClientClusterIds[CSC_CLIENT_CLUSTERS_COUNT] =
   ZLL_COMMISSIONING_CLUSTER_ID,
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "CLIENT")  >
+  <#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,

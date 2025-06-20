@@ -43,8 +43,8 @@
 
 
 // DOM-IGNORE-BEGIN
-#if !defined _ZDO_COMMON_H
-#define _ZDO_COMMON_H
+#if !defined ZDO_COMMON_H
+#define ZDO_COMMON_H
 // DOM-IGNORE-END
 
 /******************************************************************************
@@ -98,6 +98,7 @@
 #define MGMT_BIND_RESP_COMMON_HDR_SIZE 5
 #define MGMT_BIND_DST_EXT_ADDR_MODE_ENTRY_SIZE  21
 #define MGMT_BIND_DST_GROUP_ADDR_MODE_ENTRY_SIZE 14
+#define NODE_DESCRIPTOR_RESP_SIZE 15U
 
 /** APS_MAX_NON_SECURITY_ASDU_SIZE is used to calculate the maximum possible 
     table entries that could be present in the received MgmtBindRsp. */
@@ -105,6 +106,10 @@
             - MGMT_BIND_RESP_COMMON_HDR_SIZE)/ MGMT_BIND_DST_GROUP_ADDR_MODE_ENTRY_SIZE
 #define ZDP_ROUTING_TABLE_LIST_OFFSET 3U
 #define ZDP_ROUTING_TABLE_LIST_SIZE (APS_MAX_ASDU_SIZE / (ZDP_ROUTING_TABLE_LIST_OFFSET + sizeof(RoutingTableList_t)))
+
+#define ZDP_RESP_HEADER_SIZE 2U /*!< ZDO status + Transaction Sequence Number */
+#define ZDP_REQ_HEADER_SIZE  1U /*!< Transaction Sequence Number */
+
 // \endcond
 // DOM-IGNORE-END
 
@@ -196,7 +201,14 @@ typedef enum
   //! User descriptor is changed event
   ZDO_USER_DESCRIPTOR_UPDATE_STATUS = 0x94,
   //! On the device with static addressing the conflict of network addresses has been detected
-  ZDO_STATIC_ADDRESS_CONFLICT_STATUS = 0x95
+  ZDO_STATIC_ADDRESS_CONFLICT_STATUS = 0x95,
+  ZDO_MISSING_TLV_STATUS = 0x96,
+  //! When invalid TLV is present in a command
+  ZDO_INVALID_TLV_STATUS = 0x97,
+  //! When invalid key negotiation method is specified
+  ZDO_BAD_KEY_NEGOTIATION_METHOD_STATUS = 0x98,
+  //! When key negotiation request could not be handled
+  ZDO_TEMPORARY_FAILURE_STATUS = 0x99,
 } ZDO_Status_t;
 
 /** Types of response to address requests. */
@@ -258,6 +270,8 @@ enum
   RECOVER_BIND_TABLE_CLID      = CCPU_TO_LE16(0x0028),//!< Request generated from a local primary binding table cache and sent to a remote backup binding table cache device when it wants a complete restore of the binding table.
   BACKUP_SOURCE_BIND_CLID      = CCPU_TO_LE16(0x0029),//!< Request generated from a local primary binding table cache and sent to a remote backup binding table cache device to request backup storage of its entire source table.
   RECOVER_SOURCE_BIND_CLID     = CCPU_TO_LE16(0x002A),//!< Request generated from a local primary binding table cache and sent to the remote backup binding table cache device when it wants a complete restore of the source binding table.
+  CLEAR_ALL_BINDINGS_CLID      = CCPU_TO_LE16(0x002B),//!< Clear all the bindings request CLID
+
 // Network Management Client Services commands
   MGMT_NWK_DISC_CLID           = CCPU_TO_LE16(0x0030),//!< Request generated from a Local Device requesting that the Remote Device execute a Scan to report back networks in the vicinity of the Local Device.
   MGMT_LQI_CLID                = CCPU_TO_LE16(0x0031),//!< Request generated from a Local Device wishing to obtain a neighbor list for the Remote Device along with associated LQI values to each neighbor.
@@ -268,7 +282,21 @@ enum
   MGMT_PERMIT_JOINING_CLID     = CCPU_TO_LE16(0x0036),//!< Request generated from a Local Device requesting that a remote device or devices allow or disallow association.
   MGMT_CACHE_CLID              = CCPU_TO_LE16(0x0037),//!< Request The Mgmt_Cache_req is provided to enable ZigBee devices on the network to retrieve a list of ZigBee End Devices registered with a Primary Discovery Cache device.
   MGMT_NWK_UPDATE_CLID         = CCPU_TO_LE16(0x0038), //!< Command provided to allow updating of network configuration parameters or to request information from devices on network conditions in the local operating environment.
+  MGMT_NWK_BEACON_SURVEY_CLID  = CCPU_TO_LE16(0x003C), //!<Request generated from a Local Device requesting that the Remote Device execute a scan to report back about the networks and potential parents available
   MGMT_NWK_UNSOLICITED_UPDATE_CLID = CCPU_TO_LE16(0x803b), //!< Command provided to allow updating of network configuration parameters or to request information from devices on network conditions in the local operating environment.
+
+ // Device Security related commands 
+  SECURITY_START_KEY_NEGOTIATION_CLID         = CCPU_TO_LE16(0x0040),
+  SECURITY_RETRIEVE_AUTHENTICATION_TOKEN_CLID = CCPU_TO_LE16(0x0041),
+  SECURITY_GET_AUTHENTICATION_LEVEL_CLID      = CCPU_TO_LE16(0x0042),
+  SECURITY_SET_CONFIG_CLID                    = CCPU_TO_LE16(0x0043),
+  SECURITY_GET_CONFIG_CLID                    = CCPU_TO_LE16(0x0044), //!<Request generated from a Local Device requesting that the Remote Device to retrieve its configuration
+  SECURITY_START_KEY_UPDATE_CLID              = CCPU_TO_LE16(0x0045),
+  SECURITY_DECOMMISSIONING_CLID               = CCPU_TO_LE16(0x0046),
+  SECURITY_CHALLENGE_CLID                     = CCPU_TO_LE16(0x0047),
+
+// Reserved ZDO Cluster
+  RESERVED_CLUSTER_CLID                       = CCPU_TO_LE16(0x0099), //<!Returns NOT_SUPPORTED as response status (Mentioned in R23 18.5 testcase (Test-step: 17))
 
 // Device and Service Discovery commands
   NWK_ADDR_RESP_CLID                = CCPU_TO_LE16(0x8000),//!< Response for the 16-bit address of a remote device based on its known IEEE address.
@@ -283,10 +311,22 @@ enum
   MGMT_PERMIT_JOINING_RESP_CLID     = CCPU_TO_LE16(0x8036),//!< Response for a remote device or devices allow or disallow association.
   BIND_RESP_CLID                    = CCPU_TO_LE16(0x8021),//!< Response for Binding Table entry for the source and destination addresses contained as parameters.
   UNBIND_RESP_CLID                  = CCPU_TO_LE16(0x8022),//!< Response for Binding Table entry for the source and destination addresses contained as parameters.
+  CLEAR_ALL_BINDINGS_RESP_CLID      = CCPU_TO_LE16(0x802B),//!< Response for Clear All Bindings.
   MGMT_LQI_RESP_CLID                = CCPU_TO_LE16(0x8031),//!< Response generated to obtain a neighbor list for the Remote Device along with associated LQI values to each neighbor.
   MGMT_RTG_RESP_CLID                = CCPU_TO_LE16(0x8032),//!< Response generated to retrieve the contents of the Routing Table from the Remote Device.
   MGMT_BIND_RESP_CLID               = CCPU_TO_LE16(0x8033),//!< Response generated to retrieve the contents of the Binding Table from the Remote Device.
   MGMT_NWK_UPDATE_NOTIFY_CLID       = CCPU_TO_LE16(0x8038), //!< Response generated for updating of network configuration parameters or to request information from devices on network conditions in the local operating environment.
+  
+   // Device Security response related commands 
+  SECURITY_START_KEY_NEGOTIATION_RESP_CLID         = CCPU_TO_LE16(0x8040),
+  SECURITY_RETRIEVE_AUTHENTICATION_TOKEN_RESP_CLID = CCPU_TO_LE16(0x8041),
+  SECURITY_GET_AUTHENTICATION_LEVEL_RESP_CLID      = CCPU_TO_LE16(0x8042),
+  SECURITY_SET_CONFIG_RESP_CLID                    = CCPU_TO_LE16(0x8043),
+  SECURITY_GET_CONFIG_RESP_CLID                    = CCPU_TO_LE16(0x8044), //!<Request generated from a Local Device requesting that the Remote Device to retrieve its configuration
+  SECURITY_START_KEY_UPDATE_RESP_CLID              = CCPU_TO_LE16(0x8045),
+  SECURITY_DECOMMISSIONING_RESP_CLID               = CCPU_TO_LE16(0x8046),
+  SECURITY_CHALLENGE_RESP_CLID                     = CCPU_TO_LE16(0x8047),
+  
 #ifdef _CHILD_MANAGEMENT_
 #ifdef _PARENT_ANNCE_
   PARENT_ANNCE_RESP_CLID      = CCPU_TO_LE16(0x801F),//!< Response for the list of endpoints on a remote device with simple descriptors, to be used with devices which support more active endpoints than can be returned by a single ::ACTIVE_ENDPOINTS_CLID request.
@@ -324,4 +364,4 @@ typedef struct PACK
 } ChildInfo_t;
 END_PACK
 
-#endif // _ZDO_COMMON_H
+#endif // ZDO_COMMON_H

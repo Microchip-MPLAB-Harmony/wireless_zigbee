@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _CBCLUSTER_H
-#define _CBCLUSTER_H
+#ifndef CBCLUSTER_H
+#define CBCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -71,6 +71,6 @@ extern void (*cbServerClusterInitFunctions[CB_SERVER_CLUSTER_INIT_COUNT])();
 extern ClusterId_t   cbServerClusterIds[CB_SERVER_CLUSTERS_COUNT];
 extern ClusterId_t   cbClientClusterIds[CB_CLIENT_CLUSTERS_COUNT];
 
-#endif // _CBCLUSTER_H
+#endif // CBCLUSTER_H
 
 // eof cbClusters.h

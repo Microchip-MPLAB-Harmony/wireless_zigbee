@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#if !defined _NLME_SET_GET_H
-#define _NLME_SET_GET_H
+#if !defined NLME_SET_GET_H
+#define NLME_SET_GET_H
 
 /******************************************************************************
                                 Includes section
@@ -175,6 +175,15 @@ typedef enum _NWK_NibId_t
   NWK_NIB_UNIQUE_ADDR_ID            = 0xA8,
   /** The current set of 64-bit IEEE to 16-bit network address map. */
   NWK_NIB_ADDRESS_MAP_ID            = 0xA9,
+  /*This indicates what the next PAN ID received in the NWK Update Command
+  frame SHALL be in order for a PAN ID change to be accepted.*/
+  NWK_NIB_NEXT_PANID_ID             = 0xB6,
+  /* This indicates the next channel that will be used once a command to
+  change channels has been received.*/
+  NWK_NIB_NEXT_CHANNEL_CHANGE_ID    = 0xB7,
+  /* This indicates the total number of PAN ID conflicts
+  that have been seen by the local device.*/        
+  NWK_PANID_CONFLICT_COUNT_ID       = 0xC0,
   /** Extra nib attributes. */
   NWK_NIB_INT_LOGICAL_CHANNEL_ID    = 0xF0,
   NWK_NIB_INT_PARENT_SHORT_ID       = 0xF1,
@@ -307,6 +316,6 @@ void NWK_SetReq(NWK_SetReq_t *const req);
  ******************************************************************************/
 void NWK_GetReq(NWK_GetReq_t *const req);
 
-#endif /* _NLME_SET_GET_H */
+#endif /* NLME_SET_GET_H */
 /** eof nlmeSetGet.h */
 

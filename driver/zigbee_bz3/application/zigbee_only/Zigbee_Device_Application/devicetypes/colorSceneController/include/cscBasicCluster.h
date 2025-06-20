@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _COLORSCENECONTROLLER_BASICCLUSTER_H
-#define _COLORSCENECONTROLLER_BASICCLUSTER_H
+#ifndef COLORSCENECONTROLLER_BASICCLUSTER_H
+#define COLORSCENECONTROLLER_BASICCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -76,6 +76,6 @@ void cscBasicClusterInit(void);
 void cscBasicResetToFactoryDefaultsCommand(APS_AddrMode_t mode,ShortAddr_t addr, Endpoint_t ep, Endpoint_t srcEp);
 #endif //#if ZLO_EXTRA_CLUSTERS_SUPPORT == 1
 
-#endif // _COLORSCENECONTROLLER_BASICCLUSTER_H
+#endif // COLORSCENECONTROLLER_BASICCLUSTER_H
 
 // eof cscBasicCluster.h

@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _APPZIGBEEHANDLER_H
-#define _APPZIGBEEHANDLER_H
+#ifndef APPZIGBEEHANDLER_H
+#define APPZIGBEEHANDLER_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -147,6 +147,14 @@ typedef enum
     EVENT_IEEE_ADDRESS_RESPONSE,
     /* Simple Descriptor Response */
     EVENT_SIMPLE_DESCRIPTOR_RESPONSE,
+    /* Security get config Response */
+    EVENT_SECURITY_GET_CONFIG_RESPONSE,
+    /* Security set config Response */
+    EVENT_SECURITY_SET_CONFIG_RESPONSE,
+    /* Clear All Bindings Response */
+    EVENT_CLEAR_ALL_BINDINGS_RESPONSE,
+    /* Security Decommssioning Response */
+    EVENT_SECURITY_DECOMMISSIONING_RESPONSE,
     /* Match Descriptor Response */
     EVENT_MATCH_DESCRIPTOR_RESPONSE,
     /* Active Endpoint Response */
@@ -163,7 +171,8 @@ typedef enum
     EVENT_BIND_RESPONSE,
     /* Unbind reponse */
     EVENT_UNBIND_RESPONSE,
-
+    /* Survey Beacon reponse */
+    EVENT_SURVEY_BEACON_RESPONSE,
     /* Events in the Cluster Group Event */
 <#if ((ONOFF_CLUSTER_ENABLE == true) && (ONOFF_CLUSTER_CS != "CLIENT")  && (OC_ON == true))>
     /* Command ZCL ON */
@@ -669,11 +678,12 @@ typedef enum
 <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX>
 <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >  
-  <#if DEVICE == "CLIENT" && isReportable(customClusterIndex) >
+  <#if ( (DEVICE == "CLIENT") || (DEVICE == "BOTH") ) && isReportable(customClusterIndex) >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >  
     /*Command ZCL ${deviceTypeFunctionPrefix}${clusterName}ReportInd*/
     CMD_ZCL_REPORTING_${clusterName?upper_case},
-  <#elseif DEVICE == "SERVER">
+  </#if>
+  <#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >  
     /*Command ZCL ${deviceTypeFunctionPrefix}${clusterName}AttributeEventInd*/
     CMD_ZCL_ATTR_${clusterName?upper_case},
@@ -714,7 +724,7 @@ typedef union
     {
         ZCL_Addressing_t *addressing;
         uint8_t payloadLength;
-        uint8_t *payload;
+        void *payload;
     }zclEventData;
     struct
     {

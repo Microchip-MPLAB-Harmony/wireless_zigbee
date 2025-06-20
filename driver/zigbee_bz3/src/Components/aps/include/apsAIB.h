@@ -48,8 +48,8 @@
  * Table 2.24, page 61. The securityrelated AIB attributes are described in
  * sub-clause 4.4.10, page 489.
  **/
-#if !defined _APS_AIB_H
-#define _APS_AIB_H
+#if !defined APS_AIB_H
+#define APS_AIB_H
 // DOM-IGNORE-END
 /******************************************************************************
                                Includes section
@@ -90,6 +90,8 @@
 
 #define APS_ENCRYPT_OUT_CMD \
   (APS_ENCRYPT_OUT_CMD_BY_GLOBAL_KEY | APS_ENCRYPT_OUT_CMD_BY_UNIQUE_KEY)
+/** APS Challenge size */
+#define APS_CHALLENGE_SIZE 8
 
 /******************************************************************************
                                 Types section
@@ -98,22 +100,41 @@
 /** Type defining security policy for an APS command. */
 typedef uint8_t APS_SecurityPolicy_t;
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/** Type defining R23 TC security policy. Ref R23 Spec: Table 4-42. Trust Center Policy Values */
+typedef enum
+{
+  DO_NOT_SUPPORT_INSTALL_CODES = 0x00,
+  SUPPORT_BUT_DO_NOT_REQUIRE_USE_INSTALL_CODES_OR_PRESET_PASSPHRASES = 0x01,
+  REQUIRE_USE_INSTALL_CODES_OR_PRESET_PASSPHRASES = 0x02
+} TC_POLICY_INSTALL_CODES_OR_PASSPHRASE;
+#endif // _ZIGBEE_REV_23_SUPPORT_
+
 /** Type defining TC security policy. */
 typedef struct _APS_TCSecurityPolicy_t
 {
   struct PACK
   {
     LITTLE_ENDIAN_OCTET(7, (
-    uint8_t allowJoins : 1,
-    uint8_t allowRejoins : 1,
-    uint8_t useWhiteList : 1,
-    uint8_t updateTCLKRequired : 1,
-    uint8_t allowRemoteTCPolicyChange : 1,
-    uint8_t allowInstallCodes : 1,
-    uint8_t reserved : 2
+    BitField_t allowJoins : 1,
+    BitField_t allowRejoins : 1,
+    BitField_t useWhiteList : 1,
+    BitField_t updateTCLKRequired : 1,
+    BitField_t allowRemoteTCPolicyChange : 1,
+    BitField_t allowInstallCodes : 1,
+    BitField_t reserved : 2
     ))
   }flags;
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  uint8_t requireInstallCodesOrPresetPassphrase;
+  bool allowRejoinsWithWellKnownKey;
+  uint8_t allowTCLinkKeyRequests;
+  uint32_t networkKeyUpdatePeriod;
+  uint8_t networkKeyUpdateMethod;
+  uint8_t allowApplicationKeyRequests;
+  bool allowVirtualDevices;
+#endif // _ZIGBEE_REV_23_SUPPORT_
   /* Other TC security policies will be brought in, soon */
 }APS_TCSecurityPolicy_t;
 
@@ -131,9 +152,15 @@ typedef struct
   /** \ref Endian "[LE]" Network address of the Trust Center. */
   ShortAddr_t tcNwkAddr;
 #if defined _LINK_SECURITY_
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  bool apsZdoRestrictedMode;
+  bool requireLinkKeyEncryptionForApsTransportKey;
+  uint8_t apsJoinerTLVsUnfragmentedMaxSize;
+#endif
   /** Security policy for incoming and outgoing APS commands. */
   APS_SecurityPolicy_t securityPolicy[APS_MAX_SPID];
 #if defined _TRUST_CENTRE_
+  /** Security policy values */
   APS_TCSecurityPolicy_t tcSecurityPolicy;
 #endif //#if defined _TRUST_CENTRE_
 #endif /* _LINK_SECURITY_ */
@@ -145,6 +172,26 @@ typedef struct
   uint8_t rxFragDropMask;
 #endif /* _CERTIFICATION_  */
 #endif /* _APS_FRAGMENTATION_ */
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  /** Key Negotiation Protocols */
+  uint8_t suppKeyNegotiationProtocol;
+  /** Pre-shared Secrets */
+  uint8_t supportedPreSharedSecrets;
+  /** Maximum Incoming Transfer Unit */
+  uint16_t apsMaxSizeASDU;
+  /* curve25519 public point */
+  uint8_t curve25519PublicPoint[CURVE25519_PUBLIC_KEY_SIZE];
+  /** APS Challenge timeout period in sec */
+  uint16_t apsChallengePeriodTimeoutSec;
+  /** APS Challenge remaining period in sec */
+  uint16_t apsChallengePeriodRemainingSec;
+  /** APS Challenge value */
+  uint8_t apsChallengeValue[APS_CHALLENGE_SIZE];
+  /** Rev R23 network join flag */
+  bool isJoinedInRev23Network;
+  /* Perform device interview flag */
+  bool performDeviceInterviewProcedure;
+#endif
 } AIB_t;
 
 /** The type used to specify if the device is a trust center and what
@@ -239,6 +286,115 @@ bool APS_IsTrustCenter(void);
 bool APS_IsTrustedAddress(const ExtAddr_t *addr);
 
 #if defined _LINK_SECURITY_
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+  \brief Enable restricted mode.
+
+  \param[in] restrictedMode - restricted mode (0/1)
+
+  \return None
+ ******************************************************************************/
+void APS_EnableRestrictedMode(bool restrictedMode);
+
+/**************************************************************************//**
+  \brief Is restricted mode.
+
+  \return true/false
+ ******************************************************************************/
+bool APS_IsRestrictedMode(void);
+
+/**************************************************************************//**
+  \brief Enable Link Key Encryption for APS Transport Key.
+
+  \param[in] linkKey - link key encryption
+
+  \return None
+ ******************************************************************************/
+void APS_EnableLinkKeyEncryptionForApsTransportKey(bool linkKey);
+
+/**************************************************************************//**
+  \brief Is Link Key Encryption required for APS Transport Key.
+
+  \return true/false
+ ******************************************************************************/
+bool APS_IsLinkKeyEncryptionForApsTransportKey();
+
+/**************************************************************************//**
+  \brief Sets curve2519 public point if size is CURVE25519_PUBLIC_KEY_SIZE
+
+  \param[in] curve25519PublicPoint - curve25519 public point
+  \param[in] size - size of key
+  \return True - If key is of CURVE25519_PUBLIC_KEY_SIZE
+          False - If key size is not of CURVE25519_PUBLIC_KEY_SIZE
+ ******************************************************************************/
+bool APS_SetCurve25519PublicPoint(const uint8_t *curve25519PublicPoint, uint8_t size);
+
+/**************************************************************************//**
+  \brief Provides curve2519 public point pointer
+
+  \param[in] None.
+  \return  curve2519 public point pointer.
+ ******************************************************************************/
+uint8_t* APS_GetCurve25519PublicPoint(void);
+
+/**************************************************************************//**
+  \brief Store APS Challenge Value.
+
+  \param[in] challengeVal - challenge value.
+  \param[in] size - size of challenge.
+
+  \return None.
+ ******************************************************************************/
+void APS_StoreChallenge(uint8_t *challengeVal, uint8_t size);
+
+/**************************************************************************//**
+  \brief Set APS Challenge Remaining Period.
+
+  \param challengePeriodSec - Challenge period in sec
+
+  \return None.
+ ******************************************************************************/
+void APS_SetChallengeRemainingPeriod(uint16_t challengePeriodSec);
+
+/**************************************************************************//**
+  \brief Get APS Challenge Remaining Period.
+
+  \return csAIB.apsChallengePeriodRemainingSec.
+ ******************************************************************************/
+uint16_t APS_GetChallengeRemainingPeriod(void);
+
+/**************************************************************************//**
+  \brief Get APS Challenge Timeout Period.
+
+  \return csAIB.apsChallengePeriodTimeoutSec.
+ ******************************************************************************/
+uint16_t APS_GetChallengeTimeoutPeriod(void);
+
+/**************************************************************************/ /**
+  \brief Set the joining flag for Rev R23 network
+  \param[in] isRev23Network - Rev R23 network
+  \return None
+  ******************************************************************************/
+void APS_SetJoinRev23NetworkFlag(bool isRev23Network);
+
+/**************************************************************************/ /**
+  \brief Check whether the network join is Rev R23 or not
+  \return True if the network is Rev R23, otherwise false 
+  ******************************************************************************/
+bool APS_IsJoinedInRev23Network(void);
+
+/**************************************************************************//**
+  \brief Get APS Challenge used in Challenge request command.
+
+  \param[in] challengeVal - challenge value.
+  \param[in] size - size of challenge.
+
+  \return None.
+ ******************************************************************************/
+void APS_GetChallenge(uint8_t *challengeVal, uint8_t size);
+
+#endif //_ZIGBEE_REV_23_SUPPORT_
+
 /**************************************************************************//**
   \brief Updates security policy for the command with a given security policy ID
 
@@ -258,6 +414,6 @@ void APS_UpdateSecurityPolicy(const APS_SecurityPolicyId_t spid,
 #ifdef _PARENT_ANNCE_
 uint32_t APS_GetParentAnnounceTimer(void);
 #endif /* _PARENT_ANNCE_ */
-#endif /* _APS_AIB_H */
+#endif /* APS_AIB_H */
 /** eof apsAIB.h */
 

@@ -83,6 +83,7 @@ typedef struct
 void HAL_AES_EncryptReq(HAL_AES_EncryptReq_t *reqParams);
 void HAL_SmReset (void);
 void halAesInit(void);
+void halSmRequestHandler(void);
 
 #ifdef __cplusplus
 }

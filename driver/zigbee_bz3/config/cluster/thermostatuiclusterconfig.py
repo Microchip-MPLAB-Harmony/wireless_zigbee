@@ -46,6 +46,12 @@ def customThermostatUIClusterEnableCheck(symbol, event):
     else:
         symbol.setEnabled(False)
 
+def combinedInterfaceThermostatUIClusterEnableCheck(symbol, event):
+    if ((zigbeeDeviceType.getValue() == 'ZIGBEE_COMBINED_INTERFACE') and (thermostatUICluster.getValue() == True)):
+        symbol.setEnabled(True)
+    else:
+        symbol.setEnabled(False)
+
 def thermostatUIClusterClientCheck(symbol, event):
     if ((thermostatUICluster.getValue() == False) or thermostatUIClusterCS.getValue() == "SERVER"):
         symbol.setVisible(False)
@@ -77,7 +83,7 @@ def thermostatUIClusterHandling():
     elif ((getDevice == "ZIGBEE_COMBINED_INTERFACE")):
         thermostatUICluster.setVisible(True)
         thermostatUICluster.setValue(True)
-        thermostatUICluster.setReadOnly(True)
+        thermostatUICluster.setReadOnly(False)
         thermostatUIClusterCS.setValue("CLIENT")
         thermostatUIClusterCS.setReadOnly(True)
     elif ((getDevice == "ZIGBEE_THERMOSTAT")):
@@ -89,7 +95,9 @@ def thermostatUIClusterHandling():
     elif ((getDevice == "ZIGBEE_CUSTOM")):
         thermostatUICluster.setVisible(True)
         thermostatUICluster.setValue(False)
-        thermostatUIClusterCS.setValue("BOTH")
+        thermostatUIClusterCS.setValue("SERVER")
+        thermostatUIClusterClientMenu.setVisible(False)
+        thermostatUIClusterServerMenu.setVisible(True)
     else:
         thermostatUICluster.setVisible(False)
 
@@ -132,12 +140,14 @@ thermostatUIClusterCS.setDefaultValue("BOTH")
 thermostatUIClusterCS.setDescription("Thermostat UI Cluster Supported Implementation- Select the option")
 thermostatUIClusterCS.setDependencies(thermostatUIClusterCsCheck,["THERMOSTATUI_CLUSTER_ENABLE"])
 
+global thermostatUIClusterClientMenu
 thermostatUIClusterClientMenu = drvZigbeeComponent.createMenuSymbol("THERMOSTATUI_CLUSTER_CLIENT_MENU", thermostatUICluster)
 thermostatUIClusterClientMenu.setLabel("Client")
 #thermostatUIClusterClientMenu.setVisible(False)
 thermostatUIClusterClientMenu.setDescription("THERMOSTAT UI CLUSTER CLIENT")
 thermostatUIClusterClientMenu.setDependencies(thermostatUIClusterClientCheck,["THERMOSTATUI_CLUSTER_CS","THERMOSTATUI_CLUSTER_ENABLE"])
 
+global thermostatUIClusterServerMenu
 thermostatUIClusterServerMenu = drvZigbeeComponent.createMenuSymbol("THERMOSTATUI_CLUSTER_SERVER_MENU", thermostatUICluster)
 thermostatUIClusterServerMenu.setLabel("Server")
 #thermostatUIClusterServerMenu.setVisible(False)
@@ -268,7 +278,18 @@ thermostatClusterConfSrc.setProjectPath("config/" + configName + "/zigbee/z3devi
 thermostatClusterConfSrc.setType("SOURCE")
 thermostatClusterConfSrc.setOverwrite(True)
 thermostatClusterConfSrc.setMarkup(True)
-thermostatClusterConfSrc.setEnabled(checkDevTypeCombInterface)
+thermostatClusterConfSrc.setEnabled(checkDevTypeCombInterface and thermostatUICluster.getValue())
+thermostatClusterConfSrc.setDependencies(combinedInterfaceThermostatUIClusterEnableCheck, ["THERMOSTATUI_CLUSTER_ENABLE"])
+
+thermostatClusterConfInc = drvZigbeeComponent.createFileSymbol("CITHERMOSTATUICONFCLUSTER_H", None)
+thermostatClusterConfInc.setSourcePath("/driver/zigbee" + suffix + "/application/zigbee_only/Zigbee_Device_Application/devicetypes/combinedInterface/include/ciThermostatUiConfCluster.h")
+thermostatClusterConfInc.setOutputName("ciThermostatUiConfCluster.h")
+thermostatClusterConfInc.setDestPath("/zigbee/z3device/combinedInterface/include")
+thermostatClusterConfInc.setProjectPath("config/" + configName + "/zigbee/z3device/combinedInterface/include/")
+thermostatClusterConfInc.setType("HEADER")
+thermostatClusterConfInc.setOverwrite(True)
+thermostatClusterConfInc.setEnabled(checkDevTypeCombInterface and thermostatUICluster.getValue())
+thermostatClusterConfInc.setDependencies(combinedInterfaceThermostatUIClusterEnableCheck,["THERMOSTATUI_CLUSTER_ENABLE"])
 
 # THERMOSTAT UI CLUSTER - Thermostat
 thermostatClusterConfSrc = drvZigbeeComponent.createFileSymbol("ZIGBEE_THERMOSTATUI_CLUSTER_CONF_SRC_TH", None)

@@ -40,8 +40,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZCL${clusterName?upper_case}_H
-#define _ZCL${clusterName?upper_case}_H
+#ifndef ZCL${clusterName?upper_case}_H
+#define ZCL${clusterName?upper_case}_H
 
 /*******************************************************************************
                    Includes section
@@ -52,20 +52,30 @@
 /******************************************************************************
                     Define(s) section
 ******************************************************************************/
-    
+
 //ATTRIBUTE DEFINITION SECTION
-<#assign DEVICE = (NAME + "_CUSTOM_CLUSTER_CS")?eval>
+<#assign DEVICE = "SERVER"> 
+<#-- It doesnt matter if device is client or server, same code is generated. We hardcode it to server to avoid issues for selection 'BOTH' -->
 <#assign prefix = NAME+"_CUSTOM_CLUSTER_" + DEVICE + "_ATTRIBUTES_">
 <#assign clusterName = (NAME + "_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','')>
 
+<#function commandCount >
 
+<#assign serverCommandCount = (NAME + "_CUSTOM_CLUSTER_SERVER_COMMANDS_NO")?eval >
+<#assign clientCommandCount = (NAME + "_CUSTOM_CLUSTER_CLIENT_COMMANDS_NO")?eval >
+
+<#-- we return added amount of server command amount and client command-->
+<#-- This is done because commands count should be totalled and entered-->
+<#return (serverCommandCount + clientCommandCount) >
+
+</#function>
 #define ${clusterName?upper_case}_CLUSTER_ID                                                     0x${(NAME + "_CUSTOM_CLUSTER_ID")?eval}
 
 #define ZCL_${(clusterName)?upper_case}_SERVER_ATTRIBUTES_AMOUNT                      ${(prefix + "NO")?replace("CLIENT","SERVER")?eval}
-#define ZCL_${(clusterName)?upper_case}_SERVER_COMMANDS_AMOUNT                        ${(prefix?replace("ATTRIBUTES","COMMANDS") + "NO")?replace("CLIENT","SERVER")?eval} 
+#define ZCL_${(clusterName)?upper_case}_SERVER_COMMANDS_AMOUNT                        ${commandCount()}
 
 #define ZCL_${(clusterName)?upper_case}_CLIENT_ATTRIBUTES_AMOUNT                      ${(prefix + "NO")?replace("SERVER","CLIENT")?eval}
-#define ZCL_${(clusterName)?upper_case}_CLIENT_COMMANDS_AMOUNT                        ${(prefix?replace("ATTRIBUTES","COMMANDS") + "NO")?replace("SERVER","CLIENT")?eval}
+#define ZCL_${(clusterName)?upper_case}_CLIENT_COMMANDS_AMOUNT                        ${commandCount()}
 
 //Attribute IDs
 <#-- //SERVER -->
@@ -343,6 +353,21 @@ typedef enum _ZCL_${clusterName?capitalize}${(prefix+"NAME_"+attributeIndex)?eva
             <#break>
         <#case "Bitmap">
             <#assign datatype = "uint8_t">
+            <#switch (prefix+"TYPE_BITMAP_"+attributeIndex)?eval>
+                        <#case "map8">
+            <#assign datatype = "uint8_t">
+            <#break>
+                        <#case "map16">
+            <#assign datatype = "uint16_t">
+            <#break>
+                        <#case "map32">
+            <#assign datatype = "uint32_t">
+            <#break>
+                        <#case "map64">
+            <#assign datatype = "uint64_t">
+            <#break>
+
+            </#switch>
             <#break>
         <#case "Signed Integer">
             <#assign datatype = (prefix + "TYPE_SIGNED_" + attributeIndex)?eval + "_t">

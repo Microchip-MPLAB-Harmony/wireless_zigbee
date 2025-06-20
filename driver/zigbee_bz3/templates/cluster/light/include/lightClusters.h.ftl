@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _LIGHTCLUSTER_H
-#define _LIGHTCLUSTER_H
+#ifndef LIGHTCLUSTER_H
+#define LIGHTCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -62,6 +62,10 @@
   <#elseif (DEVICE == "CLIENT") >
   <#assign customClusterClientCount = customClusterClientCount + 1>
 
+  <#elseif (DEVICE == "BOTH") >
+  <#assign customClusterServerCount = customClusterServerCount + 1>
+  <#assign customClusterClientCount = customClusterClientCount + 1>
+
   </#if>
 
 </#list>
@@ -79,24 +83,24 @@
 </#function>
 
 #if (APP_Z3_DEVICE_TYPE == APP_DEVICE_TYPE_ON_OFF_LIGHT)
-#define LIGHT_SERVER_CLUSTERS_COUNT     6 ${customClusterCount("SERVER")}
+#define LIGHT_SERVER_CLUSTERS_COUNT     6U ${customClusterCount("SERVER")}
 #elif APP_Z3_DEVICE_TYPE == APP_DEVICE_TYPE_DIMMABLE_LIGHT
-#define LIGHT_SERVER_CLUSTERS_COUNT     7 ${customClusterCount("SERVER")}
+#define LIGHT_SERVER_CLUSTERS_COUNT     7U ${customClusterCount("SERVER")}
 #elif (APP_Z3_DEVICE_TYPE == APP_DEVICE_TYPE_COLOR_LIGHT) || (APP_Z3_DEVICE_TYPE == APP_DEVICE_TYPE_EXTENDED_COLOR_LIGHT) || (APP_Z3_DEVICE_TYPE == APP_DEVICE_TYPE_TEMPERATURE_COLOR_LIGHT)
-#define LIGHT_SERVER_CLUSTERS_COUNT     8 ${customClusterCount("SERVER")}
+#define LIGHT_SERVER_CLUSTERS_COUNT     8U ${customClusterCount("SERVER")}
 #endif
 
 #if ZLO_EXTRA_CLUSTERS_SUPPORT == 1
   #ifdef OTAU_CLIENT
-    #define LIGHT_CLIENT_CLUSTERS_COUNT   4 ${customClusterCount("CLIENT")}
+    #define LIGHT_CLIENT_CLUSTERS_COUNT   4U ${customClusterCount("CLIENT")}
   #else
-    #define LIGHT_CLIENT_CLUSTERS_COUNT   3 ${customClusterCount("CLIENT")}
+    #define LIGHT_CLIENT_CLUSTERS_COUNT   3U ${customClusterCount("CLIENT")}
   #endif
 #else // no extra clusters
   #ifdef OTAU_CLIENT
-    #define LIGHT_CLIENT_CLUSTERS_COUNT   3 ${customClusterCount("CLIENT")}
+    #define LIGHT_CLIENT_CLUSTERS_COUNT   3U ${customClusterCount("CLIENT")}
   #else
-    #define LIGHT_CLIENT_CLUSTERS_COUNT   2 ${customClusterCount("CLIENT")}
+    #define LIGHT_CLIENT_CLUSTERS_COUNT   2U ${customClusterCount("CLIENT")}
   #endif
 #endif // ZLO_EXTRA_CLUSTERS_SUPPORT == 1
 
@@ -109,13 +113,13 @@
 ******************************************************************************/
 extern ZCL_Cluster_t lightServerClusters[LIGHT_SERVER_CLUSTERS_COUNT];
 extern ClusterId_t lightServerClusterIds[LIGHT_SERVER_CLUSTERS_COUNT];
-extern void (*lightServerClusterInitFunctions[LIGHT_SERVER_CLUSTER_INIT_COUNT])();
+extern void (*lightServerClusterInitFunctions[LIGHT_SERVER_CLUSTER_INIT_COUNT])(void);
 
 extern ZCL_Cluster_t lightClientClusters[LIGHT_CLIENT_CLUSTERS_COUNT];
 extern ClusterId_t lightClientClusterIds[LIGHT_CLIENT_CLUSTERS_COUNT];
-extern void (*lightClientClusterInitFunctions[LIGHT_CLIENT_CLUSTER_INIT_COUNT])();
+extern void (*lightClientClusterInitFunctions[LIGHT_CLIENT_CLUSTER_INIT_COUNT])(void);
 
 
-#endif // _LIGHTCLUSTER_H
+#endif // LIGHTCLUSTER_H
 
 // eof lightClusters.h

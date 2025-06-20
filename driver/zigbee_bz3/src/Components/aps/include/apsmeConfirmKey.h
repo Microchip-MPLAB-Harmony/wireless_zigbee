@@ -41,8 +41,8 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#if !defined _APSME_CONFIRM_KEY_H
-#define _APSME_CONFIRM_KEY_H
+#if !defined APSME_CONFIRM_KEY_H
+#define APSME_CONFIRM_KEY_H
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
@@ -65,10 +65,11 @@
 /**
     The type of key being requested:
     \li Trust Center Link Key,
-    \li 0x00-0x03 and 0x03-0xFF = Reserved.
+    \li 0x00, 0x02 and 0x05 – 0xFF = Reserved.
  **/
 typedef enum
 {
+  APS_CONFIRM_APP_LINK_KEY_TYPE = 0x03,
   APS_CONFIRM_TC_LINK_KEY_TYPE = 0x04,
 } APS_ConfirmKeyType_t;
 
@@ -119,6 +120,15 @@ typedef struct
   APS_ConfirmKeyConf_t confirm;
   /** Callback function pointer as a handler of corresponding
    * confirm primitive. Must not be set to NULL. */
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  struct
+  {  
+    /* Flag for Relay Command. */
+    uint8_t relayCmd;
+    /** Extended Address of Device to Authorise */
+    ExtAddr_t unAuthDevExtAdd;
+  } relayMsgInfo;
+#endif // _ZIGBEE_REV_23_SUPPORT_
   void (*APS_ConfirmKeyConf)(APS_ConfirmKeyConf_t *conf);
 } APS_ConfirmKeyReq_t;
 
@@ -138,24 +148,29 @@ typedef struct
   ExtAddr_t srcAddress;
   /** Hask value of TCLK received from remote device. */
   uint8_t hashValue[SECURITY_KEY_SIZE];
+    /* The status of the TCLK verification done by TC */
+  uint8_t status;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  /* Extended Address of Destination Device */
+  ExtAddr_t destAddress;
+   struct
+    {
+      /** Flag for indicating the given request to be process and send via APS Relay Command */
+      uint8_t isRelayCmd;
+      /** Extended Address of Device to Authorise */
+      ExtAddr_t unAuthDevExtAdd;
+    } relayMsgInfo;
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */ 
 } APS_VerifyKeyInd_t;
 
 /******************************************************************************
                               Prototypes section
  ******************************************************************************/
 /**************************************************************************//**
-  \brief Send the status of TCLK verification done to the device
-
-    ingroup aps_security
+  \brief Process the Confirm key request.
 
   \param[in] req - pointer to APSME-CONFIRM-KEY.request's parameters.
                    \sa APS_ConfirmKeyReq_t
-  
-
-  \param Response statuses:
-    Accessed via the APS_ConfirmKeyConf_t::status field of the
-    APS_ConfirmKeyReq_t::APS_ConfirmKeyConf callback's argument.
-  
   \return None.
  ******************************************************************************/
 void APS_ConfirmKeyReq(APS_ConfirmKeyReq_t *req);
@@ -175,6 +190,6 @@ void APS_VerifyKeyInd(APS_VerifyKeyInd_t *indParams);
 
 #endif /* _SECURITY_ and _LINK_SECURITY_ */
 
-#endif /* _APSME_CONFIRM_KEY_H */
+#endif /* APSME_CONFIRM_KEY_H */
 /** eof apsmeConfirmKey.h */
 

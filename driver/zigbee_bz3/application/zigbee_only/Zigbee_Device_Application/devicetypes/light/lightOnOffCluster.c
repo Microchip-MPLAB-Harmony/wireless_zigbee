@@ -300,7 +300,18 @@ static void updateOnOffState(void)
 ******************************************************************************/
 static void fadeTimerFired(void)
 {
-  if (fadeMem.firstInterval)
+  if ((fadeMem.firstInterval) == 0U) //Refactoring this logic for misra rule 17.2 avoid nested recursion
+  {
+    if((fadeMem.secondInterval) != 0U)
+      {
+        fadeMem.firstInterval  = fadeMem.secondInterval;
+        fadeMem.transitionTime = fadeMem.secondInterval;
+        fadeMem.secondInterval = 0;
+        fadeMem.currentLevel   = MIN((uint16_t)fadeMem.currentLevel + fadeMem.delta, UINT8_MAX);
+        fadeMem.delta          = -fadeMem.currentLevel;
+      }
+  }
+  if ((fadeMem.firstInterval) != 0U) 
   {
     fadeMem.firstInterval--;
 
@@ -308,20 +319,13 @@ static void fadeTimerFired(void)
     int16_t targetLevel = MIN((uint16_t)fadeMem.currentLevel + fadeMem.delta, UINT8_MAX);
     int16_t newLevel    = targetLevel - (fadeMem.delta * remainingTime) / (int32_t)fadeMem.transitionTime;
 
-    LEDS_SET_BRIGHTNESS(newLevel);
+    LEDS_SET_BRIGHTNESS((uint8_t)newLevel);
     (void)newLevel;
   }
-  else if(fadeMem.secondInterval)
-  {
-    fadeMem.firstInterval  = fadeMem.secondInterval;
-    fadeMem.transitionTime = fadeMem.secondInterval;
-    fadeMem.secondInterval = 0;
-    fadeMem.currentLevel   = MIN((uint16_t)fadeMem.currentLevel + fadeMem.delta, UINT8_MAX);
-    fadeMem.delta          = -fadeMem.currentLevel;
-    fadeTimerFired();
-  }
   else
-    HAL_StopAppTimer(&fadeMem.timer);
+  {
+    (void)HAL_StopAppTimer(&fadeMem.timer);
+  }
 }
 
 /**************************************************************************//**

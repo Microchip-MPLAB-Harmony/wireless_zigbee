@@ -99,6 +99,7 @@ static ZCL_Status_t zclImagePageReqInd(ZCL_Addressing_t *addressing, uint8_t pay
                         static variables section
 *******************************************************************************/
 static bool checkStatus = 1;
+static uint8_t isdRetryCount = ISD_COMMUNICATION_RETRY_COUNT;
 bool abortUpgradeEndRequest = 0;
 bool isOtauBusy = false;
 void timeOutBlockReqExpired(void);
@@ -576,22 +577,26 @@ void timeOutBlockReqExpired(void)
 static ZCL_Status_t zclImageBlockReqInd(ZCL_Addressing_t *addressing, uint8_t payloadLength, ZCL_OtauImageBlockReq_t *payload)
 {
   ZclOtauServerTransac_t *tmpTransac = zclFindEmptyCell();
-  static uint8_t isdRetryCount = ISD_COMMUNICATION_RETRY_COUNT;
   (void)payloadLength; 
   HAL_StopAppTimer(&blockReqTimeoutTimer);;
-  if(ISD_NO_COMMUNICATION == isdGetState() )
-  {
-        if(isdRetryCount--)
-        {
-            return ZCL_WAIT_FOR_DATA_STATUS;
-        }
-        else
-            /*Send Abort request if UART Communication broke*/
-            return ZCL_ABORT_STATUS;
-  }
 
   if (tmpTransac && (false == isOtauBusy))
   {
+    ISD_Status_t isdState = isdGetState();
+    if(ISD_NO_COMMUNICATION == isdState || (ISD_HARDWARE_FAULT == isdState))
+    {
+      tmpTransac->busy = false;
+      if(isdRetryCount--)
+      {
+        return ZCL_WAIT_FOR_DATA_STATUS;
+      }
+      else
+      {
+        /*Send Abort request if UART Communication broke*/
+        return ZCL_ABORT_STATUS;
+      }
+    }
+    isdRetryCount = ISD_COMMUNICATION_RETRY_COUNT;
     tmpTransac->busy = true;
     tmpTransac->id = IMAGE_BLOCK_REQUEST_ID;
     tmpTransac->addressing = *addressing;
@@ -730,6 +735,21 @@ static ZCL_Status_t zclImagePageReqInd(ZCL_Addressing_t *addressing, uint8_t pay
   HAL_StopAppTimer(&blockReqTimeoutTimer);/*To do */
   if (tmpTransac && (false == isOtauBusy))
   {
+    ISD_Status_t isdState = isdGetState();
+	  if((ISD_NO_COMMUNICATION == isdState) || (ISD_HARDWARE_FAULT == isdState))
+	  {
+		    tmpTransac->busy = false;
+        if(isdRetryCount--)
+        {
+            return ZCL_WAIT_FOR_DATA_STATUS;
+        }
+        else
+        {
+            /*Send Abort request if UART Communication broke*/
+            return ZCL_ABORT_STATUS;
+        }
+	  }
+    isdRetryCount = ISD_COMMUNICATION_RETRY_COUNT;
     tmpTransac->busy = true;
     tmpTransac->id = IMAGE_PAGE_REQUEST_ID;
     tmpTransac->addressing = *addressing;

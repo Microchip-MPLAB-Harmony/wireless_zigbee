@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _COLORSCENECONTROLLER_COMMISSIONINGCLUSTER_H
-#define _COLORSCENECONTROLLER_COMMISSIONINGCLUSTER_H
+#ifndef COLORSCENECONTROLLER_COMMISSIONINGCLUSTER_H
+#define COLORSCENECONTROLLER_COMMISSIONINGCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -68,6 +68,6 @@ void cscCommissioningServerClusterInit(void);
 \brief Initialize Commissioning cluster client.
 ******************************************************************************/
 void cscCommissioningClientClusterInit(void);
-#endif // _COLORSCENECONTROLLER_COMMISSIONINGCLUSTER_H
+#endif // COLORSCENECONTROLLER_COMMISSIONINGCLUSTER_H
 
 // eof cscCommissioningCluster.h

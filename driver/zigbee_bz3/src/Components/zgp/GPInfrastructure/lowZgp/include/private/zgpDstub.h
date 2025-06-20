@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPDSTUB_H
-#define _ZGPDSTUB_H
+#ifndef ZGPDSTUB_H
+#define ZGPDSTUB_H
 
 #ifdef _GREENPOWER_SUPPORT_
 /******************************************************************************
@@ -96,6 +96,6 @@ void zgpDstubInit(void);
 
 
 #endif // _GREENPOWER_SUPPORT_
-#endif //_ZGPDSTUB_H
+#endif //ZGPDSTUB_H
 
 //eof zgpDstub.h

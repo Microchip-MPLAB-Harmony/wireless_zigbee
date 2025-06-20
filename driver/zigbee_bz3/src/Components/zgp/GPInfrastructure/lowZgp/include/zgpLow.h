@@ -41,8 +41,8 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#ifndef _ZGPLOW_H
-#define _ZGPLOW_H
+#ifndef ZGPLOW_H
+#define ZGPLOW_H
 
 #ifdef _GREENPOWER_SUPPORT_
 // DOM-IGNORE-END
@@ -169,6 +169,6 @@ void ZGPL_SendDeviceAnnounceCmd(uint16_t nwkAddr, uint64_t extAddr);
  ******************************************************************************/
 void ZGPL_EnableDisableDirectMode(bool enabled);
 #endif  //GREENPOWER_SUPPORT
-#endif //_ZGPLOW_H
+#endif //ZGPLOW_H
 
 //eof zgpLow.h

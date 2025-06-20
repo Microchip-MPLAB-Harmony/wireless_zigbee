@@ -38,10 +38,10 @@
 * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 *******************************************************************************/
 // DOM-IGNORE-END
-
-#if !defined _NWK_COMMON_H
-#define _NWK_COMMON_H
-
+// DOM-IGNORE-BEGIN
+#ifndef NWK_COMMON_H
+#define NWK_COMMON_H
+// DOM-IGNORE-END
 /******************************************************************************
                                 Includes section
  ******************************************************************************/
@@ -137,6 +137,9 @@
 /** All devices with MAC attribute macRxOnWhenIdle = TRUE. */
 #define BROADCAST_ADDR_RX_ON_WHEN_IDLE RX_ON_WHEN_IDLE_ADDR
 
+#define IS_CORRECT_BROADCAST_ADDR(A) \
+  ((0xFFFFU == (A))||((0xFFFBU <= LE16_TO_CPU(A))&&(LE16_TO_CPU(A) <= 0xFFFDU)))
+
 /** All devices in the network. */
 #define ALL_DEVICES_IN_PAN_ADDR 0xFFFFU
 /** All devices in the network. */
@@ -175,6 +178,35 @@
 #if defined _COORDINATOR_ || defined _ROUTER_
   #define NWK_ROUTING_CAPACITY
 #endif /* _COORDINATOR_ or _ROUTER_ */
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+
+/* R22 Join with TCLK */
+#define R22_JOIN_TCLK           0
+
+/* R23 OFF NWK Join */
+#define R23_JOIN_DLK_OFFNWK     1
+
+/* R23 ON NWK Join (DLK) */
+#define R23_JOIN_DLK_ONNWK      2
+
+/*  R23 Spec. Sec: 3.4.15.2.1.2 Status Field
+    In the special case of an address conflict the status SHALL be the value 0xF0, which is normally a reserved value
+    for the association status in [B1]. In this context it indicates a short address conflict.
+    The receiving device can retry the operation using the new short address specified in the Network Address field. 
+    Otherwise, this field SHALL contain one of the non-reserved association status values specified in [B1]. 
+    Refer to section 3.6.1.6.1.3 for further clarification on selecting a status value.
+*/
+#define NWK_COMMISSIONING_ADDR_CONFLICT_STATUS   0xF0
+
+/*  R23 Spec. Sec: 3.6.1.5.2
+    Reference LQA value used to categories the potential parent for joining and rejoining
+*/
+#define NWK_GOOD_PARENT_LQA_DEFAULT_VAL          75U
+
+/* The RouterInformation TLV is introduced in R23 and is 4 bytes in size (as per R23 spec) */
+#define ROUTER_INFORMATION_TLV_SIZE 4U
+#endif
 
 /******************************************************************************
                                  Types section
@@ -428,8 +460,25 @@ typedef enum _NWK_JoinMethod_t
   NWK_JOIN_VIA_ORPHAN_SCAN = 4,
   /** Form the network and become PAN coordinator. */
   NWK_JOIN_VIA_FORMING = 5,
-  NWK_JOIN_VIA_ORPHAN_KEEPALIVE = 6
+  NWK_JOIN_VIA_ORPHAN_KEEPALIVE = 6,
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  /** The device is requesting to join a network commissioning request. */
+  NWK_JOIN_VIA_NWK_COMMISSIONING = 7,
+  /** Unknown Method */
+  NWK_JOIN_METHOD_UNKNOWN
+#endif
 } NWK_JoinMethod_t;
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/** NWK Commissioning Types */
+typedef enum _NwkCommissioningType_t
+{
+  /** Network Commissioning type Initial Join */
+  NWK_COMMISSIONING_TYPE_INITIAL_JOIN = 0x00,
+  /** Network Commissioning type Rejoin */
+  NWK_COMMISSIONING_TYPE_REJOIN
+} NwkCommissioningType_t;
+#endif
 
 /** The type defines network join method and joining settings. */
 typedef struct _NWK_JoinControl_t
@@ -450,6 +499,10 @@ typedef struct _NWK_JoinControl_t
   bool annce;
   /** The flag indicates that the neighbor table must be cleared or not. */
   bool clearNeighborTable;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  /** Commissioning type used during joining the network via Network Commissioning */
+  NwkCommissioningType_t commissioningType;
+#endif
 } NWK_JoinControl_t;
 
 /** Constants that specify maximum permit joining period. */
@@ -484,6 +537,8 @@ typedef struct PACK _NWK_LeaveControl_t
 
 #define NWK_LIFE_TICK 2048U
 
-#endif /* _NWK_COMMON_H */
-/** eof nwkCommon.h */
-
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#define NWK_EXT_PAN_ID_BACKUP_INDEX -1
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
+#endif /* NWK_COMMON_H */
+/* eof nwkCommon.h */

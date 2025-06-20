@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZCLZLLBASICCLUSTER_H
-#define _ZCLZLLBASICCLUSTER_H
+#ifndef ZCLZLLBASICCLUSTER_H
+#define ZCLZLLBASICCLUSTER_H
 
 /*!
 Attributes and commands for determining basic information about a device,
@@ -129,13 +129,13 @@ to factory defaults.
 #define ZCL_BASIC_CLUSTER_SW_BUILD_ID_ATTRIBUTE_ID                      CCPU_TO_LE16(0x4000)
 
 //!ZCL Basic Cluster server side ResetToFactoryDeafaults commabd id
-#define ZCL_BASIC_CLUSTER_SERVER_RESET_TO_FACTORY_DEFAULTS_COMMAND_ID   0x00
+#define ZCL_BASIC_CLUSTER_SERVER_RESET_TO_FACTORY_DEFAULTS_COMMAND_ID   (0x00)
 
 /*******************************************************************************
                    Types section
 *******************************************************************************/
 
-/***************************************************************************//**
+/*******************************************************************************
   \brief ZCL Basic Cluster server side attributes defining macros
 
   This macros should be used for ZCL Basic Cluster server side attributes defining.
@@ -143,43 +143,43 @@ to factory defaults.
   \return None
 
   \internal
-  //The typical usage is:
-  //Basic Cluster server side related attributes
+  The typical usage is:
+  Basic Cluster server side related attributes
   ZCL_BasicClusterServerAttributes_t basicClusterAttributes = ZCL_DEFINE_BASIC_CLUSTER_SERVER_ATTRIBUTES();
 *******************************************************************************/
 #if ZLO_CLUSTER_ENHANCEMENTS == 1
 #define ZCL_DEFINE_BASIC_CLUSTER_SERVER_ATTRIBUTES() <#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_CLUSTERREVISION == true) >\
-      DEFINE_ATTRIBUTE(clusterVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_VERSION_ATTRIBUTE_ID, ZCL_U16BIT_DATA_TYPE_ID),</#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_ZCLVERSION == true) > \
-      DEFINE_ATTRIBUTE(zclVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_ZCL_VERSION_ATTRIBUTE_ID,  ZCL_U8BIT_DATA_TYPE_ID), </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_APPLCIATIONVERSION == true) >   \
-      DEFINE_ATTRIBUTE(applicationVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_APPLICATION_VERSION_ATTRIBUTE_ID,  ZCL_U8BIT_DATA_TYPE_ID),   </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_STACKVERSION == true) > \
-      DEFINE_ATTRIBUTE(stackVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_STACK_VERSION_ATTRIBUTE_ID,  ZCL_U8BIT_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_HWVERSION == true) >\
-      DEFINE_ATTRIBUTE(hwVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_HW_VERSION_ATTRIBUTE_ID,  ZCL_U8BIT_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_MANUNAME == true) >\
-      DEFINE_ATTRIBUTE(manufacturerName, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_MANUFACTURER_NAME_ATTRIBUTE_ID,  ZCL_CHARACTER_STRING_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_MODELID == true) >\
-      DEFINE_ATTRIBUTE(modelIdentifier, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_MODEL_IDENTIFIER_ATTRIBUTE_ID,  ZCL_CHARACTER_STRING_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_DATECODE == true) >\
-      DEFINE_ATTRIBUTE(dateCode, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_DATE_CODE_ATTRIBUTE_ID,  ZCL_CHARACTER_STRING_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_POWERSOURCE == true) >\
-      DEFINE_ATTRIBUTE(powerSource, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_POWER_SOURCE_ATTRIBUTE_ID, ZCL_8BIT_ENUM_DATA_TYPE_ID),</#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_PHYENV == true) >\
-      DEFINE_ATTRIBUTE(physicalEnvironment, ZCL_READWRITE_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_PHYSICAL_ENVIRONMENT_ATTRIBUTE_ID, ZCL_8BIT_ENUM_DATA_TYPE_ID), </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_GENDEVCLASS == true) >\
-      DEFINE_ATTRIBUTE(genericDeviceClass, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_GENERIC_DEVICE_CLASS_ATTRIBUTE_ID, ZCL_8BIT_ENUM_DATA_TYPE_ID), </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_GENDEVCTYPE == true) >\
-      DEFINE_ATTRIBUTE(genericDeviceType, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_GENERIC_DEVICE_TYPE_ATTRIBUTE_ID, ZCL_8BIT_ENUM_DATA_TYPE_ID), </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_PRODUCTCODE == true) >\
-      DEFINE_ATTRIBUTE(productCode, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_PRODUCT_CODE_ATTRIBUTE_ID, ZCL_OCTET_STRING_DATA_TYPE_ID), </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_PRODUCTURL == true) >\
-      DEFINE_ATTRIBUTE(productURL, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_PRODUCT_URL_ATTRIBUTE_ID, ZCL_CHARACTER_STRING_DATA_TYPE_ID), </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_SWBUILDID == true) >\
-      DEFINE_ATTRIBUTE(swBuildId, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SW_BUILD_ID_ATTRIBUTE_ID, ZCL_CHARACTER_STRING_DATA_TYPE_ID)</#if>
+      DEFINE_ATTRIBUTE(clusterVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_VERSION_ATTRIBUTE_ID, (uint8_t)ZCL_U16BIT_DATA_TYPE_ID),</#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_ZCLVERSION == true) > \
+      DEFINE_ATTRIBUTE(zclVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_ZCL_VERSION_ATTRIBUTE_ID,  (uint8_t)ZCL_U8BIT_DATA_TYPE_ID), </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_APPLCIATIONVERSION == true) >   \
+      DEFINE_ATTRIBUTE(applicationVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_APPLICATION_VERSION_ATTRIBUTE_ID,  (uint8_t)ZCL_U8BIT_DATA_TYPE_ID),   </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_STACKVERSION == true) > \
+      DEFINE_ATTRIBUTE(stackVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_STACK_VERSION_ATTRIBUTE_ID,  (uint8_t)ZCL_U8BIT_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_HWVERSION == true) >\
+      DEFINE_ATTRIBUTE(hwVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_HW_VERSION_ATTRIBUTE_ID,  (uint8_t)ZCL_U8BIT_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_MANUNAME == true) >\
+      DEFINE_ATTRIBUTE(manufacturerName, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_MANUFACTURER_NAME_ATTRIBUTE_ID,  (uint8_t)ZCL_CHARACTER_STRING_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_MODELID == true) >\
+      DEFINE_ATTRIBUTE(modelIdentifier, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_MODEL_IDENTIFIER_ATTRIBUTE_ID,  (uint8_t)ZCL_CHARACTER_STRING_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_DATECODE == true) >\
+      DEFINE_ATTRIBUTE(dateCode, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_DATE_CODE_ATTRIBUTE_ID,  (uint8_t)ZCL_CHARACTER_STRING_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_POWERSOURCE == true) >\
+      DEFINE_ATTRIBUTE(powerSource, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_POWER_SOURCE_ATTRIBUTE_ID, (uint8_t)ZCL_8BIT_ENUM_DATA_TYPE_ID),</#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_PHYENV == true) >\
+      DEFINE_ATTRIBUTE(physicalEnvironment, ZCL_READWRITE_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_PHYSICAL_ENVIRONMENT_ATTRIBUTE_ID, (uint8_t)ZCL_8BIT_ENUM_DATA_TYPE_ID), </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_GENDEVCLASS == true) >\
+      DEFINE_ATTRIBUTE(genericDeviceClass, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_GENERIC_DEVICE_CLASS_ATTRIBUTE_ID, (uint8_t)ZCL_8BIT_ENUM_DATA_TYPE_ID), </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_GENDEVCTYPE == true) >\
+      DEFINE_ATTRIBUTE(genericDeviceType, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_GENERIC_DEVICE_TYPE_ATTRIBUTE_ID, (uint8_t)ZCL_8BIT_ENUM_DATA_TYPE_ID), </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_PRODUCTCODE == true) >\
+      DEFINE_ATTRIBUTE(productCode, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_PRODUCT_CODE_ATTRIBUTE_ID, (uint8_t)ZCL_OCTET_STRING_DATA_TYPE_ID), </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_PRODUCTURL == true) >\
+      DEFINE_ATTRIBUTE(productURL, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_PRODUCT_URL_ATTRIBUTE_ID, (uint8_t)ZCL_CHARACTER_STRING_DATA_TYPE_ID), </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_SWBUILDID == true) >\
+      DEFINE_ATTRIBUTE(swBuildId, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SW_BUILD_ID_ATTRIBUTE_ID, (uint8_t)ZCL_CHARACTER_STRING_DATA_TYPE_ID)</#if>
 #else
 #define ZCL_DEFINE_BASIC_CLUSTER_SERVER_ATTRIBUTES() <#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_CLUSTERREVISION == true) >\
-      DEFINE_ATTRIBUTE(clusterVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_VERSION_ATTRIBUTE_ID, ZCL_U16BIT_DATA_TYPE_ID),</#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_ZCLVERSION == true) > \
-      DEFINE_ATTRIBUTE(zclVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_ZCL_VERSION_ATTRIBUTE_ID,  ZCL_U8BIT_DATA_TYPE_ID), </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_APPLCIATIONVERSION == true) >   \
-      DEFINE_ATTRIBUTE(applicationVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_APPLICATION_VERSION_ATTRIBUTE_ID,  ZCL_U8BIT_DATA_TYPE_ID),   </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_STACKVERSION == true) > \
-      DEFINE_ATTRIBUTE(stackVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_STACK_VERSION_ATTRIBUTE_ID,  ZCL_U8BIT_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_HWVERSION == true) >\
-      DEFINE_ATTRIBUTE(hwVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_HW_VERSION_ATTRIBUTE_ID,  ZCL_U8BIT_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_MANUNAME == true) >\
-      DEFINE_ATTRIBUTE(manufacturerName, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_MANUFACTURER_NAME_ATTRIBUTE_ID,  ZCL_CHARACTER_STRING_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_MODELID == true) >\
-      DEFINE_ATTRIBUTE(modelIdentifier, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_MODEL_IDENTIFIER_ATTRIBUTE_ID,  ZCL_CHARACTER_STRING_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_DATECODE == true) >\
-      DEFINE_ATTRIBUTE(dateCode, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_DATE_CODE_ATTRIBUTE_ID,  ZCL_CHARACTER_STRING_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_POWERSOURCE == true) >\
-      DEFINE_ATTRIBUTE(powerSource, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_POWER_SOURCE_ATTRIBUTE_ID, ZCL_8BIT_ENUM_DATA_TYPE_ID),</#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_PHYENV == true) >\
-      DEFINE_ATTRIBUTE(physicalEnvironment, ZCL_READWRITE_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_PHYSICAL_ENVIRONMENT_ATTRIBUTE_ID, ZCL_8BIT_ENUM_DATA_TYPE_ID), </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_GENDEVCLASS == true) >\
-      DEFINE_ATTRIBUTE(swBuildId, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SW_BUILD_ID_ATTRIBUTE_ID, ZCL_CHARACTER_STRING_DATA_TYPE_ID)</#if>
+      DEFINE_ATTRIBUTE(clusterVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_VERSION_ATTRIBUTE_ID, (uint8_t)ZCL_U16BIT_DATA_TYPE_ID),</#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_ZCLVERSION == true) > \
+      DEFINE_ATTRIBUTE(zclVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_ZCL_VERSION_ATTRIBUTE_ID,  (uint8_t)ZCL_U8BIT_DATA_TYPE_ID), </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_APPLCIATIONVERSION == true) >   \
+      DEFINE_ATTRIBUTE(applicationVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_APPLICATION_VERSION_ATTRIBUTE_ID,  (uint8_t)ZCL_U8BIT_DATA_TYPE_ID),   </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_STACKVERSION == true) > \
+      DEFINE_ATTRIBUTE(stackVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_STACK_VERSION_ATTRIBUTE_ID,  (uint8_t)ZCL_U8BIT_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_HWVERSION == true) >\
+      DEFINE_ATTRIBUTE(hwVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_HW_VERSION_ATTRIBUTE_ID,  (uint8_t)ZCL_U8BIT_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_MANUNAME == true) >\
+      DEFINE_ATTRIBUTE(manufacturerName, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_MANUFACTURER_NAME_ATTRIBUTE_ID,  (uint8_t)ZCL_CHARACTER_STRING_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_MODELID == true) >\
+      DEFINE_ATTRIBUTE(modelIdentifier, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_MODEL_IDENTIFIER_ATTRIBUTE_ID,  (uint8_t)ZCL_CHARACTER_STRING_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_DATECODE == true) >\
+      DEFINE_ATTRIBUTE(dateCode, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_DATE_CODE_ATTRIBUTE_ID,  (uint8_t)ZCL_CHARACTER_STRING_DATA_TYPE_ID),    </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_POWERSOURCE == true) >\
+      DEFINE_ATTRIBUTE(powerSource, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_POWER_SOURCE_ATTRIBUTE_ID, (uint8_t)ZCL_8BIT_ENUM_DATA_TYPE_ID),</#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_PHYENV == true) >\
+      DEFINE_ATTRIBUTE(physicalEnvironment, ZCL_READWRITE_ATTRIBUTE, ZCL_BASIC_CLUSTER_SERVER_PHYSICAL_ENVIRONMENT_ATTRIBUTE_ID, (uint8_t)ZCL_8BIT_ENUM_DATA_TYPE_ID), </#if><#if (BASIC_CLUSTER_CS != "CLIENT")  && (BC_GENDEVCLASS == true) >\
+      DEFINE_ATTRIBUTE(swBuildId, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_SW_BUILD_ID_ATTRIBUTE_ID, (uint8_t)ZCL_CHARACTER_STRING_DATA_TYPE_ID)</#if>
 #endif
 
-/***************************************************************************//**
+/*******************************************************************************
   \brief ZCL Basic Cluster client side attributes defining macros
 
   This macros should be used for ZCL Basic Cluster client side attributes defining.
@@ -187,12 +187,12 @@ to factory defaults.
   \return None
 
   \internal
-  //The typical usage is:
-  //Basic Cluster server side related attributes
+  The typical usage is:
+  Basic Cluster server side related attributes
   ZCL_BasicClusterClientAttributes_t basicClusterAttributes = ZCL_DEFINE_BASIC_CLUSTER_CLIENT_ATTRIBUTES();
 *******************************************************************************/
 #define ZCL_DEFINE_BASIC_CLUSTER_CLIENT_ATTRIBUTES()    <#if (BASIC_CLUSTER_CS != "SERVER")  && (BS_CLUSTERREVISION == true) >\
-  DEFINE_ATTRIBUTE(clusterVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_VERSION_ATTRIBUTE_ID, ZCL_U16BIT_DATA_TYPE_ID)
+  DEFINE_ATTRIBUTE(clusterVersion, ZCL_READONLY_ATTRIBUTE, ZCL_BASIC_CLUSTER_VERSION_ATTRIBUTE_ID, (uint8_t)ZCL_U16BIT_DATA_TYPE_ID)
 </#if>
 
 /**
@@ -204,7 +204,7 @@ to factory defaults.
                      COMMAND_OPTIONS(CLIENT_TO_SERVER, ZCL_THERE_IS_NO_RELEVANT_RESPONSE, ZCL_COMMAND_ACK), \
                      resetToFactoryDefaultsCommandInd)</#if>
 
-/***************************************************************************//**
+/*******************************************************************************
   \brief ZCL Basic Cluster server side defining macros
 
   This macros should be used with #ZCL_DEFINE_BASIC_CLUSTER_SERVER_ATTRIBUTES for
@@ -215,13 +215,13 @@ to factory defaults.
   \return None
 
   \internal
-  //The typical code is:
-  //Basic Cluster server side related attributes
+  The typical code is:
+  Basic Cluster server side related attributes
   ZCL_BasicClusterServerAttributes_t basicClusterServerAttributes = DEFINE_ZCL_BASIC_CLUSTER_SERVER_ATTRIBUTES();
   ZCL_Cluster_t myClusters[] =
   {
     ZCL_DEFINE_BASIC_CLUSTER_SERVER(&basicClusterServerAttributes, &basicClusterServerCommands),
-    //... Any other cluster defining ...
+    ... Any other cluster defining ...
   }
 *******************************************************************************/
 #define ZCL_DEFINE_BASIC_CLUSTER_SERVER(clattributes, clcommands)                                                \
@@ -235,7 +235,7 @@ to factory defaults.
   }
 
 #define ZCL_DEFINE_BASIC_CLUSTER_SERVER_FLASH(clattributes) ZCL_DEFINE_BASIC_CLUSTER_SERVER(clattributes)
-/***************************************************************************//**
+/*******************************************************************************
   \brief ZCL Basic Cluster client side defining macros
 
   This macros should be used for ZCL Basic Cluster client side defining in application.
@@ -243,11 +243,11 @@ to factory defaults.
   \return None
 
   \internal
-  //The typical code is:
+  The typical code is:
   ZCL_Cluster_t myClusters[] =
   {
     ZCL_DEFINE_BASIC_CLUSTER_CLIENT(),
-    //... Any other cluster defining ...
+    ... Any other cluster defining ...
   }
 *******************************************************************************/
 #define ZCL_DEFINE_BASIC_CLUSTER_CLIENT(clattributes)                                                                        \
@@ -505,6 +505,6 @@ typedef struct PACK
 } ZCL_BasicClusterServerCommands_t;
 
 
-#endif //#ifndef _ZCLBASICCLUSTER_H
+#endif //#ifndef ZCLBASICCLUSTER_H
 
 //eof zclBasicCluster.h

@@ -46,6 +46,12 @@ def customTemperatureMeasurementClusterEnableCheck(symbol, event):
     else:
         symbol.setEnabled(False)
 
+def combinedInterfaceTemperatureMeasurementClusterEnableCheck(symbol, event):
+    if ((zigbeeDeviceType.getValue() == 'ZIGBEE_COMBINED_INTERFACE') and (temperatureMeasurementCluster.getValue() == True)):
+        symbol.setEnabled(True)
+    else:
+        symbol.setEnabled(False)
+
 def temperatureMeasurementClusterClientCheck(symbol, event):
     if ((temperatureMeasurementCluster.getValue() == False) or temperatureMeasurementClusterCS.getValue() == "SERVER"):
         symbol.setVisible(False)
@@ -76,7 +82,7 @@ def temperatureMeasurementClusterHandling():
     elif ((getDevice == "ZIGBEE_COMBINED_INTERFACE")):
         temperatureMeasurementCluster.setVisible(True)
         temperatureMeasurementCluster.setValue(True)
-        temperatureMeasurementCluster.setReadOnly(True)
+        temperatureMeasurementCluster.setReadOnly(False)
         temperatureMeasurementClusterCS.setValue("CLIENT")
         temperatureMeasurementClusterCS.setReadOnly(True)
     elif ((getDevice == "ZIGBEE_MULTI_SENSOR")):
@@ -94,7 +100,10 @@ def temperatureMeasurementClusterHandling():
     elif ((getDevice == "ZIGBEE_CUSTOM")):
         temperatureMeasurementCluster.setVisible(True)
         temperatureMeasurementCluster.setValue(True)
-        temperatureMeasurementClusterCS.setValue("BOTH")
+        temperatureMeasurementClusterCS.setValue("SERVER")
+        temperatureMeasurementClusterCS.setVisible(True)
+        temperatureMeasurementClusterClientMenu.setVisible(False) 
+        temperatureMeasurementClusterServerMenu.setVisible(True)
     else:
         temperatureMeasurementCluster.setVisible(False)
 
@@ -139,12 +148,14 @@ temperatureMeasurementClusterCS.setDefaultValue("BOTH")
 temperatureMeasurementClusterCS.setDescription("Temperature Measurement Cluster Supported Implementation- Select the option")
 temperatureMeasurementClusterCS.setDependencies(temperatureMeasurementClusterCsCheck,["TEMPERATUREMEASUREMENT_CLUSTER_ENABLE"])
 
+global temperatureMeasurementClusterClientMenu
 temperatureMeasurementClusterClientMenu = drvZigbeeComponent.createMenuSymbol("TEMPERATUREMEASUREMENT_CLUSTER_CLIENT_MENU", temperatureMeasurementCluster)
 temperatureMeasurementClusterClientMenu.setLabel("Client")
 #temperatureMeasurementClusterClientMenu.setVisible(False)
 temperatureMeasurementClusterClientMenu.setDescription("TEMPERATURE MEASUREMENT CLUSTER CLIENT")
 temperatureMeasurementClusterClientMenu.setDependencies(temperatureMeasurementClusterClientCheck,["TEMPERATUREMEASUREMENT_CLUSTER_CS","TEMPERATUREMEASUREMENT_CLUSTER_ENABLE"])
 
+global temperatureMeasurementClusterServerMenu
 temperatureMeasurementClusterServerMenu = drvZigbeeComponent.createMenuSymbol("TEMPERATUREMEASUREMENT_CLUSTER_SERVER_MENU", temperatureMeasurementCluster)
 temperatureMeasurementClusterServerMenu.setLabel("Server")
 #temperatureMeasurementClusterServerMenu.setVisible(False)
@@ -279,7 +290,18 @@ tempMeasClusterConfSrc.setProjectPath("config/" + configName + "/zigbee/z3device
 tempMeasClusterConfSrc.setType("SOURCE")
 tempMeasClusterConfSrc.setOverwrite(True)
 tempMeasClusterConfSrc.setMarkup(True)
-tempMeasClusterConfSrc.setEnabled(checkDevTypeCombInterface)
+tempMeasClusterConfSrc.setEnabled(checkDevTypeCombInterface and temperatureMeasurementCluster.getValue())
+tempMeasClusterConfSrc.setDependencies(combinedInterfaceTemperatureMeasurementClusterEnableCheck, ["TEMPERATUREMEASUREMENT_CLUSTER_ENABLE"] )
+
+tempMeasClusterConfInc = drvZigbeeComponent.createFileSymbol("CITEMPERATUREMEASUREMENTCLUSTER_H", None)
+tempMeasClusterConfInc.setSourcePath("/driver/zigbee" + suffix + "/application/zigbee_only/Zigbee_Device_Application/devicetypes/combinedInterface/include/ciTemperatureMeasurementCluster.h")
+tempMeasClusterConfInc.setOutputName("ciTemperatureMeasurementCluster.h")
+tempMeasClusterConfInc.setDestPath("/zigbee/z3device/combinedInterface/include")
+tempMeasClusterConfInc.setProjectPath("config/" + configName + "/zigbee/z3device/combinedInterface/include/")
+tempMeasClusterConfInc.setType("HEADER")
+tempMeasClusterConfInc.setOverwrite(True)
+tempMeasClusterConfInc.setEnabled(checkDevTypeCombInterface and temperatureMeasurementCluster.getValue())
+tempMeasClusterConfInc.setDependencies(combinedInterfaceTemperatureMeasurementClusterEnableCheck,["TEMPERATUREMEASUREMENT_CLUSTER_ENABLE"])
 
 # TEMPERATURE MEASUREMENT CLUSTER - Multi Sensor
 tempMeasClusterConfSrc = drvZigbeeComponent.createFileSymbol("ZIGBEE_TEMPERATUREMEASUREMENT_CLUSTER_CONF_SRC_MS", None)

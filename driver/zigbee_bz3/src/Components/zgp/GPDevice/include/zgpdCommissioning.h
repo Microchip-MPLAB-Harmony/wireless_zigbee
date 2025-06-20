@@ -41,8 +41,8 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#ifndef _ZGPDCOMMISSIONING_H
-#define _ZGPDCOMMISSIONING_H
+#ifndef ZGPDCOMMISSIONING_H
+#define ZGPDCOMMISSIONING_H
 // DOM-IGNORE-END
 
 /******************************************************************************
@@ -195,5 +195,5 @@ ZGP_Status_t ZGP_SuccessGpdfReq(ZgpSuccessGpdfReq_t *zgpSuccessReq);
 ZGP_Status_t ZGP_DecommissioningReq(ZGP_DecommissioningReq_t *zgpDecommissioningReq);
 
 
-#endif //_ZGPDCOMMISSIONING_H
+#endif //ZGPDCOMMISSIONING_H
 //eof zgpdCommissioning.h

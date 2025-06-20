@@ -69,6 +69,39 @@
 #include <zcl/clusters/include/identifyCluster.h>
 #include <z3device/clusters/include/onOffCluster.h>
 #include <z3device/clusters/include/commissioningCluster.h>
+#include <bdb/include/bdbInternal.h>
+
+<#compress>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+
+  <#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
+
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  <#assign devicetype = DEVICE_TYPE_FILE_PATH >
+#include <z3device/${devicetype}/include/${deviceTypeFunctionPrefix + clusterName}Cluster.h>
+  </#if>
+
+  </#list>
+  
+</#compress>
+
+<#compress>
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+  <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+
+  <#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
+
+  <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  <#assign devicetype = DEVICE_TYPE_FILE_PATH >
+#include <z3device/${devicetype}/include/${deviceTypeFunctionPrefix + clusterName}Cluster.h>
+  </#if>
+
+  </#list>
+  
+</#compress>
 
 /******************************************************************************
                     Defines section
@@ -103,6 +136,141 @@ static void processIdentifyQueryCmd(const ScanValue_t *args);
 static void processTriggerEffectCmd(const ScanValue_t *args);
 static void processReadOnOffAttrVal(const ScanValue_t *args);
 static void processSendEndpointInfoCmd(const ScanValue_t *args);
+
+#if defined _ZIGBEE_REV_23_SUPPORT_
+static void processRequestAppKeyCmd(const ScanValue_t *args);
+static void processSetInstallCodePassphraseCmd(const ScanValue_t *args);
+#endif //_ZIGBEE_REV_23_SUPPORT_
+
+<#-- All ftl functions used inside the FTL file are defined here  -->
+<#-- Helper functions ---------------------------------------------->
+<#function getParametersLength prefix commandIndex>
+<#return (prefix + "PARAM_NO_" + commandIndex)?eval>
+</#function>
+
+<#function parameterVariableType prefix commandIndex parameterIndex>
+<#-- [ BLOCK scanUnionType] -->
+        <#assign scanUnionType = "uint64" >
+        <#switch (prefix + "CLASSTYPE_" + commandIndex + "_" + parameterIndex)?eval>
+        <#case "General Data">
+            <#assign scanUnionType = "uint"+( prefix + "TYPE_GENERAL_" + commandIndex + "_" + parameterIndex)?eval?remove_beginning("data")  >
+            <#break>
+        <#case "Enumeration">
+            <#assign scanUnionType = "uint8" >
+            <#break>
+        <#case "Unsigned Integer">
+            <#assign scanUnionType = (prefix + "TYPE_UNSIGNED_" + commandIndex + "_" + parameterIndex)?eval >
+            <#break>
+        <#case "Bitmap">
+            <#assign scanUnionType = "uint8">
+            <#break>
+        <#case "Signed Integer">
+            <#assign scanUnionType = (prefix + "TYPE_SIGNED_" + commandIndex + "_" + parameterIndex)?eval >
+            <#break>
+        <#case "Boolean">
+            <#assign scanUnionType = "uint8" >
+            <#break>
+        <#case "String">
+            <#assign scanUnionType = "str">
+            <#break>
+        <#case "Array">
+            <#assign scanUnionType = "str">
+            <#break>
+        <#default>      
+                  
+        </#switch>
+<#assign argumentIndex = parameterIndex + 3 > <#-- We account for the first three parameters in the process Console functions -->
+
+<#return "args[" + argumentIndex + "]." + scanUnionType >
+
+</#function>
+<#-- Helper functions --------------------------------------------->
+
+
+<#-- File specific functions -------------------------------------->
+
+<#macro addPrototype customClusterIndex >
+<#compress>
+    <#assign prefixCommands  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_CLIENT_COMMANDS_">
+
+    <#list 0..<(prefixCommands + "NO")?eval as commandIndex >
+      <#assign CommandName = (prefixCommands+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
+      static void processSend${CommandName}(const ScanValue_t *args);
+    </#list>
+</#compress>
+</#macro>
+
+<#macro addHelpEntry customClusterIndex >
+<#compress>
+    <#assign prefix  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_CLIENT_COMMANDS_">
+   
+    <#list 0..<(prefix + "NO")?eval as commandIndex >
+      
+      <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
+
+      <#assign parameterDataList = "sdd" >
+      <#assign parameterNameList = "[addrMode][addr][ep]" >
+
+      <#assign parametersLength = getParametersLength(prefix, commandIndex) >
+
+      <#list 0..<parametersLength as parameterIndex> <#-- iterate through parameters -->
+
+        <#assign classType = (prefix + "CLASSTYPE_" + commandIndex + "_" + parameterIndex)?eval >
+        <#if (classType == "String") || (classType == "Array") >
+            <#assign parameterDataList = parameterDataList + 's' >
+        <#else>
+            <#assign parameterDataList = parameterDataList + 'd' >
+        </#if>
+
+        <#assign parameterName = (prefix + "PARAMNAME_" + commandIndex + "_" + parameterIndex)?eval >
+
+        <#assign parameterNameList = parameterNameList + "[" + parameterName + "]" >
+
+      </#list>
+      {"${CommandName}", "${parameterDataList}", processSend${CommandName}, "${parameterNameList}\r\n"},
+    </#list>
+</#compress>
+</#macro>
+
+<#macro addDefinition customClusterIndex>
+
+    <#assign prefix  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_CLIENT_COMMANDS_">
+    <#list 0..<(prefix + "NO")?eval as commandIndex >
+      <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
+      <#assign parametersLength = getParametersLength(prefix, commandIndex) >
+/**************************************************************************//**
+\brief Processes Sends ${CommandName} command
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processSend${CommandName}(const ScanValue_t *args)
+{
+  <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
+  ${deviceTypeFunctionPrefix}Send${CommandName}(determineAddressMode(args), args[1].uint16, args[2].uint8, srcEp<#if (parametersLength == 0) >);
+  <#else>${''}
+    <#list 0..<parametersLength as parameterIndex >,${parameterVariableType(prefix,commandIndex,parameterIndex)} </#list>);
+  </#if>
+
+}
+</#list>
+
+</#macro>
+
+<#macro loopClientCommands >
+<#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+    <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
+    <#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
+      <#nested customClusterIndex>
+    </#if>
+</#list>
+</#macro>
+
+<#-- File specific functions -------------------------------------->
+
+<@loopClientCommands ;customClusterIndex> <#-- We pass customClusterIndex from the loopClientCommands macro to addPrototype Macro -->
+  <@addPrototype customClusterIndex=customClusterIndex/>
+</@loopClientCommands>
+
 #endif // #if ZCL_COMMANDS_IN_CONSOLE == 1
 
 /******************************************************************************
@@ -166,6 +334,10 @@ PROGMEM_DECLARE(ConsoleCommand_t commissioningHelpCmds)[]=
   {"setGlobalKey", "d", processsetGlobalKeyCmd, "[Option]\r\n"},
   {"setPermitJoin", "d", processSetPermitJoinCmd, "[dur]\r\n"},
 #endif
+#if defined _ZIGBEE_REV_23_SUPPORT_
+  {"requestAppKey","d",processRequestAppKeyCmd,"[partnerExtAddr] \r\n"},
+  {"SetInstallCodePassphrase", "s", processSetInstallCodePassphraseCmd, "-> Sets IC [code]\r\n"},
+#endif
 #endif
    {0,0,0,0},
 };
@@ -203,7 +375,12 @@ PROGMEM_DECLARE(ConsoleCommand_t zclHelpCmds)[]=
   {"identifyQuery", "sdd", processIdentifyQueryCmd, "[addrMode][addr][ep]\r\n"},
   {"triggerEffect", "sdddd", processTriggerEffectCmd, "->Send TriggerEffect command: triggerEffect [addrMode][addr][ep][effectId][effectVariant]"},
   {"sendEndpointInfo", "dd", processSendEndpointInfoCmd, "[shortAddr][dstEp]\r\n"},
-#endif // #if ZCL_COMMANDS_IN_CONSOLE == 1
+
+  <@loopClientCommands ;customClusterIndex> <#-- We pass customClusterIndex from the loopClientCommands macro to addHelpEntry Macro -->
+    <@addHelpEntry customClusterIndex=customClusterIndex/>
+  </@loopClientCommands>
+  
+  #endif // #if ZCL_COMMANDS_IN_CONSOLE == 1
   {0,0,0,0},
 };
 
@@ -227,12 +404,12 @@ static void processGetDeviceTypeCmd(const ScanValue_t *args)
 {
 #if (APP_ZGP_DEVICE_TYPE == APP_ZGP_DEVICE_TYPE_COMBO_BASIC)
 #if (APP_ENABLE_ZGP_CERTIFICATION_EXTENSION == 1)
-  appSnprintf("DeviceType = %d\r\n", TEST_DEVICE_TYPE_ZGP_TH);
+  (void)appSnprintf("DeviceType = %d\r\n", TEST_DEVICE_TYPE_ZGP_TH);
 #else
-  appSnprintf("DeviceType = %d\r\n", TEST_DEVICE_TYPE_ZGP_COMBO_BASIC);
+  (void)appSnprintf("DeviceType = %d\r\n", TEST_DEVICE_TYPE_ZGP_COMBO_BASIC);
 #endif
 #else
-  appSnprintf("DeviceType = %d\r\n", TEST_DEVICE_TYPE_ZIGBEE_ROUTER);
+  (void)appSnprintf("DeviceType = %d\r\n", TEST_DEVICE_TYPE_ZIGBEE_ROUTER);
 #endif
   (void)args;
 }
@@ -244,7 +421,7 @@ static void processGetDeviceTypeCmd(const ScanValue_t *args)
 +******************************************************************************/
 static void processGetAppDeviceTypeCmd(const ScanValue_t *args)
 {
-  appSnprintf("Z3DeviceType = 0x%04x\r\n", APP_Z3DEVICE_ID);
+  (void)appSnprintf("Z3DeviceType = 0x%04x\r\n", APP_Z3DEVICE_ID);
   (void)args;
 }
 
@@ -271,7 +448,7 @@ static void processViewGroupCmd(const ScanValue_t *args)
   groupsSendViewGroup(determineAddressMode(args), args[1].uint16, args[2].uint8,
    srcEp,args[3].uint16);
 <#else>
-   appSnprintf("Cmd Not Supported\r\n");
+   (void)appSnprintf("Cmd Not Supported\r\n");
 </#if>
 }
 
@@ -283,15 +460,17 @@ static void processViewGroupCmd(const ScanValue_t *args)
 static void processGetGroupMembershipCmd(const ScanValue_t *args)
 {
 <#if (GROUPS_CLUSTER_CS != "SERVER")  && (GCC_GROUPMEM == true) >  
-  uint16_t groupList[5];
+  uint16_t groupList[5U];
 
-  for (uint8_t i = 0; i < 5; i++)
-    groupList[i] = args[i+4].uint16;
+  for (uint8_t i = 0U; i < 5U; i++)
+  {
+    groupList[i] = args[i + 4U].uint16;
+  }
 
   groupsSendGetGroupMembership(determineAddressMode(args), args[1].uint16, args[2].uint8,
    srcEp, args[3].uint8, groupList);
 <#else>
-  appSnprintf("Cmd Not Supported\r\n");
+  (void)appSnprintf("Cmd Not Supported\r\n");
 </#if>
 }
 
@@ -306,7 +485,7 @@ static void processRemoveGroupCmd(const ScanValue_t *args)
   groupsSendRemoveGroup(determineAddressMode(args), args[1].uint16, args[2].uint8,srcEp,
     args[3].uint16);
 <#else>
-  appSnprintf("Cmd Not Supported\r\n");
+  (void)appSnprintf("Cmd Not Supported\r\n");
 </#if>
 }
 
@@ -321,7 +500,7 @@ static void processRemoveAllGroupsCmd(const ScanValue_t *args)
 <#if (GROUPS_CLUSTER_CS != "SERVER")  && (GCC_REMOVEGROUPALL == true) >  
   groupsSendRemoveAllGroups(determineAddressMode(args), args[1].uint16, args[2].uint8, srcEp);
 <#else>
-  appSnprintf("Cmd Not Supported\r\n");
+  (void)appSnprintf("Cmd Not Supported\r\n");
 </#if>
 }
 
@@ -336,7 +515,7 @@ static void processAddGroupIfIdentifyingCmd(const ScanValue_t *args)
   groupsSendAddGroupIfIdentifying(determineAddressMode(args), args[1].uint16, args[2].uint8, srcEp,
     args[3].uint16);
 <#else>
-  appSnprintf("Cmd Not Supported\r\n");
+  (void)appSnprintf("Cmd Not Supported\r\n");
 </#if>
 }
 #endif //#if ZCL_COMMANDS_IN_CONSOLE == 1
@@ -354,7 +533,7 @@ static void processAddGroupIfIdentifyingCmd(const ScanValue_t *args)
 ******************************************************************************/
 void myICCallback(InstallCode_Configuration_Status_t status)
 {
-  appSnprintf("Status = %d\r\n", status);
+  (void)appSnprintf("Status = %d\r\n", status);
 }
 
 /**************************************************************************//**
@@ -362,11 +541,11 @@ void myICCallback(InstallCode_Configuration_Status_t status)
 
 \param[in] args - array of command arguments
 ******************************************************************************/
-void processSetInstallCodeCmd(const ScanValue_t *args)
+static void processSetInstallCodeCmd(const ScanValue_t *args)
 {
-  ExtAddr_t devAddr = 0xFFFFFFFFFFFFFFFF;
+  ExtAddr_t devAddr = 0xFFFFFFFFFFFFFFFFULL;
   uint8_t icode[18];
-  hexStrTouint8array(args[0].str, icode, 18U);
+  (void)hexStrTouint8array(args[0].str, icode, 18U);
   BDB_ConfigureInstallCode(devAddr, icode, myICCallback);
   (void)args;
 }
@@ -378,9 +557,9 @@ void processSetInstallCodeCmd(const ScanValue_t *args)
 ******************************************************************************/
 static void processSetInstallCodeDeviceCmd(const ScanValue_t *args)
 {
-  ExtAddr_t devAddr = 0xFFFFFFFFFFFFFFFF;
+  ExtAddr_t devAddr = 0xFFFFFFFFFFFFFFFFULL;
   uint8_t icode[18];
-  hexStrTouint8array(args[0].str, icode, 18U);
+  (void)hexStrTouint8array(args[0].str, icode, 18U);
   BDB_ConfigureInstallCode(devAddr, icode, myICCallback);
   (void)args;
 }
@@ -442,7 +621,7 @@ static void processTriggerEffectCmd(const ScanValue_t *args)
 ******************************************************************************/
 static void processReadOnOffAttrVal(const ScanValue_t *args)
 {
-  appSnprintf("%d\r\n", lightOnOffClusterServerAttributes.onOff.value);
+  (void)appSnprintf("%d\r\n", lightOnOffClusterServerAttributes.onOff.value);
 }
 /**************************************************************************//**
 \brief Processes Read Current Level Attr Val command
@@ -451,7 +630,7 @@ static void processReadOnOffAttrVal(const ScanValue_t *args)
 ******************************************************************************/
 static void processReadCurrentLevelAttrVal(const ScanValue_t *args)
 {
-  appSnprintf("%d\r\n", lightLevelControlClusterServerAttributes.currentLevel.value);
+  (void)appSnprintf("%d\r\n", lightLevelControlClusterServerAttributes.currentLevel.value);
 }
 
 /**************************************************************************//**
@@ -463,6 +642,52 @@ static void processSendEndpointInfoCmd(const ScanValue_t *args)
 {
   commissioningSendEndpointInformation(args[0].uint16, args[1].uint8, srcEp);
 }
+
+#if defined _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+\brief Aps Request Key Done callback
+
+\param[in] conf - pointer to confirmation structure
+******************************************************************************/
+static void requestKeySent(APS_RequestKeyConf_t *conf)
+{
+  (void)appSnprintf("RequestKeySentStatus = %d\r\n", conf->status);
+}
+
+/**************************************************************************//**
+\brief Processes Send request App Key command
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processRequestAppKeyCmd(const ScanValue_t *args)
+{
+  memcpy(&bdbMem.stackReq.apsReqKeyReq.destAddress, APS_GetTrustCenterAddress(), sizeof(ExtAddr_t));
+  bdbMem.stackReq.apsReqKeyReq.keyType = APS_APP_KEY_TYPE;
+
+  memcpy(&bdbMem.stackReq.apsReqKeyReq.partnerAddress, &args[0].uint64, sizeof(ExtAddr_t));
+  bdbMem.stackReq.apsReqKeyReq.APS_RequestKeyConf = requestKeySent;
+
+  APS_RequestKeyReq(&bdbMem.stackReq.apsReqKeyReq);
+}
+
+/**************************************************************************//**
+\brief Processes InstallCode Passphrase command
+
+\param[in] args - array of command arguments
+******************************************************************************/;
+static void processSetInstallCodePassphraseCmd(const ScanValue_t *args)
+{
+  uint8_t icode[18];
+  hexStrTouint8array(args[0].str, icode, 18U);
+  APS_SetInstallCodePassphrase(icode);
+  (void)args;
+}
+#endif //_ZIGBEE_REV_23_SUPPORT_
+
+<@loopClientCommands ;customClusterIndex> <#-- We pass customClusterIndex from the loopClientCommands macro to addPrototype Macro -->
+  <@addDefinition customClusterIndex=customClusterIndex/>
+</@loopClientCommands>
+
 #endif // #if ZCL_COMMANDS_IN_CONSOLE == 1
 
 #endif // APP_ENABLE_CONSOLE == 1

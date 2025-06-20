@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPCLUSTERCLIENT_H
-#define _ZGPCLUSTERCLIENT_H
+#ifndef ZGPCLUSTERCLIENT_H
+#define ZGPCLUSTERCLIENT_H
 
 #ifdef _GREENPOWER_SUPPORT_
 /******************************************************************************
@@ -147,6 +147,6 @@ void zgpClientStopTunneling(ZGP_ApplicationId_t appId, ZGP_GpdId_t *gpdId, uint8
 uint16_t zgppBuildOTAProxyTableEntry( uint8_t *proxyTableOTA, ZGP_ProxyTableEntry_t *proxyTableEntry);
 
 #endif
-#endif // _ZGPCLUSTERCLIENT_H
+#endif // ZGPCLUSTERCLIENT_H
 
 // eof zgpClusterClient.h

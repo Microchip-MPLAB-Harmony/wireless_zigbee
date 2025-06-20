@@ -407,24 +407,6 @@ See according type description for detailes.
 void ZS_ZdpActiveEPReq(ZS_ZdpActiveEPReq_t* req,
                        void (*conf)(ZS_ZdpActiveEPConf_t* ));
 /***************************************************************************//**
-\brief Request for remote device user description.
-
-It is generated from a local device wishing to inquire
-as to the user descriptor of a remote device. This command shall be unicast either
-to the remote device itself or to an alternative device that contains the discovery
-information of the remote device.
-ZigBee Specification r17, 2.4.3.1.9 User_Desc_req
-
-\param[in] req - Determines the request parameters.
-See description of ZS_ZdpUserDescReq_t for details.
-\param[in] conf - pointer to command status handler.
-See according type description for detailes.
-
-\return
-*******************************************************************************/
-void ZS_ZdpUserDescReq(ZS_ZdpUserDescReq_t* req,
-                       void (*conf)(ZS_ZdpUserDescConf_t*));
-/***************************************************************************//**
 \brief Request for annoncing new device in network.
 
 It is provided to enable ZigBee devices on the network to notify
@@ -465,42 +447,6 @@ See according type description for detailes.
 *******************************************************************************/
 void ZS_ZdpLqiReq(ZS_ZdpLqiReq_t* req,
                   void (*conf)(ZS_ZdpLqiConf_t*));
-/***************************************************************************//**
-\brief Request for remote device complex description.
-
-It is generated from a local device wishing to
-inquire as to the complex descriptor of a remote device. This command shall be
-unicast either to the remote device itself or to an alternative device that contains
-the discovery information of the remote device.
-ZigBee Specification r17, 2.4.3.1.8 Complex_Desc_req
-
-\param[in] req - Determines the request parameters.
-See description of ZS_ZdpComplexDescReq_t for details.
-\param[in] conf - pointer to command status handler.
-See according type description for detailes.
-
-\return
-*******************************************************************************/
-void ZS_ZdpComplexDescReq(ZS_ZdpComplexDescReq_t* req,
-                          void (*conf)(ZS_ZdpComplexDescConf_t*));
-/***************************************************************************//**
-\brief Request for remote device user description configuration.
-
-It is generated from a local device wishing to
-configure the user descriptor on a remote device. This command shall be unicast
-either to the remote device itself or to an alternative device that contains the
-discovery information of the remote device.
-ZigBee Specification r17, 2.4.3.1.12 User_Desc_set
-\param[in] conf - pointer to command status handler.
-See according type description for detailes.
-
-\param[in] req - Determines the request parameters.
-See description of ZS_ZdpUserDescSetReq_t for details.
-
-\return
-*******************************************************************************/
-void ZS_ZdpUserDescSetReq(ZS_ZdpUserDescSetReq_t* req,
-                          void (*conf)(ZS_ZdpUserDescSetConf_t*));
 /***************************************************************************//**
 \brief Request for remote device to scan network.
 

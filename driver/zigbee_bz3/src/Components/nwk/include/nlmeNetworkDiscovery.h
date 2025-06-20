@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#if !defined _NLME_NETWORK_DISCOVERY_H
-#define _NLME_NETWORK_DISCOVERY_H
+#if !defined NLME_NETWORK_DISCOVERY_H
+#define NLME_NETWORK_DISCOVERY_H
 
 /******************************************************************************
                                Includes section
@@ -49,6 +49,17 @@
 #include <mac_phy/include/mac.h>
 #include <nwk/include/nwkCommon.h>
 #include <zdo/include/appFramework.h>
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <tlv/include/tlv.h>
+#endif //_ZIGBEE_REV_23_SUPPORT_
+/******************************************************************************
+                             Definitions section
+ ******************************************************************************/
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#define NWK_WIDE_BEACON_TLV_SIZE (sizeof(KeyNegotiationTlv_t)+ sizeof(FragmentationParametersTlv_t))
+#define NWK_LOCAL_BEACON_TLV_SIZE sizeof(RouterInformationTlv_t)
+#define NWK_BEACON_APPENDIX_TLV_SIZE (NWK_WIDE_BEACON_TLV_SIZE+NWK_LOCAL_BEACON_TLV_SIZE)
+#endif //_ZIGBEE_REV_23_SUPPORT_
 
 /******************************************************************************
                                 Types section
@@ -84,6 +95,7 @@ typedef struct PACK _NWK_NetworkDescriptor_t
   bool endDeviceCapacity;
 } NWK_NetworkDescriptor_t;
 END_PACK
+
 
 /** NLME-NETWORK-DISCOVERY confirm primitive's parameters structure. ZigBee Specification r17, 3.2.2.2, NLME-NETWORK-DISCOVERY.confirm */
 typedef struct _NWK_NetworkDiscoveryConf_t
@@ -122,13 +134,31 @@ typedef struct _NWK_NetworkDiscoveryReq_t
   ScanDuration_t scanDuration;
 } NWK_NetworkDiscoveryReq_t;
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+BEGIN_PACK
+typedef struct PACK _NwkNetworkWideBeaconPayloadTLV_t {
+    KeyNegotiationTlv_t keyNegotiationTlv;
+    FragmentationParametersTlv_t fragmentationParametersTlv;
+} NwkNetworkWideBeaconPayloadTLV_t;
+
+typedef struct PACK _NwkDeviceLocalBeaconAppendixTLV_t{
+    RouterInformationTlv_t routerInfoTlv;
+} NwkDeviceLocalBeaconAppendixTLV_t;
+
+typedef struct PACK _NwkBeaconAppendix_t{
+    NwkNetworkWideBeaconPayloadTLV_t wideBeaconPayloadTlv;
+    NwkDeviceLocalBeaconAppendixTLV_t localBeaconAppendixTlv;
+} NwkBeaconAppendix_t;
+END_PACK
+#endif //_ZIGBEE_REV_23_SUPPORT_
+
 /** The beacon payload shall contain the information shown in ZigBee spec r17, Table 3.56. This enables the NWK layer to provide additional information to new devices that are performing network discovery and allows these new devices to more efficiently select a network and a particular neighbor  to join. */
 BEGIN_PACK
 typedef struct PACK _NwkBeaconPayload_t
 {
   /** This field identifies the network layer protocols in use and,
    * for purposes of this specification, shall always be set to 0,
-   * indicating the ZigBee protocols. */
+   * indicating the ZigBee protocols. */ 
   uint8_t protocolId;
   struct PACK
   {
@@ -161,6 +191,9 @@ typedef struct PACK _NwkBeaconPayload_t
   uint8_t txOffset[3];
   /** This field reflects the value of nwkUpdateId from the NIB. */
   NwkUpdateId_t updateId;
+#ifdef _ZIGBEE_REV_23_SUPPORT_  
+  NwkBeaconAppendix_t appendixPayload;
+#endif //_ZIGBEE_REV_23_SUPPORT_  
 } NwkBeaconPayload_t;
 END_PACK
 
@@ -175,6 +208,6 @@ END_PACK
  ******************************************************************************/
 void NWK_NetworkDiscoveryReq(NWK_NetworkDiscoveryReq_t *const req);
 
-#endif /* _NLME_NETWORK_DISCOVERY_H */
+#endif /* NLME_NETWORK_DISCOVERY_H */
 /** eof nlmeNetworkDiscovery.h */
 

@@ -214,6 +214,15 @@ PROGMEM_DECLARE(ZCL_ColorControlClusterCommands_t customColorControlClusterClien
   ZCL_COLOR_CONTROL_CLUSTER_COMMANDS_FOR_COLOR_SCENE_CONTROLLER()
 };
 </#if>
+
+/****************************************************************************
+*****************************************************************************/
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+<#if ((COLORCONTROL_CLUSTER_ENABLE == true) && ((COLORCONTROL_CLUSTER_CS != "CLIENT") || (COLORCONTROL_CLUSTER_CS == "BOTH")))>
+    ZCL_ColorControlClusterServerAttributes_t __attribute__((persistent)) backupCstmColorControlClusterServerAttributes;
+</#if>
+</#if>
+
 /******************************************************************************
                     Local variables
 ******************************************************************************/
@@ -2454,7 +2463,7 @@ static ZCL_Status_t colorLoopSetInd(ZCL_Addressing_t *addressing, uint8_t payloa
 
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORLOOPTIME == true) >
   if (COLOR_LOOP_UPDATE_TIME & payload->updateFlags)
-    customColorControlClusterServerAttributes.colorLoopTime.value = payload->time;
+    customColorControlClusterServerAttributes.colorLoopTime.value = payload->colorLoopTime;
 </#if>
 
 <#if (COLORCONTROL_CLUSTER_CS != "CLIENT")  && (CC_COLORLOOPSTARTENHANCEDHUE == true) >
@@ -2978,6 +2987,24 @@ static void customColorControlReportInd(ZCL_Addressing_t *addressing, uint8_t re
   APP_Zigbee_Handler(event);
 }
 </#if>
+
+/*********************************************************************************
+*********************************************************************************/
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+<#if ((COLORCONTROL_CLUSTER_ENABLE == true) && ((COLORCONTROL_CLUSTER_CS != "CLIENT") || (COLORCONTROL_CLUSTER_CS == "BOTH")))>
+void CDcsBackupCsAttributes(void)
+{
+   memcpy4ByteAligned(&backupCstmColorControlClusterServerAttributes,&customColorControlClusterServerAttributes, sizeof(ZCL_ColorControlClusterServerAttributes_t));
+}
+</#if>
+<#if ((COLORCONTROL_CLUSTER_ENABLE == true) && ((COLORCONTROL_CLUSTER_CS != "CLIENT") || (COLORCONTROL_CLUSTER_CS == "BOTH")))>
+void CDcsRestoreCsAttributes(void)
+{
+  memcpy4ByteAligned(&customColorControlClusterServerAttributes, &backupCstmColorControlClusterServerAttributes, sizeof(ZCL_ColorControlClusterServerAttributes_t));
+}
+</#if>
+</#if>
+
 #endif // APP_Z3_DEVICE_TYPE == APP_DEVICE_TYPE_CUSTOM_DEVICE
 
 // eof customColorControlCluster.c

@@ -45,15 +45,27 @@
 /******************************************************************************
                                 Includes section
  ******************************************************************************/
-#include <nwk.h>
-#include <apsCommon.h>
-#include <private/apsFrames.h>
-#include <apsAIB.h>
+#include <nwk/include/nwk.h>
+#include <aps/include/apsCommon.h>
+#include <aps/include/private/apsFrames.h>
+#include <aps/include/apsAIB.h>
 
 /******************************************************************************
                                Definitions section
  ******************************************************************************/
+#ifdef _ZIGBEE_REV_23_SUPPORT_
 /** Returns pointer to command payload */
+#define APS_GET_COMMAND_PAYLOAD(req) \
+  ((req)->service.nwkDataReq->nsdu)
+/** Returns pointer to NWK_DataReq, associated with command */
+#define APS_GET_ALLOCATED_COMMAND_BUFFER(req) \
+  ((req)->service.nwkDataReq)
+/** Returns command payload length */
+#define APS_GET_COMMAND_PAYLOAD_LENGTH(req) \
+  ((req)->service.nwkDataReq->nsduLength)
+
+#else
+
 #define APS_GET_COMMAND_PAYLOAD(req) \
   ((req)->service.allocateReq.confirm.nwkDataReq->nsdu)
 /** Returns pointer to NWK_DataReq, associated with command */
@@ -62,7 +74,7 @@
 /** Returns command payload length */
 #define APS_GET_COMMAND_PAYLOAD_LENGTH(req) \
   ((req)->service.allocateReq.nsduLength)
-
+#endif
 #ifdef _LINK_SECURITY_
 /** APS command auxiliary header length */
 #define APS_COMMAND_AUXILIARY_HEADER_LENGTH \
@@ -112,7 +124,13 @@ typedef enum _ApsCommandId_t
   APS_CMD_TUNNEL_ID           = 14,
   APS_CMD_VERIFY_KEY_ID       = 15,
   APS_CMD_CONFIRM_KEY_ID      = 16,
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  APS_CMD_RELAY_MESSAGE_DOWN_STREAM_ID = 17,
+  APS_CMD_RELAY_MESSAGE_UP_STREAM_ID = 18,
+  APS_CMD_MAX_ID              = APS_CMD_RELAY_MESSAGE_UP_STREAM_ID,
+#else
   APS_CMD_MAX_ID              = APS_CMD_CONFIRM_KEY_ID,
+#endif
 } ApsCommandId_t;
 
 BEGIN_PACK

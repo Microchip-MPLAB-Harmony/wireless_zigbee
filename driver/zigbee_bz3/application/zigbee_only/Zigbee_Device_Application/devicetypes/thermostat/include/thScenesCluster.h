@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _THSCENESCLUSTER_H
-#define _THSCENESCLUSTER_H
+#ifndef THSCENESCLUSTER_H
+#define THSCENESCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -88,6 +88,6 @@ ZCL_Status_t getExtensionFieldInfo(Scene_t* scene);
 \param[in] scene - Scene to be updated
 ******************************************************************************/
 void thermostatClusterSetExtensionField(Scene_t* scene);
-#endif // _THSCENESCLUSTER_H
+#endif // THSCENESCLUSTER_H
 
 // eof thScenesCluster.h

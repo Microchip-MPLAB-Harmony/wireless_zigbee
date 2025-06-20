@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZCLTHERMOSTATCLUSTER_H
-#define _ZCLTHERMOSTATCLUSTER_H
+#ifndef ZCLTHERMOSTATCLUSTER_H
+#define ZCLTHERMOSTATCLUSTER_H
 
 /*!
 Attributes and commands for determining basic information about a device,
@@ -448,8 +448,8 @@ typedef struct PACK
     struct PACK                           
     {
       LITTLE_ENDIAN_OCTET(2,(
-        uint8_t occupied    :1, //!<Occupied bit 0 (1 - Occupied, 0 - Not Occupied)
-        uint8_t reserved    :7
+        BitField_t occupied    :1, //!<Occupied bit 0 (1 - Occupied, 0 - Not Occupied)
+        BitField_t reserved    :7
       ))
     } value;
     uint8_t minVal;
@@ -536,11 +536,11 @@ typedef struct PACK
     struct PACK 
     {
       LITTLE_ENDIAN_OCTET(5,(
-        uint8_t coolingStage    :2,
-        uint8_t heatingStage    :2,
-        uint8_t heatingType        :1,
-        uint8_t heatingFuelSource  :1,
-        uint8_t reserved        :2
+        BitField_t coolingStage    :2,
+        BitField_t heatingStage    :2,
+        BitField_t heatingType        :1,
+        BitField_t heatingFuelSource  :1,
+        BitField_t reserved        :2
       ))
     } value;
     uint8_t minVal;
@@ -656,10 +656,10 @@ typedef struct PACK
     struct PACK 
     {
       LITTLE_ENDIAN_OCTET(4,(
-        uint8_t localTemperature    :1,
-        uint8_t outdoorTemperature  :1,
-        uint8_t occupancySense      :1,        
-        uint8_t reserved            :5
+        BitField_t localTemperature    :1,
+        BitField_t outdoorTemperature  :1,
+        BitField_t occupancySense      :1,        
+        BitField_t reserved            :5
       ))
     } value;
     uint8_t minVal;
@@ -695,10 +695,10 @@ typedef struct PACK
     struct PACK 
     {
       LITTLE_ENDIAN_OCTET(4,(
-        uint8_t initFailure    :1,
-        uint8_t hardwareFailure  :1,
-        uint8_t selfCalibrationFailure      :1,
-        uint8_t reserved            :5
+        BitField_t initFailure    :1,
+        BitField_t hardwareFailure  :1,
+        BitField_t selfCalibrationFailure      :1,
+        BitField_t reserved            :5
       ))
     } value;
     uint8_t minVal;
@@ -766,5 +766,5 @@ typedef struct
   
 } ZCL_ThermostatClusterCommands_t;
 
-#endif /* _ZCLTHERMOSTATCLUSTER_H */
+#endif /* ZCLTHERMOSTATCLUSTER_H */
 

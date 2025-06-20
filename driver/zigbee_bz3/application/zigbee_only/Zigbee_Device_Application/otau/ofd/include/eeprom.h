@@ -20,8 +20,8 @@
  *   EXPERT USERS SHOULD PROCEED WITH CAUTION.                                *
  ******************************************************************************/
 
-#ifndef _EEPROM_H
-#define _EEPROM_H
+#ifndef EEPROM_H
+#define EEPROM_H
 
 // \cond
 /******************************************************************************
@@ -128,6 +128,6 @@ bool HAL_IsEepromBusy(void);
 ******************************************************************************/
 void HAL_StopWriteToEeprom(void);
 
-#endif /*_EEPROM_H*/
+#endif /*EEPROM_H*/
 
 //eof eeprom.h

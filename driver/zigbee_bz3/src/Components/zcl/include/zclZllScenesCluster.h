@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZCLSCENESCLUSTER_H
-#define _ZCLSCENESCLUSTER_H
+#ifndef ZCLSCENESCLUSTER_H
+#define ZCLSCENESCLUSTER_H
 
 /*!
 Attributes and commands for determining basic information about a device,
@@ -362,8 +362,8 @@ typedef struct PACK
  typedef struct PACK
 {
   LITTLE_ENDIAN_OCTET(2,(
-    uint8_t copyAllScenes   : 1,
-    uint8_t reserved        : 7
+    BitField_t copyAllScenes   : 1,
+    BitField_t reserved        : 7
   ))
 } SceneMode_t;
 
@@ -712,4 +712,4 @@ typedef struct
 } ZCL_ScenesClusterCommands_t;
 
 
-#endif /* _ZCLSCENESCLUSTER_H */
+#endif /* ZCLSCENESCLUSTER_H */

@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPCLUSTER_H
-#define _ZGPCLUSTER_H
+#ifndef ZGPCLUSTER_H
+#define ZGPCLUSTER_H
 
 #ifdef _GREENPOWER_SUPPORT_
 /******************************************************************************
@@ -135,6 +135,6 @@ ZCL_Status_t ZGPH_SendSinkTableRequest(uint16_t addr, uint8_t options, uint64_t 
 
 
 #endif // _GREENPOWER_SUPPORT_
-#endif // _ZGPCLUSTER_H
+#endif // ZGPCLUSTER_H
 
 // eof zgpCluster.h

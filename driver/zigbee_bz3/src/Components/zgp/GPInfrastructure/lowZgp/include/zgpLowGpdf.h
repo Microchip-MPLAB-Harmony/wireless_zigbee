@@ -41,8 +41,8 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#ifndef _ZGPLOWGPDFINTERFACE_H
-#define _ZGPLOWGPDFINTERFACE_H
+#ifndef ZGPLOWGPDFINTERFACE_H
+#define ZGPLOWGPDFINTERFACE_H
 
 #ifdef _GREENPOWER_SUPPORT_
 // DOM-IGNORE-END
@@ -191,6 +191,6 @@ void ZGPL_KeyDerivationHmac(ZGP_SinkTableEntry_t* sinkTableEntry, uint8_t *deriv
 bool ZGPL_CheckForDuplicate(ZGP_LowDataInd_t *dStubDataInd);
 
 #endif //GREENPOWER_SUPPORT
-#endif //_ZGPLOWGPDF_H
+#endif //ZGPLOWGPDF_H
 
 //eof zgpLowGpdf.h

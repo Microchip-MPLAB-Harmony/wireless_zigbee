@@ -47,6 +47,12 @@ def customColorControlClusterEnableCheck(symbol, event):
     else:
         symbol.setEnabled(False)
 
+def combinedInterfaceColorControlClusterEnableCheck(symbol, event):
+    if ((zigbeeDeviceType.getValue() == 'ZIGBEE_COMBINED_INTERFACE') and (ColorControlCluster.getValue() == True)):
+        symbol.setEnabled(True)
+    else:
+        symbol.setEnabled(False)
+
 def ColorControlClusterClientCheck(symbol, event):
     if ((ColorControlCluster.getValue() == False) or ColorControlClusterCS.getValue() == "SERVER"):
         symbol.setVisible(False)
@@ -64,12 +70,17 @@ def colorControlClusterHandling():
     getDevice = zigbeeDeviceType.getValue()
 
     if ((getDevice == "ZIGBEE_COLOR_SCENE_CONTROLLER")
-        or (getDevice == "ZIGBEE_COMBINED_INTERFACE")
         or (getDevice == "ZIGBEE_CONTROL_BRIDGE")
         ):
         ColorControlCluster.setVisible(True)
         ColorControlCluster.setValue(True)
         ColorControlCluster.setReadOnly(True)
+        ColorControlClusterCS.setValue("CLIENT")
+        ColorControlClusterCS.setReadOnly(True)
+    elif (getDevice == "ZIGBEE_COMBINED_INTERFACE"):
+        ColorControlCluster.setVisible(True)
+        ColorControlCluster.setValue(True)
+        ColorControlCluster.setReadOnly(False)
         ColorControlClusterCS.setValue("CLIENT")
         ColorControlClusterCS.setReadOnly(True)
     elif ((getDevice == "ZIGBEE_MULTI_SENSOR")
@@ -92,7 +103,10 @@ def colorControlClusterHandling():
     elif ((getDevice == "ZIGBEE_CUSTOM")):
         ColorControlCluster.setVisible(True)
         ColorControlCluster.setValue(True)
-        ColorControlClusterCS.setValue("BOTH")
+        ColorControlClusterCS.setValue("SERVER")
+        ColorControlClusterCS.setVisible(True)
+        ColorControlClusterServerMenu.setVisible(True)
+        ColorControlClusterClientMenu.setVisible(False)
     else:
         ColorControlCluster.setVisible(False)
 
@@ -320,12 +334,14 @@ ColorControlClusterCS.setVisible(False)
 ColorControlClusterCS.setDescription("COLORCONTROL CLUSTER Supported Implementation- check the box to enable")
 ColorControlClusterCS.setDependencies(ColorControlClusterCsCheck,["COLORCONTROL_CLUSTER_ENABLE"])
 
+global ColorControlClusterClientMenu
 ColorControlClusterClientMenu = drvZigbeeComponent.createMenuSymbol("COLORCONTROL_CLUSTER_CLIENT_MENU", ColorControlCluster)
 ColorControlClusterClientMenu.setLabel("Client")
 ColorControlClusterClientMenu.setVisible(False)
 ColorControlClusterClientMenu.setDescription("COLORCONTROL CLUSTER CLIENT")
 ColorControlClusterClientMenu.setDependencies(ColorControlClusterClientCheck,["COLORCONTROL_CLUSTER_CS","COLORCONTROL_CLUSTER_ENABLE"])
 
+global ColorControlClusterServerMenu
 ColorControlClusterServerMenu = drvZigbeeComponent.createMenuSymbol("COLORCONTROL_CLUSTER_SERVER_MENU", ColorControlCluster)
 ColorControlClusterServerMenu.setLabel("Server")
 ColorControlClusterServerMenu.setVisible(False)
@@ -1000,5 +1016,17 @@ colorControlClusterConfSrc.setProjectPath("config/" + configName + "/zigbee/z3de
 colorControlClusterConfSrc.setType("SOURCE")
 colorControlClusterConfSrc.setOverwrite(True)
 colorControlClusterConfSrc.setMarkup(True)
-colorControlClusterConfSrc.setEnabled(checkDevTypeCombInterface)
+colorControlClusterConfSrc.setEnabled(checkDevTypeCombInterface and ColorControlCluster.getValue())
+colorControlClusterConfSrc.setDependencies(combinedInterfaceColorControlClusterEnableCheck, ["COLORCONTROL_CLUSTER_ENABLE"])
+
+colorControlClusterConfInc = drvZigbeeComponent.createFileSymbol("CICOLORCONTROLCLUSTER_H", None)
+colorControlClusterConfInc.setSourcePath("/driver/zigbee" + suffix + "/application/zigbee_only/Zigbee_Device_Application/devicetypes/combinedInterface/include/ciColorControlCluster.h")
+colorControlClusterConfInc.setOutputName("ciColorControlCluster.h")
+colorControlClusterConfInc.setDestPath("/zigbee/z3device/combinedInterface/include")
+colorControlClusterConfInc.setProjectPath("config/" + configName + "/zigbee/z3device/combinedInterface/include/")
+colorControlClusterConfInc.setType("HEADER")
+colorControlClusterConfInc.setOverwrite(True)
+colorControlClusterConfInc.setEnabled(checkDevTypeCombInterface and ColorControlCluster.getValue())
+colorControlClusterConfInc.setDependencies(combinedInterfaceColorControlClusterEnableCheck,["COLORCONTROL_CLUSTER_ENABLE"])
+
 ############################################################################################################

@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _CBILLUMINANCEMEASUREMENTCLUSTER_H
-#define _CBILLUMINANCEMEASUREMENTCLUSTER_H
+#ifndef CBILLUMINANCEMEASUREMENTCLUSTER_H
+#define CBILLUMINANCEMEASUREMENTCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -56,6 +56,6 @@
 ******************************************************************************/
 void cbIlluminanceMeasurementClusterInit(void);
 
-#endif // _CBBOCCUPANCYSENSINGCLUSTER_H
+#endif // CBILLUMINANCEMEASUREMENTCLUSTER_H
 
 // eof cbIlluminanceMeasurementCluster.h

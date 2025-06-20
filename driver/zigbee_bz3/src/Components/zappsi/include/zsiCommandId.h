@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSICOMMANDID_H
-#define _ZSICOMMANDID_H
+#ifndef ZSICOMMANDID_H
+#define ZSICOMMANDID_H
 
 /******************************************************************************
                               Defines section
@@ -285,5 +285,5 @@
 #define ZSI_ZGPL_GPDF_DATA_REQ_CONFIRM                     0x24U
 #define ZSI_ZGPL_CHECK_FOR_DUPLICATE_REQUEST               0x25U
 #define ZSI_ZGPL_CHECK_FOR_DUPLICATE_CONFIRM               0x26U
-#endif /* _ZSICOMMANDID_H */
+#endif /* ZSICOMMANDID_H */
 /* eof zsiCommandId.h */

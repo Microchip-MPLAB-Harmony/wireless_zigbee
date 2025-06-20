@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZCLIASZONECLUSTER_H_
-#define _ZCLIASZONECLUSTER_H_
+#ifndef ZCLIASZONECLUSTER_H
+#define ZCLIASZONECLUSTER_H
 
 /*******************************************************************************
                    Includes section
@@ -397,4 +397,4 @@ typedef struct
 </#if>
 } ZCL_IasZoneClusterCommands_t;
 
-#endif /* _ZCLIASZONECLUSTER_H_ */
+#endif /* ZCLIASZONECLUSTER_H */

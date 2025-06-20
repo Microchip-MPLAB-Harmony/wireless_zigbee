@@ -44,8 +44,10 @@ def appChannelTypeCheckMask(symbol, event):
 def zigbeeDevResetToFN(symbol, event):
     if( deviceName in pic32cx_bz2_family):
         wbzSymbols = Database.getComponentByID('pic32cx_bz2_devsupport')
-    else:
+    elif((deviceName in pic32cx_bz3_family) or (deviceName in pic32cx_bz36_family)):
         wbzSymbols = Database.getComponentByID('pic32cx_bz3_devsupport')
+    elif( deviceName in pic32cx_bz6_family):
+        wbzSymbols = Database.getComponentByID('pic32cx_bz6_devsupport')
         
     resetToFNSymbol = wbzSymbols.getSymbolByID('ENABLE_RESET_TO_FN')
     if((event["value"] == True)):
@@ -70,6 +72,7 @@ appConfigUseChannel.setDefaultValue("NO")
 appConfigUseChannel.setLabel("Use Channel instead of Mask")
 
 # Primary Channel 
+global appConfigPrimaryChannel
 appConfigPrimaryChannel = drvZigbeeComponent.createIntegerSymbol("APP_PRIMARY_CHANNEL", applicationConfigMenu)
 appConfigPrimaryChannel.setLabel("Primary Channel")
 appConfigPrimaryChannel.setDefaultValue(20)
@@ -88,6 +91,7 @@ appConfigSecondaryChannel.setVisible(appConfigUseChannel.getValue() == "YES")
 appConfigSecondaryChannel.setDependencies(appChannelTypeCheckChannel, ["APP_USE_CHANNEL"])
 
 # Primary Channel Mask
+global appConfigPrimaryChannelMask
 appConfigPrimaryChannelMask = drvZigbeeComponent.createHexSymbol("APP_PRIMARY_CHANNELS_MASK", applicationConfigMenu)
 appConfigPrimaryChannelMask.setLabel("Primary Channel Mask")
 appConfigPrimaryChannelMask.setDefaultValue(0x2108800)
@@ -111,7 +115,22 @@ ResetTOFnEnabling = drvZigbeeComponent.createBooleanSymbol("RESET_TO_FN_ENABLE",
 ResetTOFnEnabling.setLabel("Reset To FN on button press")
 ResetTOFnEnabling.setVisible((drvZigbeeComponent.getID() in deviceDeepSleepEnabledList))
 ResetTOFnEnabling.setDefaultValue(False)
-ResetTOFnEnabling.setDependencies(zigbeeDevResetToFN, ["RESET_TO_FN_ENABLE"]) 
+ResetTOFnEnabling.setDependencies(zigbeeDevResetToFN, ["RESET_TO_FN_ENABLE"])
+
+global appConfigZloExtraClusters
+appConfigZloExtraClusters = drvZigbeeComponent.createBooleanSymbol("ZLO_EXTRA_CLUSTERS_SUPPORT", applicationConfigMenu)
+appConfigZloExtraClusters.setLabel("Enable ZLO Extra Clusters Support")
+appConfigZloExtraClusters.setDefaultValue(True)
+appConfigZloExtraClusters.setReadOnly(True)
+appConfigZloExtraClusters.setDescription("ZLO_EXTRA_CLUSTERS_SUPPORT- check the box to enable")
+
+global appConfigZloClustersEnhancements
+appConfigZloClustersEnhancements = drvZigbeeComponent.createBooleanSymbol("ZLO_CLUSTER_ENHANCEMENTS", applicationConfigMenu)
+appConfigZloClustersEnhancements.setLabel("Enable ZLO Clusters Enhancements")
+appConfigZloClustersEnhancements.setDefaultValue(True)
+appConfigZloClustersEnhancements.setReadOnly(True)
+appConfigZloClustersEnhancements.setDescription("ZLO_CLUSTER_ENHANCEMENTS- check the box to enable")
+
 # Console
 global appConfigEnableConsole
 appConfigEnableConsole = drvZigbeeComponent.createBooleanSymbol("APP_ENABLE_CONSOLE", applicationConfigMenu)
@@ -142,18 +161,6 @@ commsnzdoconsolecommandEnable = drvZigbeeComponent.createBooleanSymbol("COMMISSI
 commsnzdoconsolecommandEnable.setLabel("Enable Commissioining Console Commands")
 commsnzdoconsolecommandEnable.setDefaultValue(False)
 commsnzdoconsolecommandEnable.setDescription("COMMISSIONING_COMMANDS_IN_CONSOLE- check the box to enable")
-
-global appConfigZloExtraClusters
-appConfigZloExtraClusters = drvZigbeeComponent.createBooleanSymbol("ZLO_EXTRA_CLUSTERS_SUPPORT", appConfigEnableConsole)
-appConfigZloExtraClusters.setLabel("Enable ZLO Extra Clusters Support")
-appConfigZloExtraClusters.setDefaultValue(False)
-appConfigZloExtraClusters.setDescription("ZLO_EXTRA_CLUSTERS_SUPPORT- check the box to enable")
-
-global appConfigZloClustersEnhancements
-appConfigZloClustersEnhancements = drvZigbeeComponent.createBooleanSymbol("ZLO_CLUSTER_ENHANCEMENTS", appConfigEnableConsole)
-appConfigZloClustersEnhancements.setLabel("Enable ZLO Clusters Enhancements")
-appConfigZloClustersEnhancements.setDefaultValue(False)
-appConfigZloClustersEnhancements.setDescription("ZLO_CLUSTER_ENHANCEMENTS- check the box to enable")
 
 # Certification Extension
 global appConfigCertificationExtension

@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _CBBASICCLUSTER_H
-#define _CBBASICCLUSTER_H
+#ifndef CBBASICCLUSTER_H
+#define CBBASICCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -72,6 +72,6 @@ void cbBasicClusterInit(void);
 ******************************************************************************/
 void cbBasicResetToFactoryDefaultsCommand(APS_AddrMode_t mode,ShortAddr_t addr, Endpoint_t ep, Endpoint_t srcEp);
 
-#endif // _CBBASICCLUSTER_H
+#endif // CBBASICCLUSTER_H
 
 // eof cbBasicCluster.h

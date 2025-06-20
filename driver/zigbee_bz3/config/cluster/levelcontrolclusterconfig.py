@@ -47,6 +47,12 @@ def customLevelControlClusterEnableCheck(symbol, event):
     else:
         symbol.setEnabled(False)
 
+def combinedInterfaceLevelControlClusterEnableCheck(symbol, event):
+    if ((zigbeeDeviceType.getValue() == 'ZIGBEE_COMBINED_INTERFACE') and (LevelControlCluster.getValue() == True)):
+        symbol.setEnabled(True)
+    else:
+        symbol.setEnabled(False)
+
 def LevelControlClusterClientCheck(symbol, event):
     if ((LevelControlCluster.getValue() == False) or LevelControlClusterCS.getValue() == "SERVER"):
         symbol.setVisible(False)
@@ -64,11 +70,16 @@ def levelControlClusterHandling():
     getDevice = zigbeeDeviceType.getValue()
 
     if ((getDevice == "ZIGBEE_COLOR_SCENE_CONTROLLER")
-        or (getDevice == "ZIGBEE_COMBINED_INTERFACE")
         or (getDevice == "ZIGBEE_CONTROL_BRIDGE")):
         LevelControlCluster.setVisible(True)
         LevelControlCluster.setValue(True)
         LevelControlCluster.setReadOnly(True)
+        LevelControlClusterCS.setValue("CLIENT")
+        LevelControlClusterCS.setReadOnly(True)
+    elif (getDevice == "ZIGBEE_COMBINED_INTERFACE"):
+        LevelControlCluster.setVisible(True)
+        LevelControlCluster.setValue(True)
+        LevelControlCluster.setReadOnly(False)
         LevelControlClusterCS.setValue("CLIENT")
         LevelControlClusterCS.setReadOnly(True)
     elif ((getDevice == "ZIGBEE_MULTI_SENSOR")
@@ -91,7 +102,10 @@ def levelControlClusterHandling():
     elif ((getDevice == "ZIGBEE_CUSTOM")):
         LevelControlCluster.setVisible(True)
         LevelControlCluster.setValue(True)
-        LevelControlClusterCS.setValue("BOTH")
+        LevelControlClusterCS.setValue("SERVER")
+        LevelControlClusterCS.setVisible(True)
+        LevelControlClusterServerMenu.setVisible(True)
+        LevelControlClusterClientMenu.setVisible(False)
     else:
         LevelControlCluster.setVisible(False)
 
@@ -187,12 +201,14 @@ LevelControlClusterCS.setVisible(False)
 LevelControlClusterCS.setDescription("LEVELCONTROL CLUSTER Supported Implementation- check the box to enable")
 LevelControlClusterCS.setDependencies(LevelControlClusterCsCheck,["LEVELCONTROL_CLUSTER_ENABLE"])
 
+global LevelControlClusterClientMenu
 LevelControlClusterClientMenu = drvZigbeeComponent.createMenuSymbol("LEVELCONTROL_CLUSTER_CLIENT_MENU", LevelControlCluster)
 LevelControlClusterClientMenu.setLabel("Client")
 LevelControlClusterClientMenu.setVisible(False)
 LevelControlClusterClientMenu.setDescription("LEVELCONTROL CLUSTER CLIENT")
 LevelControlClusterClientMenu.setDependencies(LevelControlClusterClientCheck,["LEVELCONTROL_CLUSTER_CS","LEVELCONTROL_CLUSTER_ENABLE"])
 
+global LevelControlClusterServerMenu
 LevelControlClusterServerMenu = drvZigbeeComponent.createMenuSymbol("LEVELCONTROL_CLUSTER_SERVER_MENU", LevelControlCluster)
 LevelControlClusterServerMenu.setLabel("Server")
 LevelControlClusterServerMenu.setVisible(False)
@@ -512,5 +528,17 @@ levelControlClusterConfSrc.setProjectPath("config/" + configName + "/zigbee/z3de
 levelControlClusterConfSrc.setType("SOURCE")
 levelControlClusterConfSrc.setOverwrite(True)
 levelControlClusterConfSrc.setMarkup(True)
-levelControlClusterConfSrc.setEnabled(checkDevTypeCombInterface)
+levelControlClusterConfSrc.setEnabled(checkDevTypeCombInterface and LevelControlCluster.getValue())
+levelControlClusterConfSrc.setDependencies(combinedInterfaceLevelControlClusterEnableCheck,["LEVELCONTROL_CLUSTER_ENABLE"])
+
+levelControlClusterConfInc = drvZigbeeComponent.createFileSymbol("CILEVELCONTROLCLUSTER_H", None)
+levelControlClusterConfInc.setSourcePath("/driver/zigbee" + suffix + "/application/zigbee_only/Zigbee_Device_Application/devicetypes/combinedInterface/include/ciLevelControlCluster.h")
+levelControlClusterConfInc.setOutputName("ciLevelControlCluster.h")
+levelControlClusterConfInc.setDestPath("/zigbee/z3device/combinedInterface/include")
+levelControlClusterConfInc.setProjectPath("config/" + configName + "/zigbee/z3device/combinedInterface/include/")
+levelControlClusterConfInc.setType("HEADER")
+levelControlClusterConfInc.setOverwrite(True)
+levelControlClusterConfInc.setEnabled(checkDevTypeCombInterface and LevelControlCluster.getValue())
+levelControlClusterConfInc.setDependencies(combinedInterfaceLevelControlClusterEnableCheck,["LEVELCONTROL_CLUSTER_ENABLE"])
+
 ############################################################################################################

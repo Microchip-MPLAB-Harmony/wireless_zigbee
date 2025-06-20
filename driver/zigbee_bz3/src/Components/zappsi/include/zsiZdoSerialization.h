@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSIZDOSERIALIZATION_H_
-#define _ZSIZDOSERIALIZATION_H_
+#ifndef ZSIZDOSERIALIZATION_H
+#define ZSIZDOSERIALIZATION_H
 
 /******************************************************************************
                     Includes section
@@ -882,4 +882,4 @@ ZsiProcessingResult_t zsiDeserializeZDO_StartStopSyncReq(void *memory,
 
 #endif /* ZAPPSI_NP */
 
-#endif /* _ZSIZDOSERIALIZATION_H_ */
+#endif /* ZSIZDOSERIALIZATION_H */

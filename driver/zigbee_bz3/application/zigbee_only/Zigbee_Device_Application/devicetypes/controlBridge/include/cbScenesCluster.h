@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _CBSCENESCLUSTER_H
-#define _CBSCENESCLUSTER_H
+#ifndef CBSCENESCLUSTER_H
+#define CBSCENESCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -61,7 +61,7 @@ extern ZCL_SceneClusterClientAttributes_t cbScenesClusterClientAttributes;
 ******************************************************************************/
 void cbScenesClusterInit(void);
 
-#endif // _CBSCENESCLUSTER_H
+#endif // CBSCENESCLUSTER_H
 
 // eof cbScenesCluster.h
 

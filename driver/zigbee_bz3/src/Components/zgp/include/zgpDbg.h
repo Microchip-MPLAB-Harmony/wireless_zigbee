@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPDBG_H
-#define _ZGPDBG_H
+#ifndef ZGPDBG_H
+#define ZGPDBG_H
 
 /******************************************************************************
                            Includes section
@@ -116,6 +116,6 @@ typedef enum _ZgpDbgCode_t
 #define FLAG15    16384
 #define FLAG16    32768
 
-#endif //_ZGPDBG_H
+#endif //ZGPDBG_H
 
 //eof zgpDbg.h

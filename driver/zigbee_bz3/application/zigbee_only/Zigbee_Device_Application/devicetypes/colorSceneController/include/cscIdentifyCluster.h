@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _COLORSCENECONTROLLER_IDENTIFYCLUSTER_H
-#define _COLORSCENECONTROLLER_IDENTIFYCLUSTER_H
+#ifndef COLORSCENECONTROLLER_IDENTIFYCLUSTER_H
+#define COLORSCENECONTROLLER_IDENTIFYCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -97,6 +97,6 @@ void cscIdentifyStop(void);
 void cscIdetifyStartIdentifyingCb(uint16_t time, void (*cb)(void));
 
 
-#endif // _COLORSCENECONTROLLER_IDENTIFYCLUSTER_H
+#endif // COLORSCENECONTROLLER_IDENTIFYCLUSTER_H
 
 // eof cscIdentifyCluster.h

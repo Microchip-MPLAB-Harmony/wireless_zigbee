@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSIDBG_H_
-#define _ZSIDBG_H_
+#ifndef ZSIDBG_H
+#define ZSIDBG_H
 
 /******************************************************************************
                     Includes section
@@ -111,4 +111,4 @@ typedef enum _ZSI_DbgCodeId_t
   ZSIINIT_ZSIINITRESETNETWORKCONF0                 = 0xA060
 } ZSI_DbgCodeId_t;
 
-#endif /* _ZSIDBG_H_ */
+#endif /* ZSIDBG_H */

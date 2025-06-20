@@ -41,15 +41,17 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#if !defined _APS_CRYPTO_KEYS_H
-#define _APS_CRYPTO_KEYS_H
+#if !defined APS_CRYPTO_KEYS_H
+#define APS_CRYPTO_KEYS_H
 // DOM-IGNORE-END
 
 /******************************************************************************
                                Includes section
  ******************************************************************************/
 #include <nwk/include/nwk.h>
-
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <zdo/include/zdoSecurityStartKeyUpdate.h>
+#endif
 /******************************************************************************
                               Define(s) section
  ******************************************************************************/
@@ -85,9 +87,12 @@
 
 /** Values of reset flag. These request reset master, link keys or counters.
  * Zero or more flags can be bitwise-or'd in argument of APS_ResetKeys. */
-#define APS_RESET_MASTER_KEY 0x01 /*!< Set default master key (zero key). */
-#define APS_RESET_LINK_KEY   0x02 /*!< Set default link key (zero key). */
-#define APS_RESET_COUNTERS   0x04 /*!< Set 0 to incoming and outgoing counters.*/
+#define APS_RESET_MASTER_KEY       0x01 /*!< Set default master key (zero key). */
+#define APS_RESET_LINK_KEY         0x02 /*!< Set default link key (zero key). */
+#define APS_RESET_COUNTERS         0x04 /*!< Set 0 to incoming and outgoing counters.*/
+#define APS_RESET_FRAME_COUNTERS   0x08 /*!< Set 0 to verified frame counter and challenge frame counter.*/
+/** Size of Pass Phrase (Table 4-36). */
+#define PASSPHRASE_MAX_SIZE       0x10U
 // DOM-IGNORE-END
 
 /******************************************************************************
@@ -109,11 +114,73 @@ typedef uint16_t APS_KeyPairAmount_t;
 /** Type of cryptographic key handle. */
 typedef struct _APS_KeyHandle_t
 {
-  /** Key index */
+  /** Key-pair index */
   APS_KeyPairIndex_t idx;
   /** Set of flags associated with key */
   uint8_t flags;
 } APS_KeyHandle_t;
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/** Type of key negotiation state (elements of key-pair descriptor). */
+typedef enum
+{
+  /** No Key negotiation state */
+  NO_KEY_NEGOTIATION = 0x00,
+  /** Start Key negotiation state */
+  START_KEY_NEGOTIATION = 0x01,
+  /** Complete Key negotiation state */
+  COMPLETE_KEY_NEGOTIATION = 0x02,
+} ApsKeyNegotiationState_t;
+
+/** Type of key attributes (elements of key-pair descriptor). */
+typedef enum
+{
+  /** Provisional Key attribute */
+  PROVISIONAL_KEY = 0x00,
+  /** Unverified Key attribute */
+  UNVERIFIED_KEY = 0x01,
+  /** Verified Key attribute */
+  VERIFIED_KEY = 0x02,
+} ApsKeyAttributes_t;
+
+/** Type of link key type (elements of key-pair descriptor). */
+typedef enum
+{
+  /** Link Key type - Unique */
+  UNIQUE_LINK_KEY = 0x00,
+  /** Link Key type - Global */
+  GLOBAL_LINK_KEY = 0x01,
+} ApsLinkKeyType_t;
+
+/** Constants that specify how to the device joins to a network. */
+typedef enum
+{
+  /** No authentication joining method. */
+  NO_AUTHENTICATION = 0x00,
+  /** Install code key. */
+  INSTALL_CODE_KEY = 0x01,
+  /** Anonymous key negotiation. */
+  ANONYMOUS_KEY_NEGO = 0x02,
+  /** Key Negotiation with Authentication. */
+  KEY_NEGO_WITH_AUTH = 0x03,
+} ApsInitialJoinMethod_t;
+
+/** Constants that specify link key update methods used to create the current active link key. */
+typedef enum
+{
+  /** Not updated. */
+  NOT_UPDATED = 0,
+  /** Key Request Method. */
+  KEY_REQUEST_METHOD = 1,
+  /** Unauthenticated Key Negotiation. */
+  UNAUTHENTICATED_KEY_NEGOTIATION = 2,
+  /** Authenticated Key Negotiation. */
+  AUTHENTICATED_KEY_NEGOTIATION = 3,
+  /** Application Defined Certificate Based Mutual Authentication. Not supported by spec */
+  APP_DEFINED_CERTIFICATE_MUTUAL_AUT = 4
+} ApsActiveLinkKeyType_t;
+
+#endif
 
 typedef enum
 {
@@ -132,6 +199,8 @@ typedef enum
   APS_FLAG_KEY_PAIR_TC = 0x10,
   /** A flag indicating that the link key is updated */
   APS_FLAG_KEY_PAIR_UPDATED = 0x20,
+  /** A flag indicating that the network key is transported */
+  APS_FLAG_NWK_KEY_TRANSPORTED = 0x40,
 } APS_KeyPairFlags_t;
 
 /** Bit map of reset flags. */
@@ -159,7 +228,7 @@ INLINE APS_KeyHandle_t APS_KeyHandleUninitialized(void)
   return keyHandle;
 }
 
-/**************************************************************************//**
+/****************************************************************************
   \brief Sets a link key for the device with a given extended address
 
   This function inserts a new entry into the APS key-pair set containing provided
@@ -181,18 +250,18 @@ INLINE APS_KeyHandle_t APS_KeyHandleUninitialized(void)
 
   A typical example of the function's usage is given below:
 \code
-APS_KeyHandle_t apsKeyHandle; //A variable to hold a key handle
-//Set a link key variable to a 16-byte value
+APS_KeyHandle_t apsKeyHandle; A variable to hold a key handle
+Set a link key variable to a 16-byte value
 uint8_t linkKey[SECURITY_KEY_SIZE] = {0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa};
-//A variable for the trust center address predefined in ::CS_APS_TRUST_CENTER_ADDRESS.
+A variable for the trust center address predefined in ::CS_APS_TRUST_CENTER_ADDRESS.
 ExtAddr_t trustCenterAddr;
 
-//Read the trust center address
+Read the trust center address
 CS_ReadParameter(CS_APS_TRUST_CENTER_ADDRESS_ID, &trustCenterAddr);
-//Set the trust center link key
+Set the trust center link key
 apsKeyHandle = APS_SetLinkKey(&trustCenterAddr, linkKey);
 
-//Check for errors
+Check for errors
 if (APS_KEY_HANDLE_IS_VALID(apsKeyHandle))
 {
   ...
@@ -208,7 +277,7 @@ if (APS_KEY_HANDLE_IS_VALID(apsKeyHandle))
  ******************************************************************************/
 APS_KeyHandle_t APS_SetLinkKey(const ExtAddr_t *const deviceAddress,const uint8_t *const linkKey);
 
-/**************************************************************************//**
+/****************************************************************************
   \brief Sets a master key for the device with a given extended address
 
   This function inserts a new entry into the APS key-pair set containing provided
@@ -231,15 +300,15 @@ APS_KeyHandle_t APS_SetLinkKey(const ExtAddr_t *const deviceAddress,const uint8_
 
   See the example of usage below:
 \code
-APS_KeyHandle_t apsKeyHandle; //A variable to hold a key handle
-//Set a master key variable to a 16-byte value
+APS_KeyHandle_t apsKeyHandle; A variable to hold a key handle
+Set a master key variable to a 16-byte value
 uint8_t masterKey[16] = {0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa};
-//Assume the remote node extended address is held by APP_EXT_ADDR constant
+Assume the remote node extended address is held by APP_EXT_ADDR constant
 ExtAddr_t partnerExtAddr = APP_EXT_ADDR;
 
-apsKeyHandle = APS_SetMasterKey(&partnerExtAddr, masterKey); //Set the master key
+apsKeyHandle = APS_SetMasterKey(&partnerExtAddr, masterKey); Set the master key
 
-//Check for errors
+Check for errors
 if (APS_KEY_HANDLE_IS_VALID(apsKeyHandle))
 {
   ...
@@ -265,7 +334,7 @@ discovered using Service Discovery.
  ******************************************************************************/
 APS_KeyHandle_t APS_SetMasterKey(const ExtAddr_t *const deviceAddress, const uint8_t *const masterKey);
 
-/**************************************************************************//**
+/****************************************************************************
   \brief Find the master key or the link key corresponding to a given extended address
 
   The function is used to check whether the link key or the master key has been set for a given
@@ -275,12 +344,12 @@ APS_KeyHandle_t APS_SetMasterKey(const ExtAddr_t *const deviceAddress, const uin
 
   See the example:
 \code
-//Assume that the extended address of interest is held by APP_EXT_ADDR constant
+Assume that the extended address of interest is held by APP_EXT_ADDR constant
 ExtAddr_t partnerExtAddr = APP_EXT_ADDR;
 
 if (!APS_KEYS_FOUND(APS_FindKeys(&partnerExtAddr)))
 {
-  ... //Perform required action, e.g. request for a link key, using APS_RequestKeyReq()
+  ... Perform required action, e.g. request for a link key, using APS_RequestKeyReq()
 }
 \endcode
 
@@ -292,7 +361,7 @@ if (!APS_KEYS_FOUND(APS_FindKeys(&partnerExtAddr)))
  ******************************************************************************/
 APS_KeyHandle_t APS_FindKeys(const ExtAddr_t *const deviceAddress);
 
-/**************************************************************************//**
+/****************************************************************************
   \brief Get a pointer to the master key value by a given key handle
 
   The function returns a pointer to the section of memory containing the master key value
@@ -305,14 +374,14 @@ APS_KeyHandle_t APS_FindKeys(const ExtAddr_t *const deviceAddress);
 
   Consider the example:
 \code
-//Search for keys associated with the provided extended address
+Search for keys associated with the provided extended address
 const APS_KeyHandle_t keyHandle = APS_FindKeys(&extAddr);
 
 uint8_t *masterKey;
 
 if (APS_KEYS_FOUND(keyHandle) && NULL != (masterKey = APS_GetMasterKey(keyHandle)))
 {
-  ... //A pointer to the master key value has been successfully captured
+  ... A pointer to the master key value has been successfully captured
 }
 \endcode
 
@@ -323,7 +392,7 @@ if (APS_KEYS_FOUND(keyHandle) && NULL != (masterKey = APS_GetMasterKey(keyHandle
  ******************************************************************************/
 uint8_t* APS_GetMasterKey(const APS_KeyHandle_t handle);
 
-/**************************************************************************//**
+/****************************************************************************
   \brief Get a pointer to the link key value by a given key handle
 
   The function returns a pointer to the section of memory containing the link key value
@@ -336,14 +405,14 @@ uint8_t* APS_GetMasterKey(const APS_KeyHandle_t handle);
 
   Consider the example:
 \code
-//Search for keys associated with the provided extended address
+Search for keys associated with the provided extended address
 const APS_KeyHandle_t keyHandle = APS_FindKeys(&extAddr);
 
 uint8_t *linkKey;
 
 if (APS_KEYS_FOUND(keyHandle) && (linkKey = APS_GetLinkKey(keyHandle)))
 {
-  ... //A pointer to the link key value has been successfully captured
+  ... A pointer to the link key value has been successfully captured
 }
 \endcode
 
@@ -353,7 +422,7 @@ if (APS_KEYS_FOUND(keyHandle) && (linkKey = APS_GetLinkKey(keyHandle)))
  ******************************************************************************/
 uint8_t* APS_GetLinkKey(const APS_KeyHandle_t handle);
 
-/**************************************************************************//**
+/******************************************************************************
   \brief Delete key-pair - master and link keys.
 
   \param deviceAddress \ref Endian "[LE]" - pointer to extended
@@ -596,16 +665,6 @@ void APS_SetDefaultKeyPairStatus(APS_KeyPairFlags_t flag);
 void APS_UpdateLinkKey(const ExtAddr_t *const deviceAddress);
 
 /**************************************************************************//**
-  \brief Take a backup of current link key and make the latest link key as operational. 
-           This will be used during TCLK update.
-
-  \param deviceAddress - pointer to extended IEEE device address.
-
-  \return None.
- ******************************************************************************/
-void APS_UpdateLinkKey(const ExtAddr_t *const deviceAddress);
-
-/**************************************************************************//**
   \brief Is the handle assocciated with a global or unique link key?
 
   \param handle - valid key handle.
@@ -654,12 +713,313 @@ void APS_MarkKeyPairFlags(APS_KeyHandle_t handle, uint8_t flags);
  ******************************************************************************/
 void APS_ClearKeyPairFlags(APS_KeyHandle_t handle, uint8_t flags);
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************//**
+  \brief Update the Frame counter synchonization bit for a particular device in
+         aps key pair table.
+
+  \param deviceAddress - Extended address of the device that need to be updated.
+  \param frameSynchronizationStatus - Set/Clear the frame counter sync bit.
+
+  \return True - If the Frame counter sync bit is updated for the device
+          False - If the Frame counter sync bit is not updated
+ ******************************************************************************/
+bool APS_UpdateFrameCounterSynchronization(const ExtAddr_t *const deviceAddress, bool frameSynchronizationStatus);
+
+/**************************************************************************//**
+  \brief Update the Key negotiation method/protocol method in the APS Key-Pair table.
+
+  \param deviceAddress - pointer to Extended address of the device that need to be updated.
+  \param keyNegotiationMethod - Key negotiation method \ref SelectedKeyNegotiationProtocol_t.
+
+  \return True - If the key negotiation method is updated for the given device
+          False - If the key negotiation method is not updated
+ ******************************************************************************/
+bool APS_UpdateKeyNegotiationMethod(const ExtAddr_t *const deviceAddress, SelectedKeyNegotiationProtocol_t keyNegotiationMethod);
+
+/**************************************************************************//**
+  \brief Get the Key negotiation protocol/method from the APS Key-Pair table.
+
+  \param deviceAddress - pointer to Extended address of the given device.
+
+  \return If APS Key found, SelectedKeyNegotiationProtocol_t enum for the given device.
+          Else, default (SEL_KEY_STATIC).
+ ******************************************************************************/
+SelectedKeyNegotiationProtocol_t APS_GetKeyNegotiationMethod(const ExtAddr_t *const deviceAddress);
+
+/**************************************************************************//**
+  \brief Update pre-shared secret in the APS Key-Pair table.
+
+  \param[in] deviceAddress - pointer to Extended address of the device that need to be updated.
+  \param[in] preSharedSecret - pre-shared secret \ref SelectedPreSharedSecret_t.
+
+  \return True - If the pre-shared key is updated for the given device
+          False - If the pre-shared key is not updated
+ ******************************************************************************/
+bool APS_UpdatePreSharedSecret(const ExtAddr_t *const deviceAddress, SelectedPreSharedSecret_t preSharedSecret);
+
+/**************************************************************************//**
+  \brief Get selected pre-shared secret for the given device from APS Key-Pair table.
+
+  \param[in] deviceAddress - pointer to Extended address of the given device.
+
+  \return If APS Key found, SelectedPreSharedSecret_t enum for the given device.
+          Else, default (SEL_SECRET_VARIABLE_LENGTH_PASSCODE).
+ ******************************************************************************/
+SelectedPreSharedSecret_t APS_GetPreSharedSecret(const ExtAddr_t *const deviceAddress);
+
+/**************************************************************************//**
+  \brief Returns current pass phrase.
+
+  \param[in] deviceAddress - pointer to extended IEEE device address.
+
+  \return Pass phrase.
+ ******************************************************************************/
+uint8_t* APS_GetPassPhrase(const ExtAddr_t *const deviceAddress);
+
+/**************************************************************************//**
+  \brief Returns current pass phrase update allowed flag.
+
+  \param[in] deviceAddress - pointer to extended IEEE device address.
+
+  \return true if Pass phrase update flag is allowed, else false.
+ ******************************************************************************/
+bool APS_IsPassPhraseUpdateAllowed(const ExtAddr_t *const deviceAddress);
+
+/**************************************************************************//**
+  \brief Lock the passphrase to prevent it from changing.
+
+  \param[in] deviceAddress - pointer to extended IEEE device address.
+
+  \return TRUE - If Pass phrase update flag is successfully locked.
+          FALSE - Otherwise
+ ******************************************************************************/
+bool APS_LockPassPhrase(const ExtAddr_t *const deviceAddress);
+
+/**************************************************************************//**
+  \brief Sets new pass phrase for the given device.
+
+   This function copies value of pass phrase to APS Key-Pair Set.
+
+  \param[in] deviceAddress - pointer to extended IEEE device address.
+  \param[in] passPhrase - pointer to new pass phrase.
+  \param[in] passPhraseSize - pass phrase size.
+
+  \return True - If pass phrase is set for the device.
+          False - If pass phrase is not updated for the device.
+ ******************************************************************************/
+bool APS_SetPassPhrase(const ExtAddr_t *const deviceAddress, 
+                       const uint8_t *passPhrase, uint8_t passPhraseSize);
+
+/**************************************************************************//**
+  \brief Update the state of key negotiation state. This will be used during key
+		     negotiation / link key generation.
+  \param[in] deviceAddress - Extended address of the device that need to be updated.
+  \param[in] newKeyNegotiationState - Enum value \ref ApsKeyNegotiationState_t.
+
+  \return True - If the key negotiation state is updated for the device
+          False - If the key negotiation state is not updated.
+ ******************************************************************************/
+bool APS_UpdateKeyNegotiationState(const ExtAddr_t *const deviceAddress, ApsKeyNegotiationState_t newKeyNegotiationState);
+
+/**************************************************************************//**
+  \brief Set keyAttributes for the specified key.
+
+   This function copies value of keyattributes to APS Key-Pair Set.
+
+  \param[in] deviceAddress - pointer to extended IEEE device address.
+  \param[in] keyAttributes - ApsKeyAttributes_t enumeration.
+
+
+  \return True - If keyattributes are updated for the device.
+          False - If keyattributes are not updated for the device.
+ ******************************************************************************/
+bool APS_SetKeyAttributes(const ExtAddr_t *const deviceAddress,
+                          ApsKeyAttributes_t keyAttributes);
+
+/**************************************************************************//**
+  \brief Returns key attributes state.
+
+  \param[in] apsKeyHandle                 - valid key handle.
+
+  \return current key attributes state.
+ ******************************************************************************/
+ApsKeyAttributes_t APS_GetKeyAttributes(const APS_KeyHandle_t apsKeyHandle);
+
+/**************************************************************************//**
+  \brief Update the link Key Type to APS Key Pair table
+
+  \param deviceAddress - Extended address of the device that need to be updated.
+  \param linkKeyType - ApsLinkKeyType_t enum value.
+
+  \return True - If the link Key Type is updated for the device
+          False - If the link Key Type is not updated
+ ******************************************************************************/
+bool APS_UpdateLinkKeyType(const ExtAddr_t *const deviceAddress, ApsLinkKeyType_t linkKeyType);
+
+/**************************************************************************/ /**
+   \brief Update the network key status to the APS Key Pair table
+          aps key pair table.
+
+   \param deviceAddress - Extended address of the device that need to be updated.
+   \param nwkKeyStatus  - Network Key status.
+
+   \return True - If the network key status is updated for the device
+           False - If the network key status is not updated
+  ******************************************************************************/
+bool APS_UpdateNwkKeyStatus(const ExtAddr_t *const deviceAddress, APS_KeyPairFlags_t nwkKeyStatus);
+
+/**************************************************************************/ /**
+   \brief Checks Network Key status.
+
+   \param[in] deviceAddress - pointer to extended IEEE device address.
+
+   \return True if Network key status is \ref APS_FLAG_NWK_KEY_TRANSPORTED.
+           Otherwise False.
+  ******************************************************************************/
+bool APS_IsNwkKeyUpdated(const ExtAddr_t *const deviceAddress);
+
+/**************************************************************************//**
+  \brief Update the verifiedFrameCounter flag. This will be used during 
+		     security challenge verification.
+  \param[in] deviceAddress - Extended address of the device that need to be updated.
+  \param[in] verifiedFrameCounter - bool value of new verified frame counteer.
+
+  \return True - If the flag is updated
+          False - If the flag is not updated.
+ ******************************************************************************/
+bool APS_SetVerifiedFrameCounter(const ExtAddr_t *const deviceAddress, bool verifiedFrameCounter);
+
+/**************************************************************************//**
+  \brief Set current value of incoming frame counter.
+
+  \param[in] deviceAddress - Extended address of the device that need to be updated.
+
+  \return True - If value of incoming frame counter updated
+          False - If value of incoming frame counter is not updated.
+ ******************************************************************************/
+bool APS_SetInFrameCounter(const ExtAddr_t *const deviceAddress, ApsInFrameCounter_t inFrameCounter);
+
+/**************************************************************************//**
+  \brief Returns current value of challenge frame counter.
+
+  \param[in] deviceAddress - pointer to extended device address.
+
+  \return Challenge frame counter.
+ ******************************************************************************/
+uint32_t APS_GetChallengeFrameCounter(const ExtAddr_t *const deviceAddress);
+
+/**************************************************************************//**
+  \brief Increase apsChallengeFrameCounter value by 1.
+
+  \param[in] deviceAddress - Extended address of the device that need to be updated.
+
+  \return True - If value of challenge frame counter is updated
+          False - If value of challenge frame counter is not updated.
+ ******************************************************************************/
+bool APS_UpdateChallengeFrameCounter(const ExtAddr_t *const deviceAddress);
+
+/**************************************************************************//**
+  \brief Checks if VerifiedFrameCounter is set and valid.
+
+  \param[in] deviceAddress - pointer to extended IEEE device address.
+
+  \return True if VerifiedFrameCounter is set and valid.
+          False if VerifiedFrameCounter is not set.
+ ******************************************************************************/
+bool APS_GetVerifiedFrameCounter(const ExtAddr_t *const deviceAddress);
+
+/**************************************************************************//**
+  \brief Reset verified counter to default value without affecting any counters.
+         
+  \param[in] flags - bit map of APS Key-Pair reset flags. Current implementation
+                     supported only APS_RESET_FRAME_COUNTERS.
+
+  \return false: If table is not valid or no valid entry found in key pair table.
+          true:  If flag is reset for valid entry in key pair table.
+
+ ******************************************************************************/
+bool APS_ResetCounter(const APS_KeyResetFlags_t flags);
+
+/**************************************************************************//**
+  \brief Restore default value of default incoming frame counter.
+
+  \param[in] deviceAddress - Extended address of the device that need to be updated.
+
+  \return True - If value of incoming frame counter updated from default  
+          incoming frame counter.
+          False - If default value of incoming frame counter is not updated from default  incoming frame counter.
+ ******************************************************************************/
+bool APS_RestoreDefaultInFrameCounter(const ExtAddr_t *const deviceAddress);
+
+/**************************************************************************//**
+  \brief Store default value of default incoming frame counter.
+
+  \param[in] deviceAddress - Extended address of the device that need to be updated.
+
+  \return True - If value of default incoming frame counter updated from   
+          incoming frame counter.
+          False - If value of default incoming frame counter is not updated from  incoming frame counter.
+ ******************************************************************************/
+bool APS_StoreDefaultInFrameCounter(const ExtAddr_t *const deviceAddress);
+
+/**************************************************************************//**
+  \brief Update the initial join method.
+
+  \param[in] deviceAddress - Extended address of the device that need to be updated.
+  \param[in] initialJoinMethod - Enum value \ref ApsInitialJoinMethod_t.
+
+  \return True - If the initial join method is updated for the device.
+          False - If the initial join method is not updated for the device.
+ ******************************************************************************/
+bool APS_UpdateInitialJoinMethod(const ExtAddr_t *const deviceAddress, ApsInitialJoinMethod_t initialJoinMethod);
+
+/**************************************************************************//**
+  \brief Update the active link  key type. 
+
+  \param[in] deviceAddress - Extended address of the device that need to be updated.
+  \param[in] activeLinkKeyType - Enum value \ref ApsActiveLinkKeyType_t.
+
+  \return True - If the active link key type is updated for the device
+          False - If the active link key type is not updated for the device
+ ******************************************************************************/
+bool APS_UpdateActiveLinkKeyType(const ExtAddr_t *const deviceAddress, ApsActiveLinkKeyType_t activeLinkKeyType);
+
+/**************************************************************************//**
+  \brief Returns current value of initial join method.
+
+  \param[in] deviceAddress - pointer to extended device address.
+
+  \return Initial join method.
+ ******************************************************************************/
+ApsInitialJoinMethod_t APS_GetInitialJoinMethod(const ExtAddr_t *const deviceAddress);
+
+/**************************************************************************//**
+  \brief Returns current value of challenge frame counter.
+
+  \param[in] deviceAddress - pointer to extended device address.
+
+  \return Challenge frame counter.
+ ******************************************************************************/
+uint32_t APS_GetActiveLinkKeyType(const ExtAddr_t *const deviceAddress);
+
+/**************************************************************************//**
+  \brief Returns current key negotiation state.
+
+  \param[in] handle                 - valid key handle.
+
+  \return Current key negotiation state.
+ ******************************************************************************/
+ApsKeyNegotiationState_t APS_GetKeyNegotiationState(const APS_KeyHandle_t handle);
+
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
+
 
 #else
 #define APS_SetDefaultTcLinkKey() ((void)0)
 #define APS_SetDefaultDsLinkKey() ((void)0)
 #define APS_ResetKeyPairSet() ((void)0)
 #endif /* _LINK_SECURITY_ */
-#endif /* _APS_CRYPTO_KEYS_H */
+#endif /* APS_CRYPTO_KEYS_H */
 /** eof apsCryptoKeys.h */
 

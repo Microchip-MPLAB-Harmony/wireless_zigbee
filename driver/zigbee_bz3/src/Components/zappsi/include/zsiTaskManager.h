@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSITASKMANAGER_H_
-#define _ZSITASKMANAGER_H_
+#ifndef ZSITASKMANAGER_H
+#define ZSITASKMANAGER_H
 
 /******************************************************************************
                     Includes section
@@ -87,4 +87,4 @@ void zsiPostTask(ZsiTaskId_t taskId);
  ******************************************************************************/
 void zsiResetTaskManager(void);
 
-#endif /* _ZSITASKMANAGER_H_ */
+#endif /* ZSITASKMANAGER_H */

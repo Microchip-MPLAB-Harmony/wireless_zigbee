@@ -38,8 +38,8 @@
 * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 *******************************************************************************/
 // DOM-IGNORE-END
-#ifndef _CUSTOMTEMPERATUREMEASUREMENTCLUSTER_H
-#define _CUSTOMTEMPERATUREMEASUREMENTCLUSTER_H
+#ifndef CUSTOMTEMPERATUREMEASUREMENTCLUSTER_H
+#define CUSTOMTEMPERATUREMEASUREMENTCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -87,6 +87,6 @@ void customTemperatureMeasurementClusterInit(void);
 ******************************************************************************/
 void customTempeartureMeasurementUpdateMeasuredValue(void);
 
-#endif // _CUSTOMTEMPERATUREMEASUREMENTCLUSTER_H
+#endif // CUSTOMTEMPERATUREMEASUREMENTCLUSTER_H
 
 // eof tsTemperatureMeasurementCluster.h

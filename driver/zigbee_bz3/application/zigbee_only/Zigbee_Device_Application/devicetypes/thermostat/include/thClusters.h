@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _THCLUSTERS_H
-#define _THCLUSTERS_H
+#ifndef THCLUSTERS_H
+#define THCLUSTERS_H
 
 /******************************************************************************
                     Includes section
@@ -69,6 +69,6 @@ extern void (*thServerClusterInitFunctions[TH_SERVER_CLUSTER_INIT_COUNT])();
 extern ZCL_Cluster_t thClientClusters[TH_CLIENT_CLUSTERS_COUNT];
 extern ClusterId_t thClientClusterIds[TH_CLIENT_CLUSTERS_COUNT];
 extern void (*thClientClusterInitFunctions[TH_CLIENT_CLUSTER_INIT_COUNT])();
-#endif // _THCLUSTERS_H
+#endif // THCLUSTERS_H
 
 // eof thClusters.h

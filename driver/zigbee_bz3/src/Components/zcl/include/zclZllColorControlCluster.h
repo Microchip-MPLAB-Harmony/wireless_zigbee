@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZCLZLLCOLORCONTROLCLUSTER_H
-#define _ZCLZLLCOLORCONTROLCLUSTER_H
+#ifndef ZCLZLLCOLORCONTROLCLUSTER_H
+#define ZCLZLLCOLORCONTROLCLUSTER_H
 
 /******************************************************************************
                         Includes section
@@ -420,12 +420,12 @@ BEGIN_PACK
 typedef struct PACK _ZCL_ZllColorCapabilities_t
 {
   LITTLE_ENDIAN_OCTET(6,(
-    uint16_t hueSaturationSupported    : 1,
-    uint16_t enhancedHueSupported      : 1,
-    uint16_t colorLoopSupported        : 1,
-    uint16_t XYAttributesSupported     : 1,
-    uint16_t colorTemperatureSupported : 1,
-    uint16_t reserved                  : 11
+    BitField_t hueSaturationSupported    : 1,
+    BitField_t enhancedHueSupported      : 1,
+    BitField_t colorLoopSupported        : 1,
+    BitField_t XYAttributesSupported     : 1,
+    BitField_t colorTemperatureSupported : 1,
+    BitField_t reserved                  : 11
   ))
 } ZCL_ZllColorCapabilities_t;
 
@@ -1743,4 +1743,4 @@ typedef struct _ZCL_ZllColorControlClusterCommands_t
   } stepColorTemperatureCommand;
 } ZCL_ColorControlClusterCommands_t;
 
-#endif // _ZCLZLLCOLORCONTROLCLUSTER_H
+#endif // ZCLZLLCOLORCONTROLCLUSTER_H

@@ -41,8 +41,8 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#if !defined _APSDE_DATA_H
-#define _APSDE_DATA_H
+#if !defined APSDE_DATA_H
+#define APSDE_DATA_H
 // DOM-IGNORE-END
 
 /******************************************************************************
@@ -101,14 +101,14 @@ typedef union PACK
   uint8_t field;
   struct PACK
   {
-    uint8_t   securityEnabledTransmission :1;
-    uint8_t   useNwkKey                   :1;
-    uint8_t   acknowledgedTransmission    :1;
-    uint8_t   fragmentationPermitted      :1;
-    uint8_t   includeExtendedNonce        :1;
-    uint8_t   doNotDecrypt                :1;
-    uint8_t   indicateBroadcasts          :1;
-    uint8_t   noRouteDiscovery            :1;
+    BitField_t   securityEnabledTransmission :1;
+    BitField_t   useNwkKey                   :1;
+    BitField_t   acknowledgedTransmission    :1;
+    BitField_t   fragmentationPermitted      :1;
+    BitField_t   includeExtendedNonce        :1;
+    BitField_t   doNotDecrypt                :1;
+    BitField_t   indicateBroadcasts          :1;
+    BitField_t   noRouteDiscovery            :1;
   };
 } APS_TxOptions_t;
 END_PACK
@@ -137,6 +137,19 @@ typedef struct
     } zsi;
 #endif /* # _ZAPPSI_ */
     ZDO_ResolveAddrReq_t resolveAddrReq; /*!< Used for address resolving */
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+    /* Relay Message Information */
+    struct 
+    {
+      /** Flag for indicating the given request to be process and send via APS Relay Command */
+      uint8_t isRelayCmd;
+      /** NWK security enable flag */
+      uint8_t nwkSecurityEnable;
+      /** Extended Address of Device to Authorise */
+      ExtAddr_t unAuthDevExtAdd;
+    } relayMsgInfo;
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
   } service;
   /** \endcond **/
 
@@ -195,6 +208,11 @@ typedef struct
   /** The distance, in hops, that a transmitted frame will be allowed to
    * travel via the network*/
   uint8_t radius;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  /** This indicates the broadcast address used for multicast 
+   * messages (DstAddrMode = 0x01).*/
+  ShortAddr_t nwkBroadcastAddress;
+#endif //_ZIGBEE_REV_23_SUPPORT_
   /** A pointer to a callback function called upon request
    * completion. Must not be set to NULL. */
   void (*APS_DataConf)(APS_DataConf_t *conf);
@@ -228,6 +246,18 @@ typedef struct
       void (*process)(void*);
     } zsi;
 #endif /* # _ZAPPSI_ */
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+    struct
+    {
+      /** Flag for indicating the given request to be process and send via APS Relay Command */
+      uint8_t isRelayCmd;
+      /** NWK security enable flag */
+      uint8_t nwkSecurityEnable;
+      /** Extended Address of Device to Authorise */
+      ExtAddr_t unAuthDevExtAdd;
+    } relayMsgInfo;
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
   } service;
   /** \endcond **/
 
@@ -300,7 +330,7 @@ typedef struct
                               Prototypes section
  ******************************************************************************/
 
-/**************************************************************************//**
+/******************************************************************************
 \brief Sends data to a node in the network.
 
 The function is used to transmit data across the network. The function is able 
@@ -334,16 +364,16 @@ parameter takes as an argument a pointer to a segment of memory within a special
 defined structure. Consider the example:
 
 \code
-// Application message buffer
+ Application message buffer
 BEGIN_PACK
 typedef struct
 {
-  uint8_t header[APS_ASDU_OFFSET]; // Header
-  uint8_t data[APP_ASDU_SIZE]; // Application data
-  uint8_t footer[APS_AFFIX_LENGTH - APS_ASDU_OFFSET]; //Footer
+  uint8_t header[APS_ASDU_OFFSET];  Header
+  uint8_t data[APP_ASDU_SIZE];  Application data
+  uint8_t footer[APS_AFFIX_LENGTH - APS_ASDU_OFFSET]; Footer
 } PACK AppMessageBuffer_t; END_PACK
-static AppMessageBuffer_t appMessageBuffer; // A global variable for the message buffer
-static APS_DataReq_t dataReq; // A global variable for the data request
+static AppMessageBuffer_t appMessageBuffer;  A global variable for the message buffer
+static APS_DataReq_t dataReq;  A global variable for the data request
 ...
 dataReq.asdu = appMessageBuffer.data;
 dataReq.asduLength = sizeof(appMessageBuffer.data);
@@ -426,6 +456,6 @@ extern void APS_ZdoDataInd(APS_DataInd_t *ind);
  ******************************************************************************/
 void APS_CalculateTimes(void);
 
-#endif /* _APSDE_DATA_H */
+#endif /* APSDE_DATA_H */
 /** eof apsdeData.h */
 

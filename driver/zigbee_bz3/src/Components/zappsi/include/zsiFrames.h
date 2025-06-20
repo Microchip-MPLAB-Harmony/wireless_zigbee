@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSIFRAMES_H
-#define _ZSIFRAMES_H
+#ifndef ZSIFRAMES_H
+#define ZSIFRAMES_H
 
 /*****************************************************************************
                               Includes section
@@ -194,5 +194,5 @@ INLINE uint16_t zsiActualFrameLength(void *const frame)
          LE16_TO_CPU(((ZsiCommandFrame_t *)frame)->length);
 }
 
-#endif /* _ZSIFRAMES_H */
+#endif /* ZSIFRAMES_H */
 /* eof zsiFrames.h */

@@ -110,6 +110,9 @@ def groupsClusterHandling():
         GroupsCluster.setVisible(True)
         GroupsCluster.setValue(True)
         GroupsClusterCS.setValue("BOTH")
+        GroupsClusterCS.setVisible(True)
+        GroupsClusterClientMenu.setVisible(True) 
+        GroupsClusterServerMenu.setVisible(True)
     else:
         GroupsCluster.setVisible(False)
     GroupsCluster.setReadOnly(True)
@@ -199,12 +202,14 @@ GroupsClusterCS.setVisible(False)
 GroupsClusterCS.setDescription("GROUPS CLUSTER Supported Implementation- check the box to enable")
 GroupsClusterCS.setDependencies(groupsclusterCsCheck,["GROUPS_CLUSTER_ENABLE"])
 
+global GroupsClusterClientMenu
 GroupsClusterClientMenu = drvZigbeeComponent.createMenuSymbol("GROUPS_CLUSTER_CLIENT_MENU", GroupsCluster)
 GroupsClusterClientMenu.setLabel("Client")
 GroupsClusterClientMenu.setVisible(False)
 GroupsClusterClientMenu.setDescription("GROUPS CLUSTER CLIENT")
 GroupsClusterClientMenu.setDependencies(groupsclusterClientCheck,["GROUPS_CLUSTER_CS","GROUPS_CLUSTER_ENABLE"])
 
+global GroupsClusterServerMenu
 GroupsClusterServerMenu = drvZigbeeComponent.createMenuSymbol("GROUPS_CLUSTER_SERVER_MENU", GroupsCluster)
 GroupsClusterServerMenu.setLabel("Server")
 GroupsClusterServerMenu.setVisible(False)

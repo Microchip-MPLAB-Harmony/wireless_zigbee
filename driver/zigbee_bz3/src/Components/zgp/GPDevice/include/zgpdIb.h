@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPDIB_H_
-#define _ZGPDIB_H_
+#ifndef ZGPDIB_H
+#define ZGPDIB_H
 /******************************************************************************
                                   Header Files
 ******************************************************************************/
@@ -175,5 +175,5 @@ inline zgpdSecMaterialSet_t *zgpGetSecParams()
 }
 #endif //ZGP_SECURITY_ENABLE
 
-#endif /*_ZGPDIB_H_*/
+#endif /*ZGPDIB_H*/
 //eof zgpdIb.h

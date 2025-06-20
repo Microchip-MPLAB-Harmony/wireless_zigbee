@@ -120,7 +120,9 @@
   #define COLOR_X_BLUE            10000U
   #define COLOR_Y_BLUE            10000U
 #endif
+#ifndef BDB_COMMISSIONING_TOUCHLINK
 #define BDB_COMMISSIONING_TOUCHLINK 0
+#endif
 /******************************************************************************
                     Prototypes section
 ******************************************************************************/
@@ -191,7 +193,7 @@ static ClusterId_t cscClientClusterToBindIds[] =
   ZLL_COMMISSIONING_CLUSTER_ID,  
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "CLIENT")  >
+  <#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -206,7 +208,7 @@ static ClusterId_t cscServerClusterToBindIds[] =
   ZLL_COMMISSIONING_CLUSTER_ID,  
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "SERVER")  >
+  <#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -235,6 +237,12 @@ static void configureImageKeyDone(void);
                     Prototypes section
 ******************************************************************************/
 
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+/******************************************************************************
+                    Static functions section
+******************************************************************************/
+static void APP_RestoreZCLAttributes(void);
+</#if>
 
 /******************************************************************************
                     Implementations section
@@ -248,6 +256,7 @@ void appDeviceInit(void)
 #if APP_ENABLE_CONSOLE == 1
   initConsole();
 #endif
+  uint8_t deepSleepWakeupSrc = 0U;
 
   /* Restore memory in case of power failure */
   if (PDS_IsAbleToRestore(Z3DEVICE_APP_MEMORY_MEM_ID))
@@ -286,6 +295,14 @@ void appDeviceInit(void)
 #ifdef OTAU_CLIENT
   cscAddOTAUClientCluster();
 #endif //OTAU_CLIENT
+
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+  CS_ReadParameter(CS_DEVICE_DEEP_SLEEP_WAKEUP_SRC_ID, &deepSleepWakeupSrc);
+
+  /* Execute only if it is wakenup from deep sleep. */
+  if(deepSleepWakeupSrc > 0U)
+    APP_RestoreZCLAttributes();
+</#if>
 
 #if defined (_SLEEP_WHEN_IDLE_)
 #if (ZB_COMMISSIONING_ON_STARTUP == 1)
@@ -340,7 +357,7 @@ void appDeviceTaskHandler(void)
 
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
 
-  <#if DEVICE == "SERVER">
+  <#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
 
   <#assign prefixAttribute  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_" + "SERVER" + "_ATTRIBUTES_">
 
@@ -374,7 +391,34 @@ void cscFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterId_t cl
 void APP_BackupZCLAttributes(void)
 {
 	//Add implementation here to backup zcl attributes if any.
+
+<#if DEVICE_DEEP_SLEEP_ENABLED> 
+  //Custom Cluster Backup function Callback
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+    <#assign DEVICE = ("ZCC" + customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval>
+      <#if (DEVICE == "SERVER")||(DEVICE == "BOTH")>
+    ${deviceTypeFunctionPrefix}ccZCC${(customClusterIndex)?eval}BackupAttribute();
+    </#if>
+  </#list>
+</#if>
 }
+
+
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+/******************************************************************************
+                    Static functions section
+******************************************************************************/
+static void APP_RestoreZCLAttributes(void)
+{
+  
+  <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
+    <#assign DEVICE = ("ZCC" + customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval>
+    <#if (DEVICE == "SERVER")||(DEVICE == "BOTH")>
+    ${deviceTypeFunctionPrefix}ccZCC${(customClusterIndex)?eval}RestoreAttribute();
+    </#if>
+  </#list> 
+}
+</#if>
 
 /**************************************************************************//**
 \brief Stops identifying on endpoints

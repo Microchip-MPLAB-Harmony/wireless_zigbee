@@ -50,11 +50,13 @@
                    Includes section
 ******************************************************************************/
 #include <hal/include/halTaskManager.h>
+#include <hal/include/appTimer.h>
+#include <hal/cortexm4/pic32cx/include/halAes.h>
 
 /******************************************************************************
                    Define(s) section
 ******************************************************************************/
-#define HANDLERS_GET(A, I) memcpy_P(A, &halHandlers[I], sizeof(HalTask_t))
+#define HANDLERS_GET(A, I) (void)memcpy_P(A, &halHandlers[I], sizeof(HalTask_t))
 
 #define HAL_APP_TIMER_HANDLER           halAppTimerHandler
 
@@ -68,34 +70,33 @@
 #define HAL_SLEEP_HANDLER             halPowerOff
 #define HAL_ASYNC_TIMER_HANDLER       halAsyncTimerHandler
 #define HAL_SLEEP_TIME_SYNC_HANDLER   halSleepSystemTimeSynchronize
-
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#define HAL_CURVE25519_HANDLER        halCurve25519SmRequestHandler
+#define HAL_SHA256_HANDLER            halSha256SmRequestHandler
+#endif //_ZIGBEE_REV_23_SUPPORT_
 /******************************************************************************
                    Prototypes section
-******************************************************************************/
-void halAppTimerHandler(void);
-void halSigUsartHandler(void);
-void halSigUsbHandler(void);
-void halSigEepromReadyHandler(void);
-void halSig2WireSerialHandler(void);
-void halAsyncTimerHandler(void);
-void halSleepSystemTimeSynchronize(void);
-void halWakeupHandler(void);
-void halPowerOff(void);
-void halSigAdcHandler(void);
-void halSmRequestHandler (void);
+*****************************************************************************/
 
+void halCurve25519SmRequestHandler (void);
+void halSha256SmRequestHandler (void);
 static void halEmptyHandler(void);
 
 
 /******************************************************************************
                    Global variables section
 ******************************************************************************/
-volatile HalTaskBitMask_t halTaskFlags = 0; // HAL USART tasks' bit mask.
-volatile HalTaskBitMask_t halAcceptedTasks = HAL_ALL_TASKS_ACCEPTED_MASK;
-HalTask_t PROGMEM_DECLARE(halHandlers[HAL_MAX_TASKS_ID]) =
+HalTaskBitMask_t halTaskFlags = 0;
+uint16_t halAcceptedTasks = HAL_ALL_TASKS_ACCEPTED_MASK; // HAL USART tasks' bit mask.
+
+static HalTask_t PROGMEM_DECLARE(halHandlers[HAL_MAX_TASKS_ID]) =
 {
   HAL_APP_TIMER_HANDLER,
-  HAL_HW_AES_HANDLER
+  HAL_HW_AES_HANDLER,
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  HAL_CURVE25519_HANDLER,
+  HAL_SHA256_HANDLER
+#endif //_ZIGBEE_REV_23_SUPPORT_
 };
 
 /******************************************************************************
@@ -113,20 +114,21 @@ static void halEmptyHandler(void)
 void HAL_TaskHandler(void)
 {
   HalTask_t         handler = NULL;
-  HalTaskBitMask_t  mask = 1;
+  uint16_t  mask = 1;
   uint8_t           index = 0;
-  HalTaskBitMask_t  tmpFlags = 0;
+  HalTaskBitMask_t tmpFlags = 0;
 
   ATOMIC_SECTION_ENTER
   tmpFlags = halTaskFlags;
   ATOMIC_SECTION_LEAVE
 
-  if (!(tmpFlags & halAcceptedTasks))
-    return;
-
-  for ( ; index < (uint8_t)HAL_MAX_TASKS_ID; index++, mask <<= 1)
+  if (!(bool)(tmpFlags & halAcceptedTasks))
   {
-    if (tmpFlags & mask & halAcceptedTasks)
+    return;
+  }
+  for ( ; index < (uint8_t)HAL_MAX_TASKS_ID; index++)
+  {
+    if ((tmpFlags & mask & halAcceptedTasks) != 0U)
     {
       ATOMIC_SECTION_ENTER
       halTaskFlags ^= mask;
@@ -134,6 +136,7 @@ void HAL_TaskHandler(void)
       HANDLERS_GET(&handler, index);
       handler();
     }
+    mask <<= 1;
   }
 
   (void)halEmptyHandler; // to kill warning "unused function"

@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPLOWMEM_H
-#define _ZGPLOWMEM_H
+#ifndef ZGPLOWMEM_H
+#define ZGPLOWMEM_H
 
 #ifdef _GREENPOWER_SUPPORT_
 /******************************************************************************
@@ -109,6 +109,6 @@ INLINE ZGP_Mem_t* zgpGetMem(void)
 }
 
 #endif // _GREENPOWER_SUPPORT_
-#endif //_ZGPLOWMEM_H
+#endif //ZGPLOWMEM_H
 
 // eof zgpLowMem.h

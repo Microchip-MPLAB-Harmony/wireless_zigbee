@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _COLORSCENEREMOTESCENESCLUSTER_H
-#define _COLORSCENEREMOTESCENESCLUSTER_H
+#ifndef COLORSCENEREMOTESCENESCLUSTER_H
+#define COLORSCENEREMOTESCENESCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -61,6 +61,6 @@ extern ZCL_SceneClusterClientAttributes_t cscScenesClusterClientAttributes;
 ******************************************************************************/
 void cscScenesClusterInit(void);
 
-#endif // _COLORSCENEREMOTESCENESCLUSTER_H
+#endif // COLORSCENEREMOTESCENESCLUSTER_H
 
 // eof cscScenesCluster.h

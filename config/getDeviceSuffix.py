@@ -12,6 +12,12 @@ pic32cx_bz3_family = {'PIC32CX5109BZ31048',
                         'WBZ350',
                         }
 
+pic32cx_bz36_family = {'PIC32CX5109BZ36048',
+                       'PIC32CX5109BZ36032',
+                       'PIC32WM_BZ3601',
+                       'PIC32WM_BZ3602',
+                       }
+                      
 pic32cx_bz6_family = {'PIC32CX2051BZ60048',
                       'PIC32CX2051BZ62064',
                       'PIC32CX2051BZ62132',
@@ -34,7 +40,7 @@ suffix = ""
 
 if  ( processor in pic32cx_bz2_family):
     suffix = "_bz2"    
-elif( processor in pic32cx_bz3_family):
+elif( (processor in pic32cx_bz3_family) or (processor in pic32cx_bz36_family)):
     suffix = "_bz3"    
 elif( processor in pic32cx_bz6_family):
     suffix = "_bz6"

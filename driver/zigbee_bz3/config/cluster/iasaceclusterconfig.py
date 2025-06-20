@@ -46,6 +46,19 @@ def customIasACEClusterEnableCheck(symbol, event):
     else:
         symbol.setEnabled(False)
 
+def combinedInterfaceIasACEClusterEnableCheck(symbol, event):
+    global iasZoneCluster
+
+    if(zigbeeDeviceType.getValue() != 'ZIGBEE_COMBINED_INTERFACE'):
+        return
+
+    if (iasACECluster.getValue() == True):
+        symbol.setEnabled(True)        
+        iasZoneCluster.setValue(True)
+    else:
+        symbol.setEnabled(False)        
+        iasZoneCluster.setValue(False)
+
 def iasACEClusterClientCheck(symbol, event):
     if ((iasACECluster.getValue() == False) or iasACEClusterCS.getValue() == "SERVER"):
         symbol.setVisible(False)
@@ -77,7 +90,7 @@ def iasACEClusterHandling():
     elif ((getDevice == "ZIGBEE_COMBINED_INTERFACE")):
         iasACECluster.setVisible(True)
         iasACECluster.setValue(True)
-        iasACECluster.setReadOnly(True)
+        iasACECluster.setReadOnly(False)
         iasACEClusterCS.setValue("SERVER")
         iasACEClusterCS.setReadOnly(True)
     elif ((getDevice == "ZIGBEE_IAS_ACE")):
@@ -89,7 +102,9 @@ def iasACEClusterHandling():
     elif ((getDevice == "ZIGBEE_CUSTOM")):
         iasACECluster.setVisible(True)
         iasACECluster.setValue(False)
-        iasACEClusterCS.setValue("BOTH")
+        iasACEClusterCS.setValue("SERVER")
+        iasACEClusterClientMenu.setVisible(False) 
+        iasACEClusterServerMenu.setVisible(True)
     else:
         iasACECluster.setVisible(False)
 
@@ -212,12 +227,14 @@ iasACEClusterCS.setDefaultValue("BOTH")
 iasACEClusterCS.setDescription("IAS ACE Cluster Supported Implementation- Select the option")
 iasACEClusterCS.setDependencies(iasACEClusterCsCheck,["IASACE_CLUSTER_ENABLE"])
 
+global iasACEClusterClientMenu
 iasACEClusterClientMenu = drvZigbeeComponent.createMenuSymbol("IASACE_CLUSTER_CLIENT_MENU", iasACECluster)
 iasACEClusterClientMenu.setLabel("Client")
 #iasACEClusterClientMenu.setVisible(False)
 iasACEClusterClientMenu.setDescription("IAS ACE CLUSTER CLIENT")
 iasACEClusterClientMenu.setDependencies(iasACEClusterClientCheck,["IASACE_CLUSTER_CS","IASACE_CLUSTER_ENABLE"])
 
+global iasACEClusterServerMenu
 iasACEClusterServerMenu = drvZigbeeComponent.createMenuSymbol("IASACE_CLUSTER_SERVER_MENU", iasACECluster)
 iasACEClusterServerMenu.setLabel("Server")
 #iasACEClusterServerMenu.setVisible(False)
@@ -585,7 +602,18 @@ iasACEClusterConfSrc.setProjectPath("config/" + configName + "/zigbee/z3device/c
 iasACEClusterConfSrc.setType("SOURCE")
 iasACEClusterConfSrc.setOverwrite(True)
 iasACEClusterConfSrc.setMarkup(True)
-iasACEClusterConfSrc.setEnabled(checkDevTypeCombInterface)
+iasACEClusterConfSrc.setEnabled(checkDevTypeCombInterface and iasACECluster.getValue())
+iasACEClusterConfSrc.setDependencies(combinedInterfaceIasACEClusterEnableCheck, ["IASACE_CLUSTER_ENABLE"])
+
+iasACEClusterConfInc = drvZigbeeComponent.createFileSymbol("CIIASACECLUSTER_H", None)
+iasACEClusterConfInc.setSourcePath("/driver/zigbee" + suffix + "/application/zigbee_only/Zigbee_Device_Application/devicetypes/combinedInterface/include/ciIasACECluster.h")
+iasACEClusterConfInc.setOutputName("ciIasACECluster.h")
+iasACEClusterConfInc.setDestPath("/zigbee/z3device/combinedInterface/include")
+iasACEClusterConfInc.setProjectPath("config/" + configName + "/zigbee/z3device/combinedInterface/include/")
+iasACEClusterConfInc.setType("HEADER")
+iasACEClusterConfInc.setOverwrite(True)
+iasACEClusterConfInc.setEnabled(checkDevTypeCombInterface and iasACECluster.getValue())
+iasACEClusterConfInc.setDependencies(combinedInterfaceIasACEClusterEnableCheck,["IASACE_CLUSTER_ENABLE"])
 
 # IAS ACE CLUSTER - IAS ACE
 iasACEClusterConfSrc = drvZigbeeComponent.createFileSymbol("ZIGBEE_IASACE_CLUSTER_CONF_SRC_IASACE", None)
@@ -596,7 +624,7 @@ iasACEClusterConfSrc.setProjectPath("config/" + configName + "/zigbee/z3device/i
 iasACEClusterConfSrc.setType("SOURCE")
 iasACEClusterConfSrc.setOverwrite(True)
 iasACEClusterConfSrc.setMarkup(True)
-iasACEClusterConfSrc.setEnabled(checkDevTypeIasAce)
+iasACEClusterConfSrc.setEnabled(checkDevTypeIasAce and iasACECluster.getValue())
 
 # IAS ACE CLUSTER - Custom
 iasACEClusterConfSrc = drvZigbeeComponent.createFileSymbol("ZIGBEE_IASACE_CLUSTER_CONF_SRC_CUSTOM", None)

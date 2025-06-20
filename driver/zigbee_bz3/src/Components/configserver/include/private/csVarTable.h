@@ -224,6 +224,23 @@ RAM_PARAMETER(CS_BDB_SECONDARY_CHANNELS_MASK_ID,                    88,   csBIB.
   RAM_PARAMETER(CS_TX_ANTENNA_GAIN_ID,                              91,   csSIB.csRfTxAntennaGain)                //PHY
   RAM_PARAMETER(CS_CERTIFICATION_FLAG_ID,                           92,   certificationFlag)                      //certificationFlag
   RAM_PARAMETER(CS_DEVICE_DEEP_SLEEP_WAKEUP_SRC_ID,                 93,   deviceDeepSleepWakeupSrc)               //device wakeup src 
+  RAM_PARAMETER(CS_HPA_ENABLE_DEVICE_ID,                            94,   hpaEnabledDevice)                       //HPA Enabled device
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/********************  NWK ************************/ 
+#ifndef _MAC2_
+  RAM_PARAMETER(CS_NWK_EXTRA_MAC_POLL_RETRIES_ID,                   95,   csNIB.nwkPerformExtraMacDataPollRetries)               //NWK
+#endif
+  RAM_PARAMETER(CS_SUPPORTED_KEY_NEGOTIATION_PROTOCOL_ID,           96,   csAIB.suppKeyNegotiationProtocol)       //Supported Key Negotiation Protocols
+  RAM_PARAMETER(CS_SUPPORTED_PRE_SHARED_SECRETS_ID,                 97,   csAIB.supportedPreSharedSecrets)        //Supported Pre-shared Secrets
+  RAM_PARAMETER(CS_APS_MAX_SIZE_ASDU_ID,                            98,   csAIB.apsMaxSizeASDU)                   //Maximum Incoming Transfer Unit supported by the stack across all endpoints.
+
+  RAM_PARAMETER(CS_APS_JOINER_TLV_UNFRAGMENTED_MAX_SIZE_ID,         99,   csAIB.apsJoinerTLVsUnfragmentedMaxSize) //APS
+  RAM_PARAMETER(CS_R23_JOIN_ID,                                     100,  r23JoinFlag)
+  RAM_PARAMETER(CS_SET_ENDDEVICE_CAPACITY_ID,                       101,  csNIB.beacon.payload.field)             //end device capacity setting for certification
+  RAM_PARAMETER(CS_VARIABLE_LENGTH_PASSCODE_ID,                     102,  variableLengthPasscode)       //APS
+  RAM_PARAMETER(CS_NWK_HUB_CONNECTIVITY_ID,                         103,  csNIB.nwkHubConnectivity)               // NWK Hub Connectivity
+  RAM_PARAMETER(CS_APS_PERFORM_DEVICE_INTERVIEW_ID,                 104,  csAIB.performDeviceInterviewProcedure)  // Device Interview during DLK
+#endif //_ZIGBEE_REV_23_SUPPORT_
 /* Note : Add new Item(s) at the appropriate module and re order the IDs below that.
 If the new Item to be added is not used by customer application then we may add at the end.
 */

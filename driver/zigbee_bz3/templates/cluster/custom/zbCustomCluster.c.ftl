@@ -1,7 +1,6 @@
 <#compress>
 <#assign deviceType = ZB_DEVICE_TYPE>
 <#assign DEVICE = (NAME + "_CUSTOM_CLUSTER_CS")?eval>
-<#assign prefix = NAME + "_CUSTOM_CLUSTER_" + DEVICE + "_COMMANDS_">
 <#assign clusterName = (NAME + "_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','')>
 <#global arraySize = "">
 
@@ -173,59 +172,19 @@
 
 <#assign REPORTABLE_CLIENT = (isReportable() && (DEVICE == "CLIENT")) >
 <#assign REPORTABLE_SERVER = (isReportable() && (DEVICE == "SERVER")) >
+<#assign REPORTABLE_BOTH   = (isReportable() && (DEVICE == "BOTH"))   >
 
-<#if REPORTABLE_CLIENT == true>
+<#if (REPORTABLE_CLIENT == true) || (REPORTABLE_BOTH == true) >
 static void ${deviceTypeFunctionPrefix}${clusterName}ReportInd(ZCL_Addressing_t *addressing, uint8_t reportLength, uint8_t *reportPayload);
-<#elseif DEVICE == "SERVER">
+</#if>
+<#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
 static void ${deviceTypeFunctionPrefix}${clusterName}AttributeEventInd(ZCL_Addressing_t *addressing, ZCL_AttributeId_t attributeId, ZCL_AttributeEvent_t event);
-</#if>
-void ${deviceTypeFunctionPrefix}${clusterName}Init(void);
-
-<#--//FUNCTION PROTOTYPES -->
-<#--//SERVER -->
-<#if DEVICE == "SERVER">
-
-    <#assign prefix = NAME + "_CUSTOM_CLUSTER_" + "SERVER" + "_COMMANDS_">
-    <#list 0..<(prefix+"NO")?eval as commandIndex>
-        <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
-        <#assign parametersLength = getParametersLength(prefix, commandIndex) >
-ZCL_Status_t ${deviceTypeFunctionPrefix}Send${CommandName}(APS_AddrMode_t addressMode, ShortAddr_t shortAddress, Endpoint_t endPoint, Endpoint_t sourceEndPoint<#if (parametersLength == 0) >);
-<#else>${''}
-    <#list 0..<parametersLength as parameterIndex >,${parameterVariable(prefix,commandIndex,parameterIndex)} </#list>);
-</#if>
-    </#list>
-
-    <#assign prefix = NAME + "_CUSTOM_CLUSTER_" + "CLIENT" + "_COMMANDS_">
-    <#list 0..<(prefix+"NO")?eval as commandIndex>
-        <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
-ZCL_Status_t ${deviceTypeFunctionPrefix}${CommandName}CommandInd(ZCL_Addressing_t *addressing, uint8_t payloadLength, ZCL_${CommandName}_t *payload);
-    </#list>
-
-<#--//CLIENT -->
-<#elseif DEVICE == "CLIENT">
-
-    <#assign prefix = NAME + "_CUSTOM_CLUSTER_" + "SERVER" + "_COMMANDS_">
-    <#list 0..<(prefix+"NO")?eval as commandIndex>
-        <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
-ZCL_Status_t ${deviceTypeFunctionPrefix}${CommandName}CommandInd(ZCL_Addressing_t *addressing, uint8_t payloadLength, ZCL_${CommandName}_t *payload);
-    </#list>
-
-    <#assign prefix = NAME + "_CUSTOM_CLUSTER_" + "CLIENT" + "_COMMANDS_">
-    <#list 0..<(prefix+"NO")?eval as commandIndex>
-        <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
-        <#assign parametersLength = getParametersLength(prefix, commandIndex) >
-ZCL_Status_t ${deviceTypeFunctionPrefix}Send${CommandName}(APS_AddrMode_t addressMode, ShortAddr_t shortAddress, Endpoint_t endPoint, Endpoint_t sourceEndPoint<#if (parametersLength == 0) >);
-<#else>${''} 
-    <#list 0..<parametersLength as parameterIndex >,${parameterVariable(prefix,commandIndex,parameterIndex)} </#list>);
-</#if>
-    </#list>
-
 </#if>
 
 /******************************************************************************
                     Global variables
 ******************************************************************************/
-<#function attributeParameters>
+<#function attributeParameters DEVICE>
 
 <#assign attributesCount = (NAME + "_CUSTOM_CLUSTER_" + DEVICE + "_ATTRIBUTES_NO")?eval >
 <#list 0..< (attributesCount) as attributeIndex >
@@ -242,18 +201,42 @@ ZCL_Status_t ${deviceTypeFunctionPrefix}Send${CommandName}(APS_AddrMode_t addres
 
 
 //Custom Cluster Attributes
-ZCL_${clusterName?capitalize}Cluster${DEVICE?capitalize}Attributes_t ${clusterName?lower_case}${DEVICE?capitalize}ClusterAttributes =
+<#if (DEVICE == "SERVER") || (DEVICE == "BOTH")>
+ZCL_${clusterName?capitalize}Cluster${"SERVER"?capitalize}Attributes_t ${clusterName?lower_case}${"SERVER"?capitalize}ClusterAttributes =
 {
-    ZCL_DEFINE_${(clusterName)?upper_case}_CLUSTER_${DEVICE}_ATTRIBUTES(${attributeParameters()})
+    ZCL_DEFINE_${(clusterName)?upper_case}_CLUSTER_${"SERVER"}_ATTRIBUTES(${attributeParameters("SERVER")})
 };
+</#if>
+<#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
+ZCL_${clusterName?capitalize}Cluster${"CLIENT"?capitalize}Attributes_t ${clusterName?lower_case}${"CLIENT"?capitalize}ClusterAttributes =
+{
+    ZCL_DEFINE_${(clusterName)?upper_case}_CLUSTER_${"CLIENT"}_ATTRIBUTES(${attributeParameters("CLIENT")})
+};
+</#if>
+
+//backup attributes
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+    <#if (DEVICE == "SERVER") || (DEVICE == "BOTH")>
+    <#assign prefixAttribute  = NAME + "_CUSTOM_CLUSTER_" + "SERVER" + "_ATTRIBUTES_">
+    <#assign PresAttribute =  0>
+        <#list 0..<(prefixAttribute  + "NO")?eval as attributeIndex>
+            <#if (prefixAttribute +"PROP_REPORTABLE_"+attributeIndex)?eval>
+                <#assign PresAttribute = PresAttribute + 1 >      
+            </#if>
+        </#list>
+        <#if PresAttribute gte 1 >
+ZCL_${clusterName?capitalize}Cluster${"SERVER"?capitalize}Attributes_t __attribute__((persistent)) backup${clusterName?capitalize}ServerAttribute;
+        </#if>
+    </#if>
+</#if>
 
 //Custom Cluster Commands
-PROGMEM_DECLARE (ZCL_${clusterName?capitalize}ClusterCommands_t ${clusterName?lower_case}${DEVICE?capitalize}ClusterCommands) =
+PROGMEM_DECLARE (ZCL_${clusterName?capitalize}ClusterCommands_t ${clusterName?lower_case}ClusterCommands) =
 {
 <#--//CLIENT -->
-
-<#if DEVICE == "CLIENT">    
+ 
     ZCL_DEFINE_${clusterName?upper_case}_CLUSTER_COMMANDS( <#t>
+    <#if (DEVICE == "CLIENT") >
         <#assign prefix = NAME + "_CUSTOM_CLUSTER_" + "SERVER" + "_COMMANDS_">
         <#assign serverCommandCount = (prefix+"NO")?eval>
         <#list 0..< serverCommandCount as commandIndex>
@@ -261,11 +244,9 @@ PROGMEM_DECLARE (ZCL_${clusterName?capitalize}ClusterCommands_t ${clusterName?lo
 ${deviceTypeFunctionPrefix + CommandName}CommandInd<#sep>,  <#t></#list><#compress>
         <#assign prefix = NAME + "_CUSTOM_CLUSTER_" + "CLIENT" + "_COMMANDS_">
         </#compress><#list 0..<(prefix+"NO")?eval as commandIndex>
-<#if (serverCommandCount!=0 || commandIndex?is_first == false)>,</#if> NULL<#sep> <#t></#list>)        
-<#--//SERVER -->
+<#if (serverCommandCount!=0 || commandIndex?is_first == false)>,</#if> NULL<#sep> <#t></#list>)  
 
-<#elseif DEVICE == "SERVER">
-    ZCL_DEFINE_${clusterName?upper_case}_CLUSTER_COMMANDS( <#t>
+    <#elseif (DEVICE == "SERVER") >
         <#assign prefix = NAME + "_CUSTOM_CLUSTER_" + "SERVER" + "_COMMANDS_">
         <#assign serverCommandCount = (prefix+"NO")?eval>
         <#list 0..< serverCommandCount as commandIndex>
@@ -274,15 +255,47 @@ NULL<#sep>, <#t></#list><#compress>
         </#compress><#list 0..<(prefix+"NO")?eval as commandIndex>
         <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
 <#if (serverCommandCount!=0 || commandIndex?is_first == false)>,</#if> ${deviceTypeFunctionPrefix + CommandName}CommandInd<#sep> <#t></#list>)
-</#if>
-};
 
-<#assign prefix = NAME + "_CUSTOM_CLUSTER_" + DEVICE + "_COMMANDS_"> <#-- re-assign old defintion -->
+    <#elseif (DEVICE == "BOTH") >
+        <#assign prefix = NAME + "_CUSTOM_CLUSTER_" + "SERVER" + "_COMMANDS_">
+        <#assign serverCommandCount = (prefix+"NO")?eval>
+        <#list 0..< serverCommandCount as commandIndex>
+        <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
+${deviceTypeFunctionPrefix + CommandName}CommandInd<#sep>,  <#t></#list><#compress>
+        <#assign prefix = NAME + "_CUSTOM_CLUSTER_" + "CLIENT" + "_COMMANDS_">
+        </#compress><#list 0..<(prefix+"NO")?eval as commandIndex>
+        <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
+<#if (serverCommandCount!=0 || commandIndex?is_first == false)>,</#if> ${deviceTypeFunctionPrefix + CommandName}CommandInd<#sep> <#t></#list>)
+    </#if>
+
+
+};
 
 /******************************************************************************
                     Implementation section
 ******************************************************************************/
+<#assign arrayStringFlag = 0 >
+<#macro initArrayAndString DEVICETYPE >
+<#assign prefixAttribute  = NAME + "_CUSTOM_CLUSTER_" + DEVICETYPE + "_ATTRIBUTES_">
+<#list 0..<(prefixAttribute  + "NO")?eval as attributeIndex>
+    <#assign classType = (prefixAttribute + "CLASSTYPE_" + attributeIndex)?eval >
+    <#if (classType == "Array") || (classType == "String") >
+    <#assign variableName = (prefixAttribute + "NAME_" + attributeIndex)?eval?replace(' ','')?capitalize >
+    <#assign arrayStringFlag = 1 >
+    <#assign dataCount = 32 >
+    <#if (classType == "Array") >
+        <#assign dataCount = (prefixAttribute + "TYPE_ARRAY_" + attributeIndex)?eval >
+    <#elseif (classType == "String") >
+        <#if (prefixAttribute + "TYPE_STRING_" + attributeIndex)?eval?contains("16")>
+        <#assign dataCount = 64 >
+        </#if>
+    </#if>    
+    ${clusterName?lower_case}${DEVICETYPE?capitalize}ClusterAttributes.${variableName}.value[0] = ${dataCount - 1};
+    <#-- We give dataCount - 1 cause the first byte is used for storing the size of the Array/string -->
 
+    </#if>
+</#list>
+</#macro>
 /**************************************************************************//**
 \brief Initialization function for the cluster
 ******************************************************************************/
@@ -308,30 +321,40 @@ NULL<#sep>, <#t></#list><#compress>
 </#if>
 void ${deviceTypeFunctionPrefix}${clusterName}Init(void)
 {    
-    <#if REPORTABLE_CLIENT == true>
+    <#if (REPORTABLE_CLIENT == true) || (REPORTABLE_BOTH == true)>
     /* Executes only for Reportable Client. */
-    ZCL_Cluster_t *cluster = ZCL_GetCluster(APP_ENDPOINT_${deviceType}, ${clusterName?upper_case}_CLUSTER_ID, ZCL_CLUSTER_SIDE_CLIENT);
+    ZCL_Cluster_t *clientCluster = ZCL_GetCluster(APP_ENDPOINT_${deviceType}, ${clusterName?upper_case}_CLUSTER_ID, ZCL_CLUSTER_SIDE_CLIENT);
 
-    if (cluster)
+    if (clientCluster)
     {
-        cluster->ZCL_ReportInd = ${deviceTypeFunctionPrefix}${clusterName}ReportInd;
-        cluster->ZCL_DefaultRespInd = ZCL_CommandZclDefaultResp;
+        clientCluster->ZCL_ReportInd = ${deviceTypeFunctionPrefix}${clusterName}ReportInd;
+        clientCluster->ZCL_DefaultRespInd = ZCL_CommandZclDefaultResp;
     }
 
-    <#elseif DEVICE == "SERVER">
-    /* Executes only for Server. */
-    ZCL_Cluster_t *cluster =  ZCL_GetCluster(APP_ENDPOINT_${deviceType}, ${clusterName?upper_case}_CLUSTER_ID, ZCL_CLUSTER_SIDE_SERVER);
+    </#if>
+    <#if (DEVICE == "SERVER") || (DEVICE == "BOTH")>
+    /* Executes only for Server. */ 
+    ZCL_Cluster_t *serverCluster =  ZCL_GetCluster(APP_ENDPOINT_${deviceType}, ${clusterName?upper_case}_CLUSTER_ID, ZCL_CLUSTER_SIDE_SERVER);
 
-    if (cluster)
-        cluster->ZCL_AttributeEventInd = ${deviceTypeFunctionPrefix}${clusterName}AttributeEventInd;
+    if (serverCluster)
+        serverCluster->ZCL_AttributeEventInd = ${deviceTypeFunctionPrefix}${clusterName}AttributeEventInd;
     <#else>
     /* Executes for non Reportable Client */
+    </#if>
+
+    <#if DEVICE != "CLIENT">
+    <@initArrayAndString DEVICETYPE="SERVER"/>
+    </#if><#if DEVICE != "SERVER" >
+    <@initArrayAndString DEVICETYPE="CLIENT"/>
+    </#if>
+    <#if (arrayStringFlag == 1) >
+    // We fill the first byte with the length of the array/string
     </#if>
 
     // Fill definition here
 }
 
-<#if REPORTABLE_CLIENT == true>
+<#if (REPORTABLE_CLIENT == true) || (REPORTABLE_BOTH == true)>
 /**************************************************************************//**
 \brief Report attribute indication handler
 
@@ -350,7 +373,8 @@ static void ${deviceTypeFunctionPrefix}${clusterName}ReportInd(ZCL_Addressing_t 
 
   APP_Zigbee_Handler(eventItem);
 }
-<#elseif DEVICE == "SERVER">
+</#if>
+<#if (DEVICE == "SERVER") || (DEVICE == "BOTH")>
 /**************************************************************************//**
 \brief Attribute event (writing/reading) callback.
 
@@ -366,14 +390,17 @@ static void ${deviceTypeFunctionPrefix}${clusterName}AttributeEventInd(ZCL_Addre
     eventItem.eventData.zclAttributeData.addressing = addressing;
     eventItem.eventData.zclAttributeData.attributeId = attributeId;
     eventItem.eventData.zclAttributeData.event = event;
-                        
+
   APP_Zigbee_Handler(eventItem);
 }
 </#if>
 
 <#--//FUNCTION DEFINITIONS -->
 <#--//SERVER -->
-<#if DEVICE == "SERVER">
+<#-- If the supported implementation is Server, the commands in server become indications commands -->
+<#-- and the commands defined in client become indications -->
+
+<#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
     <#assign prefix = NAME + "_CUSTOM_CLUSTER_" + "SERVER" + "_COMMANDS_">
     <#list 0..<(prefix+"NO")?eval as commandIndex>
         <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
@@ -384,14 +411,56 @@ static void ${deviceTypeFunctionPrefix}${clusterName}AttributeEventInd(ZCL_Addre
 \param[in] mode     - address mode;
 \param[in] addr     - short address of destination node;
 \param[in] ep       - destination endpoint;
-\param[in] srcEp    - source endpoint;
+\param[in] srcEp    - source endpoint;  
 ******************************************************************************/
 ZCL_Status_t ${deviceTypeFunctionPrefix}Send${CommandName}(APS_AddrMode_t addressMode, ShortAddr_t shortAddress, Endpoint_t endPoint, Endpoint_t sourceEndPoint<#if (parametersLength == 0) >)
 <#else>${''} 
     <#list 0..<parametersLength as parameterIndex >,${parameterVariable(prefix,commandIndex,parameterIndex)} </#list>)
 </#if>
 {
-    //fill definition
+    ZCL_Request_t *req;    
+    req = getFreeCommand();
+
+    if (req == NULL)
+    {
+        return ZCL_FAILURE_STATUS;
+    }
+    <#assign commandID = "ZCL_" + clusterName?upper_case + "_" + (prefix + "NAME_"+commandIndex)?eval?upper_case?replace(" ","") + "_COMMAND_ID" >
+    <#assign payloadSize = "0" >
+    <#assign payloadType = "-" >
+    <#if getParametersLength(prefix, commandIndex) != 0 >
+        <#assign payloadType = "ZCL_" + (prefix + "NAME_" + commandIndex)?eval?capitalize?replace(" ","") + "_t" >
+        <#assign payloadSize = "sizeof(" + payloadType + ")" >
+
+    </#if>
+    fillCommandRequest(req, ${commandID}, ${payloadSize}, sourceEndPoint);
+    fillDstAddressing(&req->dstAddressing, addressMode, shortAddress, endPoint, ${clusterName?upper_case}_CLUSTER_ID);
+    req->dstAddressing.clusterSide = ZCL_CLUSTER_SIDE_CLIENT;
+
+    <#if payloadType != "-">
+        <#list 0..<parametersLength as parameterIndex >
+        <#assign parameterName = (prefix + "PARAMNAME_" + commandIndex + "_" + parameterIndex)?eval >
+        <#assign classType = (prefix + "CLASSTYPE_" + commandIndex + "_" + parameterIndex)?eval >
+
+        <#assign arraySize = 0 >
+        <#if classType == "Array">
+        <#assign arraySize = (prefix + "TYPE_ARRAY_" + commandIndex + "_" + parameterIndex)?eval >
+
+        <#elseif classType == "String">
+        <#assign arraySize = 32 > 
+        
+        </#if>
+
+        <#if arraySize != 0>
+        memcpy(((${payloadType} *)req->requestPayload)->${(parameterName)?capitalize}, ${parameterName}, ${arraySize});
+        <#else>
+        ((${payloadType} *)req->requestPayload)->${(parameterName)?capitalize} = ${parameterName};
+        </#if>
+        </#list>
+
+    </#if>
+    ZCL_CommandManagerSendCommand(req);
+    return ZCL_SUCCESS_STATUS;
 }
     </#list>
     <#assign prefix = NAME + "_CUSTOM_CLUSTER_" + "CLIENT" + "_COMMANDS_">
@@ -408,14 +477,19 @@ ZCL_Status_t ${deviceTypeFunctionPrefix}Send${CommandName}(APS_AddrMode_t addres
 ******************************************************************************/
 ZCL_Status_t ${deviceTypeFunctionPrefix}${CommandName}CommandInd(ZCL_Addressing_t *addressing, uint8_t payloadLength, ZCL_${CommandName}_t *payload)
 {
-    appSnprintf("Commands: ${deviceTypeFunctionPrefix}${CommandName}Ind \r\n");
-    //fill definition
+    appSnprintf("-> ${deviceTypeFunctionPrefix}${CommandName}Ind \r\n");
+    //fill definition, or call server response command
+    return ZCL_SUCCESS_STATUS;
 }
     </#list>
 
-
+</#if>
 <#--//CLIENT -->
-<#elseif DEVICE == "CLIENT">
+<#-- If the supported implementation is Client, the commands in client become send commands -->
+<#-- and the commands defined in server become indications -->
+
+<#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
+
     <#assign prefix = NAME + "_CUSTOM_CLUSTER_" + "SERVER" + "_COMMANDS_">
     <#list 0..<(prefix+"NO")?eval as commandIndex>
         <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
@@ -430,10 +504,12 @@ ZCL_Status_t ${deviceTypeFunctionPrefix}${CommandName}CommandInd(ZCL_Addressing_
 ******************************************************************************/
 ZCL_Status_t ${deviceTypeFunctionPrefix}${CommandName}CommandInd(ZCL_Addressing_t *addressing, uint8_t payloadLength, ZCL_${CommandName}_t *payload)
 {
-    appSnprintf("Commands: ${deviceTypeFunctionPrefix}${CommandName}Ind \r\n");
-    //fill definition
+    appSnprintf("-> ${deviceTypeFunctionPrefix}${CommandName}Ind \r\n");
+    //fill definition, or call server response command
+    return ZCL_SUCCESS_STATUS;
 }
     </#list>
+
     <#assign prefix = NAME + "_CUSTOM_CLUSTER_" + "CLIENT" + "_COMMANDS_">
     <#list 0..<(prefix+"NO")?eval as commandIndex>
         <#assign CommandName = (prefix+"NAME_"+commandIndex)?eval?capitalize?replace(' ','')>
@@ -451,8 +527,85 @@ ZCL_Status_t ${deviceTypeFunctionPrefix}Send${CommandName}(APS_AddrMode_t addres
     <#list 0..<parametersLength as parameterIndex >,${parameterVariable(prefix,commandIndex,parameterIndex)} </#list>)
 </#if>
 {
-    //fill definition
+        ZCL_Request_t *req;    
+    req = getFreeCommand();
+
+    if (req == NULL)
+    {
+        return ZCL_FAILURE_STATUS;
+    }
+    <#assign commandID = "ZCL_" + clusterName?upper_case + "_" + (prefix + "NAME_"+commandIndex)?eval?upper_case?replace(" ","") + "_COMMAND_ID" >
+    <#assign payloadSize = "0" >
+    <#assign payloadType = "-" >
+    <#if getParametersLength(prefix, commandIndex) != 0 >
+        <#assign payloadType = "ZCL_" + (prefix + "NAME_" + commandIndex)?eval?capitalize?replace(" ","") + "_t" >
+        <#assign payloadSize = "sizeof(" + payloadType + ")" >
+
+    </#if>
+    fillCommandRequest(req, ${commandID}, ${payloadSize}, sourceEndPoint);
+    fillDstAddressing(&req->dstAddressing, addressMode, shortAddress, endPoint, ${clusterName?upper_case}_CLUSTER_ID);
+
+    <#if payloadType != "-">
+        <#list 0..<parametersLength as parameterIndex >
+        <#assign parameterName = (prefix + "PARAMNAME_" + commandIndex + "_" + parameterIndex)?eval >
+        <#assign classType = (prefix + "CLASSTYPE_" + commandIndex + "_" + parameterIndex)?eval >
+
+        <#assign arraySize = 0 >
+        <#if classType == "Array">
+        <#assign arraySize = (prefix + "TYPE_ARRAY_" + commandIndex + "_" + parameterIndex)?eval >
+
+        <#elseif classType == "String">
+        <#assign arraySize = 32 > 
+        
+        </#if>
+
+        <#if arraySize != 0>
+        memcpy(((${payloadType} *)req->requestPayload)->${(parameterName)?capitalize}, ${parameterName}, ${arraySize});
+        <#else>
+        ((${payloadType} *)req->requestPayload)->${(parameterName)?capitalize} = ${parameterName};
+        </#if>
+        </#list>
+
+    </#if>
+    ZCL_CommandManagerSendCommand(req);
+    return ZCL_SUCCESS_STATUS;
 }
     </#list>
 </#if>
 
+
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+    <#if (DEVICE == "SERVER") || (DEVICE == "BOTH")>
+void ${deviceTypeFunctionPrefix}cc${NAME}BackupAttribute(void)
+{
+    <#assign prefixAttribute  = NAME + "_CUSTOM_CLUSTER_" + "SERVER" + "_ATTRIBUTES_">
+    <#assign PresAttribute1 = 0>
+        <#list 0..<(prefixAttribute  + "NO")?eval as attributeIndex>
+            <#if (prefixAttribute +"PROP_REPORTABLE_"+ attributeIndex)?eval> 
+                <#assign PresAttribute1 = PresAttribute1 + 1>
+            </#if>
+        </#list>
+        <#if PresAttribute1 gte 1 >
+    memcpy4ByteAligned(&backup${clusterName?capitalize}ServerAttribute, &${clusterName?lower_case}${"SERVER"?capitalize}ClusterAttributes, sizeof(ZCL_${clusterName?capitalize}Cluster${"SERVER"?capitalize}Attributes_t));
+        </#if>
+}
+    </#if>
+</#if>
+
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+    <#if (DEVICE == "SERVER") || (DEVICE == "BOTH")>
+void ${deviceTypeFunctionPrefix}cc${NAME}RestoreAttribute(void)
+{
+        <#assign prefixAttribute  = NAME + "_CUSTOM_CLUSTER_" + "SERVER" + "_ATTRIBUTES_">
+        <#assign PresAttribute2 = 0>
+        <#list 0..<(prefixAttribute  + "NO")?eval as attributeIndex>
+            <#if (prefixAttribute +"PROP_REPORTABLE_"+attributeIndex)?eval>
+                <#assign PresAttribute2 = PresAttribute2 + 1>
+            </#if>
+        </#list>
+        <#if PresAttribute2 gte 1 >            
+    memcpy4ByteAligned(&${clusterName?lower_case}${"SERVER"?capitalize}ClusterAttributes, &backup${clusterName?capitalize}ServerAttribute, sizeof(ZCL_${clusterName?capitalize}Cluster${"SERVER"?capitalize}Attributes_t));
+        </#if>
+}
+    </#if>
+</#if>

@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _APPCONSTS_H
-#define _APPCONSTS_H
+#ifndef APPCONSTS_H
+#define APPCONSTS_H
 
 /******************************************************************************
                     Includes section
@@ -375,7 +375,7 @@
 
 #define HA_APP_MEMORY_MEM_ID                           APP_DIR1_MEM_ID
 
-#endif // _APPCONSTS_H
+#endif // APPCONSTS_H
 
 // eof appConsts.h
 

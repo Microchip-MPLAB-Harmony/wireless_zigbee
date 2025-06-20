@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _CBIDENTIFYCLUSTER_H
-#define _CBIDENTIFYCLUSTER_H
+#ifndef CBIDENTIFYCLUSTER_H
+#define CBIDENTIFYCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -90,7 +90,7 @@ void cbIdentifyStop(void);
 ******************************************************************************/
 void cbIdetifyStartIdentifyingCb(uint16_t time, void (*cb)(void));
 
-#endif // _CBIDENTIFYCLUSTER_H
+#endif // CBIDENTIFYCLUSTER_H
 
 // eof cbIdentifyCluster.h
 

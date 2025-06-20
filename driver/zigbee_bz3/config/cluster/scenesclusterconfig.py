@@ -47,6 +47,12 @@ def customScenesClusterEnableCheck(symbol, event):
     else:
         symbol.setEnabled(False)
 
+def combinedInterfaceScenesClusterEnableCheck(symbol, event):
+    if ((zigbeeDeviceType.getValue() == 'ZIGBEE_COMBINED_INTERFACE') and (ScenesCluster.getValue() == True)):
+        symbol.setEnabled(True)
+    else:
+        symbol.setEnabled(False)
+
 def ScenesClusterClientCheck(symbol, event):
     if ((ScenesCluster.getValue() == False) or ScenesClusterCS.getValue() == "SERVER"):
         symbol.setVisible(False)
@@ -64,12 +70,17 @@ def scenesClusterHandling():
     getDevice = zigbeeDeviceType.getValue()
 
     if ((getDevice == "ZIGBEE_COLOR_SCENE_CONTROLLER")
-        or (getDevice == "ZIGBEE_COMBINED_INTERFACE")
         or (getDevice == "ZIGBEE_CONTROL_BRIDGE")
         ):
         ScenesCluster.setVisible(True)
         ScenesCluster.setValue(True)
         ScenesCluster.setReadOnly(True)
+        ScenesClusterCS.setValue("CLIENT")
+        ScenesClusterCS.setReadOnly(True)
+    elif (getDevice == "ZIGBEE_COMBINED_INTERFACE"):
+        ScenesCluster.setVisible(True)
+        ScenesCluster.setValue(True)
+        ScenesCluster.setReadOnly(False)
         ScenesClusterCS.setValue("CLIENT")
         ScenesClusterCS.setReadOnly(True)
     elif ((getDevice == "ZIGBEE_MULTI_SENSOR")
@@ -92,7 +103,10 @@ def scenesClusterHandling():
     elif ((getDevice == "ZIGBEE_CUSTOM")):
         ScenesCluster.setVisible(True)
         ScenesCluster.setValue(True)
-        ScenesClusterCS.setValue("BOTH")
+        ScenesClusterCS.setValue("SERVER")
+        ScenesClusterCS.setVisible(True)
+        ScenesClusterServerMenu.setVisible(True)
+        ScenesClusterClientMenu.setVisible(False)
     else:
         ScenesCluster.setVisible(False)
 
@@ -228,12 +242,14 @@ ScenesClusterCS.setVisible(False)
 ScenesClusterCS.setDescription("SCENES CLUSTER Supported Implementation- check the box to enable")
 ScenesClusterCS.setDependencies(ScenesClusterCsCheck,["SCENES_CLUSTER_ENABLE"])
 
+global ScenesClusterClientMenu
 ScenesClusterClientMenu = drvZigbeeComponent.createMenuSymbol("SCENES_CLUSTER_CLIENT_MENU", ScenesCluster)
 ScenesClusterClientMenu.setLabel("Client")
 ScenesClusterClientMenu.setVisible(False)
 ScenesClusterClientMenu.setDescription("SCENES CLUSTER CLIENT")
 ScenesClusterClientMenu.setDependencies(ScenesClusterClientCheck,["SCENES_CLUSTER_CS","SCENES_CLUSTER_ENABLE"])
 
+global ScenesClusterServerMenu
 ScenesClusterServerMenu = drvZigbeeComponent.createMenuSymbol("SCENES_CLUSTER_SERVER_MENU", ScenesCluster)
 ScenesClusterServerMenu.setLabel("Server")
 ScenesClusterServerMenu.setVisible(False)
@@ -694,7 +710,18 @@ scenesClusterConfSrc.setProjectPath("config/" + configName + "/zigbee/z3device/c
 scenesClusterConfSrc.setType("SOURCE")
 scenesClusterConfSrc.setOverwrite(True)
 scenesClusterConfSrc.setMarkup(True)
-scenesClusterConfSrc.setEnabled(checkDevTypeCombInterface)
+scenesClusterConfSrc.setEnabled(checkDevTypeCombInterface and ScenesCluster.getValue())
+scenesClusterConfSrc.setDependencies(combinedInterfaceScenesClusterEnableCheck, ['SCENES_CLUSTER_ENABLE'])
+
+scenesClusterConfInc = drvZigbeeComponent.createFileSymbol("CISCENESCLUSTER_H", None)
+scenesClusterConfInc.setSourcePath("/driver/zigbee" + suffix + "/application/zigbee_only/Zigbee_Device_Application/devicetypes/combinedInterface/include/ciScenesCluster.h")
+scenesClusterConfInc.setOutputName("ciScenesCluster.h")
+scenesClusterConfInc.setDestPath("/zigbee/z3device/combinedInterface/include")
+scenesClusterConfInc.setProjectPath("config/" + configName + "/zigbee/z3device/combinedInterface/include/")
+scenesClusterConfInc.setType("HEADER")
+scenesClusterConfInc.setOverwrite(True)
+scenesClusterConfInc.setEnabled(checkDevTypeCombInterface and ScenesCluster.getValue())
+scenesClusterConfInc.setDependencies(combinedInterfaceScenesClusterEnableCheck,["SCENES_CLUSTER_ENABLE"])
 
 # SCENES CLUSTER - Thermostat
 scenesClusterConfSrc = drvZigbeeComponent.createFileSymbol("ZIGBEE_SCENES_CLUSTER_CONF_SRC_TH", None)

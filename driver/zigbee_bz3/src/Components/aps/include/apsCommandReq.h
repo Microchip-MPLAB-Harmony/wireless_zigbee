@@ -41,8 +41,8 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#if !defined _APS_COMMAND_REQ_H
-#define _APS_COMMAND_REQ_H
+#if !defined APS_COMMAND_REQ_H
+#define APS_COMMAND_REQ_H
 // DOM-IGNORE-END
 
 /******************************************************************************
@@ -96,6 +96,22 @@ typedef enum _APS_SecurityPolicyId_t
   APS_MAX_SPID
 } APS_SecurityPolicyId_t;
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+typedef struct _ApsRelayCommandService_t
+{
+    /** Pointer to the data send as a payload in APS Relay Command Request */
+    void *pData;
+    /** Length of the data to be send as a payload in APS Relay Command Request */
+    uint16_t dataLen;
+    /** Extended Address of Device to Authorise */
+    ExtAddr_t unAuthDevExtAdd;
+    /** The extended 64-bit address of the destination device */
+    ExtAddr_t destAddress;
+    /** Pointer to the nwk data indication */
+    NWK_DataInd_t *nwkDataInd;
+} ApsRelayCommandService_t;
+#endif
+
 /** Type of request to transmit APS command. */
 typedef struct _ApsCommandReq_t
 {
@@ -106,8 +122,13 @@ typedef struct _ApsCommandReq_t
     QueueElement_t next;
     /** Partner device short address */
     ShortAddr_t partnerShortAddr;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+    /** Pointer to the memory allocated by the APS layer */
+    NWK_DataReq_t *nwkDataReq;
+#else
     /** Service structure for memory allocation on the NWK layer */
     NWK_AllocDataReq_t allocateReq;
+#endif    
     /** Callback function for preparing an NWK-DATA.request */
     void (*prepareNwkDataReq)(struct _ApsCommandReq_t *const commandReq);
 #if defined _LINK_SECURITY_
@@ -119,6 +140,14 @@ typedef struct _ApsCommandReq_t
 #endif /* _LINK_SECURITY_ */
     /** Is used for address resolving */
     ZDO_ResolveAddrReq_t resolveAddrReq;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+    /** Flag for indicating the given APS command request to process as APS Relay Command */
+    uint8_t isRelayCmd;
+    /** NWK security enable flag */
+    uint8_t nwkSecurityEnable;
+    /** Service field required during processing APS Relay Command request */
+    ApsRelayCommandService_t relayCommand;
+#endif
   } service;
   /** Indicates the command frame is or should be encrypted on the NWK layer */
   bool nwkSecurity;
@@ -133,6 +162,10 @@ typedef struct _ApsCommandReq_t
   uint8_t frameLength;
   /** Pointer to the extended address of a partner device */
   ExtAddr_t *partnerExtAddr;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  /** Ack request for command */
+  bool ackRequest;
+#endif  
   /** Callback function for preparing an APS command. Must not be set to NULL. */
   void (*prepareCommand)(struct _ApsCommandReq_t *const commandReq);
   /** Callback function for confirming of APS command transmission. Must not be set to NULL. */
@@ -151,6 +184,6 @@ typedef struct _ApsSecurityStatusDescriptor_t
 } ApsSecurityStatusDescriptor_t;
 #endif /* _SECURITY_ */
 
-#endif /* _APS_COMMAND_REQ_H */
+#endif /* APS_COMMAND_REQ_H */
 /** eof apsCommandReq.h */
 

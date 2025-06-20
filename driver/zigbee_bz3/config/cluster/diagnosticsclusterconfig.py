@@ -86,6 +86,8 @@ def diagnosticsClusterHandling():
         diagnosticsCluster.setValue(False)
         diagnosticsClusterCS.setValue("SERVER")
         diagnosticsClusterCS.setReadOnly(True)
+        diagnosticsClusterClientMenu.setVisible(False) 
+        diagnosticsClusterServerMenu.setVisible(True)
     else:
         diagnosticsCluster.setVisible(False)
 
@@ -186,12 +188,14 @@ diagnosticsClusterCS.setDefaultValue("BOTH")
 diagnosticsClusterCS.setDescription("Diagnostics Cluster Supported Implementation- Select the option")
 diagnosticsClusterCS.setDependencies(diagnosticsClusterCsCheck,["DIAGONSTICS_CLUSTER_ENABLE"])
 
+global diagnosticsClusterClientMenu
 diagnosticsClusterClientMenu = drvZigbeeComponent.createMenuSymbol("DIAGONSTICS_CLUSTER_CLIENT_MENU", diagnosticsCluster)
 diagnosticsClusterClientMenu.setLabel("Client")
 #diagnosticsClusterClientMenu.setVisible(False)
 diagnosticsClusterClientMenu.setDescription("DIAGONSTICS CLUSTER CLIENT")
 diagnosticsClusterClientMenu.setDependencies(diagnosticsClusterClientCheck,["DIAGONSTICS_CLUSTER_CS","DIAGONSTICS_CLUSTER_ENABLE"])
 
+global diagnosticsClusterServerMenu
 diagnosticsClusterServerMenu = drvZigbeeComponent.createMenuSymbol("DIAGONSTICS_CLUSTER_SERVER_MENU", diagnosticsCluster)
 diagnosticsClusterServerMenu.setLabel("Server")
 #diagnosticsClusterServerMenu.setVisible(False)

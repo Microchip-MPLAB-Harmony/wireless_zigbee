@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _CSSIB_H_
-#define _CSSIB_H_
+#ifndef CSSIB_H_
+#define CSSIB_H_
 
 /******************************************************************************
                     Includes section
@@ -93,6 +93,9 @@ typedef struct _CS_ReadOnlyItems_t
   NwkRouteCacheSize_t csNwkRouteCacheSize;
   NwkSizeOfNeighborTable_t csNeibTableSize;
   NwkSizeOfAddressMap_t csAddressMapTableSize;
+#ifdef _ZIGBEE_REV_23_SUPPORT_  
+  NwkSizeOfDiscoveryTable_t csNwkDiscoveryTableSize;
+#endif  
   uint8_t csMacPanDescriptorAmount;
   uint8_t csMaxChildrenAmount;
   uint8_t csMaxChildrenRouterAmount;
@@ -121,6 +124,9 @@ typedef struct _CS_ReadOnlyItems_t
   /* APS parameters */
   uint8_t  csApsDataReqBuffersAmount;
   uint8_t  csApsAckFrameBuffesAmount;
+#ifdef _ZIGBEE_REV_23_SUPPORT_  
+  uint8_t  csApsCmdReqBuffersAmount;
+#endif  
   uint8_t  csDuplicateRejectionTableSize;
 #ifdef _DUPLICATE_REJECTION_TABLE_BIT_MASK_ENABLE_
   uint8_t  csApsDuplicateEntryCounterSize;
@@ -132,6 +138,9 @@ typedef struct _CS_ReadOnlyItems_t
 #ifdef _APS_FRAGMENTATION_
   uint8_t  csApsMaxBlocksAmount;
   uint16_t csApsBlockSize;
+#ifdef _ZIGBEE_REV_23_SUPPORT_  
+  uint8_t  csApsDataFragmentation;
+#endif  
 #endif /* _APS_FRAGMENTATION_ */
 
   /* ZCL parameters */
@@ -182,6 +191,9 @@ typedef struct _CS_ReadOnlyItems_t
   uint16_t distributedNetworkAddress;       //BDB
   bool touchlinkSupport;                    //BDB
 #endif
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  APS_FragmentationCacheAmount_t csApsFragmentationCacheAmount;
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
 #endif /* _MAC2_ */
 } CS_ReadOnlyItems_t;
 
@@ -270,5 +282,5 @@ uint16_t    csStackLeftThreshold;
   bool installCodeBasedJoinLinkKeyType;
 } SIB_t;
 
-#endif /* _CSSIB_H_ */
+#endif /* CSSIB_H_ */
 /* eof csSIB.h */

@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _EXTENDEDCOLORLIGHT_H
-#define _EXTENDEDCOLORLIGHT_H
+#ifndef EXTENDEDCOLORLIGHT_H
+#define EXTENDEDCOLORLIGHT_H
 
 /*****************************************************************************
  define section
@@ -68,6 +68,6 @@ void eclDeviceTaskHandler(void);
                     Externals
 ******************************************************************************/
 
-#endif // _DIMMABLELIGHT_H
+#endif // DIMMABLELIGHT_H
 
 // eof dimmableLight.h

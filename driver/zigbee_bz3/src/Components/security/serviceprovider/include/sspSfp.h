@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _SSPSFP_H
-#define _SSPSFP_H
+#ifndef SSPSFP_H
+#define SSPSFP_H
 
 /******************************************************************************
                         Includes section.
@@ -210,6 +210,8 @@ typedef struct
   bool onlyMicCheck;
   //! Encrypt frame confirm callback function.
   void (*SSP_DecryptFrameConf)(SSP_DecryptFrameConf_t *conf);
+  //! frame counter received from another device
+  uint32_t receivedFrameCounter;
   //! Security Service Provider SSP_DecryptFrame confirm parameters' structure.
   SSP_DecryptFrameConf_t confirm;
 } SSP_DecryptFrameReq_t;
@@ -407,5 +409,5 @@ void SSP_ZgpEncryptFrameReq(SSP_ZgpEncryptFrameReq_t *reqParam);
 void SSP_ZgpDecryptFrameReq(SSP_ZgpDecryptFrameReq_t *reqParam);
 #endif  // eof ZGP_SECURITY_ENABLE
 
-#endif //_SSPSFP_H
+#endif //SSPSFP_H
 // eof sspSfp.h

@@ -120,6 +120,14 @@ ZCL_ThermostatClusterClientAttributes_t customThermostatClusterClientAttributes 
 
 </#if>
 
+//###########################################################################
+
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+<#if ((THERMOSTAT_CLUSTER_ENABLE == true) && ((THERMOSTAT_CLUSTER_CS != "CLIENT") || (THERMOSTAT_CLUSTER_CS == "BOTH")))>
+ZCL_ThermostatClusterServerAttributes_t __attribute__((persistent)) backupCstmThermostatClusterServerAttributes;
+</#if>
+</#if>
+
 
 /******************************************************************************
                     Local variables
@@ -1155,6 +1163,26 @@ void customSendSetpointRaiseLowerCommand(APS_AddrMode_t mode, ShortAddr_t addr, 
   ZCL_CommandManagerSendCommand(req);
 }
 </#if>
+
+/*********************************************************************************
+*********************************************************************************/
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+<#if ((THERMOSTAT_CLUSTER_ENABLE == true) && ((THERMOSTAT_CLUSTER_CS != "CLIENT") || (THERMOSTAT_CLUSTER_CS == "BOTH")))>
+void CDtsBackupTsAttributes(void)
+{
+   memcpy4ByteAligned(&backupCstmThermostatClusterServerAttributes,&customThermostatClusterServerAttributes, sizeof(ZCL_ThermostatClusterServerAttributes_t));
+}
+</#if>
+<#if ((THERMOSTAT_CLUSTER_ENABLE == true) && ((THERMOSTAT_CLUSTER_CS != "CLIENT") || (THERMOSTAT_CLUSTER_CS == "BOTH")))>
+void CDtsRestoreTsAttributes(void)
+{
+  memcpy4ByteAligned(&customThermostatClusterServerAttributes, &backupCstmThermostatClusterServerAttributes, sizeof(ZCL_ThermostatClusterServerAttributes_t));
+}
+</#if>
+</#if>
+
+
+
 #endif // APP_DEVICE_TYPE_CUSTOM
 
 // eof customThermostatCluster.c

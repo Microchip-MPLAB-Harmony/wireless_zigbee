@@ -113,6 +113,8 @@
 #define ZGP_UNKNOWN_SWITCH_TYPE 0x00
 #define ZGP_BUTTON_SWITCH_TYPE 0x01
 #define ZGP_ROCKER_SWITCH_TYPE 0x02
+
+bool isOneStateCommInProgress = false;
 /**************************************************************************//**
    Type Definitions
 ******************************************************************************/
@@ -159,6 +161,7 @@ typedef struct PACK _ZgpTranslationEntryUpdateOperation_t
   void *reportDescriptor; // array of data point descriptors
   uint8_t *cmdList;  
   zgpSwitchInfo_t switchInfo;
+  uint8_t zclCmdPayloadLength;
 } zgpTranslationEntryUpdateOperation_t;
 
 // GP trans table update entry field
@@ -544,6 +547,22 @@ static bool zgpTransTableIsFuncMatching(uint8_t *deviceId, ZGP_GpdAppInfo_t *app
       functionalityMatching = zgpCheckForReportDescriptorMatch(appInfo, noOfEndpoints, pairedEpList);
 #endif
     }
+    if(appInfo->appInfoOptions.switchInformationPresent)
+    {
+#ifdef ZGP_ENABLE_GENERIC_8_CONTACT_SWITCH_SUPPORT
+      uint8_t pairedEps[APP_ENDPOINTS_AMOUNT];
+      uint8_t *pairedEpList = endPointList;
+
+      if (ALL_END_POINT == endPointList[0])
+      {
+        noOfEndpoints = zgpGetAllEndPoints(pairedEps);
+        pairedEpList = &pairedEps[0];
+      }
+      // Check for the attributes to be reported supported by the device
+      if(appInfo->switchInfo.switchInfoLength != 0)
+        functionalityMatching = true;
+#endif
+    }
     if (appInfo->noOfGpdCmds)
     {
       if (isGpdCmdSupported(updateDeviceId, appInfo))
@@ -842,6 +861,39 @@ static bool getDeviceIdFromCmdIndex(uint8_t *deviceId, uint8_t cmdIndex)
     retValue = true;
   }
 #endif
+#ifdef ZGP_GENERIC_SIMPLE_1_STATE_SWITCH_ENABLED
+  if ((cmdIndex >= ZGP_SIMPLE_GENERIC_1_STATE_SWITCH_START_INDEX) && \
+      (cmdIndex < (ZGP_SIMPLE_GENERIC_1_STATE_SWITCH_START_INDEX + ZGP_SIMPLE_GENERIC_1_STATE_SWITCH_CMD_LIST_SIZE)))
+  {
+    deviceIdValue = ZGP_SIMPLE_GENERIC_1_STATE_SWITCH;
+    retValue = true;
+    return retValue;
+  }
+#endif
+#ifdef ZGP_GENERIC_ADVANCED_1_STATE_SWITCH_ENABLED
+  if ((cmdIndex >= ZGP_SIMPLE_GENERIC_1_STATE_SWITCH_START_INDEX) && \
+      (cmdIndex < (ZGP_SIMPLE_GENERIC_1_STATE_SWITCH_START_INDEX + ZGP_ADVANCED_GENERIC_1_STATE_SWITCH_CMD_LIST_SIZE)))
+  {
+    deviceIdValue = ZGP_ADVANCED_GENERIC_1_STATE_SWITCH;
+    retValue = true;
+  }
+#endif
+#ifdef ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_ENABLED
+  if ((cmdIndex >= ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_START_INDEX) && \
+      (cmdIndex < (ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_START_INDEX + ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_CMD_LIST_SIZE)))
+  {
+    deviceIdValue = ZGP_SIMPLE_GENERIC_2_STATE_SWITCH;
+    retValue = true;
+  }
+#endif
+#ifdef ZGP_ADVANCED_GENERIC_2_STATE_SWITCH_ENABLED
+  if ((cmdIndex >= ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_START_INDEX) && \
+      (cmdIndex < (ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_START_INDEX + ZGP_ADVANCED_GENERIC_2_STATE_SWITCH_CMD_LIST_SIZE)))
+  {
+    deviceIdValue = ZGP_ADVANCED_GENERIC_2_STATE_SWITCH;
+    retValue = true;
+  }
+#endif
   if(deviceId != NULL)
     *deviceId = deviceIdValue;
   return retValue;
@@ -883,6 +935,30 @@ static bool getCmdListFromDeviceId(uint8_t deviceId, uint8_t *cmdIndex, uint8_t 
   case ZGP_LIGHT_SENSOR:
     *cmdIndex = ZGP_ATTR_REPORT_START_INDEX;
     *cmdCount = ZGP_ATTR_REPORT_CMD_LIST_SIZE + ZGP_ZCL_TUNNELING_CMD_LIST_SIZE;
+  return true;
+#endif
+#ifdef ZGP_GENERIC_SIMPLE_1_STATE_SWITCH_ENABLED
+  case ZGP_SIMPLE_GENERIC_1_STATE_SWITCH:
+    *cmdIndex = ZGP_SIMPLE_GENERIC_1_STATE_SWITCH_START_INDEX;
+    *cmdCount = ZGP_SIMPLE_GENERIC_1_STATE_SWITCH_CMD_LIST_SIZE;
+  return true;
+#endif
+#ifdef ZGP_GENERIC_ADVANCED_1_STATE_SWITCH_ENABLED
+  case ZGP_ADVANCED_GENERIC_1_STATE_SWITCH:
+    *cmdIndex = ZGP_SIMPLE_GENERIC_1_STATE_SWITCH_START_INDEX;
+    *cmdCount = ZGP_ADVANCED_GENERIC_1_STATE_SWITCH_CMD_LIST_SIZE;
+  return true;
+#endif
+#ifdef ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_ENABLED
+  case ZGP_SIMPLE_GENERIC_2_STATE_SWITCH:
+    *cmdIndex = ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_START_INDEX;
+    *cmdCount = ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_CMD_LIST_SIZE;
+  return true;
+#endif
+#ifdef ZGP_ADVANCED_GENERIC_2_STATE_SWITCH_ENABLED
+  case ZGP_ADVANCED_GENERIC_2_STATE_SWITCH:
+    *cmdIndex = ZGP_SIMPLE_GENERIC_2_STATE_SWITCH_START_INDEX;
+    *cmdCount = ZGP_ADVANCED_GENERIC_2_STATE_SWITCH_CMD_LIST_SIZE;
   return true;
 #endif
   default:
@@ -1204,7 +1280,7 @@ static bool isTTEntryPresentForGPD(uint8_t entryIndex)
            contactStatus - applicable for 8-bit vector press and release command
 \return status
 ******************************************************************************/
-static uint8_t gpdZclCmdMappingEntryExists(uint8_t gpdCmd, uint16_t zclClusterId, uint8_t zclCmd, uint8_t entryIndex, zgpSwitchInfo_t *switchInfo, bool *isTTEntryAdded)
+static uint8_t gpdZclCmdMappingEntryExists(uint8_t gpdCmd, uint16_t zclClusterId, uint8_t zclCmd, uint8_t entryIndex, zgpSwitchInfo_t *switchInfo, bool *isTTEntryAdded, uint8_t zclCmdPayloadLength)
 {
   uint8_t i = 0;
   uint8_t cmdMappingTableIndex = ZGP_ENTRY_INVALID_INDEX;
@@ -1223,6 +1299,8 @@ static uint8_t gpdZclCmdMappingEntryExists(uint8_t gpdCmd, uint16_t zclClusterId
             if(zgpGpdToZclCmdMappingTable[i].zclCmdId == zclCmd)
             {
               cmdMappingTableIndex = i;
+              if(zclCmdPayloadLength != 0xFF)
+                zgpGpdToZclCmdMappingTable[i].payloadLength = zclCmdPayloadLength;
             }
           }
           else
@@ -1402,7 +1480,7 @@ static bool zgpTransTableAddEntry(zgpTranslationEntryUpdateOperation_t *updatePa
     }
 
     // no addition to gpd zcl cmd mapping table
-    if (updateParam->deviceId)
+    if (updateParam->deviceId || isOneStateCommInProgress)
     {
       bool matching = false;
       bool includeDefaultTranslations = true;
@@ -1429,10 +1507,10 @@ static bool zgpTransTableAddEntry(zgpTranslationEntryUpdateOperation_t *updatePa
         }
       }
 
-      if ((ZGP_UNSPECIFIED_DEVICE_ID != updateParam->deviceId) && includeDefaultTranslations)
+      if (includeDefaultTranslations)
       {
 #ifdef ZGP_ENABLE_GENERIC_8_CONTACT_SWITCH_SUPPORT
-        if(updateParam->deviceId == ZGP_GENERIC_8_CONTACT_SWITCH)
+        if(updateParam->deviceId == ZGP_GENERIC_8_CONTACT_SWITCH || updateParam->deviceId == ZGP_UNSPECIFIED_DEVICE_ID)
         {
           matching = addG8csCmdListToLookupTable(updateParam->switchInfo.currContactStatus, entryIndex, &cmdIndex , &cmdCount);
         }
@@ -1449,7 +1527,7 @@ static bool zgpTransTableAddEntry(zgpTranslationEntryUpdateOperation_t *updatePa
       {
         // check in the cmd mapping table
         // If found, then add the entry in lookup table with trans entry index & cmd index
-        if (ZGP_ENTRY_INVALID_INDEX != (cmdIndex = gpdZclCmdMappingEntryExists(updateParam->cmdList[updateParam->noOfCmds - 1], zclClusterId, zclCmdId, ZGP_ENTRY_INVALID_INDEX, NULL, NULL)))
+        if (ZGP_ENTRY_INVALID_INDEX != (cmdIndex = gpdZclCmdMappingEntryExists(updateParam->cmdList[updateParam->noOfCmds - 1], zclClusterId, zclCmdId, ZGP_ENTRY_INVALID_INDEX, NULL, NULL, 0xFF)))
         {
 #ifdef ZGP_ENABLE_GENERIC_8_CONTACT_SWITCH_SUPPORT          
           if(updateParam->cmdList[updateParam->noOfCmds - 1] == ZGP_8_BIT_VECTOR_PRESS ||
@@ -1493,7 +1571,7 @@ static bool zgpTransTableAddEntry(zgpTranslationEntryUpdateOperation_t *updatePa
     {
       uint8_t existingCmdIndex = 0;
       bool isTTEntryAdded = false;
-      if (ZGP_ENTRY_INVALID_INDEX == (existingCmdIndex = gpdZclCmdMappingEntryExists(gpdZclMapping->gpdCmdId, zclClusterId, zclCmdId, ZGP_ENTRY_INVALID_INDEX, NULL, NULL)))
+      if (ZGP_ENTRY_INVALID_INDEX == (existingCmdIndex = gpdZclCmdMappingEntryExists(gpdZclMapping->gpdCmdId, zclClusterId, zclCmdId, ZGP_ENTRY_INVALID_INDEX, NULL, NULL, updateParam->zclCmdPayloadLength)))
       {
         if ( ZGP_ENTRY_INVALID_INDEX ==(cmdIndex = addToGpdZclMappingTable(gpdZclMapping, payload)))
         {
@@ -1515,7 +1593,7 @@ static bool zgpTransTableAddEntry(zgpTranslationEntryUpdateOperation_t *updatePa
       else
       {
         //find the index to be replaced
-        existingCmdIndex = gpdZclCmdMappingEntryExists(gpdZclMapping->gpdCmdId, zclClusterId, IGNORE_THIS_FIELD, entryIndex, &updateParam->switchInfo, &isTTEntryAdded);
+        existingCmdIndex = gpdZclCmdMappingEntryExists(gpdZclMapping->gpdCmdId, zclClusterId, IGNORE_THIS_FIELD, entryIndex, &updateParam->switchInfo, &isTTEntryAdded, updateParam->zclCmdPayloadLength);
         if (updateParam->isReplaceReq)
         {
           zgpTransRemoveLookUpTableEntries(ZGP_TRANS_TABLE_ENTRY_INVALID_INDEX, entryIndex , existingCmdIndex);
@@ -1757,7 +1835,7 @@ static bool validateAppEndPoint(uint8_t newAppEndPoint, uint8_t *entryAppEndPoin
   // so return true
   if (ALL_END_POINT == newAppEndPoint)
     *entryAppEndPoint = newAppEndPoint;
-  else if ((newAppEndPoint != *entryAppEndPoint) && (ALL_END_POINT != *entryAppEndPoint))
+  else if ((newAppEndPoint != *entryAppEndPoint) ) //&& (ALL_END_POINT != *entryAppEndPoint))
     valid = true;
 
   return valid;
@@ -2009,7 +2087,7 @@ static void zgpTransTableRemoveEntry(zgpTransTableEntryRemoveOperation_t *transT
   }
   if((transTableEntryRemoveField->gpdCmdId != IGNORE_THIS_FIELD) && (transTableEntryRemoveField->zclClusterId != IGNORE_THIS_FIELD) && (transTableEntryRemoveField->zclCmdId != IGNORE_THIS_FIELD))
   {
-    cmdIndex = gpdZclCmdMappingEntryExists(transTableEntryRemoveField->gpdCmdId, transTableEntryRemoveField->zclClusterId, transTableEntryRemoveField->zclCmdId, entryIndex, NULL, NULL);
+    cmdIndex = gpdZclCmdMappingEntryExists(transTableEntryRemoveField->gpdCmdId, transTableEntryRemoveField->zclClusterId, transTableEntryRemoveField->zclCmdId, entryIndex, NULL, NULL, 0xFF);
   }
 
   // Need to update lookup table
@@ -2054,6 +2132,7 @@ static void zgpTransTableCmdIndHandler(SYS_EventId_t eventId, SYS_EventData_t da
 #endif
   if (GPD_COMMAND_RECEIVED == indicationInfo->indicationType)
   {
+    uint8_t cmdForwardedToApp = 0;
     ZGP_GpdCommand_t *gpdCmdInd = (ZGP_GpdCommand_t *)&indicationInfo->indicationData.gpdCommand;
     zgpTranslationEntryReadOperation_t transTableReadParam = {.ignoreAppId = false, .ignoreGpdId = false, .transLookupTableIndex = 0, \
                                                               .appId = gpdCmdInd->appId, .gpdId = &gpdCmdInd->gpdId, .gpdEndPoint = gpdCmdInd->endPoint, .gpdCmdId = gpdCmdInd->cmdId,
@@ -2072,7 +2151,7 @@ static void zgpTransTableCmdIndHandler(SYS_EventId_t eventId, SYS_EventData_t da
           return; // Release - contact status of last press cannot be retreived, press - can still execute
     }
 #endif
-    while(ZGP_TRANS_TABLE_ENTRY_INVALID_INDEX != (transTableReadParam.transLookupTableIndex = zgpTransTableGetZgpZclMappingInfo(&transTableReadParam, &zgpZclMappingInfo)))
+    while(ZGP_TRANS_TABLE_ENTRY_INVALID_INDEX != (transTableReadParam.transLookupTableIndex = zgpTransTableGetZgpZclMappingInfo(&transTableReadParam, &zgpZclMappingInfo)) && !cmdForwardedToApp)
     {
       // By default we have only one paired endpoint
       // will be overridden when ALL_END_POINT is set
@@ -2187,6 +2266,7 @@ static void zgpTransTableCmdIndHandler(SYS_EventId_t eventId, SYS_EventData_t da
         {
           zgpZclMappingInfo.appEndPoint = pairedEps[noOfPairedEps - 1];
           // forward to the endpoint and scan the next end point
+          cmdForwardedToApp = true;
           forwardGpdCmdToAppEndPoint(&zgpZclMappingInfo, &addressing, gpdCmdInd, index);
           index += zgpZclMappingInfo.cmdMapInfo.payloadLength;
           noOfPairedEps--;
@@ -2267,16 +2347,20 @@ static void zgpTransTableIndHandler(SYS_EventId_t eventId, SYS_EventData_t data)
                                                                .switchInfo.switchInfoLength = appInfo->switchInfo.switchInfoLength,
                                                                .switchInfo.genericSwitchConfig = appInfo->switchInfo.genericSwitchConfig,
                                                                .switchInfo.currContactStatus = appInfo->switchInfo.currContactStatus,
-                                                               .switchInfo.contactBitMask = appInfo->switchInfo.currContactStatus
+                                                               .switchInfo.contactBitMask = appInfo->switchInfo.currContactStatus,
 #else
                                                                .switchInfo.switchInfoLength = 0,
                                                                .switchInfo.genericSwitchConfig = 0,
                                                                .switchInfo.currContactStatus = 0,
-                                                               .switchInfo.contactBitMask = 0
+                                                               .switchInfo.contactBitMask = 0,
 #endif
+                                                               .zclCmdPayloadLength = 0xFF
                                                                };
       // TBD need to handle when no free entry available in translation table
+      if(sinkTableEntry->deviceId == ZGP_SIMPLE_GENERIC_1_STATE_SWITCH)
+        {isOneStateCommInProgress = true;}
       zgpTransTableAddEntry(&entryUpdateParam, NULL, NULL);
+      isOneStateCommInProgress = false;
       noOfPairedEndPoints--;
     }
   }
@@ -2650,13 +2734,14 @@ static ZCL_Status_t zgpTranslationTableUpdateHandling(ZCL_Addressing_t *addressi
                                                         .switchInfo.switchInfoLength = switchInfo.switchInfoLength,
                                                         .switchInfo.genericSwitchConfig = switchInfo.genericSwitchConfig,
                                                         .switchInfo.currContactStatus = switchInfo.currContactStatus,
-                                                        .switchInfo.contactBitMask = switchInfo.contactBitMask
+                                                        .switchInfo.contactBitMask = switchInfo.contactBitMask,
 #else
                                                         .switchInfo.switchInfoLength = 0,
                                                         .switchInfo.genericSwitchConfig = 0,
                                                         .switchInfo.currContactStatus = 0,
-                                                        .switchInfo.contactBitMask = 0
-#endif                                                          
+                                                        .switchInfo.contactBitMask = 0,
+#endif                                                    
+                                                        .zclCmdPayloadLength = transUpdateCmd.entryField.zclCmdPayloadLength
                                                         };
 #ifdef ZGP_ENABLE_GENERIC_8_CONTACT_SWITCH_SUPPORT
 #ifndef ZGP_GPD_PROCESSING_IN_APPLICATION_SUPPORTED 

@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _LIGHTCLUSTER_H
-#define _LIGHTCLUSTER_H
+#ifndef LIGHTCLUSTER_H
+#define LIGHTCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -88,6 +88,6 @@ extern ClusterId_t lightClientClusterIds[LIGHT_CLIENT_CLUSTERS_COUNT];
 extern void (*lightClientClusterInitFunctions[LIGHT_CLIENT_CLUSTER_INIT_COUNT])();
 
 
-#endif // _LIGHTCLUSTER_H
+#endif // LIGHTCLUSTER_H
 
 // eof lightClusters.h

@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#if !defined _SYS_EVENTS_H
-#define _SYS_EVENTS_H
+#if !defined SYS_EVENTS_H
+#define SYS_EVENTS_H
 
 /******************************************************************************
                                Includes section
@@ -92,8 +92,9 @@
 /** To check Verify Req attempts are done */
 #define BC_VERIFY_KEY_REQ_ATTTEMPS_ACTION (1U <<12)
 /** To check if we need to send the link status */
-
 #define BC_NWK_LINK_STATUS_TX (1U <<13)
+/** To collect the beacons for ZDO Survey Beacon Req Command */
+#define BC_BEACON_COLLECT_ACTION (1U <<14)
 
 /** The list of ZCL actions to be handled in the respective clusters */
 #define ZCL_ACTION_WRITE_ATTR_REQUEST     (1U << 0) /*Bit 0*/
@@ -101,6 +102,15 @@
 #define ZCL_ACTION_RESET_ALARM_REQUEST    (1U << 2) /*Bit 2*/
 #define ZCL_PRE_ACTION_WRITE_ATTR_REQUEST (1U << 3) /*Bit 3*/
 #define ZCL_ACTION_SPL_WRITE_ATTR_REQUEST (1U << 4) /*Bit 4*/
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#define BC_PERFORM_DEVICE_INTERVIEW_ACTION       (1U <<15)
+/** Action request for security check at NWK layer */
+#define BC_NWK_SECURITY_CHECK_ACCESS_REQ_ACTION      (1U << 0) /*Bit 0*/
+/** Action request for security check at APS layer */
+#define BC_APS_SECURITY_CHECK_ACCESS_REQ_ACTION      (1U << 1) /*Bit 1*/
+/** To call challenge request command on receiving wrong aps frame counter  */
+#define BC_APS_SEND_SECURITY_CHALLENGE_REQ_ACTION    (1U << 0) /*Bit 0*/
+#endif
 
 /**
  * \brief Configuring various states of system
@@ -390,7 +400,23 @@ typedef enum _BcEvents_t
 
   /*! This event is triggered from Zdo when an incoming malformed resp frame is rejected*/  
   BC_EVENT_VALIDATE_ZDP_RESPONSE        = 0x58,
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  /*! This event is triggered from NWK and APS to allow/accept an incoming security incompatible frame */
+  BC_EVENT_SECURITY_CHECK_ACCESS_REQ    = 0x59,
 
+  /*! This event is triggered when the ApsFragmentationCache table is updated. */
+  BC_EVENT_APS_FRAG_CACHE_UPDATE        = 0x5A,
+
+  /*! This event is triggered when the received counter is less than current counter . */
+  BC_EVENT_SEND_SECURITY_CHALLENGE_REQ  = 0x5B,  
+
+  /*! This event is triggerd when the backup fields of the aps key pair table are getting changed. */
+  BC_EVENT_APS_TC_BACKUP = 0x5C,
+  /*! This event is triggered when an ONNWK device joined via DLK. */
+  BC_EVENT_ONNWK_DEVICE_JOINED_VIA_DLK = 0x5D,
+  /*! This event is used to notify the stack about the trust center loss. */
+  BC_EVENT_APS_TC_SWAP = 0x5E,
+#endif
 } BcEvents_t;
 
 /** Type of an external action. For example, receiving of a Mgmt-Bind.request
@@ -428,6 +454,44 @@ typedef struct _BcZCLActionReq_t
    * any other values mean access denied. The initiator must write a default value. */
   uintptr_t denied;
 } BcZCLActionReq_t;
+
+/** Type of data which is passed as the data parameter into an event handler
+ * of the BC_EVENT_SECURITY_CHECK_ACCESS_REQ event. An initiator must initialize all
+ * fields of the structure before calling of the SYS_PostEvent() function. */
+typedef struct _BcSecurityCheckReq_t_
+{
+  /** An action for which permissions are requested. */
+  uint16_t action;
+  /** The pointer to a parameter's structure which are associated with the action. */
+  const void *context;
+  /** The result of access request. The value 1 means the action is permitted,
+   * any other values mean access denied. The initiator must write a default value. */
+  uint8_t isGranted;
+} BcSecurityCheckReq_t;
+
+/** Type of data which is passed as the data parameter into an event handler
+ * of the BC_EVENT_SEND_SECURITY_CHALLENGE_REQ event. An initiator must initialize all
+ * fields of the structure before calling of the SYS_PostEvent() function. */
+typedef struct _BcChallengeReq_t_
+{
+  /** An action for which permissions are requested. */
+  uint16_t action;
+  /** The pointer to a parameter's structure which are associated with the action. */
+  const void *context;
+} BcChallengeReq_t;
+
+/** Device interview request structure which is associated with the action BC_PERFORM_DEVICE_INTERVIEW_ACTION */
+typedef struct _BcDeviceInterviewReq_t_
+{
+  /** Confirmation callback */
+  void (*callBack)(uint64_t destAddress, uint64_t parentAddress);
+  /** Destination address  */
+  uint64_t destAddress;
+  /** Parent address */
+  uint64_t parentAddress;
+  /** Unauthorized device address */
+  uint64_t unAuthDevExtAdd;
+} BcDeviceInterviewReq_t;
 
 #endif /* _SYS_EVENTS_H */
 /** eof sysEvents.h */

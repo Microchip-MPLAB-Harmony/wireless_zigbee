@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZCLZLLBASICCLUSTER_H
-#define _ZCLZLLBASICCLUSTER_H
+#ifndef ZCLZLLBASICCLUSTER_H
+#define ZCLZLLBASICCLUSTER_H
 
 /*!
 Attributes and commands for determining basic information about a device,
@@ -484,6 +484,6 @@ typedef struct PACK
 } ZCL_BasicClusterServerCommands_t;
 
 
-#endif //#ifndef _ZCLBASICCLUSTER_H
+#endif //#ifndef ZCLBASICCLUSTER_H
 
 //eof zclZllBasicCluster.h

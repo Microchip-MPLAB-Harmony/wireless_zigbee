@@ -40,8 +40,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _BUTTON_HANDLERS_H
-#define _BUTTON_HANDLERS_H
+#ifndef BUTTON_HANDLERS_H
+#define BUTTON_HANDLERS_H
 
 /******************************************************************************
                     Includes section
@@ -56,6 +56,6 @@
 ******************************************************************************/
 void buttonHandler(uint8_t button, uint8_t time, uint8_t alt);
 
-#endif // _BUTTON_HANDLERS_H
+#endif // BUTTON_HANDLERS_H
 
 // eof buttonHandlers.h

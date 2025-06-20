@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPMIDDLEPROXY_H
-#define _ZGPMIDDLEPROXY_H
+#ifndef ZGPMIDDLEPROXY_H
+#define ZGPMIDDLEPROXY_H
 
 #ifdef _GREENPOWER_SUPPORT_
 /******************************************************************************
@@ -137,6 +137,6 @@ bool ZGP_sendGpNotification(ZGP_Addressing_t *addressing, uint8_t *payload, uint
 
 #endif // _GREENPOWER_SUPPORT_
 
-#endif // _ZGPMIDDLEPROXY_H
+#endif // ZGPMIDDLEPROXY_H
 
 // eof zgpMiddleProxy.h

@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGLOWPROXY_H
-#define _ZGPLOWSINK_H
+#ifndef ZGLOWPROXY_H
+#define ZGPLOWSINK_H
 
 #ifdef _GREENPOWER_SUPPORT_
 /******************************************************************************
@@ -102,6 +102,6 @@ bool zgpRemoveProxyPairingInfo(ZGP_ProxyTableEntry_t *removeEntry, ZGP_ProxyTabl
 bool zgpUpdateProxyEntry(ZGP_ProxyTableEntry_t *currentEntry, ZGP_ProxyTableEntry_t *entryInfo);
 
 #endif // _GREENPOWER_SUPPORT_
-#endif //_ZGPLOWPROXY_H
+#endif //ZGPLOWPROXY_H
 
 // eof zgpLowProxy.h

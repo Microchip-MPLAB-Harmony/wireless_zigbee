@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPMEM_H
-#define _ZGPMEM_H
+#ifndef ZGPMEM_H
+#define ZGPMEM_H
 
 #ifdef _GREENPOWER_SUPPORT_
 /******************************************************************************
@@ -105,6 +105,6 @@ void* zgpGetMemReqBuffer(void);
 void zgpFreeMemReqBuffer(void);
 
 #endif // _GREENPOWER_SUPPORT_
-#endif //_ZGPMEM_H
+#endif //ZGPMEM_H
 
 // eof zgpHighMem.h

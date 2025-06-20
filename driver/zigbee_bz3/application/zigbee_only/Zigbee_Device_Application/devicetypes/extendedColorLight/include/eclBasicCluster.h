@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ECLBASICCLUSTER_H
-#define _ECLBASICCLUSTER_H
+#ifndef ECLBASICCLUSTER_H
+#define ECLBASICCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -55,6 +55,6 @@ extern ZCL_BasicClusterClientAttributes_t eclBasicClusterClientAttributes;
 
 extern ZCL_BasicClusterServerCommands_t eclBasicClusterServerCommands;
 
-#endif // _ECLBASICCLUSTER_H
+#endif // ECLBASICCLUSTER_H
 
 // eof eclBasicCluster.h

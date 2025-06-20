@@ -166,9 +166,10 @@ static void rInit(void)
   if (PDS_IsAbleToRestore(BDB_PARAM1_MEM_ID))
   {
       PDS_Restore(BDB_PARAM1_MEM_ID);
+	  PDS_Restore(BC_ALL_MEMORY_MEM_ID);  //BDB enabled case, stack PDS params also can be restored , this work around can be removed 
       bdbIB.bdbNodeIsOnANetwork = true;
   }
-  if(PDS_IsAbleToRestore(BC_ALL_MEMORY_MEM_ID))
+  if(PDS_IsAbleToRestore(BC_ALL_MEMORY_MEM_ID)) //BDB is not enabled case
   {
       PDS_Restore(BC_ALL_MEMORY_MEM_ID);
   }
@@ -180,7 +181,10 @@ static void rInit(void)
   {
       BDB_DeviceInit();
   }
-  
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  else //this is required as CS_APS_FRAGMENTATION_CACHE_ITEM_ID need to be initialized atlest once in PDS
+     PDS_InitItems(BC_EXT_GEN_MEMORY_ITEM_ID, CS_APS_FRAGMENTATION_CACHE_ITEM_ID);
+#endif 
   rState = R_IDLE_STATE;
 
   openBufferAllocator();

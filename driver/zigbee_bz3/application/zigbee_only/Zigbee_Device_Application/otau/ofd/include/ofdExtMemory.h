@@ -15,8 +15,8 @@
     31/07/09 A. Khromykh - Created
 *******************************************************************************/
 
-#ifndef _OFDEXTMEMORY_H
-#define _OFDEXTMEMORY_H
+#ifndef OFDEXTMEMORY_H
+#define OFDEXTMEMORY_H
 
 /******************************************************************************
                    Includes section
@@ -256,4 +256,4 @@ void OFD_ReadImageInfo(OFD_Position_t pos, OFD_InfoCallback_t cb);
   cb - pointer to callback
 ******************************************************************************/
 void OFD_CalCrc(OFD_Position_t pos, uint8_t *countBuff, uint32_t length, uint8_t expCrc, OFD_InfoCallback_t cb);
-#endif /* _OFDEXTMEMORY_H */
+#endif /* OFDEXTMEMORY_H */

@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _WLPDSMEMIDS_H_
-#define _WLPDSMEMIDS_H_
+#ifndef WLPDSMEMIDS_H_
+#define WLPDSMEMIDS_H_
 
 /******************************************************************************
                                Includes section
@@ -72,6 +72,9 @@ enum
   CS_GROUP_TABLE_ITEM_ID,
   NWK_RREQ_IDENTIFIER_ITEM_ID,
   BDB_PARAM1_MEM_ID,
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  CS_APS_FRAGMENTATION_CACHE_ITEM_ID,
+#endif
   BC_MAX_PDS_ITEMS_ID
 };
 #define BC_MAX_PDS_ITEMS_AMOUNT (BC_MAX_PDS_ITEMS_ID - PDS_BC_STACK_OFFSET_ID)
@@ -202,11 +205,28 @@ enum
 #define BITCLOUD_GROUP_TABLE_ITEM_AMOUNT           (0)
 #endif  //_GROUP_TABLE_
 
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#ifdef _APS_FRAGMENTATION_
+#define BITCLOUD_APS_FRAG_CACHE_DESCR_ITEM_AMOUNT  (1)
+#else
+#define BITCLOUD_APS_FRAG_CACHE_DESCR_ITEM_AMOUNT  (0)
+#endif
+#endif
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#define BITCLOUD_MAX_ITEMS_AMOUNT  (BITCLOUD_MIN_ITEMS_COUNT                + \
+                                    BITCLOUD_APS_KEY_PAIR_DESCR_ITEM_AMOUNT + \
+                                    BITCLOUD_NWK_SECURITY_ITEM_AMOUNT       + \
+                                    BITCLOUD_APS_BINDING_TABLE_ITEM_AMOUNT  + \
+                                    BITCLOUD_APS_FRAG_CACHE_DESCR_ITEM_AMOUNT  + \
+                                    BITCLOUD_GROUP_TABLE_ITEM_AMOUNT)
+#else
 #define BITCLOUD_MAX_ITEMS_AMOUNT  (BITCLOUD_MIN_ITEMS_COUNT                + \
                                     BITCLOUD_APS_KEY_PAIR_DESCR_ITEM_AMOUNT + \
                                     BITCLOUD_NWK_SECURITY_ITEM_AMOUNT       + \
                                     BITCLOUD_APS_BINDING_TABLE_ITEM_AMOUNT  + \
                                     BITCLOUD_GROUP_TABLE_ITEM_AMOUNT)
+#endif
 /******/
 
 #define PDS_ZB_MAX_ITEMS_AMOUNT       (BITCLOUD_MAX_ITEMS_AMOUNT      + \
@@ -219,5 +239,5 @@ enum
 /* Total files and directories amount supported by PDS */
 
 
-#endif // _WLPDSMEMIDS_H_
+#endif // WLPDSMEMIDS_H_
 /* eof wlPdsMemIds.h */

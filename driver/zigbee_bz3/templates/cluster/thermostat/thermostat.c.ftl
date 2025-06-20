@@ -95,7 +95,9 @@
 /*******************************************************************************
                     Static functions section
 *******************************************************************************/
+#if ZB_COMMISSIONING_ON_STARTUP == 1
 static void updateSensorsAttributeValues(void);
+#endif
 static void thFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterId_t id);
 static void thConfigureReportingResp(ZCL_Notify_t *ntfy);
 
@@ -131,7 +133,7 @@ static ClusterId_t thClientClusterToBindIds[] =
   TEMPERATURE_MEASUREMENT_CLUSTER_ID,
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "CLIENT")  >
+  <#if (DEVICE == "CLIENT") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -154,7 +156,7 @@ static ClusterId_t thServerClusterToBindIds[] =
   TEMPERATURE_MEASUREMENT_CLUSTER_ID,
   <#list 0..< CUSTOM_CLUSTER_NO as customClusterIndex>
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
-  <#if (DEVICE == "SERVER")  >
+  <#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
   <#assign clusterName = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_NAME")?eval?capitalize?replace(' ','') >
   <#assign deviceTypeFunctionPrefix = DEVICE_TYPE_FILE_PREFIX >
   ${clusterName?upper_case}_CLUSTER_ID,
@@ -177,13 +179,14 @@ static AppBindReq_t thBindReq =
 static ZCL_LinkKeyDesc_t thermostatKeyDesc = {APS_UNIVERSAL_EXTENDED_ADDRESS  /*addr*/,
                                          HA_LINK_KEY /*key*/};
 
+#if ZB_COMMISSIONING_ON_STARTUP == 1
 static HAL_AppTimer_t sensorAttributeUpdateTimer =
 {
   .interval = UPDATING_PERIOD,
   .mode     = TIMER_REPEAT_MODE,
   .callback = updateSensorsAttributeValues,
 };
-
+#endif
 /******************************************************************************
                     Implementation section
 ******************************************************************************/
@@ -311,7 +314,7 @@ static void updateSensorsAttributeValues(void)
 
   <#assign DEVICE = ("ZCC"+ customClusterIndex +"_CUSTOM_CLUSTER_CS")?eval >
 
-  <#if DEVICE == "SERVER">
+  <#if (DEVICE == "SERVER") || (DEVICE == "BOTH") >
 
   <#assign prefixAttribute  = "ZCC"+ customClusterIndex + "_CUSTOM_CLUSTER_" + "SERVER" + "_ATTRIBUTES_">
 

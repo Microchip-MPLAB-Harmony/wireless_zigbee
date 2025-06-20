@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSIDRIVER_H
-#define _ZSIDRIVER_H
+#ifndef ZSIDRIVER_H
+#define ZSIDRIVER_H
 
 /*****************************************************************************
                               Includes section
@@ -285,5 +285,5 @@ void zsiMediumPerformHalHoldTasks(void);
  ******************************************************************************/
 void zsiMediumReleaseAllHeldTasks(void);
 
-#endif /* _ZSIDRIVER_H */
+#endif /* ZSIDRIVER_H */
 /* eof zsiDriver.h */

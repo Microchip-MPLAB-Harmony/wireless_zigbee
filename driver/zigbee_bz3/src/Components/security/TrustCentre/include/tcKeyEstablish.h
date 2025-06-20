@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _TCKEYESTABLISH
-#define _TCKEYESTABLISH
+#ifndef TCKEYESTABLISH
+#define TCKEYESTABLISH
 
 #include <security/serviceprovider/include/sspHash.h>
 /**************************************************************************//**
@@ -62,6 +62,18 @@ typedef struct
   /* Input text for key hashing */
   uint8_t text[32 + 1 + 32];
   /* Indicates TCLK verification is in progress */
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+  /* Extended Address of Destination Device */
+  ExtAddr_t destAddress;
+
+  struct
+  {
+    /** Flag for indicating the given request to be process and send via APS Relay Command */
+    uint8_t isRelayCmd;
+    /** Extended Address of Device to Authorise */
+    uint64_t unAuthDevExtAdd;
+  } relayMsgInfo;
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
 } TcKeyHaskReq_t;
 
 /******************************************************************************
@@ -95,6 +107,22 @@ typedef struct
 ******************************************************************************/
 #ifdef _LINK_SECURITY_
 void APS_RequestKeyInd(APS_RequestKeyInd_t *indParams);
+
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/**************************************************************************/ /**
+   \brief Perform Device Interview
+
+   Once network commissioning has begun and a dynamic link key has been established the Trust Center
+   can opt to query the joining device or an application endpoint with APSData requests encrypted with the Dynamic
+   Link Key prior to authorizing the device on the network. This period of message exchange is known as the Device interview.
+
+   \param[in] pDeviceInterviewReq - pointer device interview request parameters.
+                                    \sa BcDeviceInterviewReq_t
+   \return None.
+******************************************************************************/
+void TC_PerformDeviceInterview(BcDeviceInterviewReq_t *devInterviewReq);
+
+#endif
 #endif // _LINK_SECURITY_
 
 #endif // _LINK_SECURITY_

@@ -57,10 +57,6 @@
 /*******************************************************************************
                     Static functions section
 *******************************************************************************/
-<#if (ILLUMINANCEMEASUREMENT_CLUSTER_CS != "CLIENT")>
-static void customFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterId_t id);
-static void customConfigureReportingResp(ZCL_Notify_t *ntfy);
-</#if>
 static void ZCL_customIlluminanceAttributeEventInd(ZCL_Addressing_t *addressing, ZCL_AttributeId_t attributeId, ZCL_AttributeEvent_t event);
 <#if (ILLUMINANCEMEASUREMENT_CLUSTER_CS != "SERVER")>
 static void customLightSensorReportInd(ZCL_Addressing_t *addressing, uint8_t reportLength, uint8_t *reportPayload);
@@ -69,39 +65,6 @@ static void customLightSensorReportInd(ZCL_Addressing_t *addressing, uint8_t rep
                     static variables
 ******************************************************************************/
 <#if (ILLUMINANCEMEASUREMENT_CLUSTER_CS != "CLIENT")>
-static ZCL_DeviceEndpoint_t customEndpoint =
-{
-  .simpleDescriptor =
-  {
-    .endpoint            = APP_ENDPOINT_CUSTOM,
-    .AppProfileId        = PROFILE_ID_HOME_AUTOMATION,
-    .AppDeviceId         = ZLO_CUSTOM_DEVICE_ID,
-    .AppInClustersCount  = ARRAY_SIZE(customServerClusterIds),
-    .AppInClustersList   = customServerClusterIds,
-    .AppOutClustersCount = ARRAY_SIZE(customClientClusterIds),
-    .AppOutClustersList  = customClientClusterIds,
-  },
-  .serverCluster = customServerClusters,
-  .clientCluster = customClientClusters,
-};
-
-static ClusterId_t customServerClusterToBindIds[] =
-{
-  ILLUMINANCE_MEASUREMENT_CLUSTER_ID,
-};
-
-static AppBindReq_t customBindReq =
-{
-  .remoteServers     = NULL,
-  .remoteServersCnt  = 0,
-  .remoteClients     = customServerClusterToBindIds,
-  .remoteClientsCnt  = ARRAY_SIZE(customServerClusterToBindIds),
-  .groupId           = 0xffff,
-  .srcEndpoint       = APP_ENDPOINT_EXTENDED_COLOR_LIGHT_SENSOR,
-  .callback          = customFindingBindingFinishedForACluster,
-  .startIdentifyingFn= customIdetifyStartIdentifyingCb
-};
-
 ZCL_IlluminanceMeasurementClusterServerAttributes_t customIlluminanceMeasurementClusterServerAttributes =
 {
   ZCL_DEFINE_ILLUMINANCE_MEASUREMENT_CLUSTER_SERVER_ATTRIBUTES(ILLUMINANCE_MEASUREMENT_VAL_MIN_REPORT_PERIOD, ILLUMINANCE_MEASUREMENT_VAL_MAX_REPORT_PERIOD)
@@ -112,6 +75,14 @@ ZCL_IlluminanceMeasurementClusterClientAttributes_t customIlluminanceMeasurement
 {
   ZCL_DEFINE_ILLUMINANCE_MEASUREMENT_CLUSTER_CLIENT_ATTRIBUTES()
 };
+</#if>
+
+/****************************************************************************
+*****************************************************************************/
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+<#if ((ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE == true) && ((ILLUMINANCEMEASUREMENT_CLUSTER_CS != "CLIENT") || (ILLUMINANCEMEASUREMENT_CLUSTER_CS == "BOTH")))>
+    ZCL_IlluminanceMeasurementClusterServerAttributes_t __attribute__((persistent)) backupCstmIlluminanceMeasurementClusterServerAttributes;
+</#if>
 </#if>
 
 /******************************************************************************
@@ -192,34 +163,6 @@ void illuminanceMeasurementUpdateMeasuredValue(void)
   ZCL_ReportOnChangeIfNeeded(&customIlluminanceMeasurementClusterServerAttributes.measuredValue);
 #endif
 }
-
-/*******************************************************************************
-\brief callback called on the finishing of binding of one cluster
-********************************************************************************/
-static void customFindingBindingFinishedForACluster(Endpoint_t ResponentEp, ClusterId_t clusterId)
-{
-  if (ILLUMINANCE_MEASUREMENT_CLUSTER_ID == clusterId)
-  {
-    ZCL_Cluster_t *serverCluster = ZCL_GetCluster(APP_ENDPOINT_CUSTOM, ILLUMINANCE_MEASUREMENT_CLUSTER_ID, ZCL_CLUSTER_SIDE_SERVER);
-    if (serverCluster)
-      sendConfigureReportingToNotify(APP_ENDPOINT_CUSTOM, APP_ENDPOINT_COMBINED_INTERFACE, ILLUMINANCE_MEASUREMENT_CLUSTER_ID,
-      ZCL_ILLUMINANCE_MEASUREMENT_CLUSTER_MEASURED_VALUE_SERVER_ATTRIBUTE_ID, ILLUMINANCE_MEASUREMENT_VAL_MAX_REPORT_PERIOD, customConfigureReportingResp);
-  }
-}
-
-
-/**************************************************************************//**
-\brief Indication of configure reporting response
-
-\param[in] ntfy - pointer to response
-******************************************************************************/
-static void customConfigureReportingResp(ZCL_Notify_t *ntfy)
-{
-#ifdef _ZCL_REPORTING_SUPPORT_
-  ZCL_StartReporting();
-#endif
-  (void)ntfy;
-}
 </#if>
 
 /**************************************************************************//**
@@ -267,5 +210,22 @@ static void customLightSensorReportInd(ZCL_Addressing_t *addressing, uint8_t rep
 
   APP_Zigbee_Handler(eventItem);
 }
+</#if>
+
+/*********************************************************************************
+*********************************************************************************/
+<#if DEVICE_DEEP_SLEEP_ENABLED>
+<#if ((ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE == true) && ((ILLUMINANCEMEASUREMENT_CLUSTER_CS != "CLIENT") || (ILLUMINANCEMEASUREMENT_CLUSTER_CS == "BOTH")))>
+void CDlsBackupLsAttributes(void)
+{
+   memcpy4ByteAligned(&backupCstmIlluminanceMeasurementClusterServerAttributes,&customIlluminanceMeasurementClusterServerAttributes, sizeof(ZCL_IlluminanceMeasurementClusterServerAttributes_t));
+}
+</#if>
+<#if ((ILLUMINANCEMEASUREMENT_CLUSTER_ENABLE == true) && ((ILLUMINANCEMEASUREMENT_CLUSTER_CS != "CLIENT") || (ILLUMINANCEMEASUREMENT_CLUSTER_CS == "BOTH")))>
+void CDlsRestoreLsAttributes(void)
+{
+  memcpy4ByteAligned(&customIlluminanceMeasurementClusterServerAttributes, &backupCstmIlluminanceMeasurementClusterServerAttributes, sizeof(ZCL_IlluminanceMeasurementClusterServerAttributes_t));
+}
+</#if>
 </#if>
 // eof customilluminanceMeasurementCluster.c

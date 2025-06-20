@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _CBLEVELCONTROLCLUSTER_H
-#define _CBLEVELCONTROLCLUSTER_H
+#ifndef CBLEVELCONTROLCLUSTER_H
+#define CBLEVELCONTROLCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -60,7 +60,7 @@ extern ZCL_LevelControlClusterClientAttributes_t cbLevelControlClusterClientAttr
 ******************************************************************************/
 void cbLevelControlClusterInit(void);
 
-#endif // _CBLEVELCONTROLCLUSTER_H
+#endif // CBLEVELCONTROLCLUSTER_H
 
 // eof cbLevelControlCluster.h
 

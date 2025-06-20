@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _THTHERMOSTATUICONFCLUSTER_H
-#define _THTHERMOSTATUICONFCLUSTER_H
+#ifndef THTHERMOSTATUICONFCLUSTER_H
+#define THTHERMOSTATUICONFCLUSTER_H
 /******************************************************************************
                     Includes section
 ******************************************************************************/
@@ -57,4 +57,4 @@ extern ZCL_ThermostatUiConfClusterServerAttributes_t thThermostatUiConfClusterSe
 ******************************************************************************/
 void thThermostatUiConfClusterInit(void);
 int8_t thTranslateZclCelciusTemptoFahr(int16_t temperature);
-#endif // _THTHERMOSTATUICONFCLUSTER_H
+#endif // THTHERMOSTATUICONFCLUSTER_H

@@ -32,6 +32,28 @@ void rZdoMgmtPermitJoiningRequestProcess(ZS_CommandBuffer_t *commandBuffer);
 void rZdoSetTxPowerRequestProcess(ZS_CommandBuffer_t *commandBuffer);
 void rZdoWakeupIndicationProcess(ZS_CommandBuffer_t *commandBuffer);
 void rZdoSleepRequestProcess(ZS_CommandBuffer_t *commandBuffer);
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+void rZdoMgmtBeaconSurveyReqProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdoSecuritySetConfigReqProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdoSecurityStartKeyUpdateReqProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdoDecommissioningOrClrBindingReqProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdoSecurityGetConfigReqProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdpDiscoveryCacheRequestProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdpDiscoveryStoreRequestProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdpNodeDescriptorStoreRequestProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdpPowerDescriptorStoreRequestProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdpActiveEPStoreRequestProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdpSimpleDescStoreRequestProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdpRemoveNodeCacheRequestProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdpFindNodeCacheRequestProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdpExtendedSimpleDescRequestProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdpExtendedActiveEPRequestProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdpMgmtNWKDiscRequestProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdpMgmtDirectJoinRequestProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdpMgmtCacheRequestProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdpReservedClusterRequestProcess(ZS_CommandBuffer_t *commandBuffer);
+void rZdoGetAuthenticationLevelReqProcess(ZS_CommandBuffer_t *commandBuffer);
+#endif
 #ifdef _ENDDEVICE_
 void rZdoStartSyncReqProcess(ZS_CommandBuffer_t *commandBuffer);
 void rZdoStopSyncReqProcess(ZS_CommandBuffer_t *commandBuffer);

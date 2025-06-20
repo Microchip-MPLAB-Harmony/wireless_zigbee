@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSIHALSERIALIZATION_H_
-#define _ZSIHALSERIALIZATION_H_
+#ifndef ZSIHALSERIALIZATION_H
+#define ZSIHALSERIALIZATION_H
 
 /******************************************************************************
                     Includes section
@@ -143,4 +143,4 @@ ZsiProcessingResult_t zsiDeserializeHAL_ResetReq(void *memory, ZsiCommandFrame_t
 #endif
 
 
-#endif  //_ZSIHALSERIALIZATION_H_
+#endif  //ZSIHALSERIALIZATION_H

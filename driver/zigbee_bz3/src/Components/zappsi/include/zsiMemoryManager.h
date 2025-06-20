@@ -40,8 +40,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _ZSIMEMORYMANAGER_H
-#define _ZSIMEMORYMANAGER_H
+#ifndef ZSIMEMORYMANAGER_H
+#define ZSIMEMORYMANAGER_H
 
 /*****************************************************************************
                               Includes section
@@ -170,5 +170,5 @@ void zsiFreeMemory(const void *const memory);
  ******************************************************************************/
 bool zsiIsMemoryAvailable(void);
 
-#endif /* _ZSIMEMORYMANAGER_H */
+#endif /* ZSIMEMORYMANAGER_H */
 /* eof zsiMemoryManager.h */

@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _CBGROUPSCLUSTER_H
-#define _CBGROUPSCLUSTER_H
+#ifndef CBGROUPSCLUSTER_H
+#define CBGROUPSCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -64,7 +64,7 @@ typedef void (*AddGroupResponseCb_t)(uint8_t status, uint16_t groupId);
 ******************************************************************************/
 void cbGroupsClusterInit(void);
 
-#endif // _CBGROUPSCLUSTER_H
+#endif // CBGROUPSCLUSTER_H
 
 // eof cbGroupsCluster.h
 

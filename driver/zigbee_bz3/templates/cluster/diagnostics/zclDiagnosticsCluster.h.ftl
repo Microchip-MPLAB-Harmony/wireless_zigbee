@@ -41,8 +41,8 @@
 
 
 
-#ifndef _ZCLDIAGNOSTICSCLUSTER_H
-#define _ZCLDIAGNOSTICSCLUSTER_H
+#ifndef ZCLDIAGNOSTICSCLUSTER_H
+#define ZCLDIAGNOSTICSCLUSTER_H
 
 /*******************************************************************************
                    Includes section
@@ -574,5 +574,5 @@ typedef struct PACK
 
 END_PACK
 
-#endif /* _ZCLDIAGNOSTICSCLUSTER_H */
+#endif /* ZCLDIAGNOSTICSCLUSTER_H */
 

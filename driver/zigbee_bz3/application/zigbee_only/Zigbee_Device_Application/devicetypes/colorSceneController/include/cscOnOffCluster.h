@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _COLORSCENERCONTROLLER_ONOFFCLUSTER_H
-#define _COLORSCENERCONTROLLER_ONOFFCLUSTER_H
+#ifndef COLORSCENERCONTROLLER_ONOFFCLUSTER_H
+#define COLORSCENERCONTROLLER_ONOFFCLUSTER_H
 
 /******************************************************************************
                     Includes section
@@ -63,6 +63,6 @@ extern ZCL_OnOffClusterClientAttributes_t cscOnOffClusterClientAttributes;
 void cscOnOffClusterInit(void);
 
 
-#endif // _COLORSCENECONTROLLER_ONOFFCLUSTER_H
+#endif // COLORSCENECONTROLLER_ONOFFCLUSTER_H
 
 // eof cscOnOffCluster.h

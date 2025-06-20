@@ -39,8 +39,8 @@
 *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _ZGPD_COMMON_H_
-#define _ZGPD_COMMON_H_
+#ifndef ZGPD_COMMON_H
+#define ZGPD_COMMON_H
 /******************************************************************************
                     Includes section
 ******************************************************************************/
@@ -109,6 +109,6 @@ INLINE bool findNextSupportedChannel(uint8_t *startChannel, uint32_t mask)
   return result;
 }
 
-#endif /*_ZGPD_COMMON_H_*/
+#endif /*ZGPD_COMMON_H*/
 
 //eof zgpdCommon.h

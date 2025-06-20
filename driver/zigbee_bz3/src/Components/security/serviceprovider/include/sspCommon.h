@@ -42,8 +42,8 @@
 // DOM-IGNORE-END
 
 
-#ifndef _SSPCOMMON_H
-#define _SSPCOMMON_H
+#ifndef SSPCOMMON_H
+#define SSPCOMMON_H
 
 /******************************************************************************
                         Includes section.
@@ -59,6 +59,7 @@
 #define SSP_SECURITY_CONTROL_FIELD_LENGTH 1U
 #define SSP_FRAME_COUNTER_FIELD_LENGTH    4U
 #define SSP_KEY_SEQ_NUMBER_FIELD_LENGTH   1U
+#define CURVE25519_PUBLIC_KEY_SIZE        32U
 
 /******************************************************************************
                         Types section.
@@ -110,6 +111,6 @@ typedef struct
 bool SSP_IsKeyValid(const uint8_t *key);
 
 
-#endif //_SSPCOMMON_H
+#endif //SSPCOMMON_H
 
 // eof sspCommon.h

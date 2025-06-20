@@ -41,8 +41,8 @@
 // DOM-IGNORE-END
 
 // DOM-IGNORE-BEGIN
-#ifndef _ZGPINFRADEVICE_H
-#define _ZGPINFRADEVICE_H
+#ifndef ZGPINFRADEVICE_H
+#define ZGPINFRADEVICE_H
 
 #ifdef _GREENPOWER_SUPPORT_
 // DOM-IGNORE-END
@@ -525,5 +525,5 @@ ZCL_Status_t ZGPH_SendCmdWithCallback(uint8_t sourceEndpoint,
 #endif
 
 #endif // _GREENPOWER_SUPPORT_
-#endif // _ZGPINFRADEVICE_H
+#endif // ZGPINFRADEVICE_H
 // eof zgpInfraDevice.h

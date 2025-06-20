@@ -18,7 +18,7 @@
 
 // DOM-IGNORE-BEGIN
 /*******************************************************************************
-* Copyright (C) 2018 Microchip Technology Inc. and its subsidiaries.
+* Copyright (C) 2024 Microchip Technology Inc. and its subsidiaries.
 *
 * Subject to your compliance with these terms, you may use Microchip software
 * and any derivatives exclusively with Microchip products. It is your
@@ -55,6 +55,11 @@
 #include <configserver/include/private/csSIB.h>
 #include <z3device/common/include/z3Device.h>
 #include <nwk/include/nwk.h>
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+#include <zdo/include/zdo.h>
+#include <zdo/include/zdoRetrieveAuthenticationToken.h>
+#include <zdo/include/zdoSecurityChallenge.h>
+#endif /* _ZIGBEE_REV_23_SUPPORT_ */
 #include <z3device/stack_interface/nwk/include/nwk_api.h>
 #include <z3device/stack_interface/bdb/include/bdb_api.h>
 
@@ -82,13 +87,6 @@
 #ifdef OTAU_CLIENT
 #include <zcl/include/zclOtauClient.h>
 #endif
-/******************************************************************************
-                 External variables section
-******************************************************************************/
-extern DescModeManagerMem_t descModeMem;
-extern const ConsoleCommand_t helpCmds[];
-extern const ConsoleCommand_t commissioningHelpCmds[];
-extern const ConsoleCommand_t zclHelpCmds[];
 
 /******************************************************************************
                     Prototypes section
@@ -113,6 +111,21 @@ static void processMgmtSendPermitJoinCmd(const ScanValue_t *args);
 static void zdoPermitJoiningResponse(ZDO_ZdpResp_t *resp);
 static void processSendNwkUpdateReqCmd(const ScanValue_t *args);
 static void processSimpleDescriptorRequestCmd(const ScanValue_t *args);
+#if defined _ZIGBEE_REV_23_SUPPORT_
+static void processSendMgmtNwkBeaconSurveyReqCmd(const ScanValue_t *args);
+static void processSecurityGetConfigReqCmd(const ScanValue_t *args);
+static void processSecuritySetConfigReqCmd(const ScanValue_t *args);
+static void processSecurityChallengeReqCmd(const ScanValue_t *args);
+static void processStartKeyNegotiation(const ScanValue_t *args);
+static void processClearAllBindingsReqCmd(const ScanValue_t *args);
+static void processSecurityDecommissioningReqCmd(const ScanValue_t *args);
+static void processSecurityDecommissioningOrClrAllBindingsReqCmd(uint16_t clusterId, const ScanValue_t *args);
+static void processStartKeyUpdate(const ScanValue_t *args);
+static void processSetNwkHubConnectivity(const ScanValue_t *args);
+<#if !(TC_SWAPOUT_ENABLED)>  
+static void processTcLossCmd(const ScanValue_t *args);
+</#if>
+#endif //_ZIGBEE_REV_23_SUPPORT_
 static void processUnBindReqCmd(const ScanValue_t *args);
 static void processUnBindReqCmdWithSrcAddrDestEndpoint(const ScanValue_t *args);
 #if BDB_TOUCHLINK_SUPPORT == 1 
@@ -156,7 +169,8 @@ void processSetImageKey (const ScanValue_t *args);
 
 #endif
 extern SIB_t csSIB;
-
+void fbTimerFired(void);
+void aTimerFired(void);
 /******************************************************************************
                     Local variables section
 ******************************************************************************/
@@ -184,6 +198,20 @@ static PROGMEM_DECLARE(ConsoleCommand_t zdoHelpCmds[]) =
    {"sendMgmtPermitJoin", "ddd", processMgmtSendPermitJoinCmd, "[dstAddr][dur][tcSig]\r\n"},
    {"sendNwkMgmtUpdateReq", "ddd", processSendNwkUpdateReqCmd, "<channel> <scanDuration> <nwkAddr>\r\n"},
    {"simpleDescReq", "dd",processSimpleDescriptorRequestCmd, "[nwkAddr] [dstEp]\r\n"},
+#if defined _ZIGBEE_REV_23_SUPPORT_
+   {"sendMgmtNwkBeaconSurveyReq", "ddd", processSendMgmtNwkBeaconSurveyReqCmd, "[dstShortAddr][scanChannelList][configBitMask]\r\n"},
+   {"securityGetConfigReq", "dd", processSecurityGetConfigReqCmd, "[dstShortAddr][PanConflictTLVId] \r\n"},
+   {"startKeyUpdate", "ddddddd", processStartKeyUpdate, "[relayCmd][unAuthDevExtAdd][dstRxtAddr][keyNegMethod][preSharedSecret] \r\n"},
+   {"startKeyNegotiation", "ddddddd", processStartKeyNegotiation, "[requestedKeyNegotiationMethod][requestedPreSharedSecretType][partnerLongAddress][isRelayCommand][relayLongAddress] \r\n"},
+   {"securityChallengeReq", "d", processSecurityChallengeReqCmd, "[EUI64] \r\n"},
+   {"securitySetConfigReq", "dddddddd", processSecuritySetConfigReqCmd, "[dstShortAddr][TLVcount][TlvId1][Tlv1Value][TlvId2][Tlv2Value][TlvId3][Tlv3Value] \r\n"},
+   {"clearAllBindingsReq", "dddddddd", processClearAllBindingsReqCmd, "[dstShortAddr][1EUI64][2EUI64][3EUI64][4EUI64][5EUI64][6EUI64][7EUI64]\r\n"},
+   {"securityDecomReq", "dddddddd", processSecurityDecommissioningReqCmd, "[dstShortAddr][1EUI64][2EUI64][3EUI64][4EUI64][5EUI64][6EUI64][7EUI64]\r\n"},
+   {"setNwkHubConnectivity", "d", processSetNwkHubConnectivity, "[HubConnectivity]\r\n"},
+<#if !(TC_SWAPOUT_ENABLED)>  
+   {"tcLoss", "", processTcLossCmd, ""},
+</#if>
+#endif
    {"unbindReq", "sddddd", processUnBindReqCmd, "[addrMode][DstAddr][extAddr][ep][ClusterId]\r\n"},
    {"unbindReq2", "sdddddddd", processUnBindReqCmdWithSrcAddrDestEndpoint, "[addrMode][DstAddr][extSrcAddrHigh][extSrcAddrLow][extDstAddrHigh][extDstAddrLow/GroupID][ep_Src][ep_Dst][ClusterId]\r\n"},
 #ifdef OTAU_SERVER
@@ -284,12 +312,10 @@ static N_Cmi_NwkDiscovery_t nwkDiscovery =
 /******************************************************************************
                         external variables section
 ******************************************************************************/
-extern bool fbRole;
-extern uint8_t srcEp;
+
 #ifdef OTAU_SERVER
 extern bool abortUpgradeEndRequest;
 #endif
-extern BDB_CommissioningMode_t autoCommissionsEnableMask;
 /******************************************************************************
                     Implementation section
 ******************************************************************************/
@@ -316,11 +342,11 @@ void processHelpCmd(const ScanValue_t *args)
 {
   if (NULL == cmdForHelpCmd)
   {
-    appSnprintf("Commands: \r\n");
+    (void)appSnprintf("Commands: \r\n");
     if (ZCL_COMMANDS_IN_CONSOLE==1 || COMMISSIONING_COMMANDS_IN_CONSOLE==1 || ZDO_COMMANDS_IN_CONSOLE==1)
     {
       cmdForHelpCmd = (ConsoleCommand_t *)helpCmds+1;
-      HAL_StartAppTimer(&helpCmdHandlingTimer);
+      (void)HAL_StartAppTimer(&helpCmdHandlingTimer);
     }
   }
   (void)args;
@@ -335,10 +361,10 @@ void processZdoHelpCmd(const ScanValue_t *args)
 {
   if (NULL == cmdForHelpCmd)
   {
-    appSnprintf("Commands: \r\n");
+    (void)appSnprintf("Commands: \r\n");
     cmdForHelpCmd = (ConsoleCommand_t *)zdoHelpCmds;
 
-    HAL_StartAppTimer(&helpCmdHandlingTimer);
+    (void)HAL_StartAppTimer(&helpCmdHandlingTimer);
   }
   (void)args;
 }
@@ -352,10 +378,10 @@ void processCommissioningHelpCmd(const ScanValue_t *args)
 {
   if (NULL == cmdForHelpCmd)
   {
-    appSnprintf("Commands: \r\n");
+    (void)appSnprintf("Commands: \r\n");
     cmdForHelpCmd = (ConsoleCommand_t *)commissioningHelpCmds;
 
-    HAL_StartAppTimer(&helpCmdHandlingTimer);
+    (void)HAL_StartAppTimer(&helpCmdHandlingTimer);
   }
   (void)args;
 }
@@ -369,10 +395,10 @@ void processZclHelpCmd(const ScanValue_t *args)
 {
   if (NULL == cmdForHelpCmd)
   {
-    appSnprintf("Commands: \r\n");
+    (void)appSnprintf("Commands: \r\n");
     cmdForHelpCmd = (ConsoleCommand_t *)zclHelpCmds;
 
-    HAL_StartAppTimer(&helpCmdHandlingTimer);
+    (void)HAL_StartAppTimer(&helpCmdHandlingTimer);
   }
   (void)args;
 }
@@ -384,14 +410,16 @@ void processZclHelpCmd(const ScanValue_t *args)
 ******************************************************************************/
 void helpCmdHandlingTimerFired(void)
 {
-  appSnprintf("%s\r\n", cmdForHelpCmd->name);
+  (void)appSnprintf("%s\r\n", cmdForHelpCmd->name);
   cmdForHelpCmd++;
-  if (cmdForHelpCmd->name)
+  if (cmdForHelpCmd->name != NULL)
   {
-    HAL_StartAppTimer(&helpCmdHandlingTimer);
+    (void)HAL_StartAppTimer(&helpCmdHandlingTimer);
   }
   else
+  {
     cmdForHelpCmd = NULL;
+  }
 }
 
 /**************************************************************************//**
@@ -399,7 +427,7 @@ void helpCmdHandlingTimerFired(void)
 ******************************************************************************/
 void consoleTx(char chr)
 {
-  appSnprintf(&chr);
+  (void)appSnprintf(&chr);
 }
 
 /**************************************************************************//**
@@ -409,7 +437,7 @@ void consoleTx(char chr)
 ******************************************************************************/
 void consoleTxStr(const char *str)
 {
-  appSnprintf(str);
+  (void)appSnprintf(str);
 }
 
 /**************************************************************************//**
@@ -421,14 +449,20 @@ void consoleTxStr(const char *str)
 ******************************************************************************/
 APS_AddrMode_t determineAddressMode(const ScanValue_t *arg)
 {
-  if (!memcmp("-g", arg->str, 2))
+  if (0 == strncmp("-g", arg->str, 2))
+  {
     return APS_GROUP_ADDRESS;
+  }
 
-  if (!memcmp("-b", arg->str, 2))
+  if (0 == strncmp("-b", arg->str, 2))
+  {
     return APS_NO_ADDRESS;
+  }
 
-  if (!memcmp("-e", arg->str, 2))
+  if (0 == strncmp("-e", arg->str, 2))
+  {
     return APS_EXT_ADDRESS;
+  }
 
   return APS_SHORT_ADDRESS;
 }
@@ -441,7 +475,7 @@ APS_AddrMode_t determineAddressMode(const ScanValue_t *arg)
 ******************************************************************************/
 void processSetAllowStealCmd(const ScanValue_t *args)
 {
-  N_LinkTarget_AllowStealing(args[0].uint8);
+  N_LinkTarget_AllowStealing((args[0].uint8 > 0U));
 }
 #endif //BDB_COMMANDS_IN_CONSOLE == 1
 
@@ -503,7 +537,7 @@ static void processMacBanNodeCmd(const ScanValue_t *args)
   extAddr |= args[1].uint32;
 
   MAC_BanNode(args[2].uint16, extAddr, args[3].uint8, args[4].int8);
-  appSnprintf("Done\r\n");
+  (void)appSnprintf("Done\r\n");
 }
 
 /**************************************************************************//**
@@ -515,7 +549,7 @@ static void processMacResetBanTableCmd(const ScanValue_t *args)
 {
 
   MAC_ResetBanTable();
-  appSnprintf("Done\r\n");
+  (void)appSnprintf("Done\r\n");
   (void)args;
 }
 #endif
@@ -558,9 +592,9 @@ static void processNwkAddrRequestCmd(const ScanValue_t *args)
 ******************************************************************************/
 static void processNwkLeaveReqCmd(const ScanValue_t *args)
 {
-  ExtAddr_t extAddr = ((uint64_t)args[0].uint32 << 32);
+  ExtAddr_t extAddr = ((uint64_t)args[0].uint32 << 32); 
   extAddr |= args[1].uint32;
-  nwkLeaveCommand(extAddr, args[2].uint8, args[3].uint8);
+  nwkLeaveCommand(extAddr, (args[2].uint8 > 0U), (args[3].uint8 > 0U) );
 }
 
 /**************************************************************************//**
@@ -592,7 +626,7 @@ static void processMgmtSendLeaveReqCmd(const ScanValue_t *args)
 {
   ExtAddr_t extAddr = ((uint64_t)args[1].uint32 << 32);
   extAddr |= args[2].uint32;
-  zdpMgmtLeaveReq(args[0].uint16, extAddr, args[3].uint8, args[4].uint8);
+  zdpMgmtLeaveReq(args[0].uint16, extAddr, (args[3].uint8 > 0U) , (args[4].uint8 > 0U) );
 }
 
 /**************************************************************************//**
@@ -602,7 +636,7 @@ static void processMgmtSendLeaveReqCmd(const ScanValue_t *args)
 ******************************************************************************/
 static void zdoPermitJoiningResponse(ZDO_ZdpResp_t *resp)
 {
-  appSnprintf("setPermitJoinRsp %d\r\n", resp->respPayload.status);
+  (void)appSnprintf("setPermitJoinRsp %d\r\n", resp->respPayload.status);
 }
 
 /**************************************************************************//**
@@ -622,7 +656,45 @@ static void processMgmtSendPermitJoinCmd(const ScanValue_t *args)
 
   permit->permitDuration = args[1].uint8;
   permit->tcSignificance = args[2].uint8;
+#ifdef _ZIGBEE_REV_23_SUPPORT_
+/* Beacon appendix encapsulation is added only if the device is R23 supported Trsut centre*/
+#ifdef _TRUST_CENTRE_  
+  if (APS_CENTRALIZED_TRUST_CENTER == APS_GetOwnTcMode())
+  {
+    uint8_t *tlvData = NULL;
+    uint8_t *tlvList[BEACON_APPENDIX_ENC_TLV_COUNT];
+    EncapsulationTlv_t encTlv;
+    KeyNegotiationTlv_t keyNegotiationTlv;
+    FragmentationParametersTlv_t fragmentationTlv;
+  
+    descModeMem.zdpReq.asduPayloadLength = sizeof(ZDO_MgmtPermitJoiningReq_t);
+    
+    /* Key Negotiation TLV */
+    keyNegotiationTlv.tagId  = SUPPORTED_KEY_NEGOTIATION;
+    keyNegotiationTlv.length = CALC_TLV_LENGTH_VALUE(SUPPORTED_KEY_NEGOTIATION_METHODS_GLOBAL_TLV_DEFAULT_LENGTH);
+    CS_ReadParameter(CS_SUPPORTED_KEY_NEGOTIATION_PROTOCOL_ID, &keyNegotiationTlv.keyNegotiationProtocolBitmask);
+    CS_ReadParameter(CS_SUPPORTED_PRE_SHARED_SECRETS_ID, &keyNegotiationTlv.preSharedSecretBitmask);
+    memcpy(&keyNegotiationTlv.sourceDeviceEUI64, MAC_GetExtAddr(), sizeof(ExtAddr_t));
 
+    /* Fragmentation TLV */
+    fragmentationTlv.tagId  = FRAGMENTATION_PARAMETER;
+    fragmentationTlv.length = CALC_TLV_LENGTH_VALUE(FRAGMENTATION_PARAMETERS_GLOBAL_TLV_DEFAULT_LENGTH);
+    fragmentationTlv.nodeId = NWK_GetShortAddr();
+    CS_ReadParameter(CS_APS_DATA_FRAGMENTATION_ID, &fragmentationTlv.fragmentationOption);
+    CS_ReadParameter(CS_APS_MAX_SIZE_ASDU_ID, &fragmentationTlv.incomingTransferUnits);
+  
+    /* Prepare Encapsulation TLV */
+    tlvList[0U] = (uint8_t *)(&keyNegotiationTlv);
+    tlvList[1U] = (uint8_t *)(&fragmentationTlv);
+    TLV_Encapsulate((void *)&tlvList, 2U, BEACON_APPENDIX_ENCAPSULATION, &encTlv);
+  
+    tlvData = ((uint8_t*)permit) + sizeof(ZDO_MgmtPermitJoiningReq_t);
+    descModeMem.zdpReq.asduPayloadLength += TOTAL_TLV_SIZE(encTlv.length);
+
+    TLV_Encode(tlvData, &encTlv);
+  }
+#endif //_TRUST_CENTRE_
+#endif //_ZIGBEE_REV_23_SUPPORT_
   ZDO_ZdpReq(&descModeMem.zdpReq);
 }
 
@@ -644,7 +716,7 @@ static void assocDiscoveryConf(NWK_NetworkDiscoveryConf_t *conf)
 ******************************************************************************/
 static void processSendBeaconReqCmd(const ScanValue_t *args)
 {
-   nwkDiscovery.request.scanDuration = N_Beacon_Order_60ms;
+   nwkDiscovery.request.scanDuration = (uint8_t)N_Beacon_Order_60ms;  
    nwkDiscovery.request.scanChannels = N_DeviceInfo_GetPrimaryChannelMask();
    NWK_NetworkDiscoveryReq(&nwkDiscovery.request);
 
@@ -660,7 +732,7 @@ static void processSendBeaconReqCmd(const ScanValue_t *args)
 ******************************************************************************/
 static void zdoupdateResponse(ZDO_ZdpResp_t *resp)
 {
-  appSnprintf( "Update Done %d\r\n", resp->respPayload.status);
+  (void)appSnprintf( "Update Done %d\r\n", resp->respPayload.status);
 }
 
 /**************************************************************************//**
@@ -681,7 +753,7 @@ static void processSendNwkUpdateReqCmd(const ScanValue_t *args)
   mgmtupdatereq->scanChannels = 1UL << args[0].uint8;
   mgmtupdatereq->scanDuration = args[1].uint8;
   mgmtupdatereq->nwkManagerAddr = 0;
-  mgmtupdatereq->nwkUpdateId = NWK_GetUpdateId() + 1;
+  mgmtupdatereq->nwkUpdateId = NWK_GetUpdateId() + 1U;
   mgmtupdatereq->scanCount = 0;
 
   ZDO_ZdpReq(&descModeMem.zdpReq);
@@ -697,8 +769,205 @@ static void processSimpleDescriptorRequestCmd(const ScanValue_t *args)
   zdpSimpleDescReq(args[0].uint16,args[1].uint8);
 }
 
+#if defined _ZIGBEE_REV_23_SUPPORT_
 /**************************************************************************//**
-\brief Processes UnBindReq command
+/**************************************************************************//**
+\brief Processes Security Start Key Negotiation Request.
+       It requires long address of destination node. relay address is needed 
+       when router is involved.
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processStartKeyNegotiation(const ScanValue_t *args)
+{
+  uint8_t requestedKeyNegotiationMethod = 0;
+  uint8_t requestedPreSharedSecretType = 0;
+  ExtAddr_t partnerLongAddress = 0;
+  uint8_t relayCmd    = 0;
+  ExtAddr_t relayLongAddress = 0;
+
+  requestedKeyNegotiationMethod = args[0].uint8;
+  requestedPreSharedSecretType = args[1].uint8;
+  partnerLongAddress = ((uint64_t)args[2].uint32 << 32);
+  partnerLongAddress |= args[3].uint32;
+  
+  relayCmd = args[4].uint8;
+  relayLongAddress = ((uint64_t)args[5].uint32 << 32);
+  relayLongAddress |= args[6].uint32;
+
+  StartKeyNegotiationReq(requestedKeyNegotiationMethod, requestedPreSharedSecretType, partnerLongAddress, relayCmd, relayLongAddress);
+}
+
+/**************************************************************************//**
+\brief Processes Mgmt SendSurveyBeacon Request command
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processSendMgmtNwkBeaconSurveyReqCmd(const ScanValue_t *args)
+{
+  zdpMgmtBeaconSurveyReq(args[0].uint16, args[1].uint32, args[2].uint8);
+}
+
+/**************************************************************************//**
+\brief Processes Security Challenge request command.
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processSecurityChallengeReqCmd(const ScanValue_t *args)
+{
+  ZDO_SecChallengeReq(args[0].uint64);
+}
+
+<#if !(TC_SWAPOUT_ENABLED)>  
+/**************************************************************************//**
+\brief Processes Trust center loss command.
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processTcLossCmd(const ScanValue_t *args)
+{
+  appNofityTcLoss();
+}
+</#if>
+
+/**************************************************************************//**
+\brief Processes Security Start Key Update Request.
+       It require short address of destination node.
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processStartKeyUpdate(const ScanValue_t *args)
+{
+  uint8_t relayCmd    = 0;
+  uint64_t destAddr   = 0;
+  ExtAddr_t unAuthDevExtAdd = 0;
+
+  relayCmd = args[0].uint8;
+  unAuthDevExtAdd = ((uint64_t)args[1].uint32 << 32);
+  unAuthDevExtAdd |= args[2].uint32;
+  destAddr = ((uint64_t)args[3].uint32 << 32);
+  destAddr |= args[4].uint32;
+
+  zdpStartKeyUpdatedReq(relayCmd, unAuthDevExtAdd, APS_EXT_ADDRESS, destAddr, args[5].uint8, args[6].uint8);
+}
+
+/**************************************************************************//**
+\brief Processes Security Get Config request command
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processSecurityGetConfigReqCmd(const ScanValue_t *args)
+{   
+  uint8_t tlvIdList[1];
+  tlvIdList[0] = args[1].uint8; /* Map to PAN ID Conflict Report Global TLV ID macro*/
+  zdpSecurityGetConfigReq(args[0].uint16,1,tlvIdList);
+}
+/**************************************************************************//**
+\brief Processes Security Set Config request command
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processSecuritySetConfigReqCmd(const ScanValue_t *args)
+{
+  uint8_t panIdTlvId = 0, channelTlvId = 0, cfgParamsTlvId = 0;
+  uint16_t panId = 0, cfgParams = 0; Channel_t channel = 0;
+  uint8_t tlvCount = args[1].uint8;
+
+  int i;
+
+  for(i = 1; i <= tlvCount; i++)
+  {
+    switch(args[i*2].uint8)
+    {
+      case NEXT_PAN_ID_CHANGE:
+        panIdTlvId = args[i*2].uint8;
+        panId = args[2*i+1].uint16;
+        break;
+
+      case NEXT_CHANNEL_CHANGE:
+        channelTlvId = args[i*2].uint8;
+        channel = args[2*i+1].uint8;
+        break;
+
+      case CONFIGURATION_PARAMETER:
+        cfgParamsTlvId = args[i*2].uint8;
+        cfgParams = args[2*i+1].uint16;
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  zdpSecuritySetConfigReq(args[0].uint16,tlvCount,panIdTlvId,panId,channelTlvId,channel,cfgParamsTlvId,cfgParams);
+}
+
+/**************************************************************************//**
+\brief Processes Clear All Bindings request command
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processClearAllBindingsReqCmd(const ScanValue_t *args)
+{
+  processSecurityDecommissioningOrClrAllBindingsReqCmd(CLEAR_ALL_BINDINGS_CLID, args);
+}
+
+/**************************************************************************//**
+\brief Processes Security Decommssioning request command
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processSecurityDecommissioningReqCmd(const ScanValue_t *args)
+{
+  processSecurityDecommissioningOrClrAllBindingsReqCmd(SECURITY_DECOMMISSIONING_CLID, args);
+}
+
+/**************************************************************************//**
+\brief Processes Security Decommssioning / Clear all binding request commands
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processSecurityDecommissioningOrClrAllBindingsReqCmd(uint16_t clusterID, const ScanValue_t *args)
+{
+  ExtAddr_t eui64list[7];
+  uint8_t argIndex = 1U;
+  uint8_t eui64ListIndex = 0U;
+
+  while(argIndex <= MAX_EUI64_COUNT)
+  {
+    if(args[argIndex].uint64 != 0U)
+    {
+      eui64list[eui64ListIndex++] = args[argIndex].uint64;
+    }
+    argIndex++;
+  }
+
+  zdpDecomissioningOrClrBindingReq(clusterID, args[0].uint16, eui64ListIndex, eui64list);
+}
+
+/**************************************************************************//**
+\brief Processes set NWK Hub connectivity request.
+
+\param[in] args - array of command arguments
+******************************************************************************/
+static void processSetNwkHubConnectivity(const ScanValue_t *args)
+{
+  uint8_t value = 0;
+  bool hubConnectivity = false;
+
+  value = args[0].uint8;
+  if ((value == 1))
+  {
+      hubConnectivity = true;
+  }
+
+  NWK_SetHubConnectivity(hubConnectivity);
+}
+
+#endif //_ZIGBEE_REV_23_SUPPORT
+
+/**************************************************************************//**
+\brief Processes UnBindReqCmd command
 
 \param[in] args - array of command arguments
 ******************************************************************************/
@@ -744,7 +1013,7 @@ static void processSetAbortUpgradeEndReq(const ScanValue_t *args)
 ******************************************************************************/
 void processSetTLRole(const ScanValue_t *args)
 {
-  BDB_SetToulinkRole(args[0].uint8);
+  BDB_SetToulinkRole( (args[0].uint8 > 0U));
   (void)args;
 }
 #endif
@@ -757,7 +1026,7 @@ void processSetTLRole(const ScanValue_t *args)
 ******************************************************************************/
 void processSetAllowTLResetToFNCmd(const ScanValue_t *args)
 {
-  BDB_SetAllowTLResetToFN(args[0].uint8);
+  BDB_SetAllowTLResetToFN((args[0].uint8 > 0U));
 }
 #endif
 
@@ -813,7 +1082,7 @@ void processsetGlobalKeyCmd(const ScanValue_t *args)
 ******************************************************************************/
 static void zdoPermitJoinResponse(ZDO_ZdpResp_t *resp)
 {
-  appSnprintf("setPermitJoinRsp %d\r\n", resp->respPayload.status);
+  (void)appSnprintf("setPermitJoinRsp %d\r\n", resp->respPayload.status);
 }
 
 /**************************************************************************//**
@@ -843,7 +1112,7 @@ void processSetPermitJoinCmd(const ScanValue_t *args)
 ******************************************************************************/
 static void Callback_Commissioning(BDB_InvokeCommissioningConf_t *conf)
 {
-  appSnprintf("CommissioningStatus = %d\r\n", conf->status);
+  (void)appSnprintf("CommissioningStatus = %d\r\n", conf->status);
 }
 
 /**************************************************************************//**
@@ -855,17 +1124,27 @@ static bool checkCommModeBits(BDB_CommissioningMode_t mode)
 {
   uint8_t noOfCommModeBitSet = 0;
 
-  if(mode & 0x01)
+  if( (mode & 0x01U) > 0U)
+  {
     noOfCommModeBitSet++;
-  if(mode & 0x02)
+  }
+  if( (mode & 0x02U) > 0U)
+  {
     noOfCommModeBitSet++;
-  if(mode & 0x04)
+  }
+  if( (mode & 0x04U) > 0U)
+  {
+    noOfCommModeBitSet++; 
+  }
+  if( (mode & 0x08U) > 0U)
+  {
     noOfCommModeBitSet++;
-  if(mode & 0x08)
-    noOfCommModeBitSet++;
+  }
   
-  if(noOfCommModeBitSet > 1)
+  if(noOfCommModeBitSet > 1U)
+  {
    return true;
+  }
   
   return false;
 }
@@ -876,11 +1155,11 @@ static bool checkCommModeBits(BDB_CommissioningMode_t mode)
 ******************************************************************************/
 void processInvokeCommissioningCmd(const ScanValue_t *args)
 {
-  memset(&AppbdbCommissioningreq,0,sizeof(BDB_InvokeCommissioningReq_t));
+  (void)memset(&AppbdbCommissioningreq,0,sizeof(BDB_InvokeCommissioningReq_t));
   autoCommissionsEnableMask = args[0].uint8;
   if(checkCommModeBits(autoCommissionsEnableMask))
   {
-    appSnprintf("User cannot invoke more than one commissioning at a time");
+    (void)appSnprintf("User cannot invoke more than one commissioning at a time");
     return;
   }
   AppbdbCommissioningreq.mode = determineCommissionMode();
@@ -928,7 +1207,7 @@ void processInvokeCommissioningCmd(const ScanValue_t *args)
 
 static void Callback_FormAndSteerFB(BDB_InvokeCommissioningConf_t *conf)
 {
-  appSnprintf("CommissioningStatus = %d\r\n", conf->status);
+  (void)appSnprintf("CommissioningStatus = %d\r\n", conf->status);
 }
 
 /**************************************************************************//**
@@ -936,13 +1215,13 @@ static void Callback_FormAndSteerFB(BDB_InvokeCommissioningConf_t *conf)
 ******************************************************************************/
 void fbTimerFired(void)
 {
-  if(autoCommissionsEnableMask == 0x08)
+  if(autoCommissionsEnableMask == 0x08U)
   {
-    memset(&AppbdbCommissioningreq,0,sizeof(BDB_InvokeCommissioningReq_t));
+    (void)memset(&AppbdbCommissioningreq,0,sizeof(BDB_InvokeCommissioningReq_t));
     AppbdbCommissioningreq.mode = determineCommissionMode();
     AppbdbCommissioningreq.initiatorReq = NULL;
     const AppBindReq_t *appBindReqLocal = deviceBindReqs[0];
-#if BDB_FINDINGBINDING_INITIATOR_TARGET_PARALLEL_EXECUTION != 1
+
 if((APP_Z3_DEVICE_TYPE == APP_DEVICE_TYPE_COMBINED_INTERFACE) || (APP_Z3_DEVICE_TYPE == APP_DEVICE_TYPE_COLOR_SCENE_CONTROLLER))
 {
   AppbdbCommissioningreq.initiatorReq = &AppinitiatorReq;
@@ -955,7 +1234,7 @@ if((APP_Z3_DEVICE_TYPE == APP_DEVICE_TYPE_COMBINED_INTERFACE) || (APP_Z3_DEVICE_
   AppbdbCommissioningreq.initiatorReq->serverClustersList=appBindReqLocal->remoteClients;
   AppbdbCommissioningreq.initiatorReq->callback = appBindReqLocal->callback;
 }
-#endif
+
   }
     AppbdbCommissioningreq.BDB_InvokeCommissioningConf = Callback_FormAndSteerFB;
     BDB_InvokeCommissioning(&AppbdbCommissioningreq);
@@ -968,14 +1247,16 @@ if((APP_Z3_DEVICE_TYPE == APP_DEVICE_TYPE_COMBINED_INTERFACE) || (APP_Z3_DEVICE_
 ******************************************************************************/
 static void Callback_FormAndSteer1(BDB_InvokeCommissioningConf_t *conf)
 {
-  if(autoCommissionsEnableMask == 0x00)
-    appSnprintf("CommissioningStatus = %d\r\n", conf->status);
+  if(autoCommissionsEnableMask == 0x00U)
+  {
+    (void)appSnprintf("CommissioningStatus = %d\r\n", conf->status);
+  }
   else
   {
      fbTimer.interval = 5;
      fbTimer.mode     = TIMER_ONE_SHOT_MODE;
      fbTimer.callback = fbTimerFired;
-     HAL_StartAppTimer(&fbTimer);
+     (void)HAL_StartAppTimer(&fbTimer);
   }
 
 }
@@ -991,7 +1272,7 @@ void aTimerFired(void)
     localVar.uint8 = 2;
   }
   autoCommissionsEnableMask = localVar.uint8;
-  memset(&AppbdbCommissioningreq,0,sizeof(BDB_InvokeCommissioningReq_t));
+  (void)memset(&AppbdbCommissioningreq,0,sizeof(BDB_InvokeCommissioningReq_t));
   AppbdbCommissioningreq.mode = determineCommissionMode();
   AppbdbCommissioningreq.BDB_InvokeCommissioningConf = Callback_FormAndSteer1;
   BDB_InvokeCommissioning(&AppbdbCommissioningreq);
@@ -1007,7 +1288,7 @@ static void Callback_FormAndSteer(BDB_InvokeCommissioningConf_t *conf)
   aTimer.interval = 5;
   aTimer.mode     = TIMER_ONE_SHOT_MODE;
   aTimer.callback = aTimerFired;
-  HAL_StartAppTimer(&aTimer);
+  (void)HAL_StartAppTimer(&aTimer);
 }
 
 /**************************************************************************//**
@@ -1020,7 +1301,7 @@ void processFormAndSteerCmd(const ScanValue_t *args)
   doFindAndBind = false;
   localVar.uint8 = 4;
   autoCommissionsEnableMask = localVar.uint8;
-  memset(&AppbdbCommissioningreq,0,sizeof(BDB_InvokeCommissioningReq_t));
+  (void)memset(&AppbdbCommissioningreq,0,sizeof(BDB_InvokeCommissioningReq_t));
   AppbdbCommissioningreq.mode = determineCommissionMode();
   AppbdbCommissioningreq.initiatorReq = NULL;
   AppbdbCommissioningreq.BDB_InvokeCommissioningConf = Callback_FormAndSteer;
@@ -1037,7 +1318,7 @@ void processFormSteerAndFBCmd(const ScanValue_t *args)
   doFindAndBind = true;
   localVar.uint8 = 4;
   autoCommissionsEnableMask = localVar.uint8;
-  memset(&AppbdbCommissioningreq,0,sizeof(BDB_InvokeCommissioningReq_t));
+  (void)memset(&AppbdbCommissioningreq,0,sizeof(BDB_InvokeCommissioningReq_t));
   AppbdbCommissioningreq.mode = determineCommissionMode();
   AppbdbCommissioningreq.BDB_InvokeCommissioningConf = Callback_FormAndSteer;
   BDB_InvokeCommissioning(&AppbdbCommissioningreq);
@@ -1050,17 +1331,14 @@ void processFormSteerAndFBCmd(const ScanValue_t *args)
 ******************************************************************************/
 void processGetExtAddrCmd(const ScanValue_t *args)
 {
-  ExtAddr_t ieeeAddr;
-  uint8_t* extAddr;
-  memcpy(&ieeeAddr, MAC_GetExtAddr(), sizeof(ExtAddr_t));
-  extAddr = (uint8_t*)&ieeeAddr;
+  ExtAddr_t ieeeAddr;    
+  (void)memcpy(&ieeeAddr, MAC_GetExtAddr(), sizeof(ExtAddr_t));
+  
+  (void)appSnprintf("%08x", (uint32_t)( (ieeeAddr & 0xffffffff00000000)>>32 ) );
+  (void)appSnprintf("%08x", (uint32_t)(ieeeAddr & 0x00000000ffffffff) );
 
-  appSnprintf("%08x", *((uint32_t*)&extAddr[4]));
-  appSnprintf("%08x", *((uint32_t*)&extAddr[0]));
-
-  appSnprintf("\r\n");
-  (void)args; /*Do nothing, just to avoid compiler warning*/
-  (void)extAddr; /*Do nothing, just to avoid compiler warning*/
+  (void)appSnprintf("\r\n");
+  (void)args; /*Do nothing, just to avoid compiler warning*/  
 }
 
 /**************************************************************************//**
@@ -1071,7 +1349,7 @@ void processGetExtAddrCmd(const ScanValue_t *args)
 void processGetNetworkAddressCmd(const ScanValue_t *args)
 {
   (void)args;
-  appSnprintf("%04x\r\n", NWK_GetShortAddr());
+  (void)appSnprintf("%04x\r\n", NWK_GetShortAddr());
 }
 
 /**************************************************************************//**
@@ -1083,7 +1361,7 @@ void processGetChannelCmd(const ScanValue_t *args)
 {
   uint8_t currentChannel;
   CS_ReadParameter(CS_RF_CURRENT_CHANNEL_ID, &currentChannel); 
-  appSnprintf("%03d\r\n", currentChannel);
+  (void)appSnprintf("%03d\r\n", currentChannel);
   (void)args;
 }
 
@@ -1179,12 +1457,12 @@ void processSetCCAModeAndThresholdCmd(const ScanValue_t *args)
     
   phySetReq.attr.phyPib.ccaMode = (PHY_CcaMode_t)args[0].uint8;
   phySetReq.id = (PHY_SetPibId_t)PHY_PIB_CCA_MODE_ID;
-  PHY_SetReq(&phySetReq);
+  (void)PHY_SetReq(&phySetReq);
 
   phySetReq.attr.macPib.ccaEdThres = (uint8_t)args[1].uint8;
   phySetReq.id = (PHY_SetPibId_t)MAC_PIB_CCA_ED_THRES;
-  PHY_SetReq(&phySetReq);
-  appSnprintf("Done\r\n");
+  (void)PHY_SetReq(&phySetReq);
+  (void)appSnprintf("Done\r\n");
 
 }
 
@@ -1198,11 +1476,11 @@ void processGetCCAModeAndThresholdCmd(const ScanValue_t *args)
   
   regVal = phyReadRegister(PHY_CC_CCA_REG);
    
-  appSnprintf("CCA Mode = %d\r\n", (regVal & 0x60)>>5);
+  (void)appSnprintf("CCA Mode = %d\r\n", (regVal & 0x60U)>>5U);
   
   regVal = phyReadRegister(CCA_THRESH_REG);
 
-  appSnprintf("ED threshold = %d\r\n", regVal & 0xf);
+  (void)appSnprintf("ED threshold = %d\r\n", regVal & 0xfU);
 }
 
 #endif //#if COMMISSIONING_COMMANDS_IN_CONSOLE == 1
@@ -1220,16 +1498,17 @@ void processSetOtauQueryInterval(const ScanValue_t *args)
 }
 void processGetFirmwareVersion(const ScanValue_t *args)
 {
-  appSnprintf("Firmware Version 0x%04x\r\n",csSIB.csOtauFileVersion);
+  (void)appSnprintf("Firmware Version 0x%04x\r\n",csSIB.csOtauFileVersion);
 }
 
 void processGetImageUpgradeStatus(const ScanValue_t *args)
 {
-  appSnprintf("Image Ugrade Status %d\r\n",otauClientAttributes.imageUpgradeStatus.value);
+  (void)appSnprintf("Image Ugrade Status %d\r\n",otauClientAttributes.imageUpgradeStatus.value);
 }
 void processSetMinBlockPeriod(const ScanValue_t *args)
 {
   otauClientAttributes.minimumBlockPeriod.value = args[0].uint16;
+  PDS_Store(OTAU_MIN_BLOCK_PERIOD_ATTR_MEM_ID);
 }
 
 #ifdef OTAU_PRIVILEGED_CONSOLE_CMDS
@@ -1381,8 +1660,15 @@ void processDisableDefaultResponseBitCmd(const ScanValue_t *args)
   switch (args[0].uint8)
   {
     case ZCL_FRAME_CONTROL_DISABLE_DEFAULT_RESPONSE:
+      setZclDefaultResponseBit(args[0].uint8);
+      break;
+
     case ZCL_FRAME_CONTROL_ENABLE_DEFAULT_RESPONSE:
       setZclDefaultResponseBit(args[0].uint8);
+      break;
+
+    default:
+      ;// TODO
       break;
   }
 }
@@ -1396,9 +1682,13 @@ void processDisableDefaultResponseBitCmd(const ScanValue_t *args)
 static void setTypeDone(BDB_LinkTarget_Status_t status)
 {
   if(status == BDB_LinkTarget_Status_Ok)
-    appSnprintf("Done\r\n");
+  {
+    (void)appSnprintf("Done\r\n");
+  }
   else
-    appSnprintf("NotDone\r\n");
+  {
+    (void)appSnprintf("NotDone\r\n");
+  }
 }
 /**************************************************************************//**
 \brief Processes Set Target Type command
@@ -1407,7 +1697,7 @@ static void setTypeDone(BDB_LinkTarget_Status_t status)
 ******************************************************************************/
 void processSetTargetTypeCmd(const ScanValue_t *args)
 {
-  memset(&appSetTargetType,0,sizeof(BDB_SetTargetType_t));
+  (void)memset(&appSetTargetType,0,sizeof(BDB_SetTargetType_t));
   appSetTargetType.targetType = args[0].uint8;
   appSetTargetType.BDB_SetTargetTypeConf = setTypeDone;
 
@@ -1422,7 +1712,7 @@ void processSetTargetTypeCmd(const ScanValue_t *args)
 ******************************************************************************/
 static void ResetTargetCallback(ResetTargetStatus_t status)
 {
-  appSnprintf("Status = %d\r\n", status);
+  (void)appSnprintf("Status = %d\r\n", status);
 }
 
 /**************************************************************************//**
@@ -1450,9 +1740,9 @@ void processOtauHelpCmd(const ScanValue_t *args)
 {
   if (NULL == cmdForHelpCmd)
   {
-    appSnprintf("Commands: \r\n");
+    (void)appSnprintf("Commands: \r\n");
     cmdForHelpCmd = (ConsoleCommand_t *)otauHelpCmds;
-    HAL_StartAppTimer(&helpCmdHandlingTimer);
+    (void)HAL_StartAppTimer(&helpCmdHandlingTimer);
   }
   (void)args;
 }
