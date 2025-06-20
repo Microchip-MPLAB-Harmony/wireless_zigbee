@@ -6,6 +6,35 @@
 
 # Zigbee Driver Library Release notes
 
+## Wireless Zigbee Release v7.0.0_E1
+
++ ### PIC32CX-BZ2 - Zigbee Stack Version BC 5.3 (Refer wireless_zigbee\driver\zigbee_bz2)
+
+  + ### Features
+    + Support for Zigbee revision Pro2023
+    + Engineering R23 revision with the below features implemented
+        + Dynamic LInk Key negotiation with SPEKE using Curve25519 with Hash AES-MMO-128
+                                          & SPEKE using Curve25519 with Hash SHA-256
+        + Device Interview
+        + TLV support for new and existing commands
+        + APS Frame Counter Synchronization
+        + NWK commissioning 
+        + Decommissioning 
+        + Trust Center SwapOut
+        + Restricted mode Of operation 
+        + Routing Improvement with LQA
+        + Beacon Survey
+        + Nwk Retries
+        + MAC Poll Retries
+        + All HUB Connectivity 
+        + PanId handling 
+        + Secure channel change
+
+  + ### Development Tools
+    + [MPLAB X v6.20] and above (https://www.microchip.com/mplab/mplab-x-ide)
+    + [MPLAB® XC32 C/C++ Compiler v4.60](https://www.microchip.com/mplab/compilers)
+    + MPLAB® X IDE plug-ins: MPLAB® Code Configurator (MCC) v5.5.1 and above
+
 ## Wireless Zigbee Release v6.1.0
 
 + ### PIC32CX-BZ2 - Zigbee Stack Version BC 5.2 (Refer wireless_zigbee\driver\zigbee_bz2)
