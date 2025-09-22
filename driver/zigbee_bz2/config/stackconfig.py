@@ -92,7 +92,8 @@ global enableZigbeeR23
 enableZigbeeR23 = drvZigbeeComponent.createBooleanSymbol("ENABLE_ZIGBEE_REV_23", stackConfigMenu)
 enableZigbeeR23.setLabel("Enable Zigbee Revision 23")
 enableZigbeeR23.setEnabled(deviceName in pic32cx_bz2_family) # This checkbox can only be enabled in bz2 devices
-enableZigbeeR23.setVisible(deviceName in pic32cx_bz2_family)
+# enableZigbeeR23.setVisible(deviceName in pic32cx_bz2_family)
+enableZigbeeR23.setVisible(False) # removing the R23 enabling checkbox (in BZ2) and other sub-symbols from the 'Configuration Options' UI
 enableZigbeeR23.setDefaultValue(False)
 enableZigbeeR23.setDescription("ENABLE_ZIGBEE_REV_23 - check the box to enable")
 enableZigbeeR23.setDependencies(zigbeeR23CheckboxCallback, ["ENABLE_ZIGBEE_REV_23"])
