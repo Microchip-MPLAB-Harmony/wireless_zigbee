@@ -21,6 +21,31 @@
 * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 *****************************************************************************"""
 
+def HandleConsoleDependencyCallback(symbol,event):
+
+    print("HandleConsoleDependencyCallback",symbol,event)
+    requiredComponent = ["drv_usart"]
+    value = event["value"]
+    # value = True
+    symbolID = event["id"]
+    global localComponent
+    localComponent = symbol.getComponent()
+    componentids = Database.getActiveComponentIDs()
+    print("componentids",componentids)
+    
+    if value == True:
+        if "drv_usart" not in componentids: 
+            Database.activateComponents(requiredComponent)
+        componentids = Database.getActiveComponentIDs()
+        Database.connectDependencies([[zigbeeDeviceType.getValue(),'Zigbee_USART','drv_usart_0','drv_usart']])
+        # Database.sendMessage("drv_usart", "DRV_USART_OPERATING_MODE_CONFIG", {"mode": "Asynchronous" ,"isReadOnly" : True ,"isLocked":True})
+            
+    elif value == False:
+        if "drv_usart" in componentids: 
+            Database.deactivateComponents(requiredComponent)
+            print("componentids",componentids)
+
+
 #Essential changes for each release
 releaseVersion = "v5.0.0"
 releaseYear    = "2020"
@@ -55,3 +80,17 @@ getStackComponent = drvZigbeeComponent.createStringSymbol("FUNCTIONALITY", None)
 getStackComponent.setDefaultValue(Function)
 getStackComponent.setVisible(True)
 getStackComponent.setReadOnly(True)
+
+requiredComponent = ["drv_usart"]
+componentids = Database.getActiveComponentIDs()
+print("componentids",componentids)
+if "drv_usart" not in componentids: 
+    Database.activateComponents(requiredComponent)
+
+
+global zigbeeConsole
+zigbeeConsole = drvZigbeeComponent.createBooleanSymbol("ZIGBEE_CONSOLE",None)
+zigbeeConsole.setDefaultValue(False)
+zigbeeConsole.setVisible(True)
+zigbeeConsole.setLabel("Enable Console")
+zigbeeConsole.setDependencies(HandleConsoleDependencyCallback,["ZIGBEE_CONSOLE"])

@@ -3216,27 +3216,34 @@ def setIncPath(component, configName, incPathEntry):
 #####################################################################################################
 #####################################################################################################
 def dependenciesInitializationCall(symbol, event):
-  if (deviceName in pic32cx_bz2_family):
-    if ((event["value"] == True)):
-        try:
-            a = Database.getComponentByID("lib_crypto")
-            b = a.getSymbolByID("include_filename")
-            b.setEnabled(False)
-            b = a.getSymbolByID("src_filename")
-            b.setEnabled(False)
-            print("Disabling crypto.h and crypto.c from crypto")
-        except Exception as e:
-            print("An exception occurred while disabling crypto.h and crypto.c from crypto ",e )
+    if (deviceName in pic32cx_bz2_family):
+        if ((event["value"] == True)):
+            try:
+                a = Database.getComponentByID("lib_crypto")
+                b = a.getSymbolByID("include_filename")
+                b.setEnabled(False)
+                b = a.getSymbolByID("src_filename")
+                b.setEnabled(False)
+                print("Disabling crypto.h and crypto.c from crypto")
+            except Exception as e:
+                print("An exception occurred while disabling crypto.h and crypto.c from crypto ",e )
 
-        if (deviceName in pic32cx_bz2_family):
-            activeComponents = Database.getActiveComponentIDs()
-            requiredComponents = ['rtc', 'sys_time']
-            for r in requiredComponents:
-                if r not in activeComponents:
-                    print("require component '{}' - activating it".format(r))
-                    res = Database.activateComponents([r])
-        result = Database.connectDependencies([['lib_wolfcrypt', 'LIB_WOLFCRYPT_Dependency', 'sys_time', 'sys_time']])
-        result = Database.connectDependencies([['sys_time', 'sys_time_TMR_dependency', 'rtc', 'RTC_TMR']])
+            if (deviceName in pic32cx_bz2_family):
+                activeComponents = Database.getActiveComponentIDs()
+                requiredComponents = ['rtc', 'sys_time']
+                for r in requiredComponents:
+                    if r not in activeComponents:
+                        print("require component '{}' - activating it".format(r))
+                        res = Database.activateComponents([r])
+            result = Database.connectDependencies([['lib_wolfcrypt', 'LIB_WOLFCRYPT_Dependency', 'sys_time', 'sys_time']])
+            result = Database.connectDependencies([['sys_time', 'sys_time_TMR_dependency', 'rtc', 'RTC_TMR']])
+            end_devicetypes = ["ZIGBEE_MULTI_SENSOR","ZIGBEE_COLOR_SCENE_CONTROLLER","ZIGBEE_IAS_ACE"]
+            if zigbeeDeviceType.getValue() not in end_devicetypes:
+                result = Database.connectDependencies([[zigbeeDeviceType.getValue(),'Zigbee_USART','drv_usart_0','drv_usart']])
+    elif (deviceName in pic32cx_bz3_family):
+        end_devicetypes = ["ZIGBEE_MULTI_SENSOR","ZIGBEE_COLOR_SCENE_CONTROLLER","ZIGBEE_IAS_ACE"]
+        if zigbeeDeviceType.getValue() not in end_devicetypes:
+            result = Database.connectDependencies([[zigbeeDeviceType.getValue(),'Zigbee_USART','drv_usart_0','drv_usart']])
 
 def eicDeepSleepConfig():
     try:
@@ -3888,7 +3895,7 @@ def onAttachmentConnected(source, target):
         commsnzdoconsolecommandEnable.setValue(True)
         #appConfigZloExtraClusters.setValue(True)
         #appConfigZloClustersEnhancements.setValue(True)
-        appConfigCertificationExtension.setValue(True)        
+        appConfigCertificationExtension.setValue(True)
         Database.clearSymbolValue("drv_usart", "DRV_USART_COMMON_MODE")
         Database.sendMessage("drv_usart", "DRV_USART_OPERATING_MODE_CONFIG", {"mode": "Asynchronous" ,"isReadOnly" : True ,"isLocked":True})
         Database.sendMessage("pic32cx_bz2_devsupport", "CONSOLE_ENABLE", {"isEnabled":True})

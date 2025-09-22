@@ -161,7 +161,12 @@ def finalizeComponent(zigbeeComponent):
         result = Database.connectDependencies([[zigbeeDeviceType.getValue(), 'TC0_TMR_Zigbee', 'tc0', 'TC0_TMR']])
     elif (deviceName in pic32cx_bz6_family):
         result = Database.connectDependencies([[zigbeeDeviceType.getValue(), 'TC0_TMR_Zigbee', 'tc0', 'TC0_TMR']])
-
+    componentids = Database.getActiveComponentIDs()
+    if "drv_usart" not in componentids: 
+       
+        Database.activateComponents(requiredComponent)
+        componentids = Database.getActiveComponentIDs()
+        Database.connectDependencies([[zigbeeDeviceType.getValue(),'Zigbee_USART','drv_usart_0','drv_usart']])
 	#Deep Sleep added
     DeviceTypes = zigbeeDeviceType.getValue()
     if((DeviceTypes == 'ZIGBEE_MULTI_SENSOR')or(DeviceTypes == 'ZIGBEE_COLOR_SCENE_CONTROLLER')or(DeviceTypes == 'ZIGBEE_IAS_ACE')):
@@ -3194,27 +3199,35 @@ def setIncPath(component, configName, incPathEntry):
 #####################################################################################################
 #####################################################################################################
 def dependenciesInitializationCall(symbol, event):
-  if (deviceName in pic32cx_bz2_family):
-    if ((event["value"] == True)):
-        try:
-            a = Database.getComponentByID("lib_crypto")
-            b = a.getSymbolByID("include_filename")
-            b.setEnabled(False)
-            b = a.getSymbolByID("src_filename")
-            b.setEnabled(False)
-            print("Disabling crypto.h and crypto.c from crypto")
-        except Exception as e:
-            print("An exception occurred while disabling crypto.h and crypto.c from crypto ",e )
+    if (deviceName in pic32cx_bz2_family):
+        if ((event["value"] == True)):
+            try:
+                a = Database.getComponentByID("lib_crypto")
+                b = a.getSymbolByID("include_filename")
+                b.setEnabled(False)
+                b = a.getSymbolByID("src_filename")
+                b.setEnabled(False)
+                print("Disabling crypto.h and crypto.c from crypto")
+            except Exception as e:
+                print("An exception occurred while disabling crypto.h and crypto.c from crypto ",e )
 
-        if (deviceName in pic32cx_bz2_family):
-            activeComponents = Database.getActiveComponentIDs()
-            requiredComponents = ['rtc', 'sys_time']
-            for r in requiredComponents:
-                if r not in activeComponents:
-                    print("require component '{}' - activating it".format(r))
-                    res = Database.activateComponents([r])
-        result = Database.connectDependencies([['lib_wolfcrypt', 'LIB_WOLFCRYPT_Dependency', 'sys_time', 'sys_time']])
-        result = Database.connectDependencies([['sys_time', 'sys_time_TMR_dependency', 'rtc', 'RTC_TMR']])
+            if (deviceName in pic32cx_bz2_family):
+                activeComponents = Database.getActiveComponentIDs()
+                requiredComponents = ['rtc', 'sys_time']
+                for r in requiredComponents:
+                    if r not in activeComponents:
+                        print("require component '{}' - activating it".format(r))
+                        res = Database.activateComponents([r])
+            result = Database.connectDependencies([['lib_wolfcrypt', 'LIB_WOLFCRYPT_Dependency', 'sys_time', 'sys_time']])
+            result = Database.connectDependencies([['sys_time', 'sys_time_TMR_dependency', 'rtc', 'RTC_TMR']])
+            end_devicetypes = ["ZIGBEE_MULTI_SENSOR","ZIGBEE_COLOR_SCENE_CONTROLLER","ZIGBEE_IAS_ACE"]
+            if zigbeeDeviceType.getValue() not in end_devicetypes:
+                result = Database.connectDependencies([[zigbeeDeviceType.getValue(),'Zigbee_USART','drv_usart_0','drv_usart']])
+    elif (deviceName in pic32cx_bz3_family):
+        end_devicetypes = ["ZIGBEE_MULTI_SENSOR","ZIGBEE_COLOR_SCENE_CONTROLLER","ZIGBEE_IAS_ACE"]
+        if zigbeeDeviceType.getValue() not in end_devicetypes:
+            result = Database.connectDependencies([[zigbeeDeviceType.getValue(),'Zigbee_USART','drv_usart_0','drv_usart']])
+   
 
 def eicDeepSleepConfig():
     try:
