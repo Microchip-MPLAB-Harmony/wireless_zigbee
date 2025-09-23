@@ -81,13 +81,6 @@ getStackComponent = drvZigbeeComponent.createStringSymbol("FUNCTIONALITY", None)
 getStackComponent.setDefaultValue(Function)
 getStackComponent.setVisible(True)
 getStackComponent.setReadOnly(True)
-# deep_sleep_devicetypes = ["ZIGBEE_MULTISENSOR"]
-# if zigbeeDeviceType.getValue() in deep_sleep_devicetypes:
-requiredComponent = ["drv_usart"]
-componentids = Database.getActiveComponentIDs()
-print("componentids",componentids)
-if "drv_usart" not in componentids: 
-    Database.activateComponents(requiredComponent)
 
 global zigbeeConsole
 zigbeeConsole = drvZigbeeComponent.createBooleanSymbol("ZIGBEE_CONSOLE",None)

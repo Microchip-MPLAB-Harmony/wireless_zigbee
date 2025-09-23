@@ -546,6 +546,16 @@ def instantiateComponent(drvZigbeeComponent):
     elif( deviceName in pic32cx_bz6_family):
         drvZigbeeComponent.setDependencyEnabled('TCC2_PWM_Zigbee', False)
 
+    end_devicetypes = ["ZIGBEE_MULTI_SENSOR","ZIGBEE_COLOR_SCENE_CONTROLLER","ZIGBEE_IAS_ACE"]
+    if (zigbeeDeviceType.getValue()).upper() not in end_devicetypes:
+        zigbeeConsole.setDefaultValue(True)
+        requiredComponent = ["drv_usart"]
+        componentids = Database.getActiveComponentIDs()
+        print("componentids",componentids)
+        if "drv_usart" not in componentids: 
+            Database.activateComponents(requiredComponent)
+        result = Database.connectDependencies([[zigbeeDeviceType.getValue(),'Zigbee_USART','drv_usart_0','drv_usart']])  
+
     global drvComponent # used to pass component to timerconfig.py
     drvComponent = drvZigbeeComponent
 
@@ -3220,13 +3230,10 @@ def dependenciesInitializationCall(symbol, event):
                         res = Database.activateComponents([r])
             result = Database.connectDependencies([['lib_wolfcrypt', 'LIB_WOLFCRYPT_Dependency', 'sys_time', 'sys_time']])
             result = Database.connectDependencies([['sys_time', 'sys_time_TMR_dependency', 'rtc', 'RTC_TMR']])
-            end_devicetypes = ["ZIGBEE_MULTI_SENSOR","ZIGBEE_COLOR_SCENE_CONTROLLER","ZIGBEE_IAS_ACE"]
-            if zigbeeDeviceType.getValue() not in end_devicetypes:
-                result = Database.connectDependencies([[zigbeeDeviceType.getValue(),'Zigbee_USART','drv_usart_0','drv_usart']])
-    elif (deviceName in pic32cx_bz3_family):
-        end_devicetypes = ["ZIGBEE_MULTI_SENSOR","ZIGBEE_COLOR_SCENE_CONTROLLER","ZIGBEE_IAS_ACE"]
-        if zigbeeDeviceType.getValue() not in end_devicetypes:
-            result = Database.connectDependencies([[zigbeeDeviceType.getValue(),'Zigbee_USART','drv_usart_0','drv_usart']])
+            
+    end_devicetypes = ["ZIGBEE_MULTI_SENSOR","ZIGBEE_COLOR_SCENE_CONTROLLER","ZIGBEE_IAS_ACE"]
+    if (zigbeeDeviceType.getValue()).upper() not in end_devicetypes:
+        result = Database.connectDependencies([[zigbeeDeviceType.getValue(),'Zigbee_USART','drv_usart_0','drv_usart']])              
    
 
 def eicDeepSleepConfig():

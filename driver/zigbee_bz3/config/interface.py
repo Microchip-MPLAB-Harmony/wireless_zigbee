@@ -81,12 +81,6 @@ getStackComponent.setDefaultValue(Function)
 getStackComponent.setVisible(True)
 getStackComponent.setReadOnly(True)
 
-requiredComponent = ["drv_usart"]
-componentids = Database.getActiveComponentIDs()
-print("componentids",componentids)
-if "drv_usart" not in componentids: 
-    Database.activateComponents(requiredComponent)
-
 
 global zigbeeConsole
 zigbeeConsole = drvZigbeeComponent.createBooleanSymbol("ZIGBEE_CONSOLE",None)
