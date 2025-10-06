@@ -878,13 +878,13 @@ def instantiateComponent(drvZigbeeComponent):
     ptcSystemDefFile.setSourcePath("driver/zigbee" + suffix + "/templates/system/definitions.h.ftl")
     ptcSystemDefFile.setMarkup(True)
 
-    if (deviceName in pic32cx_bz2_family):
-      # Configuration what OSAL Creates - Temporary - Need to find in the Systems
-      sys_configHeaderFile = drvZigbeeComponent.createFileSymbol("ZIGBEE_CRYPTO_DEFS", None)
-      sys_configHeaderFile.setType("STRING")
-      sys_configHeaderFile.setOutputName("core.LIST_SYSTEM_CONFIG_H_APPLICATION_CONFIGURATION")
-      sys_configHeaderFile.setSourcePath('driver/zigbee' + suffix + '/templates/system/configuration.h.ftl')
-      sys_configHeaderFile.setMarkup(True)
+    #if (deviceName in pic32cx_bz2_family):
+    #  # Configuration what OSAL Creates - Temporary - Need to find in the Systems
+    #  sys_configHeaderFile = drvZigbeeComponent.createFileSymbol("ZIGBEE_CRYPTO_DEFS", None)
+    #  sys_configHeaderFile.setType("STRING")
+    #  sys_configHeaderFile.setOutputName("core.LIST_SYSTEM_CONFIG_H_APPLICATION_CONFIGURATION")
+    #  sys_configHeaderFile.setSourcePath('driver/zigbee' + suffix + '/templates/system/configuration.h.ftl')
+    #  sys_configHeaderFile.setMarkup(True)
 
     #################################################################
     ###############  System Initialization Settings   ###############
