@@ -20,9 +20,9 @@ the following links for release notes, training materials, and interface
 reference information.
 
 - [Release Notes](release_notes.md)
-- [MPLAB® Harmony License](mplab_harmony_license.md)
+- [License](License.md)
 - [MPLAB® Harmony 3 Wireless Zigbee Wiki](https://github.com/Microchip-MPLAB-Harmony/wireless_zigbee/wiki)
-- [MPLAB® Harmony 3 Wireless Zigbee API Help](docs/MPLAB_Harmony_Wireless_Zigbee_APIhelp.chm)
+- [MPLAB® Harmony 3 Wireless Zigbee API Help](https://onlinedocs.microchip.com/oxy/GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-en-US-5/index.html)
 
 To download or clone these application from the github, go to the top of the repository page and click: ![](./images/clone.png)
 
@@ -30,29 +30,15 @@ To download or clone these application from the github, go to the top of the rep
 
 | Folder     | Description                                               |
 | ---        | ---                                                       |
-| apps       | Example applications for Wireless library components      |
 | config     | Wireless module configuration file                        |
-| docs       | Wireless library help documentation                       |
 | drivers    | Driver/Firmware files for different products              |
-| utilities  | Contains root certs, firmware programmer/downloader       |
 
-## Code Examples
 
-The following applications are provided to demonstrate the typical or interesting usage models of one or more Peripheral libraries.
+# API Reference
+Click [here](https://onlinedocs.microchip.com/oxy/GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8-en-US-5/index.html) to view the online documentation of API reference hosted in this repository.
 
-| BLE Examples | Families | Status |
-| --- | :---: | :---: |
-
-| Zigbee Examples | Families | Status |
-| --- | :---: | :---: |
-
-## Driver libraries
-
-### PIC32CX-BZ
-
-| Driver | Status |
-| --- | :---: |
-| [Zigbee stack](driver/zigbee/docs/readme.md) | ![app-beta](https://img.shields.io/badge/driver-beta-orange?style=plastic) |
+To view the documentation offline, click [here](https://onlinedocs.microchip.com/download/GUID-1DD68C79-8AC2-497D-A1BB-49D92D3FDAB8?type=webhelp). Extract the zip file into a folder.
+Navigate to the folder and open index.html in a web browser of your choice.
 
 ____
 
