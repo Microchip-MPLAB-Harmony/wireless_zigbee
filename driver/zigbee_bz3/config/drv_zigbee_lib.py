@@ -409,7 +409,12 @@ def instantiateComponent(drvZigbeeComponent):
     deviceDeepSleepEnabled.setVisible(drvZigbeeComponent.getID() in deviceDeepSleepEnabledList )
     if ((zigbeeDeviceType.getValue() in deviceDeepSleepEnabledList) or (zigbeeDeviceType.getValue() == "ZIGBEE_CUSTOM")) : 
        deviceDeepSleepEnabled.setDependencies(zigbeeDevTypeEventDeepSleepConfigCheck, ["DEVICE_DEEP_SLEEP_ENABLED"])
-    
+       
+    #    print("entered here! removed the ZIGBEE_CUSTOM")
+    #ENDDEVICE
+    # if (zigbeeDeviceType.getValue() == "ZIGBEE_CUSTOM"):
+    #     if (event["value"] == 2):
+    #         deviceDeepSleepEnabled.setDependencies(zigbeeDevTypeEventDeepSleepConfigCheck, ["DEVICE_DEEP_SLEEP_ENABLED"])
 
     global tcSwapoutEnabled
     tcSwapoutEnabled = drvZigbeeComponent.createBooleanSymbol("TC_SWAPOUT_ENABLED", None)
@@ -3326,6 +3331,11 @@ def CustomDevTypeEventDeepSleepConfigCheck(symbol, event):
         symbol.setVisible(False)
         deviceDeepSleepEnabled.setVisible(True)
         deviceDeepSleepEnabled.setValue(True)
+        # addeed the code here
+        # deviceDeepSleepEnabled.setDependencies(zigbeeDevTypeEventDeepSleepConfigCheck, ["DEVICE_DEEP_SLEEP_ENABLED"])
+        # Call the main Deep Sleep handler for custom devices
+        # simulating the event as true
+        zigbeeDevTypeEventDeepSleepConfigCheck(deviceDeepSleepEnabled, {"value": True})
         ResetTOFnEnabling.setVisible(True)        
         sleepSupportedDevice.setValue(True)        
     else:
@@ -3334,6 +3344,8 @@ def CustomDevTypeEventDeepSleepConfigCheck(symbol, event):
         deviceDeepSleepEnabled.setValue(False)
         ResetTOFnEnabling.setVisible(False) 
         sleepSupportedDevice.setValue(False)
+        # Call the main handler to reset RTC/db logic
+        zigbeeDevTypeEventDeepSleepConfigCheck(deviceDeepSleepEnabled, {"value": False})
 
 def CustomDevTypeEventDeepSleepConfigCheck(symbol, event):
     if (event["value"] == 2):
