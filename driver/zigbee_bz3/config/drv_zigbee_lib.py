@@ -407,14 +407,9 @@ def instantiateComponent(drvZigbeeComponent):
     deviceDeepSleepEnabled = drvZigbeeComponent.createBooleanSymbol("DEVICE_DEEP_SLEEP_ENABLED", None)
     deviceDeepSleepEnabled.setLabel("Enable Deep Sleep")
     deviceDeepSleepEnabled.setVisible(drvZigbeeComponent.getID() in deviceDeepSleepEnabledList )
-    if ((zigbeeDeviceType.getValue() in deviceDeepSleepEnabledList) or (zigbeeDeviceType.getValue() == "ZIGBEE_CUSTOM")) : 
+    if ((zigbeeDeviceType.getValue() in deviceDeepSleepEnabledList) or (zigbeeDeviceType.getValue() == "ZIGBEE_CUSTOM")): 
        deviceDeepSleepEnabled.setDependencies(zigbeeDevTypeEventDeepSleepConfigCheck, ["DEVICE_DEEP_SLEEP_ENABLED"])
-       
-    #    print("entered here! removed the ZIGBEE_CUSTOM")
-    #ENDDEVICE
-    # if (zigbeeDeviceType.getValue() == "ZIGBEE_CUSTOM"):
-    #     if (event["value"] == 2):
-    #         deviceDeepSleepEnabled.setDependencies(zigbeeDevTypeEventDeepSleepConfigCheck, ["DEVICE_DEEP_SLEEP_ENABLED"])
+    
 
     global tcSwapoutEnabled
     tcSwapoutEnabled = drvZigbeeComponent.createBooleanSymbol("TC_SWAPOUT_ENABLED", None)
@@ -3273,48 +3268,52 @@ def eicDeepSleepConfig():
         print("EXCEPTION at configuring EIC component on disabling deep sleep ",e)
 
 def zigbeeDevTypeEventDeepSleepConfigCheck(symbol, event):
-    if ((event["value"] == True)):
-        symbol.setValue(True)
-        deviceDeepSleepEnabled.setValue(True) 
-        
-        if( deviceName in pic32cx_bz2_family):
-           Database.sendMessage("pic32cx_bz2_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz2_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
-           Database.sendMessage("pic32cx_bz2_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz2_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
-        elif (deviceName in pic32cx_bz3_family) or (deviceName in pic32cx_bz36_family):
-            Database.sendMessage("pic32cx_bz3_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz3_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
-            Database.sendMessage("pic32cx_bz3_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz3_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
-        elif (deviceName in pic32cx_bz6_family):
-            #added for BZ6
-            Database.sendMessage("pic32cx_bz6_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz6_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
-            Database.sendMessage("pic32cx_bz6_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz6_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
+    ed= stackConfigDeviceType.getValue()
+    Log.writeInfoMessage("stackConfigDeviceType" +str(ed))
+    if(stackConfigDeviceType.getValue() == 2) : 
+        Log.writeInfoMessage("stackConfigDeviceType val is 2 (end device)")
+        if ((event["value"] == True)):
+            symbol.setValue(True)
+            deviceDeepSleepEnabled.setValue(True) 
             
+            if( deviceName in pic32cx_bz2_family):
+                Database.sendMessage("pic32cx_bz2_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz2_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
+                Database.sendMessage("pic32cx_bz2_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz2_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
+            elif (deviceName in pic32cx_bz3_family) or (deviceName in pic32cx_bz36_family):
+                Database.sendMessage("pic32cx_bz3_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz3_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
+                Database.sendMessage("pic32cx_bz3_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz3_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
+            elif (deviceName in pic32cx_bz6_family):
+                #added for BZ6
+                Database.sendMessage("pic32cx_bz6_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz6_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
+                Database.sendMessage("pic32cx_bz6_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz6_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
+                
 
-        
-        symIDListS = Database.getComponentByID('rtc')
-        if symIDListS is not None:
-            DeepAyDeepSleepA = symIDListS.getSymbolByID('RTC_SYS_INIT')
-            DeepAyDeepSleepA.setEnabled(False)   
-            print("Disabling RTC SYS")
-    else:
+            
+            symIDListS = Database.getComponentByID('rtc')
+            if symIDListS is not None:
+                DeepAyDeepSleepA = symIDListS.getSymbolByID('RTC_SYS_INIT')
+                DeepAyDeepSleepA.setEnabled(False)   
+                print("Disabling RTC SYS")
+        else:
 
-        symbol.setValue(False)
-        deviceDeepSleepEnabled.setValue(False)
-        
-        if( deviceName in pic32cx_bz2_family):
-            Database.sendMessage("pic32cx_bz2_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz2_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
-            Database.sendMessage("pic32cx_bz2_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz2_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
-        elif (deviceName in pic32cx_bz3_family) or (deviceName in pic32cx_bz36_family):
-            Database.sendMessage("pic32cx_bz3_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz3_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
-            Database.sendMessage("pic32cx_bz3_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz3_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
-        elif( deviceName in pic32cx_bz6_family):
-            Database.sendMessage("pic32cx_bz6_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz6_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
-            Database.sendMessage("pic32cx_bz6_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz6_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
-                   
-        symIDListS = Database.getComponentByID('rtc')
-        if symIDListS is not None:
-            DeepAyDeepSleepA = symIDListS.getSymbolByID('RTC_SYS_INIT')
-            DeepAyDeepSleepA.setEnabled(True)
-            print("Enabling RTC SYS")
+            symbol.setValue(False)
+            deviceDeepSleepEnabled.setValue(False)
+            
+            if( deviceName in pic32cx_bz2_family):
+                Database.sendMessage("pic32cx_bz2_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz2_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
+                Database.sendMessage("pic32cx_bz2_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz2_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
+            elif (deviceName in pic32cx_bz3_family) or (deviceName in pic32cx_bz36_family):
+                Database.sendMessage("pic32cx_bz3_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz3_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
+                Database.sendMessage("pic32cx_bz3_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz3_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
+            elif( deviceName in pic32cx_bz6_family):
+                Database.sendMessage("pic32cx_bz6_devsupport", "SLEEP_ENABLE", {"target": "pic32cx_bz6_devsupport","source": "ZB_STACK_LIB","isEnabled":True})
+                Database.sendMessage("pic32cx_bz6_devsupport", "DEEP_SLEEP_ENABLE", {"target": "pic32cx_bz6_devsupport","source": "ZB_STACK_LIB","isEnabled":False})
+                    
+            symIDListS = Database.getComponentByID('rtc')
+            if symIDListS is not None:
+                DeepAyDeepSleepA = symIDListS.getSymbolByID('RTC_SYS_INIT')
+                DeepAyDeepSleepA.setEnabled(True)
+                print("Enabling RTC SYS")
         
 
 def tcSwapoutConfigCheck(symbol, event):
@@ -3331,11 +3330,6 @@ def CustomDevTypeEventDeepSleepConfigCheck(symbol, event):
         symbol.setVisible(False)
         deviceDeepSleepEnabled.setVisible(True)
         deviceDeepSleepEnabled.setValue(True)
-        # addeed the code here
-        # deviceDeepSleepEnabled.setDependencies(zigbeeDevTypeEventDeepSleepConfigCheck, ["DEVICE_DEEP_SLEEP_ENABLED"])
-        # Call the main Deep Sleep handler for custom devices
-        # simulating the event as true
-        zigbeeDevTypeEventDeepSleepConfigCheck(deviceDeepSleepEnabled, {"value": True})
         ResetTOFnEnabling.setVisible(True)        
         sleepSupportedDevice.setValue(True)        
     else:
@@ -3344,8 +3338,6 @@ def CustomDevTypeEventDeepSleepConfigCheck(symbol, event):
         deviceDeepSleepEnabled.setValue(False)
         ResetTOFnEnabling.setVisible(False) 
         sleepSupportedDevice.setValue(False)
-        # Call the main handler to reset RTC/db logic
-        zigbeeDevTypeEventDeepSleepConfigCheck(deviceDeepSleepEnabled, {"value": False})
 
 def CustomDevTypeEventDeepSleepConfigCheck(symbol, event):
     if (event["value"] == 2):
