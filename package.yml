@@ -4,9 +4,9 @@ package:
   type: "package"
   status: "production"
   required: false
-  version: "v7.0.0_e1"
+  version: "v6.2.0"
 
   dependencies:
     - name: "wireless_pic32cxbz_wbz"
       type: "package"
-      version: "v1.5.0"    
+      version: "v1.6.0"    
