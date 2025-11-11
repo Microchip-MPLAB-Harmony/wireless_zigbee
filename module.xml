@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Module name="wireless_zigbee" id="b96c8e73-1f42-40c0-97ea-17f3f991122f" version="3.1.0">
+<Module name="wireless_zigbee" id="b96c8e73-1f42-40c0-97ea-17f3f991122f" version="6.2.0">
     <ConfigRoot path="config/module.py"/>
 </Module>
